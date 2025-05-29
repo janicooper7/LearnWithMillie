@@ -11,6 +11,7 @@ export default function Contact() {
   const formRef = useRef(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -46,8 +47,11 @@ export default function Contact() {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitStatus('idle')
+    setErrorMessage('')
 
     try {
+      console.log('Submitting form data:', { ...formData, email: '[REDACTED]' })
+
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -56,14 +60,22 @@ export default function Contact() {
         body: JSON.stringify(formData),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error('Failed to submit form')
+        throw new Error(data.error || data.details || 'Failed to submit form')
       }
 
+      console.log('Form submitted successfully:', data)
       router.push('/thank-you')
     } catch (error) {
       console.error('Error submitting form:', error)
       setSubmitStatus('error')
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Sorry, there was an error sending your message. Please try again.'
+      )
       setIsSubmitting(false)
     }
   }
@@ -204,10 +216,13 @@ export default function Contact() {
                 {isSubmitting ? 'Sending...' : 'Submit Your Enquiry'}
               </button>
               {submitStatus === 'error' && (
-                <p className='text-red-600 text-center'>
-                  Sorry, there was an error sending your message. Please try
-                  again.
-                </p>
+                <div className='text-red-600 text-center space-y-1'>
+                  <p>{errorMessage}</p>
+                  <p className='text-sm'>
+                    If the problem persists, please try again later or contact
+                    us directly.
+                  </p>
+                </div>
               )}
             </div>
           </form>

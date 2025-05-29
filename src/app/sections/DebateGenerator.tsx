@@ -568,7 +568,7 @@ export default function DebateGenerator() {
               {keywords.map((kw, i) => (
                 <span
                   key={i}
-                  className='px-3 py-1 rounded-full bg-primary/10 text-gray-900 text-xl font-large shadow-sm'
+                  className='px-3 py-1 rounded-full bg-primary/10 text-gray-900 text-md font-large shadow-sm'
                 >
                   {kw}
                 </span>
