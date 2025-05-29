@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Suspense } from 'react'
 import './globals.css'
 import Navigation from './components/Navigation'
 import Footer from './components/Footer'
@@ -21,11 +22,15 @@ export default function RootLayout({
   return (
     <html lang='en' className='scroll-smooth'>
       <head>
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
       </head>
       <body className={inter.className}>
         <Navigation />
-        <main className='relative pt-16'>{children}</main>
+        <main className='relative pt-16'>
+          <Suspense fallback={null}>{children}</Suspense>
+        </main>
         <Footer />
       </body>
     </html>

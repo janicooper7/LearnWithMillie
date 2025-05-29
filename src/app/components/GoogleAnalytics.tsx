@@ -1,8 +1,8 @@
 'use client'
 
 import Script from 'next/script'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import { useEffect, Suspense } from 'react'
 
 // Replace with your Google Analytics Measurement ID
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
@@ -22,23 +22,25 @@ declare global {
   }
 }
 
-export default function GoogleAnalytics() {
+// Separate component for tracking
+function AnalyticsTracker() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     if (!GA_MEASUREMENT_ID) return
 
-    const url = pathname + searchParams.toString()
-
     // Track page views
     window.gtag('config', GA_MEASUREMENT_ID, {
-      page_path: url,
+      page_path: pathname,
       page_location: window.location.href,
       page_title: document.title,
     })
-  }, [pathname, searchParams])
+  }, [pathname])
 
+  return null
+}
+
+export default function GoogleAnalytics() {
   if (!GA_MEASUREMENT_ID) return null
 
   return (
@@ -62,6 +64,9 @@ export default function GoogleAnalytics() {
           `,
         }}
       />
+      <Suspense fallback={null}>
+        <AnalyticsTracker />
+      </Suspense>
     </>
   )
 }
