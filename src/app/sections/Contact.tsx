@@ -1,12 +1,23 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export default function Contact() {
+  const router = useRouter()
   const sectionRef = useRef(null)
   const formRef = useRef(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'error'>('idle')
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    lessonType: '',
+    plan: '',
+    message: '',
+  })
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -31,6 +42,41 @@ export default function Contact() {
     }
   }, [])
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitStatus('idle')
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form')
+      }
+
+      router.push('/thank-you')
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      setSubmitStatus('error')
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
   return (
     <section ref={sectionRef} className='py-20 bg-white' id='contact'>
       <div className='container'>
@@ -38,12 +84,12 @@ export default function Contact() {
           <h2 className='heading-lg mb-6'>Start Your Journey Now!</h2>
           <p className='text-gray-600 text-lg'>
             Ready to improve your English? Fill out the form below and I&apos;ll
-            get back to you as soon as possible.
+            get back to you as soon as possible to find the best day and time.
           </p>
         </div>
 
         <div ref={formRef} className='max-w-2xl mx-auto'>
-          <form className='space-y-6'>
+          <form onSubmit={handleSubmit} className='space-y-6'>
             <div className='grid md:grid-cols-2 gap-6'>
               <div>
                 <label
@@ -56,7 +102,10 @@ export default function Contact() {
                   type='text'
                   id='fullName'
                   name='fullName'
-                  className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-custom-pink focus:border-transparent'
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-transparent'
+                  placeholder='Enter your full name'
                   required
                 />
               </div>
@@ -71,8 +120,11 @@ export default function Contact() {
                   type='email'
                   id='email'
                   name='email'
-                  className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-custom-pink focus:border-transparent'
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-transparent'
                   required
+                  placeholder='Enter your email address'
                 />
               </div>
             </div>
@@ -87,7 +139,9 @@ export default function Contact() {
               <select
                 id='lessonType'
                 name='lessonType'
-                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-custom-pink focus:border-transparent'
+                value={formData.lessonType}
+                onChange={handleInputChange}
+                className='w-full px-4 py-3 rounded-lg border border-gray-300 ocus:border-transparent'
                 required
               >
                 <option value=''>Select a lesson type</option>
@@ -107,7 +161,9 @@ export default function Contact() {
               <select
                 id='plan'
                 name='plan'
-                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-custom-pink focus:border-transparent'
+                value={formData.plan}
+                onChange={handleInputChange}
+                className='w-full px-4 py-3 rounded-lg border border-gray-300 ocus:border-transparent'
                 required
               >
                 <option value=''>Select a plan</option>
@@ -131,18 +187,28 @@ export default function Contact() {
               <textarea
                 id='message'
                 name='message'
+                value={formData.message}
+                onChange={handleInputChange}
                 rows={4}
-                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-custom-pink focus:border-transparent'
+                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-transparent'
+                placeholder='Enter your additional comments'
               ></textarea>
             </div>
 
-            <div>
+            <div className='space-y-2'>
               <button
                 type='submit'
-                className='w-full bg-custom-pink text-white py-4 px-8 rounded-full font-semibold hover:bg-opacity-90 transition-colors'
+                disabled={isSubmitting}
+                className='w-full bg-custom-pink text-white py-4 px-8 rounded-full font-semibold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
               >
-                Submit Your Enquiry
+                {isSubmitting ? 'Sending...' : 'Submit Your Enquiry'}
               </button>
+              {submitStatus === 'error' && (
+                <p className='text-red-600 text-center'>
+                  Sorry, there was an error sending your message. Please try
+                  again.
+                </p>
+              )}
             </div>
           </form>
         </div>

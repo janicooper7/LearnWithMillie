@@ -558,17 +558,17 @@ export default function DebateGenerator() {
             </div>
           </div>
           <div className='flex-1 md:border-l border-gray-200 md:pl-8 flex flex-col justify-center'>
-            <h3 className='font-semibold text-md text-gray-900 mb-2'>
+            <h3 className='font-semibold text-xl text-gray-900 mb-2'>
               Make It Interesting
             </h3>
-            <p className='text-gray-400 text-xs mb-3'>
+            <p className='text-gray-400 text-sm mb-3'>
               Try and use the following vocabulary when answering the questions.
             </p>
             <div ref={keywordsRef} className='flex flex-wrap gap-2'>
               {keywords.map((kw, i) => (
                 <span
                   key={i}
-                  className='px-3 py-1 rounded-full bg-primary/10 text-gray-900 text-sm font-medium shadow-sm'
+                  className='px-3 py-1 rounded-full bg-primary/10 text-gray-900 text-xl font-large shadow-sm'
                 >
                   {kw}
                 </span>

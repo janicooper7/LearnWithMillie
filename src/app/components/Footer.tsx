@@ -91,6 +91,7 @@ export default function Footer() {
             <p className='text-gray-600 text-sm'>
               © {new Date().getFullYear()} iFluentify. All rights reserved.
             </p>
+            <p>This website is maintained by: {'aiwebhouse.co.uk '}</p>
             <div className='flex gap-6'>
               <a href='#' className='text-gray-600 hover:text-primary'>
                 Privacy Policy
