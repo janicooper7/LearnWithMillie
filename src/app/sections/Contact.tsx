@@ -5,6 +5,12 @@ import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+const trackEvent = (action: string, params?: Record<string, any>) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', action, params)
+  }
+}
+
 export default function Contact() {
   const router = useRouter()
   const sectionRef = useRef(null)
@@ -66,6 +72,14 @@ export default function Contact() {
         throw new Error(data.error || data.details || 'Failed to submit form')
       }
 
+      // Track successful form submission
+      trackEvent('form_submission', {
+        event_category: 'Contact',
+        event_label: 'Contact Form',
+        lesson_type: formData.lessonType,
+        plan: formData.plan,
+      })
+
       console.log('Form submitted successfully:', data)
       router.push('/thank-you')
     } catch (error) {
@@ -76,6 +90,14 @@ export default function Contact() {
           ? error.message
           : 'Sorry, there was an error sending your message. Please try again.'
       )
+
+      // Track form submission error
+      trackEvent('form_error', {
+        event_category: 'Contact',
+        event_label: 'Contact Form Error',
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      })
+
       setIsSubmitting(false)
     }
   }
