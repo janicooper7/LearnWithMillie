@@ -50,20 +50,28 @@ export default function FAQ() {
   }, []) // Runs once on mount
 
   const handleToggle = (indexToToggle: number) => {
+    const isMobile = window.innerWidth < 768
+    
     // If clicking the currently open item to close it
     if (openIndex === indexToToggle) {
       const elToClose = answerRefs.current[indexToToggle]
       if (elToClose) {
-        gsap.to(elToClose, {
-          height: 0,
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power1.inOut',
-          onComplete: () => {
-            gsap.set(elToClose, { display: 'none' })
-            setOpenIndex(null)
-          },
-        })
+        if (isMobile) {
+          // Instant on mobile
+          gsap.set(elToClose, { display: 'none', height: 0, opacity: 0 })
+          setOpenIndex(null)
+        } else {
+          gsap.to(elToClose, {
+            height: 0,
+            opacity: 0,
+            duration: 0.3,
+            ease: 'power1.inOut',
+            onComplete: () => {
+              gsap.set(elToClose, { display: 'none' })
+              setOpenIndex(null)
+            },
+          })
+        }
       }
     } else {
       // Opening a new item (or switching)
@@ -71,15 +79,19 @@ export default function FAQ() {
       if (openIndex !== null) {
         const currentOpenEl = answerRefs.current[openIndex]
         if (currentOpenEl) {
-          gsap.to(currentOpenEl, {
-            height: 0,
-            opacity: 0,
-            duration: 0.3,
-            ease: 'power1.inOut',
-            onComplete: () => {
-              gsap.set(currentOpenEl, { display: 'none' })
-            },
-          })
+          if (isMobile) {
+            gsap.set(currentOpenEl, { display: 'none', height: 0, opacity: 0 })
+          } else {
+            gsap.to(currentOpenEl, {
+              height: 0,
+              opacity: 0,
+              duration: 0.3,
+              ease: 'power1.inOut',
+              onComplete: () => {
+                gsap.set(currentOpenEl, { display: 'none' })
+              },
+            })
+          }
         }
       }
 
@@ -89,16 +101,22 @@ export default function FAQ() {
         setOpenIndex(indexToToggle) // Update state to reflect the item that is now "active"
         gsap.set(elToOpen, { display: 'block', height: 'auto' }) // Make visible and set height to auto to measure
         const autoHeight = elToOpen.scrollHeight // Get the full height
-        gsap.fromTo(
-          elToOpen,
-          { height: 0, opacity: 0 }, // Start from height 0 and faded out
-          {
-            height: autoHeight,
-            opacity: 1,
-            duration: 0.3,
-            ease: 'power1.inOut',
-          } // Animate to autoHeight and faded in
-        )
+        
+        if (isMobile) {
+          // Instant on mobile
+          gsap.set(elToOpen, { height: autoHeight, opacity: 1 })
+        } else {
+          gsap.fromTo(
+            elToOpen,
+            { height: 0, opacity: 0 }, // Start from height 0 and faded out
+            {
+              height: autoHeight,
+              opacity: 1,
+              duration: 0.3,
+              ease: 'power1.inOut',
+            } // Animate to autoHeight and faded in
+          )
+        }
       }
     }
   }

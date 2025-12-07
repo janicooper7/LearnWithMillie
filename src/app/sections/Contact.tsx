@@ -27,6 +27,16 @@ export default function Contact() {
   })
 
   useEffect(() => {
+    // Disable animations on mobile
+    const isMobile = window.innerWidth < 768
+    if (isMobile) {
+      // Set element to final state immediately on mobile
+      if (formRef.current) {
+        gsap.set(formRef.current, { y: 0, opacity: 1 })
+      }
+      return
+    }
+
     gsap.registerPlugin(ScrollTrigger)
 
     gsap.fromTo(
@@ -233,7 +243,7 @@ export default function Contact() {
               <button
                 type='submit'
                 disabled={isSubmitting}
-                className='w-full bg-custom-pink text-white py-4 px-8 rounded-full font-semibold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+                className='btn-primary shadow-glow-lg hover:shadow-glow-lg text-xl px-4 py-4 rounded-2xl w-full disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 {isSubmitting ? 'Sending...' : 'Submit Your Enquiry'}
               </button>

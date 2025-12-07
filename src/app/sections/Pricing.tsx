@@ -52,6 +52,18 @@ export default function Pricing() {
   const cardsRef = useRef<HTMLDivElement[]>([])
 
   useEffect(() => {
+    // Disable animations on mobile
+    const isMobile = window.innerWidth < 768
+    if (isMobile) {
+      // Set elements to final state immediately on mobile
+      cardsRef.current.forEach((card) => {
+        if (card) {
+          gsap.set(card, { y: 0, opacity: 1 })
+        }
+      })
+      return
+    }
+
     gsap.registerPlugin(ScrollTrigger)
 
     cardsRef.current.forEach((card, index) => {
@@ -78,78 +90,82 @@ export default function Pricing() {
   }, [])
 
   return (
-    <section ref={sectionRef} className='py-20 bg-gray-50' id='pricing'>
+    <section
+      ref={sectionRef}
+      className='section-padding bg-gradient-to-br from-white to-gray-50'
+      id='pricing'
+    >
       <div className='container'>
-        <div className='text-center max-w-3xl mx-auto mb-16'>
-          <h2 className='heading-lg mb-6'>Available Plans</h2>
-          <p className='text-gray-600 text-lg'>
+        <div className='text-center max-w-4xl mx-auto mb-20'>
+          <span className='inline-block px-4 py-2 bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold rounded-full text-sm mb-6'>
+            Pricing Plans
+          </span>
+          <h2 className='heading-lg text-gray-900 mb-8'>Available Plans</h2>
+          <p className='text-xl text-gray-600 leading-relaxed'>
             Choose the perfect plan for your learning journey. All plans include
             personalized attention and flexible scheduling.
           </p>
         </div>
 
-        <div className='grid md:grid-cols-3 gap-8'>
+        <div className='grid lg:grid-cols-3 gap-8'>
           {plans.map((plan, index) => (
             <div
               key={plan.name}
               ref={(el) => {
                 if (el) cardsRef.current[index] = el
               }}
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full relative ${
-                plan.name === 'Advanced'
-                  ? 'border-2 border-custom-pink scale-105'
-                  : ''
-              }`}
+              className='card group relative overflow-visible'
             >
+              {/* Most Popular Badge */}
               {plan.name === 'Advanced' && (
-                <div className='absolute -top-4 left-1/2 transform -translate-x-1/2 bg-custom-pink text-white px-4 py-1 rounded-full text-sm font-semibold'>
+                <div className='absolute -top-3 left-1/2 -translate-x-1/2 z-20 px-4 py-1.5 bg-gradient-primary text-white font-bold rounded-full text-xs uppercase tracking-wide shadow-lg'>
                   Most Popular
                 </div>
               )}
-              <div className='text-center mb-8'>
-                <h3 className='text-2xl font-bold mb-2'>{plan.name}</h3>
-                <p className='text-gray-600 mb-4'>{plan.description}</p>
-                <div className='flex items-end justify-center gap-1'>
-                  <span
-                    className={`text-4xl font-bold ${
-                      plan.name === 'Advanced' ? 'text-custom-pink' : ''
-                    }`}
-                  >
-                    £{plan.price}
-                  </span>
-                  <span className='text-gray-600 mb-1'>/ lesson</span>
+              <div className='p-8 lg:p-10'>
+                {/* Header */}
+                <div className='text-center mb-8'>
+                  <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                    {plan.name}
+                  </h3>
+                  <p className='text-gray-600 mb-6'>{plan.description}</p>
+
+                  <div className='space-y-2 mb-8'>
+                    <div className='flex items-end justify-center gap-1'>
+                      <span className='text-5xl font-bold text-gradient-primary'>
+                        £{plan.price}
+                      </span>
+                      <span className='text-gray-600 mb-2'>/ lesson</span>
+                    </div>
+                    <p className='text-lg font-semibold text-gray-500'>
+                      £{plan.price * plan.lessons} per month
+                    </p>
+                  </div>
                 </div>
-                <p className='text-sm text-gray-500 mt-2'>
-                  £{plan.price * plan.lessons} per month
-                </p>
-              </div>
 
-              <ul className='space-y-4 flex-grow'>
-                {plan.features.map((feature) => (
-                  <li key={feature} className='flex items-start gap-3'>
-                    <CheckIcon
-                      className={`h-5 w-5 flex-shrink-0 mt-0.5 ${
-                        plan.name === 'Advanced'
-                          ? 'text-custom-pink'
-                          : 'text-green-500'
-                      }`}
-                    />
-                    <span className='text-gray-600'>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+                {/* Features */}
+                <div className='space-y-4 mb-8'>
+                  {plan.features.map((feature) => (
+                    <div key={feature} className='flex items-start gap-3'>
+                      <div className='flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center bg-gradient-primary text-white'>
+                        <CheckIcon className='h-4 w-4' />
+                      </div>
+                      <span className='text-gray-700 leading-relaxed'>
+                        {feature}
+                      </span>
+                    </div>
+                  ))}
+                </div>
 
-              <div className='mt-8 pt-6 border-t border-gray-100'>
-                <a
-                  href='#contact'
-                  className={`block w-full py-3 px-6 text-center rounded-full text-white font-semibold transition-colors ${
-                    plan.name === 'Advanced'
-                      ? 'bg-custom-pink hover:bg-opacity-90 shadow-md hover:shadow-lg'
-                      : 'bg-custom-pink hover:bg-opacity-90'
-                  }`}
-                >
-                  Get Started
-                </a>
+                {/* CTA */}
+                <div>
+                  <a
+                    href='#contact'
+                    className='btn-primary block w-full py-4 px-6 text-center rounded-2xl font-bold text-lg transition-all duration-300 shadow-glow-lg hover:shadow-glow-lg'
+                  >
+                    Get Started
+                  </a>
+                </div>
               </div>
             </div>
           ))}

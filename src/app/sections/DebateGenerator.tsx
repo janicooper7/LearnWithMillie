@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import gsap from 'gsap'
+import { motion } from 'framer-motion'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 const debates = [
@@ -502,14 +503,33 @@ function getRandomIndex(exclude: number[], max: number) {
 export default function DebateGenerator() {
   const [shown, setShown] = useState<number[]>([])
   const [currentIdx, setCurrentIdx] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const questionRef = useRef<HTMLDivElement>(null)
   const keywordsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setCurrentIdx(getRandomIndex([], debates.length))
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   const handleNextDebate = () => {
+    const isMobile = window.innerWidth < 768
+
+    // On mobile, skip animations and update immediately
+    if (isMobile) {
+      let newShown = [...shown, currentIdx]
+      if (newShown.length === debates.length) newShown = []
+      const nextIdx = getRandomIndex(newShown, debates.length)
+      setCurrentIdx(nextIdx)
+      setShown(newShown)
+      return
+    }
+
     // Animate out
     if (questionRef.current && keywordsRef.current) {
       gsap.to([questionRef.current, keywordsRef.current], {
@@ -536,53 +556,163 @@ export default function DebateGenerator() {
   const { question, keywords } = debates[currentIdx]
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-[80vh] bg-gradient-to-br from-white via-rose-50 to-pink-100 py-12 px-2'>
-      <div className='mb-10 text-center max-w-2xl mx-auto'>
-        <h1 className='heading-lg text-gray-900 mb-2'>
-          Random Debate Generator
-        </h1>
-        <p className='text-gray-500 text-md md:text-lg'>
-          Get inspired with thought-provoking debate topics and key vocabulary.
-          Perfect for classroom discussions, speaking practice, or just sparking
-          great conversations!
-        </p>
-      </div>
-      <div className='relative bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl rounded-3xl p-8 md:p-12 max-w-4xl w-full mx-auto min-h-[440px] flex flex-col justify-between'>
-        <div className='flex-1 flex flex-col md:flex-row gap-10'>
-          <div className='flex-1 flex flex-col justify-center'>
-            <p className='text-gray-400 text-sm mb-2'>
-              Here is your debate to discuss:
-            </p>
-            <div ref={questionRef} className='heading-lg text-gray-900 mb-6'>
-              {question}
-            </div>
-          </div>
-          <div className='flex-1 md:border-l border-gray-200 md:pl-8 flex flex-col justify-center'>
-            <h3 className='font-semibold text-xl text-gray-900 mb-2'>
-              Make It Interesting
-            </h3>
-            <p className='text-gray-400 text-sm mb-3'>
-              Try and use the following vocabulary when answering the questions.
-            </p>
-            <div ref={keywordsRef} className='flex flex-wrap gap-2'>
-              {keywords.map((kw, i) => (
-                <span
-                  key={i}
-                  className='px-3 py-1 rounded-full bg-primary/10 text-gray-900 text-md font-large shadow-sm'
-                >
-                  {kw}
+    <div className='min-h-screen bg-gradient-to-br from-white via-rose-50 to-pink-100 py-20'>
+      <div className='container'>
+        {/* Hero Section */}
+        <div className='text-center mb-16'>
+          <span className='inline-block px-6 py-3 bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-bold rounded-full text-sm mb-6'>
+            💬 ESL Tool
+          </span>
+          <h1 className='heading-lg text-gray-900 mb-6'>
+            Random Debate{' '}
+            <span className='text-gradient-primary'>Generator</span>
+          </h1>
+          <p className='text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed'>
+            Get inspired with thought-provoking ESL debate topics and key
+            vocabulary. Perfect for classroom discussions, speaking practice, or
+            just sparking great conversations!
+          </p>
+        </div>
+
+        {/* Main Generator Card */}
+        <div className='max-w-5xl mx-auto'>
+          <div className='relative bg-white/95 backdrop-blur-xl border border-gray-200/50 shadow-2xl rounded-3xl p-8 md:p-12 min-h-[500px]'>
+            {/* Status Indicator */}
+            <div className='flex justify-between items-center mb-8'>
+              <div className='flex items-center gap-3'>
+                <div className='w-3 h-3 bg-green-500 rounded-full animate-pulse'></div>
+                <span className='text-sm text-gray-600 font-medium'>
+                  Ready to generate debate topics
                 </span>
-              ))}
+              </div>
+              <div className='text-sm text-gray-500'>
+                {shown.length} / {debates.length} topics used
+              </div>
+            </div>
+
+            <div className='flex flex-col lg:flex-row gap-12'>
+              {/* Question Section */}
+              <div className='flex-1'>
+                <div className='space-y-4'>
+                  <div className='flex items-center gap-2'>
+                    <div className='w-2 h-2 bg-gradient-to-r from-primary to-accent rounded-full'></div>
+                    <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>
+                      Your Debate Topic
+                    </span>
+                  </div>
+
+                  <div ref={questionRef} className='space-y-4'>
+                    <div className='bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-6 border border-primary/10'>
+                      <h2 className='text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-4'>
+                        {question}
+                      </h2>
+                      <div className='h-1 bg-gradient-to-r from-primary to-accent rounded-full'></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Keywords Section */}
+              <div className='flex-1 lg:border-l border-gray-200 lg:pl-12'>
+                <div className='space-y-6'>
+                  <div className='flex items-center gap-2'>
+                    <div className='w-2 h-2 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full'></div>
+                    <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>
+                      Vocabulary Boost
+                    </span>
+                  </div>
+
+                  <div className='space-y-4'>
+                    <h3 className='text-xl font-bold text-gray-900'>
+                      💡 Make It Interesting
+                    </h3>
+                    <p className='text-sm text-gray-600'>
+                      Try to incorporate these vocabulary words when developing
+                      your arguments and responses.
+                    </p>
+                  </div>
+
+                  <div ref={keywordsRef} className='space-y-4'>
+                    <div className='grid grid-cols-2 gap-3'>
+                      {keywords.map((keyword, index) => (
+                        <motion.div
+                          key={keyword}
+                          {...(isMobile
+                            ? {
+                                initial: { opacity: 1, scale: 1 },
+                                animate: { opacity: 1, scale: 1 },
+                              }
+                            : {
+                                initial: { opacity: 0, scale: 0.9 },
+                                animate: { opacity: 1, scale: 1 },
+                                transition: { delay: index * 0.1 },
+                              })}
+                          className='group'
+                        >
+                          <div className='bg-gradient-to-r from-gray-50 to-gray-100 hover:from-primary/10 hover:to-accent/10 rounded-xl p-3 border border-gray-200 hover:border-primary/20 transition-all duration-300 hover:shadow-lg hover:scale-105'>
+                            <span className='text-gray-700 font-medium text-sm group-hover:text-primary transition-colors'>
+                              {keyword}
+                            </span>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <div className='mt-12 flex justify-center'>
+              <button
+                onClick={handleNextDebate}
+                className='btn-primary shadow-glow-lg hover:shadow-glow-lg group'
+              >
+                <ArrowPathIcon className='w-5 h-5 group-hover:rotate-180 transition-transform duration-500' />
+                Generate New Debate
+              </button>
+            </div>
+
+            {/* Usage Tips */}
+            <div className='mt-12 pt-8 border-t border-gray-200'>
+              <div className='grid md:grid-cols-3 gap-6 text-center'>
+                <div className='space-y-2'>
+                  <div className='w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
+                    🎯
+                  </div>
+                  <h4 className='font-semibold text-gray-900'>
+                    Classroom Ready
+                  </h4>
+                  <p className='text-sm text-gray-600'>
+                    Perfect for ESL lessons and group discussions
+                  </p>
+                </div>
+                <div className='space-y-2'>
+                  <div className='w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
+                    💬
+                  </div>
+                  <h4 className='font-semibold text-gray-900'>
+                    Speaking Practice
+                  </h4>
+                  <p className='text-sm text-gray-600'>
+                    Enhance fluency and persuasive speaking skills
+                  </p>
+                </div>
+                <div className='space-y-2'>
+                  <div className='w-12 h-12 bg-gradient-to-br from-custom-pink to-rose-600 rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
+                    🧠
+                  </div>
+                  <h4 className='font-semibold text-gray-900'>
+                    Critical Thinking
+                  </h4>
+                  <p className='text-sm text-gray-600'>
+                    Develop analytical and reasoning abilities
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <button
-          onClick={handleNextDebate}
-          className='mt-8 inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-custom-pink to-rose-300 text-white font-semibold text-base shadow hover:scale-105 hover:from-rose-300 hover:to-custom-pink transition-all w-1/2 mx-auto'
-        >
-          <ArrowPathIcon className='w-5 h-5' />
-          New Debate
-        </button>
       </div>
     </div>
   )

@@ -11,6 +11,19 @@ export default function Hero() {
   const scrollIndicatorRef = useRef(null)
 
   useEffect(() => {
+    // Disable animations on mobile
+    const isMobile = window.innerWidth < 768
+    if (isMobile) {
+      // Set elements to final state immediately on mobile
+      if (textRef.current) {
+        gsap.set(textRef.current, { y: 0, opacity: 1 })
+      }
+      if (scrollIndicatorRef.current) {
+        gsap.set(scrollIndicatorRef.current, { y: 0, opacity: 1 })
+      }
+      return
+    }
+
     gsap.registerPlugin(ScrollTrigger)
 
     const tl = gsap.timeline({
@@ -41,60 +54,82 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
-      className='relative h-[100vh] w-full flex items-center justify-center -mt-[72px]'
+      className='relative min-h-screen w-full flex items-center justify-center -mt-[80px] overflow-hidden'
+      style={{ minHeight: '100vh' }}
     >
-      {/* Background image with overlay */}
+      {/* Background image with modern gradient overlay */}
       <div className='absolute inset-0 z-0'>
         <Image
           src='/images/Headerimage.png'
           alt='Woman teaching online from her home office'
           fill
           priority
-          className='object-cover object-center'
-          sizes='100vw'
+          className='object-cover object-center scale-105 animate-pulse-slow'
+          sizes='100%'
           quality={90}
         />
-        <div className='absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white' />
+        <div className='absolute inset-0 bg-gradient-to-br from-white/95 via-white/85 to-white/90' />
+        <div className='absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-blue-50/30' />
       </div>
 
-      <div className='container mx-auto px-4 relative z-10 flex items-center justify-center'>
-        <div ref={textRef} className='text-center space-y-6 max-w-4xl'>
-          <h1 className='heading-xl bg-gradient-to-r from-custom-pink to-rose-300 bg-clip-text text-transparent pb-2'>
-            Connecting <i>worlds</i> <br></br> through <i>words</i>
+      {/* Floating geometric shapes for modern feel */}
+      <div className='absolute inset-0 z-5 overflow-hidden'>
+        <div className='absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl rotate-45 animate-float blur-sm'></div>
+        <div
+          className='absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-accent/30 to-primary/30 rounded-2xl rotate-12 animate-float'
+          style={{ animationDelay: '2s' }}
+        ></div>
+        <div
+          className='absolute bottom-40 left-1/3 w-28 h-28 bg-gradient-to-br from-primary/25 to-accent/25 rounded-full animate-float'
+          style={{ animationDelay: '4s' }}
+        ></div>
+      </div>
+
+      <div className='container relative z-10 flex items-center justify-center px-4'>
+        <div ref={textRef} className='text-center space-y-8 max-w-5xl'>
+          <h1 className='display-xl bg-gradient-to-br from-primary via-custom-pink to-accent bg-clip-text text-transparent animate-gradient leading-tight text-4xl'>
+            Connecting <em className='text-primary'>worlds</em>
+            <br />
+            through <em className='text-accent'>words</em>
           </h1>
-          <p className='text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto'>
-            iFluentify Your English, You Empower Your Career
-          </p>
-          <div className='pt-8'>
+
+          <div className='space-y-6'>
+            <p className='text-2xl md:text-3xl text-gray-700 max-w-4xl mx-auto font-medium leading-relaxed'>
+              Transform Your English Skills and Unlock Your Career Potential
+            </p>
+            <p className='text-lg md:text-xl text-gray-600 max-w-3xl mx-auto'>
+              Professional tutoring tailored to your goals. Business English,
+              Conversations, and Interview prep.
+            </p>
+          </div>
+
+          <div className='pt-4'>
             <a
               href='#contact'
-              className='inline-block bg-custom-pink text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-opacity-90 transition-colors'
+              className='btn-primary shadow-glow-lg hover:shadow-glow-lg text-xl px-12 py-6 rounded-2xl'
             >
-              Start your journey now
+              Start Your Journey Now
             </a>
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Modern scroll indicator */}
       <div
         ref={scrollIndicatorRef}
-        className='absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10'
+        className='absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 group cursor-pointer'
         onClick={() =>
           window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })
         }
       >
-        <svg
-          className='w-6 h-6 text-custom-pink animate-bounce cursor-pointer'
-          fill='none'
-          strokeLinecap='round'
-          strokeLinejoin='round'
-          strokeWidth='2'
-          viewBox='0 0 24 24'
-          stroke='currentColor'
-        >
-          <path d='M19 14l-7 7m0 0l-7-7m7 7V3'></path>
-        </svg>
+        <div className='flex flex-col items-center gap-3'>
+          <span className='text-sm text-gray-500 font-medium group-hover:text-primary transition-colors'>
+            Scroll to explore
+          </span>
+          <div className='w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center group-hover:border-primary transition-colors'>
+            <div className='w-1 h-3 bg-gray-400 rounded-full mt-2 animate-bounce group-hover:bg-primary'></div>
+          </div>
+        </div>
       </div>
     </section>
   )

@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang='en' className='scroll-smooth'>
+    <html lang='en' className='scroll-smooth overflow-x-hidden'>
       <head>
         <Suspense fallback={null}>
           <GoogleAnalytics />
@@ -28,7 +28,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Navigation />
-        <main className='relative pt-16'>
+        <main className='relative pt-16 overflow-x-hidden'>
           <Suspense fallback={null}>{children}</Suspense>
         </main>
         <Footer />

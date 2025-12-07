@@ -34,6 +34,18 @@ export default function Testimonials() {
   const testimonialsRef = useRef<HTMLDivElement[]>([])
 
   useEffect(() => {
+    // Disable animations on mobile
+    const isMobile = window.innerWidth < 768
+    if (isMobile) {
+      // Set elements to final state immediately on mobile
+      testimonialsRef.current.forEach((testimonial) => {
+        if (testimonial) {
+          gsap.set(testimonial, { y: 0, opacity: 1 })
+        }
+      })
+      return
+    }
+
     gsap.registerPlugin(ScrollTrigger)
 
     testimonialsRef.current.forEach((testimonial, index) => {
