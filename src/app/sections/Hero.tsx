@@ -60,7 +60,7 @@ export default function Hero() {
       {/* Background image with modern gradient overlay */}
       <div className='absolute inset-0 z-0'>
         <Image
-          src='/images/Headerimage.png'
+          src='/images/HeaderImage.png'
           alt='Woman teaching online from her home office'
           fill
           priority
