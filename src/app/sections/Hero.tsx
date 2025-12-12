@@ -68,26 +68,25 @@ export default function Hero() {
           sizes='100%'
           quality={90}
         />
-        <div className='absolute inset-0 bg-gradient-to-br from-white/95 via-white/85 to-white/90' />
-        <div className='absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-blue-50/30' />
+        <div className='absolute inset-0 bg-white/90' />
       </div>
 
       {/* Floating geometric shapes for modern feel */}
       <div className='absolute inset-0 z-5 overflow-hidden'>
-        <div className='absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl rotate-45 animate-float blur-sm'></div>
+        <div className='absolute top-20 left-10 w-32 h-32 bg-primary/20 rounded-3xl rotate-45 animate-float blur-sm'></div>
         <div
-          className='absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-accent/30 to-primary/30 rounded-2xl rotate-12 animate-float'
+          className='absolute top-40 right-20 w-24 h-24 bg-accent/20 rounded-2xl rotate-12 animate-float'
           style={{ animationDelay: '2s' }}
         ></div>
         <div
-          className='absolute bottom-40 left-1/3 w-28 h-28 bg-gradient-to-br from-primary/25 to-accent/25 rounded-full animate-float'
+          className='absolute bottom-40 left-1/3 w-28 h-28 bg-primary/15 rounded-full animate-float'
           style={{ animationDelay: '4s' }}
         ></div>
       </div>
 
       <div className='container relative z-10 flex items-center justify-center px-4'>
         <div ref={textRef} className='text-center space-y-8 max-w-5xl'>
-          <h1 className='display-xl bg-gradient-to-br from-primary via-custom-pink to-accent bg-clip-text text-transparent animate-gradient leading-tight text-4xl'>
+          <h1 className='display-xl text-primary leading-tight text-4xl'>
             Connecting <em className='text-primary'>worlds</em>
             <br />
             through <em className='text-accent'>words</em>

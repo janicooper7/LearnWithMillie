@@ -21,9 +21,9 @@ const config: Config = {
         card: 'hsl(var(--card))',
         'card-foreground': 'hsl(var(--card-foreground))',
         ring: 'hsl(var(--ring))',
-        'custom-pink': '#F471B5',
-        'rose-pink': '#EC4899',
-        'coral-pink': '#FF6B8A',
+        'custom-pink': 'hsl(220, 15%, 35%)',
+        'rose-pink': 'hsl(200, 25%, 50%)',
+        'coral-pink': 'hsl(220, 15%, 40%)',
       },
       container: {
         center: true,
@@ -87,8 +87,8 @@ const config: Config = {
         xs: '2px',
       },
       boxShadow: {
-        glow: '0 0 20px rgba(244, 113, 181, 0.3)',
-        'glow-lg': '0 0 40px rgba(244, 113, 181, 0.4)',
+        glow: '0 0 20px rgba(60, 70, 85, 0.2)',
+        'glow-lg': '0 0 40px rgba(60, 70, 85, 0.3)',
       },
     },
   },

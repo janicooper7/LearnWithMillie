@@ -92,12 +92,12 @@ export default function Pricing() {
   return (
     <section
       ref={sectionRef}
-      className='section-padding bg-gradient-to-br from-white to-gray-50'
+      className='section-padding bg-gray-50'
       id='pricing'
     >
       <div className='container'>
         <div className='text-center max-w-4xl mx-auto mb-20'>
-          <span className='inline-block px-4 py-2 bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold rounded-full text-sm mb-6'>
+          <span className='inline-block px-4 py-2 bg-primary/10 text-primary font-semibold rounded-full text-sm mb-6'>
             Pricing Plans
           </span>
           <h2 className='heading-lg text-gray-900 mb-8'>Available Plans</h2>

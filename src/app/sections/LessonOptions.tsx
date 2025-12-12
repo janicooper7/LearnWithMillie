@@ -22,9 +22,9 @@ const lessonOptions = [
     icon: <Briefcase className='w-12 h-12' />,
     description:
       "Master industry-specific vocabulary, negotiation tactics, and presentation skills. We'll analyze real-world case studies and develop your leadership communication.",
-    gradient: 'from-blue-500 to-purple-600',
-    bgGradient: 'from-blue-50 to-purple-50',
-    iconBg: 'bg-gradient-to-br from-blue-500 to-purple-600',
+    gradient: 'bg-primary',
+    bgGradient: 'bg-gray-50',
+    iconBg: 'bg-primary',
     features: [
       'Industry vocabulary',
       'Negotiation skills',
@@ -40,9 +40,9 @@ const lessonOptions = [
     icon: <MessageCircle className='w-12 h-12' />,
     description:
       'Gain confidence in everyday conversations, from casual chats to expressing nuanced opinions. We focus on natural pronunciation, idioms, and cultural context.',
-    gradient: 'from-emerald-500 to-cyan-600',
-    bgGradient: 'from-emerald-50 to-cyan-50',
-    iconBg: 'bg-gradient-to-br from-emerald-500 to-cyan-600',
+    gradient: 'bg-primary',
+    bgGradient: 'bg-gray-50',
+    iconBg: 'bg-primary',
     features: ['Natural pronunciation', 'Cultural context', 'Idiom mastery'],
     imageUrl:
       'https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
@@ -54,9 +54,9 @@ const lessonOptions = [
     icon: <Users className='w-12 h-12' />,
     description:
       "Nail your next job interview. We'll practice common questions, STAR method responses, and strategies to showcase your strengths effectively.",
-    gradient: 'from-custom-pink to-rose-600',
-    bgGradient: 'from-pink-50 to-rose-50',
-    iconBg: 'bg-gradient-to-br from-custom-pink to-rose-600',
+    gradient: 'bg-primary',
+    bgGradient: 'bg-gray-50',
+    iconBg: 'bg-primary',
     features: ['STAR method', 'Common questions', 'Confidence building'],
     imageUrl:
       'https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
@@ -111,7 +111,7 @@ export default function LessonOptions() {
 
   return (
     <section
-      className='section-padding bg-gradient-to-br from-gray-50 to-white'
+      className='section-padding bg-white'
       id='lesson-options'
     >
       <div className='container'>
@@ -121,7 +121,7 @@ export default function LessonOptions() {
           viewport={{ once: true }}
           className='text-center mb-20'
         >
-          <span className='inline-block px-6 py-3 bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-bold rounded-full text-sm mb-6'>
+          <span className='inline-block px-6 py-3 bg-primary/10 text-primary font-bold rounded-full text-sm mb-6'>
             💼 Lesson Programs
           </span>
           <h2 className='heading-lg mb-8'>
@@ -159,7 +159,7 @@ export default function LessonOptions() {
             >
               {/* Card Container */}
               <div
-                className={`relative bg-gradient-to-br ${option.bgGradient} rounded-3xl p-8 h-full border border-gray-100/50 hover:border-gray-200 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl overflow-hidden`}
+                className={`relative ${option.bgGradient} rounded-3xl p-8 h-full border border-gray-100/50 hover:border-gray-200 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl overflow-hidden`}
               >
                 {/* Floating Icon */}
                 <div
@@ -171,7 +171,7 @@ export default function LessonOptions() {
                 {/* Card Header */}
                 <div className='relative z-10 mb-8'>
                   <div
-                    className={`inline-block px-4 py-2 bg-gradient-to-r ${option.gradient} rounded-full mb-4`}
+                    className={`inline-block px-4 py-2 ${option.gradient} rounded-full mb-4`}
                   >
                     <span className='text-white font-semibold text-sm'>
                       ✨ Featured
@@ -193,7 +193,7 @@ export default function LessonOptions() {
                     className='w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700'
                   />
                   {/* Hover Overlay */}
-                  <div className='absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+                  <div className='absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
                 </div>
 
                 {/* Features List */}
@@ -234,7 +234,7 @@ export default function LessonOptions() {
                 {/* CTA Button */}
                 <div className='relative z-10'>
                   <button
-                    className={`w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r ${option.gradient} text-white font-bold rounded-2xl hover:shadow-lg hover:scale-105 transform transition-all duration-300`}
+                    className={`w-full flex items-center justify-center gap-2 px-6 py-4 ${option.gradient} text-white font-bold rounded-2xl hover:shadow-lg hover:scale-105 transform transition-all duration-300`}
                   >
                     Start Learning
                     <ArrowRight className='w-5 h-5 group-hover:translate-x-1 transition-transform' />
@@ -242,8 +242,8 @@ export default function LessonOptions() {
                 </div>
 
                 {/* Decorative Elements */}
-                <div className='absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-accent/5 rounded-full -translate-x-12 -translate-y-12'></div>
-                <div className='absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tr from-accent/5 to-primary/5 rounded-full translate-x-8 translate-y-8'></div>
+                <div className='absolute top-0 left-0 w-24 h-24 bg-primary/5 rounded-full -translate-x-12 -translate-y-12'></div>
+                <div className='absolute bottom-0 right-0 w-16 h-16 bg-primary/5 rounded-full translate-x-8 translate-y-8'></div>
               </div>
             </motion.div>
           ))}
@@ -251,7 +251,7 @@ export default function LessonOptions() {
 
         {/* Comparison Section */}
         <div className='text-center mb-16'>
-          <span className='inline-block px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 font-semibold rounded-full text-sm mb-6'>
+          <span className='inline-block px-6 py-3 bg-green-100 text-green-700 font-semibold rounded-full text-sm mb-6'>
             💎 Why Choose Personalized Lessons?
           </span>
           <h3 className='heading-md mb-6'>
@@ -336,7 +336,7 @@ export default function LessonOptions() {
           >
             <div className='space-y-6'>
               <div className='flex items-center gap-3 mb-8'>
-                <div className='w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center text-white'>
+                <div className='w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white'>
                   <Star className='w-6 h-6' />
                 </div>
                 <h4 className='text-xl font-bold text-gray-900'>
@@ -359,7 +359,7 @@ export default function LessonOptions() {
                           transition: { delay: 0.1 * idx + 0.2 },
                         })}
                     viewport={{ once: true }}
-                    className='flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100'
+                    className='flex items-start gap-4 p-4 bg-green-50 rounded-xl border border-green-100'
                   >
                     <span className='text-2xl'>{item.icon}</span>
                     <div>

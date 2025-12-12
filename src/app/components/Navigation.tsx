@@ -226,7 +226,7 @@ export default function Navigation() {
             onClick={handleLogoClick}
           >
             <div className='relative w-11 h-11 flex items-center justify-center'>
-              <div className='absolute inset-0 w-11 h-11 bg-gradient-to-br from-primary to-accent rounded-xl shadow-lg group-hover:shadow-xl rotate-45 transition-all duration-500 group-hover:rotate-[135deg] group-hover:scale-110 animate-gradient' />
+              <div className='absolute inset-0 w-11 h-11 bg-primary rounded-xl shadow-lg group-hover:shadow-xl rotate-45 transition-all duration-500 group-hover:rotate-[135deg] group-hover:scale-110' />
               <span className='relative z-10 text-xl font-bold text-white'>
                 i
               </span>
@@ -271,7 +271,7 @@ export default function Navigation() {
                       ref={(el) => {
                         underlineRefs.current[index] = el
                       }}
-                      className='absolute left-1/2 right-1/2 -bottom-1 h-0.5 bg-gradient-to-br from-primary to-accent origin-center rounded-full'
+                      className='absolute left-1/2 right-1/2 -bottom-1 h-0.5 bg-primary origin-center rounded-full'
                       style={{
                         transform: 'scaleX(0) translateX(-50%)',
                         opacity: 0.9,
@@ -279,7 +279,7 @@ export default function Navigation() {
                     />
                     {/* Hover underline - shows on hover when not active */}
                     {!isActive && (
-                      <span className='absolute left-1/2 right-1/2 -bottom-1 h-0.5 bg-gradient-to-br from-primary to-accent origin-center rounded-full scale-x-0 translate-x-[-50%] group-hover:scale-x-100 transition-transform duration-300' />
+                      <span className='absolute left-1/2 right-1/2 -bottom-1 h-0.5 bg-primary origin-center rounded-full scale-x-0 translate-x-[-50%] group-hover:scale-x-100 transition-transform duration-300' />
                     )}
                   </a>
                 )

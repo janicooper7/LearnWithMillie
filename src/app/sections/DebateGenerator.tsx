@@ -3733,11 +3733,11 @@ export default function DebateGenerator() {
   const { question, keywords } = debateQuestions[currentIdx]
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-white via-rose-50 to-pink-100 py-20'>
+    <div className='min-h-screen bg-gray-50 py-20'>
       <div className='container'>
         {/* Hero Section */}
         <div className='text-center mb-16'>
-          <span className='inline-block px-6 py-3 bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-bold rounded-full text-sm mb-6'>
+          <span className='inline-block px-6 py-3 bg-primary/10 text-primary font-bold rounded-full text-sm mb-6'>
             💬 ESL Tool
           </span>
           <h1 className='heading-lg text-gray-900 mb-6'>
@@ -3759,18 +3759,18 @@ export default function DebateGenerator() {
               <div className='flex-1'>
                 <div className='space-y-4'>
                   <div className='flex items-center gap-2'>
-                    <div className='w-2 h-2 bg-gradient-to-r from-primary to-accent rounded-full'></div>
+                    <div className='w-2 h-2 bg-primary rounded-full'></div>
                     <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>
                       Your Debate Topic
                     </span>
                   </div>
 
                   <div ref={questionRef} className='space-y-4'>
-                    <div className='bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-6 border border-primary/10'>
+                    <div className='bg-primary/5 rounded-2xl p-6 border border-primary/10'>
                       <h2 className='text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-4'>
                         {question}
                       </h2>
-                      <div className='h-1 bg-gradient-to-r from-primary to-accent rounded-full'></div>
+                      <div className='h-1 bg-primary rounded-full'></div>
                     </div>
                   </div>
                 </div>
@@ -3780,7 +3780,7 @@ export default function DebateGenerator() {
               <div className='flex-1 lg:border-l border-gray-200 lg:pl-12'>
                 <div className='space-y-6'>
                   <div className='flex items-center gap-2'>
-                    <div className='w-2 h-2 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full'></div>
+                    <div className='w-2 h-2 bg-emerald-500 rounded-full'></div>
                     <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>
                       Vocabulary Boost
                     </span>
@@ -3813,7 +3813,7 @@ export default function DebateGenerator() {
                               })}
                           className='group'
                         >
-                          <div className='bg-gradient-to-r from-gray-50 to-gray-100 hover:from-primary/10 hover:to-accent/10 rounded-xl p-3 border border-gray-200 hover:border-primary/20 transition-all duration-300 hover:shadow-lg hover:scale-105'>
+                          <div className='bg-gray-50 hover:bg-primary/10 rounded-xl p-3 border border-gray-200 hover:border-primary/20 transition-all duration-300 hover:shadow-lg hover:scale-105'>
                             <span className='text-gray-700 font-medium text-sm group-hover:text-primary transition-colors'>
                               {keyword}
                             </span>
@@ -3841,7 +3841,7 @@ export default function DebateGenerator() {
             <div className='mt-12 pt-8 border-t border-gray-200'>
               <div className='grid md:grid-cols-3 gap-6 text-center'>
                 <div className='space-y-2'>
-                  <div className='w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
+                  <div className='w-12 h-12 bg-primary rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
                     🎯
                   </div>
                   <h4 className='font-semibold text-gray-900'>
@@ -3852,7 +3852,7 @@ export default function DebateGenerator() {
                   </p>
                 </div>
                 <div className='space-y-2'>
-                  <div className='w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
+                  <div className='w-12 h-12 bg-accent rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
                     💬
                   </div>
                   <h4 className='font-semibold text-gray-900'>
@@ -3863,7 +3863,7 @@ export default function DebateGenerator() {
                   </p>
                 </div>
                 <div className='space-y-2'>
-                  <div className='w-12 h-12 bg-gradient-to-br from-custom-pink to-rose-600 rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
+                  <div className='w-12 h-12 bg-primary rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold'>
                     🧠
                   </div>
                   <h4 className='font-semibold text-gray-900'>

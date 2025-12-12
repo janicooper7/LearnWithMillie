@@ -32,7 +32,7 @@ export default function ThankYou() {
         ...defaults,
         particleCount,
         origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        colors: ['#FF69B4', '#FFB6C1', '#FFC0CB', '#FF69B4'],
+        colors: ['#4A5568', '#718096', '#90A4AE', '#A0AEC0'],
       })
 
       // Confetti from the right
@@ -40,7 +40,7 @@ export default function ThankYou() {
         ...defaults,
         particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        colors: ['#FF69B4', '#FFB6C1', '#FFC0CB', '#FF69B4'],
+        colors: ['#4A5568', '#718096', '#90A4AE', '#A0AEC0'],
       })
     }, 250)
 
@@ -49,7 +49,7 @@ export default function ThankYou() {
   }, [])
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-white via-rose-50 to-pink-100 flex items-center justify-center px-4'>
+    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
       <div className='max-w-2xl w-full text-center bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl rounded-3xl p-8 md:p-12'>
         <h1 className='heading-lg text-gray-900 mb-6'>Thank You!</h1>
         <p className='text-gray-600 text-lg mb-8'>

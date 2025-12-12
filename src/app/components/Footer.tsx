@@ -30,14 +30,14 @@ export default function Footer() {
   }
 
   return (
-    <footer className='bg-gradient-to-br from-gray-900 to-gray-800 text-white'>
+    <footer className='bg-gray-900 text-white'>
       <div className='container py-20'>
         <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-12'>
           {/* Brand */}
           <div className='lg:col-span-2 space-y-6'>
             <div className='flex items-center space-x-3'>
               <div className='relative w-12 h-12 flex items-center justify-center'>
-                <div className='absolute inset-0 w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl shadow-lg rotate-45'></div>
+                <div className='absolute inset-0 w-12 h-12 bg-primary rounded-xl shadow-lg rotate-45'></div>
                 <span className='relative z-10 text-xl font-bold text-white'>
                   i
                 </span>

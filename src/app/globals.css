@@ -5,17 +5,17 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --primary: 354 65% 69%;
-    --primary-foreground: 210 40% 98%;
-    --accent: 313 80% 70%;
+    --foreground: 220 15% 20%;
+    --primary: 220 15% 30%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 200 25% 50%;
     --accent-foreground: 0 0% 100%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --border: 214.3 31.8% 91.4%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 15% 45%;
+    --border: 220 15% 90%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --ring: 354 65% 69%;
+    --card-foreground: 220 15% 20%;
+    --ring: 220 15% 30%;
   }
 
   html {
@@ -55,15 +55,11 @@
   }
 
   .text-gradient-primary {
-    background: linear-gradient(135deg, #f6d8db 0%, #f1bec3 50%, #e37d87 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    color: hsl(var(--primary));
   }
 
   .bg-gradient-primary {
-    background: linear-gradient(135deg, #f6d8db 0%, #f1bec3 50%, #e37d87 100%);
+    background-color: hsl(var(--primary));
   }
 
   .animate-gradient {
@@ -140,7 +136,11 @@
 
   .btn-primary {
     @apply inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
-    background: linear-gradient(135deg, hsl(var(--primary)), #d9489f);
+    background-color: hsl(var(--primary));
+  }
+  
+  .btn-primary:hover {
+    background-color: hsl(var(--accent));
   }
 
   .btn-primary:focus {
@@ -148,7 +148,7 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium text-gray-700 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-custom-pink hover:text-custom-pink transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-custom-pink focus:ring-offset-2;
+    @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium text-gray-700 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-primary hover:text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
   }
 
   .card {
