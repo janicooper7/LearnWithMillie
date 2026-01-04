@@ -342,62 +342,182 @@ const debates = [
       {
         question: 'Would society be better without YouTube?',
         keywords: [
-          'Entertainment',
-          'Learning',
-          'Influence',
-          'Accessibility',
-          'Distraction',
+          {
+            keyword: 'Entertainment',
+            example:
+              'YouTube provides endless entertainment, but may also distract people from more productive activities and real-world engagement.',
+          },
+          {
+            keyword: 'Learning',
+            example:
+              'YouTube offers valuable educational content and tutorials, making learning accessible to millions of people worldwide.',
+          },
+          {
+            keyword: 'Influence',
+            example:
+              'YouTube has significant influence on public opinion, culture, and behavior, which can be both positive and negative.',
+          },
+          {
+            keyword: 'Accessibility',
+            example:
+              'YouTube makes information and entertainment accessible to anyone with internet access, breaking down traditional barriers.',
+          },
+          {
+            keyword: 'Distraction',
+            example:
+              'YouTube can be highly distracting, leading to time-wasting and reduced productivity when used excessively.',
+          },
         ],
       },
       {
         question:
           'Do social media platforms need stronger rules to control harmful content?',
         keywords: [
-          'Privacy',
-          'Safety',
-          'Misinformation',
-          'Responsibility',
-          'Oversight',
+          {
+            keyword: 'Privacy',
+            example:
+              'Stronger content rules must balance safety with privacy rights, ensuring users can express themselves while being protected from harm.',
+          },
+          {
+            keyword: 'Safety',
+            example:
+              'Stronger rules can improve safety by removing harmful content that promotes violence, self-harm, or dangerous behaviors.',
+          },
+          {
+            keyword: 'Misinformation',
+            example:
+              'Stricter rules can help combat misinformation and fake news that spread rapidly on social media platforms.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Platforms have a responsibility to protect users, but determining what content is harmful requires careful judgment and oversight.',
+          },
+          {
+            keyword: 'Oversight',
+            example:
+              'Effective content rules require proper oversight and enforcement mechanisms to ensure platforms actually implement and maintain standards.',
+          },
         ],
       },
       {
         question: 'Are self-driving cars a good idea?',
         keywords: [
-          'Safety',
-          'Innovation',
-          'Reliability',
-          'Responsibility',
-          'Technology',
+          {
+            keyword: 'Safety',
+            example:
+              'Self-driving cars could improve safety by eliminating human error, which causes most accidents, but technology failures pose new risks.',
+          },
+          {
+            keyword: 'Innovation',
+            example:
+              'Self-driving cars represent major innovation in transportation, potentially revolutionizing how people travel and commute.',
+          },
+          {
+            keyword: 'Reliability',
+            example:
+              'The reliability of self-driving technology must be proven before widespread adoption, as system failures could be catastrophic.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Self-driving cars raise questions about responsibility when accidents occur - is it the manufacturer, software developer, or owner at fault?',
+          },
+          {
+            keyword: 'Technology',
+            example:
+              'Advancing self-driving technology requires significant investment and testing to ensure it can handle all real-world scenarios safely.',
+          },
         ],
       },
       {
         question: 'Should we be worried about deepfake technology?',
         keywords: [
-          'Trust',
-          'Manipulation',
-          'Evidence',
-          'Security',
-          'Misinformation',
+          {
+            keyword: 'Trust',
+            example:
+              'Deepfakes can erode trust in media and information, making it difficult to distinguish between real and fabricated content.',
+          },
+          {
+            keyword: 'Manipulation',
+            example:
+              'Deepfake technology enables manipulation of videos and images, potentially being used for fraud, blackmail, or political manipulation.',
+          },
+          {
+            keyword: 'Evidence',
+            example:
+              'Deepfakes challenge the reliability of video evidence, which has traditionally been considered strong proof in legal and journalistic contexts.',
+          },
+          {
+            keyword: 'Security',
+            example:
+              'Deepfakes pose security threats, as they can be used to impersonate people for identity theft or unauthorized access.',
+          },
+          {
+            keyword: 'Misinformation',
+            example:
+              'Deepfakes can spread misinformation by making false videos appear authentic, potentially influencing public opinion and elections.',
+          },
         ],
       },
       {
         question: 'Do dating apps make relationships less meaningful?',
         keywords: [
-          'Connection',
-          'Expectations',
-          'Communication',
-          'Trust',
-          'Compatibility',
+          {
+            keyword: 'Connection',
+            example:
+              'Dating apps can facilitate connections, but the abundance of options may make people less committed to developing deep relationships.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Dating apps create expectations of instant matches and quick connections, which may undermine patience needed for meaningful relationships.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Dating apps emphasize initial messaging over face-to-face communication, which may reduce the depth of early relationship building.',
+          },
+          {
+            keyword: 'Trust',
+            example:
+              'Building trust can be challenging on dating apps where people may misrepresent themselves or have multiple conversations simultaneously.',
+          },
+          {
+            keyword: 'Compatibility',
+            example:
+              'While apps use algorithms to match compatibility, real compatibility often requires in-person interaction that apps cannot fully assess.',
+          },
         ],
       },
       {
         question: 'Is personality shaped more by nature or nurture?',
         keywords: [
-          'Environment',
-          'Behaviour',
-          'Development',
-          'Genetics',
-          'Influence',
+          {
+            keyword: 'Environment',
+            example:
+              'Environmental factors like family, education, and culture significantly influence personality development throughout life.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Personality shapes behavior, but behavior patterns are also influenced by both genetic predispositions and learned responses.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Personality development involves complex interactions between genetic traits and environmental experiences from childhood through adulthood.',
+          },
+          {
+            keyword: 'Genetics',
+            example:
+              'Genetic factors contribute to personality traits, with research showing heritability for characteristics like extroversion and neuroticism.',
+          },
+          {
+            keyword: 'Influence',
+            example:
+              'Both nature and nurture influence personality, with most traits resulting from the interaction of genetic and environmental factors.',
+          },
         ],
       },
       {
@@ -413,251 +533,751 @@ const debates = [
       {
         question: 'Should schools ban AI tools like ChatGPT?',
         keywords: [
-          'Integrity',
-          'Learning',
-          'Dependence',
-          'Creativity',
-          'Supervision',
+          {
+            keyword: 'Integrity',
+            example:
+              'AI tools like ChatGPT raise concerns about academic integrity, as students might use them to complete assignments without learning.',
+          },
+          {
+            keyword: 'Learning',
+            example:
+              'Banning AI tools may preserve traditional learning, but could also prevent students from learning to use modern tools effectively.',
+          },
+          {
+            keyword: 'Dependence',
+            example:
+              "Allowing AI tools could create dependence, reducing students' ability to think critically and solve problems independently.",
+          },
+          {
+            keyword: 'Creativity',
+            example:
+              'AI tools might limit creativity by providing ready-made answers, but could also inspire new ideas when used as a starting point.',
+          },
+          {
+            keyword: 'Supervision',
+            example:
+              'Proper supervision and guidelines could allow beneficial use of AI tools while preventing misuse and maintaining learning standards.',
+          },
         ],
       },
       {
         question: 'Are video games more beneficial than harmful?',
         keywords: [
-          'Skills',
-          'Entertainment',
-          'Focus',
-          'Social interaction',
-          'Wellbeing',
+          {
+            keyword: 'Skills',
+            example:
+              'Video games can develop skills like problem-solving, hand-eye coordination, and strategic thinking through interactive challenges.',
+          },
+          {
+            keyword: 'Entertainment',
+            example:
+              'Video games provide entertainment and relaxation, offering an engaging way to unwind and have fun.',
+          },
+          {
+            keyword: 'Focus',
+            example:
+              'Gaming can improve focus and attention to detail, but excessive gaming may reduce ability to concentrate on other tasks.',
+          },
+          {
+            keyword: 'Social interaction',
+            example:
+              'Multiplayer games can facilitate social interaction and teamwork, but may also replace face-to-face social activities.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Moderate gaming can support wellbeing through stress relief, but excessive gaming may harm physical and mental health.',
+          },
         ],
       },
       {
         question: 'Should students have to learn a second language?',
         keywords: [
-          'Communication',
-          'Opportunity',
-          'Culture',
-          'Globalisation',
-          'Skills',
+          {
+            keyword: 'Communication',
+            example:
+              'Learning a second language improves communication skills and enables interaction with people from different cultures.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Bilingualism opens opportunities for travel, work, and cultural exchange that monolingual individuals may miss.',
+          },
+          {
+            keyword: 'Culture',
+            example:
+              'Learning languages provides insight into different cultures, fostering understanding and appreciation of diversity.',
+          },
+          {
+            keyword: 'Globalisation',
+            example:
+              'In a globalized world, second language skills are increasingly valuable for international communication and collaboration.',
+          },
+          {
+            keyword: 'Skills',
+            example:
+              'Language learning develops cognitive skills like memory, problem-solving, and multitasking abilities.',
+          },
         ],
       },
       {
         question: 'Is homework necessary for academic success?',
         keywords: [
-          'Practice',
-          'Independence',
-          'Motivation',
-          'Discipline',
-          'Performance',
+          {
+            keyword: 'Practice',
+            example:
+              'Homework provides practice that reinforces classroom learning and helps students master concepts through repetition.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Completing homework independently develops self-reliance and the ability to work without constant teacher supervision.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'While homework can motivate some students, excessive homework may demotivate others and reduce enthusiasm for learning.',
+          },
+          {
+            keyword: 'Discipline',
+            example:
+              'Regular homework instills discipline and time management skills that are valuable beyond academic settings.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Research shows homework can improve academic performance, but the amount and type of homework matter significantly.',
+          },
         ],
       },
       {
         question: 'Should university education be free?',
         keywords: [
-          'Access',
-          'Opportunity',
-          'Inequality',
-          'Finances',
-          'Investment',
+          {
+            keyword: 'Access',
+            example:
+              'Free university education increases access for students from low-income backgrounds who might otherwise be unable to afford higher education.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Free education creates equal opportunities regardless of financial background, allowing talent to flourish based on merit rather than wealth.',
+          },
+          {
+            keyword: 'Inequality',
+            example:
+              'Free university can reduce educational inequality by removing financial barriers that prevent qualified students from attending.',
+          },
+          {
+            keyword: 'Finances',
+            example:
+              'Free education requires significant public financing, which must be balanced against other public spending priorities.',
+          },
+          {
+            keyword: 'Investment',
+            example:
+              'Free university education is an investment in human capital that can benefit society through a more educated workforce.',
+          },
         ],
       },
       {
         question: 'Do grades reflect intelligence?',
         keywords: [
-          'Ability',
-          'Performance',
-          'Fairness',
-          'Assessment',
-          'Pressure',
+          {
+            keyword: 'Ability',
+            example:
+              'Grades measure academic ability and performance, but intelligence encompasses broader cognitive abilities beyond test-taking.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Grades reflect performance on specific assessments, which may be influenced by factors beyond intelligence like effort and preparation.',
+          },
+          {
+            keyword: 'Fairness',
+            example:
+              'Using grades as intelligence measures may be unfair, as different students have varying learning styles and test-taking abilities.',
+          },
+          {
+            keyword: 'Assessment',
+            example:
+              'Traditional grade assessments may not capture all forms of intelligence, such as creativity, emotional intelligence, or practical skills.',
+          },
+          {
+            keyword: 'Pressure',
+            example:
+              "Focusing on grades as intelligence indicators creates pressure that may not accurately reflect students' true cognitive abilities.",
+          },
         ],
       },
       {
         question: 'Is homeschooling better than traditional schooling?',
         keywords: [
-          'Flexibility',
-          'Independence',
-          'Socialisation',
-          'Structure',
-          'Support',
+          {
+            keyword: 'Flexibility',
+            example:
+              'Homeschooling offers flexibility in curriculum and schedule, allowing personalized learning that adapts to individual needs.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Homeschooling can develop independence and self-directed learning, but may lack structured guidance some students need.',
+          },
+          {
+            keyword: 'Socialisation',
+            example:
+              'Traditional schools provide more opportunities for socialisation, while homeschooling requires intentional efforts to ensure social development.',
+          },
+          {
+            keyword: 'Structure',
+            example:
+              'Traditional schools provide structure and routine, while homeschooling requires parents to create and maintain educational structure.',
+          },
+          {
+            keyword: 'Support',
+            example:
+              'Traditional schools offer professional teacher support and resources that homeschooling parents must provide themselves.',
+          },
         ],
       },
       {
         question: 'Should schools focus more on practical life skills?',
         keywords: [
-          'Financial literacy',
-          'Independence',
-          'Decision-making',
-          'Confidence',
-          'Practical skills',
+          {
+            keyword: 'Financial literacy',
+            example:
+              'Teaching financial literacy helps students manage money, budget, and make informed financial decisions as adults.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Practical life skills promote independence, preparing students to handle real-world responsibilities beyond academic knowledge.',
+          },
+          {
+            keyword: 'Decision-making',
+            example:
+              'Learning practical skills develops decision-making abilities by applying knowledge to solve everyday problems.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              "Mastering practical skills builds confidence in students' ability to navigate adult life and handle challenges.",
+          },
+          {
+            keyword: 'Practical skills',
+            example:
+              'Practical skills like cooking, basic repairs, and time management are essential for daily life but often overlooked in traditional curricula.',
+          },
         ],
       },
       {
         question: 'Should students have more say in what they learn?',
         keywords: [
-          'Motivation',
-          'Engagement',
-          'Independence',
-          'Creativity',
-          'Responsibility',
+          {
+            keyword: 'Motivation',
+            example:
+              'Allowing student choice in learning can increase motivation by making education more relevant and interesting to individual interests.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'When students have input into their learning, engagement typically increases as they feel more invested in their education.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Giving students choice develops independence and self-direction, preparing them for lifelong learning beyond school.',
+          },
+          {
+            keyword: 'Creativity',
+            example:
+              'Student choice can foster creativity by allowing exploration of topics that spark curiosity and innovative thinking.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Involving students in learning decisions teaches responsibility for their education and helps develop critical thinking about what to learn.',
+          },
         ],
       },
       {
         question: 'Is online learning as effective as in-person learning?',
         keywords: [
-          'Interaction',
-          'Flexibility',
-          'Discipline',
-          'Access',
-          'Engagement',
+          {
+            keyword: 'Interaction',
+            example:
+              'In-person learning offers direct interaction with teachers and peers, while online learning may feel more isolated.',
+          },
+          {
+            keyword: 'Flexibility',
+            example:
+              'Online learning provides flexibility in scheduling and location, making education accessible to more people.',
+          },
+          {
+            keyword: 'Discipline',
+            example:
+              'Online learning requires greater self-discipline and time management skills compared to structured in-person classes.',
+          },
+          {
+            keyword: 'Access',
+            example:
+              'Online learning increases access to education for those who cannot attend traditional schools due to location or circumstances.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'In-person learning may provide better engagement through face-to-face interaction, though online platforms are improving.',
+          },
         ],
       },
       {
         question: 'Are standardised tests a fair way to measure ability?',
         keywords: [
-          'Pressure',
-          'Accuracy',
-          'Comparison',
-          'Preparation',
-          'Stress',
+          {
+            keyword: 'Pressure',
+            example:
+              "Standardized tests create significant pressure that may not accurately reflect students' true abilities under stress.",
+          },
+          {
+            keyword: 'Accuracy',
+            example:
+              'Standardized tests provide consistent measurement, but may not accurately assess diverse learning styles and intelligences.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              'Standardized tests enable comparison across schools and regions, but may oversimplify complex educational outcomes.',
+          },
+          {
+            keyword: 'Preparation',
+            example:
+              'Test preparation can improve scores, but this may measure test-taking skills rather than actual knowledge and ability.',
+          },
+          {
+            keyword: 'Stress',
+            example:
+              'The stress of standardized testing can negatively impact performance, especially for students who struggle with test anxiety.',
+          },
         ],
       },
       {
         question: 'Should financial literacy be a required subject in school?',
         keywords: [
-          'Budgeting',
-          'Planning',
-          'Responsibility',
-          'Awareness',
-          'Decision-making',
+          {
+            keyword: 'Budgeting',
+            example:
+              'Financial literacy teaches budgeting skills that help students manage money effectively and avoid debt as adults.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Learning financial planning prepares students for major life decisions like saving for college, buying a home, or retirement.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Financial education teaches responsibility for money management, helping students make informed financial choices.',
+          },
+          {
+            keyword: 'Awareness',
+            example:
+              'Financial literacy increases awareness of financial products, risks, and opportunities that affect daily life.',
+          },
+          {
+            keyword: 'Decision-making',
+            example:
+              'Understanding finances improves decision-making about spending, saving, and investing throughout life.',
+          },
         ],
       },
       {
         question: 'Should companies offer a four-day workweek?',
         keywords: [
-          'Productivity',
-          'Wellbeing',
-          'Flexibility',
-          'Workload',
-          'Motivation',
+          {
+            keyword: 'Productivity',
+            example:
+              'A four-day workweek may increase productivity by allowing employees to work more efficiently in compressed time.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Reducing work days can improve employee wellbeing by providing more time for rest, family, and personal activities.',
+          },
+          {
+            keyword: 'Flexibility',
+            example:
+              'A four-day workweek offers flexibility that can help employees achieve better work-life balance.',
+          },
+          {
+            keyword: 'Workload',
+            example:
+              'Condensing work into four days may increase daily workload and stress, potentially offsetting benefits.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'The prospect of a three-day weekend can increase motivation and job satisfaction among employees.',
+          },
         ],
       },
       {
         question: 'Is working from home better than working in an office?',
         keywords: [
-          'Routine',
-          'Communication',
-          'Balance',
-          'Productivity',
-          'Flexibility',
+          {
+            keyword: 'Routine',
+            example:
+              'Working from home requires creating a routine and structure to maintain productivity without office supervision.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Remote work relies on digital communication, which may lack the nuance and spontaneity of in-person office interactions.',
+          },
+          {
+            keyword: 'Balance',
+            example:
+              'Working from home can improve work-life balance by eliminating commute time and allowing more flexible schedules.',
+          },
+          {
+            keyword: 'Productivity',
+            example:
+              'Some people are more productive at home without office distractions, while others need the structure of an office environment.',
+          },
+          {
+            keyword: 'Flexibility',
+            example:
+              'Remote work offers flexibility in location and schedule, but may blur boundaries between work and personal time.',
+          },
         ],
       },
       {
         question: 'Should unpaid internships be banned?',
         keywords: [
-          'Exploitation',
-          'Opportunity',
-          'Experience',
-          'Fairness',
-          'Access',
+          {
+            keyword: 'Exploitation',
+            example:
+              'Unpaid internships can exploit young workers by requiring full-time work without compensation, benefiting only employers.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Unpaid internships provide opportunities for experience and networking that might not exist if all internships required pay.',
+          },
+          {
+            keyword: 'Experience',
+            example:
+              'Internships offer valuable experience, but unpaid positions limit access to those who can afford to work without income.',
+          },
+          {
+            keyword: 'Fairness',
+            example:
+              'Unpaid internships are unfair as they exclude students who need income, creating inequality in career opportunities.',
+          },
+          {
+            keyword: 'Access',
+            example:
+              'Banning unpaid internships could reduce access to entry-level opportunities if companies cannot afford to pay all interns.',
+          },
         ],
       },
       {
         question: 'Is job stability more important than job satisfaction?',
         keywords: [
-          'Security',
-          'Motivation',
-          'Expectations',
-          'Wellbeing',
-          'Long-term goals',
+          {
+            keyword: 'Security',
+            example:
+              'Job stability provides financial security and peace of mind, reducing stress about future employment.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Job satisfaction increases motivation and engagement, which can improve performance and career growth.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'The choice between stability and satisfaction depends on individual expectations, life stage, and financial situation.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'While stability reduces financial stress, job satisfaction is crucial for mental wellbeing and overall happiness.',
+          },
+          {
+            keyword: 'Long-term goals',
+            example:
+              'Long-term goals influence whether stability or satisfaction matters more - some prioritize security, others fulfillment.',
+          },
         ],
       },
       {
         question: 'Are emotions or logic more important in decision-making?',
         keywords: [
-          'Intuition',
-          'Analysis',
-          'Judgement',
-          'Balance',
-          'Priorities',
+          {
+            keyword: 'Intuition',
+            example:
+              'Emotional intuition can provide valuable insights that pure logic might miss, especially in personal and social decisions.',
+          },
+          {
+            keyword: 'Analysis',
+            example:
+              'Logical analysis helps evaluate options objectively, reducing bias and making decisions based on facts and evidence.',
+          },
+          {
+            keyword: 'Judgement',
+            example:
+              'Good judgment often requires balancing emotions and logic, using both to make well-rounded decisions.',
+          },
+          {
+            keyword: 'Balance',
+            example:
+              'The best decisions typically balance emotional intelligence with logical reasoning, rather than relying on one alone.',
+          },
+          {
+            keyword: 'Priorities',
+            example:
+              'The importance of emotions versus logic depends on the decision type - personal choices may favor emotions, business decisions logic.',
+          },
         ],
       },
       {
         question: 'Is it better to travel alone or with others?',
         keywords: [
-          'Freedom',
-          'Planning',
-          'Safety',
-          'Connection',
-          'Independence',
+          {
+            keyword: 'Freedom',
+            example:
+              'Traveling alone offers complete freedom to make spontaneous decisions and follow personal interests without compromise.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Traveling with others requires coordination and planning, which can be challenging but also ensures shared experiences.',
+          },
+          {
+            keyword: 'Safety',
+            example:
+              'Traveling with others can provide safety through companionship, while solo travel requires greater self-reliance and awareness.',
+          },
+          {
+            keyword: 'Connection',
+            example:
+              'Traveling with others creates shared memories and strengthens relationships through shared experiences.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Solo travel develops independence and confidence, while group travel offers support and shared responsibility.',
+          },
         ],
       },
       {
         question: 'Should businesses aim for gender-balanced teams?',
         keywords: [
-          'Diversity',
-          'Equality',
-          'Representation',
-          'Fairness',
-          'Performance',
+          {
+            keyword: 'Diversity',
+            example:
+              'Gender-balanced teams bring diverse perspectives and approaches that can improve problem-solving and innovation.',
+          },
+          {
+            keyword: 'Equality',
+            example:
+              'Gender balance promotes equality by ensuring both men and women have equal opportunities in the workplace.',
+          },
+          {
+            keyword: 'Representation',
+            example:
+              'Gender-balanced teams provide representation that reflects society and can inspire future generations.',
+          },
+          {
+            keyword: 'Fairness',
+            example:
+              'Achieving gender balance should prioritize fairness and merit, ensuring the best candidates are selected regardless of gender.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Research suggests diverse, gender-balanced teams often perform better due to varied perspectives and collaborative approaches.',
+          },
         ],
       },
       {
         question: 'Is learning history important in school?',
         keywords: [
-          'Identity',
-          'Awareness',
-          'Perspective',
-          'Memory',
-          'Understanding',
+          {
+            keyword: 'Identity',
+            example:
+              'Learning history helps students understand their cultural identity and how past events shape present society.',
+          },
+          {
+            keyword: 'Awareness',
+            example:
+              'History education increases awareness of past mistakes and achievements, helping prevent repetition of errors.',
+          },
+          {
+            keyword: 'Perspective',
+            example:
+              'Studying history provides perspective on current events by showing how similar situations were handled in the past.',
+          },
+          {
+            keyword: 'Memory',
+            example:
+              'Preserving historical memory ensures important events and lessons are not forgotten by future generations.',
+          },
+          {
+            keyword: 'Understanding',
+            example:
+              'Understanding history helps students comprehend how societies, cultures, and political systems have evolved over time.',
+          },
         ],
       },
       {
         question: 'Should tourists learn basic phrases of the local language?',
         keywords: [
-          'Communication',
-          'Respect',
-          'Culture',
-          'Preparation',
-          'Safety',
+          {
+            keyword: 'Communication',
+            example:
+              'Learning basic phrases improves communication with locals, making travel experiences more meaningful and easier.',
+          },
+          {
+            keyword: 'Respect',
+            example:
+              'Making an effort to speak the local language shows respect for the culture and people of the destination.',
+          },
+          {
+            keyword: 'Culture',
+            example:
+              'Learning language phrases provides insight into local culture and helps tourists connect more authentically with the place.',
+          },
+          {
+            keyword: 'Preparation',
+            example:
+              'Learning basic phrases requires preparation before travel, but enhances the overall experience once at the destination.',
+          },
+          {
+            keyword: 'Safety',
+            example:
+              'Knowing basic phrases can improve safety by enabling tourists to ask for help, directions, or emergency assistance.',
+          },
         ],
       },
       {
         question: 'Is it better to work for a company or be self-employed?',
         keywords: [
-          'Security',
-          'Independence',
-          'Risk',
-          'Motivation',
-          'Flexibility',
+          {
+            keyword: 'Security',
+            example:
+              'Company employment typically provides more financial security with steady income, benefits, and job stability.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Self-employment offers independence and autonomy, allowing control over work schedule, clients, and business decisions.',
+          },
+          {
+            keyword: 'Risk',
+            example:
+              'Self-employment involves greater financial risk and uncertainty compared to the relative security of company employment.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Self-employment can increase motivation through direct connection between effort and reward, while company work offers structure.',
+          },
+          {
+            keyword: 'Flexibility',
+            example:
+              'Self-employment provides flexibility in work location and hours, while company work offers structured routine and support.',
+          },
         ],
       },
       {
         question: 'Should junk food be heavily taxed?',
         keywords: [
-          'Health',
-          'Habits',
-          'Responsibility',
-          'Regulation',
-          'Prevention',
+          {
+            keyword: 'Health',
+            example:
+              'Taxing junk food could improve public health by reducing consumption of unhealthy, high-calorie foods.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Higher prices from taxes may change eating habits, encouraging people to choose healthier alternatives.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Taxing junk food raises questions about personal responsibility versus government intervention in food choices.',
+          },
+          {
+            keyword: 'Regulation',
+            example:
+              'Food taxes are a form of regulation that uses economic incentives to influence consumer behavior.',
+          },
+          {
+            keyword: 'Prevention',
+            example:
+              'Junk food taxes could prevent obesity and related health problems by making unhealthy options less affordable.',
+          },
         ],
       },
       {
         question: 'Is veganism the future of food?',
         keywords: [
-          'Diet',
-          'Sustainability',
-          'Ethics',
-          'Farming',
-          'Consumer choices',
+          {
+            keyword: 'Diet',
+            example:
+              'Vegan diets can be nutritionally complete, but require careful planning to ensure adequate protein, iron, and B12 intake.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Veganism supports sustainability by reducing environmental impact of animal agriculture, which uses significant resources.',
+          },
+          {
+            keyword: 'Ethics',
+            example:
+              'Veganism addresses ethical concerns about animal welfare and the treatment of animals in food production.',
+          },
+          {
+            keyword: 'Farming',
+            example:
+              'Widespread veganism would require major changes in farming practices, shifting from animal agriculture to plant-based production.',
+          },
+          {
+            keyword: 'Consumer choices',
+            example:
+              'The future of food depends on consumer choices, with growing interest in plant-based options but continued demand for animal products.',
+          },
         ],
       },
       {
         question: 'Is a complete ban on smoking a practical solution?',
         keywords: [
-          'Addiction',
-          'Health',
-          'Freedom',
-          'Regulation',
-          'Consequences',
+          {
+            keyword: 'Addiction',
+            example:
+              'Smoking addiction makes a complete ban challenging, as addicted individuals may turn to illegal markets or suffer withdrawal.',
+          },
+          {
+            keyword: 'Health',
+            example:
+              'A smoking ban could significantly improve public health by eliminating exposure to secondhand smoke and reducing smoking-related diseases.',
+          },
+          {
+            keyword: 'Freedom',
+            example:
+              "A complete ban raises questions about personal freedom and the right to make choices about one's own body.",
+          },
+          {
+            keyword: 'Regulation',
+            example:
+              'Strict regulation and gradual restrictions may be more practical than an immediate complete ban.',
+          },
+          {
+            keyword: 'Consequences',
+            example:
+              'A smoking ban could have economic consequences for tobacco industries and governments that tax tobacco products.',
+          },
         ],
       },
       {
@@ -724,11 +1344,31 @@ const debates = [
       {
         question: 'Is exercise more important than diet for a healthy life?',
         keywords: [
-          'Nutrition',
-          'Fitness',
-          'Metabolism',
-          'Wellbeing',
-          'Long-term health',
+          {
+            keyword: 'Nutrition',
+            example:
+              'Proper nutrition provides essential nutrients and energy, while exercise alone cannot compensate for poor dietary choices.',
+          },
+          {
+            keyword: 'Fitness',
+            example:
+              'Regular exercise improves cardiovascular fitness, strength, and endurance that diet alone cannot achieve.',
+          },
+          {
+            keyword: 'Metabolism',
+            example:
+              'Exercise boosts metabolism and helps maintain muscle mass, while diet provides the fuel needed for physical activity.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Both exercise and diet contribute to wellbeing - exercise improves mental health, while nutrition supports physical health.',
+          },
+          {
+            keyword: 'Long-term health',
+            example:
+              'Long-term health requires both exercise and diet, as they work together to prevent disease and maintain optimal functioning.',
+          },
         ],
       },
       {
@@ -789,43 +1429,123 @@ const debates = [
       {
         question: 'Is it better to live in a small town or a big city?',
         keywords: [
-          'Community',
-          'Opportunities',
-          'Transport',
-          'Cost of living',
-          'Diversity',
+          {
+            keyword: 'Community',
+            example:
+              'Small towns often have stronger community bonds where neighbors know each other, while cities offer more anonymity and diversity.',
+          },
+          {
+            keyword: 'Opportunities',
+            example:
+              'Big cities provide more job opportunities, cultural events, and career advancement, while small towns may offer slower-paced living.',
+          },
+          {
+            keyword: 'Transport',
+            example:
+              'Cities typically have better public transport systems, while small towns may require car ownership for daily activities.',
+          },
+          {
+            keyword: 'Cost of living',
+            example:
+              'Small towns generally have lower costs of living, while cities offer more amenities but at higher prices.',
+          },
+          {
+            keyword: 'Diversity',
+            example:
+              'Cities offer greater cultural and social diversity, while small towns may have more homogeneous communities.',
+          },
         ],
       },
       {
         question: 'Is social media addiction a real problem?',
         keywords: [
-          'Habits',
-          'Wellbeing',
-          'Behaviour',
-          'Dependence',
-          'Motivation',
+          {
+            keyword: 'Habits',
+            example:
+              'Social media can create compulsive checking habits that interfere with daily life and reduce productivity.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Excessive social media use can negatively impact mental wellbeing through comparison, FOMO, and reduced real-world social interaction.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Social media addiction can alter behavior patterns, making people prioritize online interactions over face-to-face relationships.',
+          },
+          {
+            keyword: 'Dependence',
+            example:
+              'Many people develop dependence on social media for validation and entertainment, experiencing anxiety when unable to access it.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Social media addiction can reduce motivation for real-world activities as people become more engaged with virtual experiences.',
+          },
         ],
       },
 
       {
         question: 'Is travelling to dangerous countries worth the risk?',
         keywords: [
-          'Adventure',
-          'Safety',
-          'Judgement',
-          'Experience',
-          'Awareness',
+          {
+            keyword: 'Adventure',
+            example:
+              'Traveling to challenging destinations can provide unique adventure and experiences that safer destinations may not offer.',
+          },
+          {
+            keyword: 'Safety',
+            example:
+              'Traveling to dangerous countries involves significant safety risks that could result in harm, kidnapping, or other serious consequences.',
+          },
+          {
+            keyword: 'Judgement',
+            example:
+              'Deciding to travel to dangerous countries requires careful judgment about personal risk tolerance and safety precautions.',
+          },
+          {
+            keyword: 'Experience',
+            example:
+              'Visiting dangerous countries can provide valuable cultural experiences and perspectives, but at potential personal cost.',
+          },
+          {
+            keyword: 'Awareness',
+            example:
+              'Travelers to dangerous countries must maintain constant awareness of their surroundings and potential threats.',
+          },
         ],
       },
       {
         question:
           'Does tourism need stricter limits to protect the environment?',
         keywords: [
-          'Overcrowding',
-          'Preservation',
-          'Sustainability',
-          'Impact',
-          'Responsibility',
+          {
+            keyword: 'Overcrowding',
+            example:
+              'Tourism overcrowding can damage fragile ecosystems and cultural sites, requiring limits to preserve them for future generations.',
+          },
+          {
+            keyword: 'Preservation',
+            example:
+              'Stricter tourism limits help preserve natural environments and cultural heritage sites from degradation and overuse.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Sustainable tourism requires balancing visitor access with environmental protection to ensure long-term viability.',
+          },
+          {
+            keyword: 'Impact',
+            example:
+              'Mass tourism has significant environmental impact through pollution, resource consumption, and habitat destruction.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Tourism limits reflect responsibility to protect destinations while still allowing people to experience and appreciate them.',
+          },
         ],
       },
       {
@@ -841,72 +1561,212 @@ const debates = [
       {
         question: 'Should air travel be reduced to help fight climate change?',
         keywords: [
-          'Emissions',
-          'Sustainability',
-          'Alternatives',
-          'Impact',
-          'Lifestyle',
+          {
+            keyword: 'Emissions',
+            example:
+              'Air travel produces significant greenhouse gas emissions that contribute to climate change, making reduction important.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Reducing air travel supports sustainability goals, but may limit global connectivity and cultural exchange.',
+          },
+          {
+            keyword: 'Alternatives',
+            example:
+              'Alternatives like trains, video conferencing, or local travel can reduce emissions while maintaining some benefits of travel.',
+          },
+          {
+            keyword: 'Impact',
+            example:
+              'Reducing air travel could have meaningful impact on emissions, but requires collective action and lifestyle changes.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'Reducing air travel requires lifestyle adjustments, potentially limiting travel opportunities and global experiences.',
+          },
         ],
       },
       {
         question: 'Are all-inclusive resorts bad for local communities?',
         keywords: [
-          'Tourism',
-          'Employment',
-          'Culture',
-          'Development',
-          'Dependence',
+          {
+            keyword: 'Tourism',
+            example:
+              'All-inclusive resorts can bring tourism revenue, but may prevent money from reaching local businesses and communities.',
+          },
+          {
+            keyword: 'Employment',
+            example:
+              'Resorts create jobs for locals, but often offer low wages and limited career advancement opportunities.',
+          },
+          {
+            keyword: 'Culture',
+            example:
+              'All-inclusive resorts may isolate tourists from local culture, reducing authentic cultural exchange and understanding.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Resort development can bring infrastructure improvements, but may also displace local communities or damage environments.',
+          },
+          {
+            keyword: 'Dependence',
+            example:
+              'Communities can become dependent on resort tourism, making them vulnerable to economic downturns or changing travel trends.',
+          },
         ],
       },
       {
         question:
           'Is it better to invest in experiences rather than material possessions?',
         keywords: [
-          'Memories',
-          'Value',
-          'Satisfaction',
-          'Priorities',
-          'Lifestyle',
+          {
+            keyword: 'Memories',
+            example:
+              'Experiences create lasting memories and emotional connections that material possessions often cannot match.',
+          },
+          {
+            keyword: 'Value',
+            example:
+              'Experiences may provide greater long-term value through personal growth and happiness compared to material goods.',
+          },
+          {
+            keyword: 'Satisfaction',
+            example:
+              'Research suggests experiences often provide more lasting satisfaction than material purchases, which can lose appeal over time.',
+          },
+          {
+            keyword: 'Priorities',
+            example:
+              'Choosing experiences over possessions reflects priorities focused on personal growth and relationships rather than accumulation.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'Investing in experiences supports a lifestyle focused on adventure, learning, and meaningful connections.',
+          },
         ],
       },
       {
         question: 'Should students be allowed to grade their teachers?',
         keywords: [
-          'Feedback',
-          'Fairness',
-          'Performance',
-          'Motivation',
-          'Accountability',
+          {
+            keyword: 'Feedback',
+            example:
+              'Student feedback can provide valuable insights into teaching effectiveness and areas for improvement.',
+          },
+          {
+            keyword: 'Fairness',
+            example:
+              'Student evaluations may not be fair if influenced by grades received or personal preferences rather than teaching quality.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Student input can help improve teacher performance, but may also create pressure to please students rather than educate them.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Knowing students will evaluate them can motivate teachers to improve, but may also lead to grade inflation.',
+          },
+          {
+            keyword: 'Accountability',
+            example:
+              'Student evaluations provide accountability for teachers, ensuring they meet educational standards and student needs.',
+          },
         ],
       },
       {
         question: 'Is honesty always the best policy?',
         keywords: [
-          'Trust',
-          'Consequences',
-          'Relationships',
-          'Integrity',
-          'Communication',
+          {
+            keyword: 'Trust',
+            example:
+              'Honesty builds trust in relationships, but brutal honesty without consideration can damage trust and hurt others.',
+          },
+          {
+            keyword: 'Consequences',
+            example:
+              'While honesty is generally positive, there are situations where truth-telling can cause unnecessary harm or conflict.',
+          },
+          {
+            keyword: 'Relationships',
+            example:
+              'Honest communication strengthens relationships, but timing and delivery of honesty matter greatly.',
+          },
+          {
+            keyword: 'Integrity',
+            example:
+              'Maintaining integrity through honesty is important, but must be balanced with compassion and wisdom.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Effective communication requires honesty, but also sensitivity to context and the impact of words.',
+          },
         ],
       },
       {
         question: 'Can money buy happiness?',
         keywords: [
-          'Freedom',
-          'Comfort',
-          'Security',
-          'Satisfaction',
-          'Priorities',
+          {
+            keyword: 'Freedom',
+            example:
+              'Money provides freedom to make choices about work, lifestyle, and experiences that can contribute to happiness.',
+          },
+          {
+            keyword: 'Comfort',
+            example:
+              'Financial resources provide comfort and reduce stress about basic needs, which can improve overall wellbeing.',
+          },
+          {
+            keyword: 'Security',
+            example:
+              'Money offers security that reduces anxiety about the future, contributing to peace of mind and happiness.',
+          },
+          {
+            keyword: 'Satisfaction',
+            example:
+              'While money can buy comfort and security, true satisfaction often comes from relationships, purpose, and personal growth.',
+          },
+          {
+            keyword: 'Priorities',
+            example:
+              'The relationship between money and happiness depends on priorities - some value financial security, others value experiences or relationships.',
+          },
         ],
       },
       {
         question: 'Is it ever acceptable to lie?',
         keywords: [
-          'Trust',
-          'Intention',
-          'Consequences',
-          'Relationships',
-          'Judgement',
+          {
+            keyword: 'Trust',
+            example:
+              'Lying can damage trust in relationships, but white lies to protect feelings may sometimes preserve relationships.',
+          },
+          {
+            keyword: 'Intention',
+            example:
+              'The acceptability of lying depends on intention - protecting someone from harm versus deceiving for personal gain.',
+          },
+          {
+            keyword: 'Consequences',
+            example:
+              'Lies can have serious consequences, but in some situations, truth-telling may cause greater harm.',
+          },
+          {
+            keyword: 'Relationships',
+            example:
+              'Honesty generally strengthens relationships, but there may be rare situations where a lie prevents unnecessary hurt.',
+          },
+          {
+            keyword: 'Judgement',
+            example:
+              'Whether lying is acceptable requires careful judgment about context, consequences, and ethical principles.',
+          },
         ],
       },
       {
@@ -967,21 +1827,61 @@ const debates = [
       {
         question: 'Should universities have a dress code?',
         keywords: [
-          'Professionalism',
-          'Expression',
-          'Culture',
-          'Comfort',
-          'Expectations',
+          {
+            keyword: 'Professionalism',
+            example:
+              'Dress codes can prepare students for professional environments, teaching appropriate workplace attire and presentation.',
+          },
+          {
+            keyword: 'Expression',
+            example:
+              'Dress codes may limit self-expression and individuality, which are important aspects of personal development in university.',
+          },
+          {
+            keyword: 'Culture',
+            example:
+              'University dress codes should respect diverse cultural dress practices and not impose Western standards.',
+          },
+          {
+            keyword: 'Comfort',
+            example:
+              'Dress codes may require uncomfortable clothing that interferes with learning, while casual dress can improve focus.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Dress codes set expectations about appropriate attire, but may be unnecessary for adult university students.',
+          },
         ],
       },
       {
         question: 'Is reading books better than listening to audiobooks?',
         keywords: [
-          'Focus',
-          'Imagination',
-          'Convenience',
-          'Comprehension',
-          'Habits',
+          {
+            keyword: 'Focus',
+            example:
+              'Reading requires active focus and engagement, while audiobooks allow multitasking but may reduce deep concentration.',
+          },
+          {
+            keyword: 'Imagination',
+            example:
+              'Both reading and audiobooks stimulate imagination, though reading may allow more personal interpretation of voices and pacing.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'Audiobooks offer convenience for commuting, exercising, or multitasking, while reading requires dedicated time and attention.',
+          },
+          {
+            keyword: 'Comprehension',
+            example:
+              'Some people comprehend better through reading, while others benefit from auditory learning through audiobooks.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Audiobooks can help develop reading habits for busy people, while traditional reading may require more discipline.',
+          },
         ],
       },
       {
@@ -1088,11 +1988,31 @@ const debates = [
       {
         question: 'Is music more powerful than books?',
         keywords: [
-          'Emotion',
-          'Creativity',
-          'Memory',
-          'Imagination',
-          'Expression',
+          {
+            keyword: 'Emotion',
+            example:
+              'Music can evoke immediate emotional responses and create powerful moods that books may take longer to establish.',
+          },
+          {
+            keyword: 'Creativity',
+            example:
+              'Both music and books inspire creativity, but music provides immediate sensory experience while books require more active engagement.',
+          },
+          {
+            keyword: 'Memory',
+            example:
+              'Music can trigger strong memories and associations, while books create detailed mental images and narratives.',
+          },
+          {
+            keyword: 'Imagination',
+            example:
+              'Books may stimulate imagination more by requiring readers to visualize, while music provides the auditory experience directly.',
+          },
+          {
+            keyword: 'Expression',
+            example:
+              'Both music and books are powerful forms of expression, but music can communicate emotions instantly without language barriers.',
+          },
         ],
       },
       {
@@ -1214,134 +2134,394 @@ const debates = [
       {
         question: 'Is reading better than watching movies?',
         keywords: [
-          'Creativity',
-          'Detail',
-          'Imagination',
-          'Engagement',
-          'Interpretation',
+          {
+            keyword: 'Creativity',
+            example:
+              'Reading requires more active creativity as readers must visualize scenes, while movies provide visual interpretation.',
+          },
+          {
+            keyword: 'Detail',
+            example:
+              'Books can explore internal thoughts and detailed descriptions that movies may struggle to convey in limited screen time.',
+          },
+          {
+            keyword: 'Imagination',
+            example:
+              'Reading stimulates imagination by requiring mental visualization, while movies provide ready-made visual experiences.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Both reading and movies can be engaging, but reading requires sustained attention while movies may be more passive.',
+          },
+          {
+            keyword: 'Interpretation',
+            example:
+              "Reading allows personal interpretation of characters and events, while movies present a director's specific vision.",
+          },
         ],
       },
       {
         question: 'Should comedians be allowed to joke about anything?',
         keywords: [
-          'Freedom',
-          'Offence',
-          'Boundaries',
-          'Expression',
-          'Sensitivity',
+          {
+            keyword: 'Freedom',
+            example:
+              'Comedians should have freedom of expression, but this freedom must be balanced with responsibility and respect.',
+          },
+          {
+            keyword: 'Offence',
+            example:
+              'Jokes that cause offense may perpetuate harmful stereotypes or hurt marginalized groups, even if unintended.',
+          },
+          {
+            keyword: 'Boundaries',
+            example:
+              'While comedy pushes boundaries, there should be limits when jokes cause real harm or promote discrimination.',
+          },
+          {
+            keyword: 'Expression',
+            example:
+              'Comedy is a form of expression that can challenge norms and provide social commentary, but should consider impact.',
+          },
+          {
+            keyword: 'Sensitivity',
+            example:
+              'Comedians should consider sensitivity to different groups while maintaining the ability to address difficult topics through humor.',
+          },
         ],
       },
       {
         question: 'Are awards shows still relevant today?',
         keywords: [
-          'Recognition',
-          'Popularity',
-          'Standards',
-          'Influence',
-          'Reputation',
+          {
+            keyword: 'Recognition',
+            example:
+              'Awards shows provide recognition for artistic achievement, but may not always reflect true merit or quality.',
+          },
+          {
+            keyword: 'Popularity',
+            example:
+              'Awards often reflect popularity and industry politics rather than genuine artistic excellence or innovation.',
+          },
+          {
+            keyword: 'Standards',
+            example:
+              'Awards shows can set industry standards and influence what types of work get produced and recognized.',
+          },
+          {
+            keyword: 'Influence',
+            example:
+              'Awards shows have significant influence on careers and public perception, even if their relevance is questioned.',
+          },
+          {
+            keyword: 'Reputation',
+            example:
+              'Winning awards can enhance reputation and career opportunities, making awards shows important for industry professionals.',
+          },
         ],
       },
       {
         question: 'Should video games be considered a form of art?',
         keywords: [
-          'Creativity',
-          'Storytelling',
-          'Design',
-          'Innovation',
-          'Expression',
+          {
+            keyword: 'Creativity',
+            example:
+              'Video games require immense creativity in design, narrative, music, and visual art, combining multiple artistic disciplines.',
+          },
+          {
+            keyword: 'Storytelling',
+            example:
+              'Many video games tell complex, emotionally engaging stories that rival literature and film in narrative depth.',
+          },
+          {
+            keyword: 'Design',
+            example:
+              'Game design involves artistic vision in creating worlds, characters, and experiences that evoke emotion and meaning.',
+          },
+          {
+            keyword: 'Innovation',
+            example:
+              'Video games represent innovative art forms that allow interactive experiences impossible in traditional media.',
+          },
+          {
+            keyword: 'Expression',
+            example:
+              'Games can express ideas, emotions, and social commentary, fulfilling the same expressive function as traditional art.',
+          },
         ],
       },
       {
         question:
           'Is banning plastic bags the most effective way to reduce waste?',
         keywords: [
-          'Pollution',
-          'Habits',
-          'Alternatives',
-          'Sustainability',
-          'Convenience',
+          {
+            keyword: 'Pollution',
+            example:
+              'Plastic bag bans can reduce pollution and environmental damage, but may not address larger sources of plastic waste.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Bans can change consumer habits, encouraging reusable bags, but may create inconvenience that reduces compliance.',
+          },
+          {
+            keyword: 'Alternatives',
+            example:
+              'Alternatives like reusable bags or paper bags have their own environmental impacts that must be considered.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Plastic bag bans support sustainability goals, but effectiveness depends on consumer behavior and alternative options.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'Bans may reduce convenience for consumers, potentially leading to resistance or finding ways around restrictions.',
+          },
         ],
       },
       {
         question: 'Is climate change the biggest threat to humanity?',
         keywords: [
-          'Disasters',
-          'Resources',
-          'Impact',
-          'Instability',
-          'Survival',
+          {
+            keyword: 'Disasters',
+            example:
+              'Climate change increases frequency and severity of natural disasters, threatening lives, infrastructure, and economies.',
+          },
+          {
+            keyword: 'Resources',
+            example:
+              'Climate change threatens essential resources like water, food, and habitable land, creating potential conflicts.',
+          },
+          {
+            keyword: 'Impact',
+            example:
+              'The long-term impact of climate change on global systems could be catastrophic if not addressed urgently.',
+          },
+          {
+            keyword: 'Instability',
+            example:
+              'Climate change creates political and economic instability through resource scarcity, displacement, and conflict.',
+          },
+          {
+            keyword: 'Survival',
+            example:
+              'Climate change poses existential threats to human survival through extreme weather, sea-level rise, and ecosystem collapse.',
+          },
         ],
       },
       {
         question:
           'Is it better to have a small circle of friends or a large one?',
         keywords: [
-          'Support',
-          'Closeness',
-          'Trust',
-          'Diversity',
-          'Communication',
+          {
+            keyword: 'Support',
+            example:
+              'Small friend circles often provide deeper emotional support, while large networks offer broader but potentially shallower connections.',
+          },
+          {
+            keyword: 'Closeness',
+            example:
+              'Small circles allow for closer, more intimate friendships, while large networks may have more casual relationships.',
+          },
+          {
+            keyword: 'Trust',
+            example:
+              'Small friend groups can build stronger trust through deeper bonds, while large networks may have more varied trust levels.',
+          },
+          {
+            keyword: 'Diversity',
+            example:
+              'Large friend networks offer more diversity in perspectives and experiences, while small circles may be more homogeneous.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Small circles allow for more frequent, meaningful communication, while large networks require more effort to maintain.',
+          },
         ],
       },
       {
         question: 'Should cars be banned in city centres?',
         keywords: [
-          'Traffic',
-          'Pollution',
-          'Accessibility',
-          'Planning',
-          'Safety',
+          {
+            keyword: 'Traffic',
+            example:
+              'Banning cars can reduce traffic congestion and improve flow for public transport, cyclists, and pedestrians.',
+          },
+          {
+            keyword: 'Pollution',
+            example:
+              'Car bans significantly reduce air and noise pollution in city centers, improving public health and quality of life.',
+          },
+          {
+            keyword: 'Accessibility',
+            example:
+              'Car bans may limit accessibility for people with disabilities, elderly, or those who cannot use alternative transport.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Effective car bans require careful urban planning to ensure alternative transport options are available and convenient.',
+          },
+          {
+            keyword: 'Safety',
+            example:
+              'Removing cars from city centers improves pedestrian and cyclist safety, reducing accidents and creating safer spaces.',
+          },
         ],
       },
       {
         question: 'Is nuclear energy a reliable long-term solution?',
         keywords: [
-          'Safety',
-          'Cost',
-          'Reliability',
-          'Emissions',
-          'Sustainability',
+          {
+            keyword: 'Safety',
+            example:
+              'Nuclear energy has safety risks from accidents and waste disposal, but modern technology has improved safety significantly.',
+          },
+          {
+            keyword: 'Cost',
+            example:
+              'Nuclear power requires high initial costs but provides stable, long-term energy production once operational.',
+          },
+          {
+            keyword: 'Reliability',
+            example:
+              'Nuclear energy provides reliable, consistent power generation regardless of weather, unlike some renewable sources.',
+          },
+          {
+            keyword: 'Emissions',
+            example:
+              'Nuclear energy produces minimal greenhouse gas emissions, making it attractive for climate change mitigation.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'While nuclear reduces emissions, questions about waste disposal and uranium availability affect long-term sustainability.',
+          },
         ],
       },
       {
         question: 'Is bottled water harmful enough to justify a complete ban?',
         keywords: [
-          'Waste',
-          'Pollution',
-          'Access',
-          'Convenience',
-          'Responsibility',
+          {
+            keyword: 'Waste',
+            example:
+              'Bottled water creates massive plastic waste that pollutes oceans and landfills, contributing to environmental damage.',
+          },
+          {
+            keyword: 'Pollution',
+            example:
+              'Plastic bottle production and disposal cause significant pollution, from manufacturing emissions to ocean plastic.',
+          },
+          {
+            keyword: 'Access',
+            example:
+              'Bottled water provides access to clean water in areas with unsafe tap water, making complete bans problematic.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'Bottled water offers convenience for travel and emergencies, but this convenience comes at environmental cost.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Reducing bottled water consumption reflects environmental responsibility, but bans may be too restrictive in some contexts.',
+          },
         ],
       },
       {
         question: 'Are electric cars really better for the environment?',
         keywords: [
-          'Emissions',
-          'Resources',
-          'Efficiency',
-          'Sustainability',
-          'Cost',
+          {
+            keyword: 'Emissions',
+            example:
+              'Electric cars produce zero tailpipe emissions, but manufacturing and electricity generation still create environmental impact.',
+          },
+          {
+            keyword: 'Resources',
+            example:
+              'Electric cars require rare earth minerals and battery materials that have environmental costs in mining and production.',
+          },
+          {
+            keyword: 'Efficiency',
+            example:
+              'Electric vehicles are more energy-efficient than gasoline cars, converting more energy to motion with less waste.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Electric cars are more sustainable when powered by renewable energy, but less so when using fossil fuel-generated electricity.',
+          },
+          {
+            keyword: 'Cost',
+            example:
+              'While electric cars have higher upfront costs, they can be more cost-effective long-term and reduce environmental costs.',
+          },
         ],
       },
       {
         question:
           'Is it ever acceptable to limit family size for environmental or social reasons?',
         keywords: [
-          'Resources',
-          'Freedom',
-          'Responsibility',
-          'Population',
-          'Ethics',
+          {
+            keyword: 'Resources',
+            example:
+              'Limiting family size can reduce resource consumption and environmental impact, but raises questions about personal freedom.',
+          },
+          {
+            keyword: 'Freedom',
+            example:
+              'Family size limits restrict reproductive freedom, which conflicts with fundamental human rights and personal autonomy.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Some argue that environmental responsibility requires smaller families, while others see this as overreach into personal decisions.',
+          },
+          {
+            keyword: 'Population',
+            example:
+              'Population control policies aim to address overpopulation concerns, but implementation raises ethical and practical challenges.',
+          },
+          {
+            keyword: 'Ethics',
+            example:
+              'Limiting family size involves complex ethics balancing individual rights, environmental concerns, and social responsibility.',
+          },
         ],
       },
       {
         question: 'Is it ethical to keep animals in zoos?',
         keywords: [
-          'Conservation',
-          'Welfare',
-          'Education',
-          'Captivity',
-          'Protection',
+          {
+            keyword: 'Conservation',
+            example:
+              'Zoos contribute to conservation efforts by breeding endangered species and supporting wildlife protection programs.',
+          },
+          {
+            keyword: 'Welfare',
+            example:
+              'Zoo captivity may compromise animal welfare by restricting natural behaviors, space, and social structures.',
+          },
+          {
+            keyword: 'Education',
+            example:
+              'Zoos provide educational opportunities that help people understand and appreciate wildlife, fostering conservation awareness.',
+          },
+          {
+            keyword: 'Captivity',
+            example:
+              'Keeping animals in captivity raises ethical questions about depriving them of natural habitats and freedom.',
+          },
+          {
+            keyword: 'Protection',
+            example:
+              'Zoos can protect animals from threats in the wild, but may also prevent them from living natural lives.',
+          },
         ],
       },
       {
@@ -1359,11 +2539,31 @@ const debates = [
         question:
           'Is a universal basic income a realistic way to reduce poverty?',
         keywords: [
-          'Security',
-          'Opportunity',
-          'Inequality',
-          'Stability',
-          'Responsibility',
+          {
+            keyword: 'Security',
+            example:
+              'Universal basic income provides financial security that can reduce poverty and allow people to pursue education or better opportunities.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Basic income creates opportunities for people to take risks, start businesses, or improve their situation without fear of destitution.',
+          },
+          {
+            keyword: 'Inequality',
+            example:
+              'UBI can reduce inequality by ensuring everyone has a minimum income floor, but funding it requires significant tax changes.',
+          },
+          {
+            keyword: 'Stability',
+            example:
+              'Basic income provides economic stability that can reduce poverty-related stress and improve overall wellbeing.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Critics question whether UBI reduces personal responsibility, while supporters argue it enables people to make better choices.',
+          },
         ],
       },
       {
@@ -1381,11 +2581,31 @@ const debates = [
         question:
           'Is travelling by public transport the best way to reduce traffic problems?',
         keywords: [
-          'Accessibility',
-          'Congestion',
-          'Sustainability',
-          'Planning',
-          'Efficiency',
+          {
+            keyword: 'Accessibility',
+            example:
+              'Public transport must be accessible and convenient to attract users away from cars, requiring good coverage and frequency.',
+          },
+          {
+            keyword: 'Congestion',
+            example:
+              'Public transport can significantly reduce traffic congestion by moving more people in less space than private vehicles.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Public transport is more sustainable than private cars, reducing emissions and resource consumption per passenger.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Effective public transport requires careful urban planning and investment in infrastructure to be a viable alternative.',
+          },
+          {
+            keyword: 'Efficiency',
+            example:
+              'Well-designed public transport can be more efficient than cars for many trips, but may be less convenient for some routes.',
+          },
         ],
       },
       {
@@ -1402,11 +2622,31 @@ const debates = [
         question:
           'Should companies give employees more control over their schedules?',
         keywords: [
-          'Flexibility',
-          'Autonomy',
-          'Motivation',
-          'Productivity',
-          'Wellbeing',
+          {
+            keyword: 'Flexibility',
+            example:
+              'Flexible schedules allow employees to balance work with personal responsibilities, improving work-life integration.',
+          },
+          {
+            keyword: 'Autonomy',
+            example:
+              'Giving employees control over schedules increases autonomy and trust, which can boost job satisfaction and performance.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Schedule control can increase motivation by allowing employees to work when they are most productive and engaged.',
+          },
+          {
+            keyword: 'Productivity',
+            example:
+              'Flexible scheduling can improve productivity by matching work times to individual peak performance periods.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Control over schedules improves employee wellbeing by reducing stress and allowing better work-life balance.',
+          },
         ],
       },
       {
@@ -1467,11 +2707,31 @@ const debates = [
       {
         question: 'Do loyalty rewards encourage unnecessary spending?',
         keywords: [
-          'Temptation',
-          'Behaviour',
-          'Value',
-          'Marketing',
-          'Decisions',
+          {
+            keyword: 'Temptation',
+            example:
+              "Loyalty rewards create temptation to spend more to reach reward thresholds, even when purchases aren't necessary.",
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              "Reward programs can change spending behavior, encouraging purchases that wouldn't occur without the incentive.",
+          },
+          {
+            keyword: 'Value',
+            example:
+              'While rewards provide value, they may encourage spending that exceeds the actual value received from rewards.',
+          },
+          {
+            keyword: 'Marketing',
+            example:
+              'Loyalty programs are marketing strategies designed to increase customer spending and brand loyalty.',
+          },
+          {
+            keyword: 'Decisions',
+            example:
+              "Rewards can influence purchasing decisions, making people buy things they don't need to earn points or maintain status.",
+          },
         ],
       },
       {
@@ -1487,11 +2747,31 @@ const debates = [
       {
         question: 'Is sharing personal achievements online harmful or helpful?',
         keywords: [
-          'Confidence',
-          'Comparison',
-          'Motivation',
-          'Perception',
-          'Influence',
+          {
+            keyword: 'Confidence',
+            example:
+              'Sharing achievements can boost confidence and provide validation, but may create dependence on external approval.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              'Sharing achievements can inspire others, but may also trigger unhealthy comparison and feelings of inadequacy.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Publicly sharing goals and achievements can increase motivation and accountability, helping people follow through.',
+          },
+          {
+            keyword: 'Perception',
+            example:
+              'Sharing achievements shapes how others perceive you, which can be positive for networking but may seem boastful.',
+          },
+          {
+            keyword: 'Influence',
+            example:
+              'Sharing achievements can positively influence others to pursue their goals, but may also create pressure to perform.',
+          },
         ],
       },
       {
@@ -1740,11 +3020,31 @@ const debates = [
       {
         question: 'Are travel documentaries a good substitute for real travel?',
         keywords: [
-          'Experience',
-          'Culture',
-          'Access',
-          'Curiosity',
-          'Authenticity',
+          {
+            keyword: 'Experience',
+            example:
+              'Travel documentaries provide vicarious experiences, but cannot replicate the personal growth and memories of actual travel.',
+          },
+          {
+            keyword: 'Culture',
+            example:
+              'Documentaries can introduce cultures and places, but lack the immersive, multi-sensory experience of being there.',
+          },
+          {
+            keyword: 'Access',
+            example:
+              'Documentaries make travel accessible to those who cannot afford or physically travel, providing valuable exposure.',
+          },
+          {
+            keyword: 'Curiosity',
+            example:
+              'Travel documentaries can spark curiosity and inspire future travel, but may also satisfy curiosity without actual exploration.',
+          },
+          {
+            keyword: 'Authenticity',
+            example:
+              'Documentaries may present curated views of places, while real travel provides authentic, unfiltered experiences.',
+          },
         ],
       },
       {
@@ -1761,22 +3061,62 @@ const debates = [
       {
         question: 'Are group projects beneficial for students?',
         keywords: [
-          'Cooperation',
-          'Responsibility',
-          'Communication',
-          'Performance',
-          'Teamwork',
+          {
+            keyword: 'Cooperation',
+            example:
+              'Group projects teach cooperation and collaboration skills essential for workplace success and real-world problem-solving.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Group work develops responsibility as students must contribute their share, but free-riders can create unfair situations.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Group projects improve communication skills through negotiation, discussion, and presenting ideas to peers.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              "Group projects can improve performance through shared knowledge, but may also suffer if some members don't contribute.",
+          },
+          {
+            keyword: 'Teamwork',
+            example:
+              'Working in teams prepares students for collaborative work environments, teaching conflict resolution and shared decision-making.',
+          },
         ],
       },
 
       {
         question: 'Should employers offer unlimited holiday time?',
         keywords: [
-          'Trust',
-          'Productivity',
-          'Balance',
-          'Motivation',
-          'Responsibility',
+          {
+            keyword: 'Trust',
+            example:
+              'Unlimited holiday policies demonstrate trust in employees to manage their time responsibly and maintain productivity.',
+          },
+          {
+            keyword: 'Productivity',
+            example:
+              'Well-rested employees may be more productive, but unlimited holiday could be abused and reduce overall output.',
+          },
+          {
+            keyword: 'Balance',
+            example:
+              'Unlimited holiday can improve work-life balance, allowing employees to take time when needed without stress.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Flexible holiday policies can increase motivation and job satisfaction, making employees feel valued and trusted.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Unlimited holiday requires employees to exercise responsibility, balancing personal needs with work commitments.',
+          },
         ],
       },
       {
@@ -1793,22 +3133,62 @@ const debates = [
         question:
           'Should schools teach financial responsibility from a young age?',
         keywords: [
-          'Budgeting',
-          'Independence',
-          'Planning',
-          'Awareness',
-          'Skills',
+          {
+            keyword: 'Budgeting',
+            example:
+              'Teaching budgeting from a young age helps students understand money management and make informed financial decisions.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Financial education promotes independence by giving students skills to manage money and avoid debt as adults.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Learning financial planning early helps students understand saving, investing, and long-term financial goals.',
+          },
+          {
+            keyword: 'Awareness',
+            example:
+              'Financial education increases awareness of financial products, risks, and opportunities that affect daily life.',
+          },
+          {
+            keyword: 'Skills',
+            example:
+              'Financial skills are essential life skills that schools should teach, preparing students for real-world financial challenges.',
+          },
         ],
       },
       {
         question:
           'Do smartphones make people feel more connected or more isolated?',
         keywords: [
-          'Interaction',
-          'Perception',
-          'Expectations',
-          'Behaviour',
-          'Wellbeing',
+          {
+            keyword: 'Interaction',
+            example:
+              'Smartphones enable constant interaction with others, but may reduce quality of face-to-face social interactions.',
+          },
+          {
+            keyword: 'Perception',
+            example:
+              'Social media can create perception of connection through likes and messages, but may feel superficial compared to real relationships.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Smartphones create expectations for constant availability and immediate responses, which can increase stress and reduce genuine connection.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Smartphone use during social interactions can create isolation by reducing engagement with people physically present.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'While smartphones help maintain long-distance connections, excessive use can harm wellbeing and increase feelings of loneliness.',
+          },
         ],
       },
       {
@@ -1825,11 +3205,31 @@ const debates = [
       {
         question: 'Should companies focus more on employee happiness?',
         keywords: [
-          'Motivation',
-          'Performance',
-          'Satisfaction',
-          'Culture',
-          'Wellbeing',
+          {
+            keyword: 'Motivation',
+            example:
+              'Happy employees are generally more motivated and engaged, leading to better performance and innovation.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Employee happiness correlates with improved performance, reduced turnover, and increased productivity.',
+          },
+          {
+            keyword: 'Satisfaction',
+            example:
+              'Focusing on happiness increases job satisfaction, which can improve retention and reduce recruitment costs.',
+          },
+          {
+            keyword: 'Culture',
+            example:
+              'Prioritizing employee happiness creates positive workplace culture that attracts talent and improves collaboration.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Supporting employee happiness improves overall wellbeing, reducing stress, burnout, and healthcare costs.',
+          },
         ],
       },
       {
@@ -1845,11 +3245,31 @@ const debates = [
       {
         question: 'Should schools offer more art classes?',
         keywords: [
-          'Creativity',
-          'Expression',
-          'Engagement',
-          'Confidence',
-          'Imagination',
+          {
+            keyword: 'Creativity',
+            example:
+              'Art classes develop creativity and innovative thinking that benefit students across all subjects and future careers.',
+          },
+          {
+            keyword: 'Expression',
+            example:
+              'Art provides important outlets for self-expression, allowing students to communicate ideas and emotions non-verbally.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Art classes can increase student engagement, especially for those who struggle with traditional academic subjects.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Creating art builds confidence and self-esteem as students see their ideas come to life and receive recognition.',
+          },
+          {
+            keyword: 'Imagination',
+            example:
+              'Art education stimulates imagination and helps students think creatively and see possibilities beyond conventional solutions.',
+          },
         ],
       },
       {
@@ -1865,11 +3285,31 @@ const debates = [
       {
         question: 'Is disaster preparedness being prioritised enough today?',
         keywords: [
-          'Safety',
-          'Planning',
-          'Resources',
-          'Prevention',
-          'Resilience',
+          {
+            keyword: 'Safety',
+            example:
+              'Disaster preparedness is essential for public safety, but may not receive adequate funding or attention until disasters occur.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Effective disaster preparedness requires comprehensive planning, but many communities lack detailed emergency response plans.',
+          },
+          {
+            keyword: 'Resources',
+            example:
+              'Disaster preparedness requires significant resources for infrastructure, training, and equipment that may be underfunded.',
+          },
+          {
+            keyword: 'Prevention',
+            example:
+              'Preparedness includes prevention measures, but climate change and urbanization increase disaster risks faster than preparation.',
+          },
+          {
+            keyword: 'Resilience',
+            example:
+              'Building community resilience through preparedness can reduce disaster impact, but requires ongoing commitment and investment.',
+          },
         ],
       },
 
@@ -1886,11 +3326,31 @@ const debates = [
       {
         question: 'Should workplaces allow more flexible dress codes?',
         keywords: [
-          'Comfort',
-          'Professionalism',
-          'Expression',
-          'Culture',
-          'Expectations',
+          {
+            keyword: 'Comfort',
+            example:
+              'Flexible dress codes can improve comfort and productivity, allowing employees to work in clothing that suits their tasks.',
+          },
+          {
+            keyword: 'Professionalism',
+            example:
+              'Dress codes maintain professionalism, but flexible policies can still project professionalism while allowing individuality.',
+          },
+          {
+            keyword: 'Expression',
+            example:
+              'Flexible dress codes allow self-expression and cultural expression, making workplaces more inclusive and welcoming.',
+          },
+          {
+            keyword: 'Culture',
+            example:
+              'Dress codes reflect workplace culture, and flexibility can create more modern, inclusive, and employee-friendly cultures.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Clear but flexible dress code expectations can balance professionalism with comfort and individual expression.',
+          },
         ],
       },
       {
@@ -1906,11 +3366,31 @@ const debates = [
       {
         question: 'Should schools limit the amount of screen time in class?',
         keywords: [
-          'Concentration',
-          'Habits',
-          'Balance',
-          'Engagement',
-          'Supervision',
+          {
+            keyword: 'Concentration',
+            example:
+              'Limiting screen time can improve concentration and reduce digital distractions that interfere with learning.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Reducing screen time in class helps students develop healthy technology habits and balance digital with offline learning.',
+          },
+          {
+            keyword: 'Balance',
+            example:
+              'Limiting screens promotes balance between digital tools and traditional learning methods that develop different skills.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'While screens can be engaging, excessive use may reduce engagement with teachers and peers in classroom interactions.',
+          },
+          {
+            keyword: 'Supervision',
+            example:
+              'Limiting screen time makes supervision easier and ensures students stay on task rather than accessing distractions.',
+          },
         ],
       },
       {
@@ -1926,11 +3406,31 @@ const debates = [
       {
         question: 'Should students take a gap year before university?',
         keywords: [
-          'Experience',
-          'Maturity',
-          'Exploration',
-          'Independence',
-          'Preparation',
+          {
+            keyword: 'Experience',
+            example:
+              'Gap years provide real-world experience through work, travel, or volunteering that can inform career choices.',
+          },
+          {
+            keyword: 'Maturity',
+            example:
+              'Taking a gap year can increase maturity and life experience, helping students approach university with greater focus.',
+          },
+          {
+            keyword: 'Exploration',
+            example:
+              'Gap years allow exploration of interests and career paths before committing to expensive university education.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Gap years develop independence and life skills that benefit students when they enter university.',
+          },
+          {
+            keyword: 'Preparation',
+            example:
+              'Gap years can provide better preparation for university, but some students may lose academic momentum or motivation.',
+          },
         ],
       },
       {
@@ -1947,11 +3447,31 @@ const debates = [
         question:
           'Do fast fashion brands need stricter standards to reduce environmental harm?',
         keywords: [
-          'Pollution',
-          'Responsibility',
-          'Production',
-          'Consumption',
-          'Ethics',
+          {
+            keyword: 'Pollution',
+            example:
+              'Fast fashion causes significant pollution through manufacturing, transportation, and textile waste in landfills.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Stricter standards would enforce corporate responsibility for environmental impact throughout the supply chain.',
+          },
+          {
+            keyword: 'Production',
+            example:
+              'Fast fashion production uses excessive water, chemicals, and resources, requiring standards to reduce environmental harm.',
+          },
+          {
+            keyword: 'Consumption',
+            example:
+              'Fast fashion encourages overconsumption and disposable clothing culture that creates massive waste.',
+          },
+          {
+            keyword: 'Ethics',
+            example:
+              'Stricter standards address both environmental ethics and labor ethics in fast fashion supply chains.',
+          },
         ],
       },
       {
@@ -1967,11 +3487,31 @@ const debates = [
       {
         question: 'Should more workplaces offer remote positions?',
         keywords: [
-          'Flexibility',
-          'Access',
-          'Performance',
-          'Collaboration',
-          'Balance',
+          {
+            keyword: 'Flexibility',
+            example:
+              'Remote work offers flexibility that improves work-life balance and allows employees to work from anywhere.',
+          },
+          {
+            keyword: 'Access',
+            example:
+              'Remote positions increase access to jobs for people with disabilities, caregiving responsibilities, or geographic limitations.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Remote work can improve performance for some employees, but may reduce it for others who need in-person structure.',
+          },
+          {
+            keyword: 'Collaboration',
+            example:
+              'Remote work may reduce spontaneous collaboration and team bonding, though technology can bridge some gaps.',
+          },
+          {
+            keyword: 'Balance',
+            example:
+              'Remote work improves work-life balance, but may blur boundaries between work and personal time.',
+          },
         ],
       },
 
@@ -1979,11 +3519,31 @@ const debates = [
         question:
           'Is it better to invest in experiences or personal belongings?',
         keywords: [
-          'Satisfaction',
-          'Value',
-          'Memory',
-          'Lifestyle',
-          'Priorities',
+          {
+            keyword: 'Satisfaction',
+            example:
+              'Research suggests experiences often provide more lasting satisfaction than material possessions, which can lose appeal over time.',
+          },
+          {
+            keyword: 'Value',
+            example:
+              'Experiences create memories and personal growth, while belongings provide utility but may depreciate in value.',
+          },
+          {
+            keyword: 'Memory',
+            example:
+              'Experiences create lasting memories and stories, while possessions may be forgotten or replaced over time.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'Investing in experiences supports a lifestyle focused on adventure and growth, while belongings support comfort and stability.',
+          },
+          {
+            keyword: 'Priorities',
+            example:
+              'The choice depends on priorities - some value experiences for personal growth, others value possessions for security.',
+          },
         ],
       },
       {
@@ -1999,31 +3559,91 @@ const debates = [
       {
         question: 'Should schools focus more on problem-solving skills?',
         keywords: [
-          'Logic',
-          'Creativity',
-          'Independence',
-          'Strategy',
-          'Understanding',
+          {
+            keyword: 'Logic',
+            example:
+              'Problem-solving develops logical thinking and analytical skills that are valuable across all subjects and life situations.',
+          },
+          {
+            keyword: 'Creativity',
+            example:
+              'Problem-solving encourages creative thinking and innovative approaches to challenges, not just following formulas.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Teaching problem-solving promotes independence by giving students tools to tackle challenges without constant guidance.',
+          },
+          {
+            keyword: 'Strategy',
+            example:
+              'Problem-solving teaches strategic thinking and planning skills that are essential for real-world success.',
+          },
+          {
+            keyword: 'Understanding',
+            example:
+              'Problem-solving deepens understanding by requiring students to apply knowledge rather than just memorize facts.',
+          },
         ],
       },
       {
         question: 'Are cities doing enough to support cyclists?',
         keywords: [
-          'Infrastructure',
-          'Safety',
-          'Planning',
-          'Mobility',
-          'Commitment',
+          {
+            keyword: 'Infrastructure',
+            example:
+              'Many cities lack adequate cycling infrastructure like dedicated lanes, secure parking, and bike-sharing programs.',
+          },
+          {
+            keyword: 'Safety',
+            example:
+              "Cyclist safety requires protected lanes, traffic calming, and driver education that many cities haven't fully implemented.",
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Supporting cycling requires integrated urban planning that prioritizes bikes alongside cars and public transport.',
+          },
+          {
+            keyword: 'Mobility',
+            example:
+              'Better cycling support improves urban mobility and reduces congestion, but requires significant infrastructure investment.',
+          },
+          {
+            keyword: 'Commitment',
+            example:
+              'Cities need long-term commitment to cycling, not just token bike lanes, to make cycling a viable transportation option.',
+          },
         ],
       },
       {
         question: 'Should students be allowed to use AI tools for learning?',
         keywords: [
-          'Support',
-          'Creativity',
-          'Supervision',
-          'Dependence',
-          'Ethics',
+          {
+            keyword: 'Support',
+            example:
+              'AI tools can provide learning support and personalized assistance, but may reduce development of independent thinking skills.',
+          },
+          {
+            keyword: 'Creativity',
+            example:
+              'AI can support creativity by generating ideas, but may also limit creative thinking if students become too dependent.',
+          },
+          {
+            keyword: 'Supervision',
+            example:
+              'Using AI tools requires supervision to ensure students learn rather than just getting answers without understanding.',
+          },
+          {
+            keyword: 'Dependence',
+            example:
+              'Over-reliance on AI tools can create dependence that undermines learning and critical thinking development.',
+          },
+          {
+            keyword: 'Ethics',
+            example:
+              'AI use raises ethical questions about academic integrity, but can also teach responsible technology use.',
+          },
         ],
       },
       {
@@ -2166,21 +3786,61 @@ const debates = [
       {
         question: 'Is it better to communicate by text or by voice?',
         keywords: [
-          'Clarity',
-          'Convenience',
-          'Tone',
-          'Misunderstanding',
-          'Connection',
+          {
+            keyword: 'Clarity',
+            example:
+              'Voice communication provides clarity through tone and inflection, while text can be misinterpreted without vocal cues.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'Text offers convenience for quick messages and asynchronous communication, while voice requires real-time interaction.',
+          },
+          {
+            keyword: 'Tone',
+            example:
+              'Voice conveys tone and emotion naturally, while text requires careful wording to avoid misunderstandings.',
+          },
+          {
+            keyword: 'Misunderstanding',
+            example:
+              'Text messages are more prone to misunderstanding without vocal cues, while voice allows immediate clarification.',
+          },
+          {
+            keyword: 'Connection',
+            example:
+              'Voice communication creates stronger emotional connection, while text can feel more distant and transactional.',
+          },
         ],
       },
       {
         question: 'Should schools increase outdoor learning time?',
         keywords: [
-          'Activity',
-          'Wellbeing',
-          'Engagement',
-          'Exploration',
-          'Development',
+          {
+            keyword: 'Activity',
+            example:
+              'Outdoor learning increases physical activity and reduces sedentary behavior, improving health and energy levels.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Time outdoors improves mental wellbeing through exposure to nature, fresh air, and natural light.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Outdoor learning can increase engagement by making lessons more interactive and connected to real-world environments.',
+          },
+          {
+            keyword: 'Exploration',
+            example:
+              'Outdoor settings encourage exploration and hands-on learning that may not be possible in traditional classrooms.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Outdoor learning supports holistic development including physical, social, and environmental awareness.',
+          },
         ],
       },
       {
@@ -2589,7 +4249,6 @@ const debates = [
           },
         ],
       },
-
       {
         question:
           'Should students learn presentation skills earlier in school?',
@@ -6342,12 +8001,6 @@ export default function DebateGenerator() {
                     <div className='grid grid-cols-2 gap-3'>
                       {keywords.map((keywordItem, index) => {
                         const { keyword, example } = getKeywordData(keywordItem)
-                        console.log(
-                          'Rendering keyword:',
-                          keyword,
-                          'with example:',
-                          example
-                        )
                         return (
                           <motion.div
                             key={keyword}
