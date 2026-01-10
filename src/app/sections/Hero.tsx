@@ -73,41 +73,32 @@ export default function Hero() {
 
       {/* Floating geometric shapes for modern feel */}
       <div className='absolute inset-0 z-5 overflow-hidden'>
-        <div className='absolute top-20 left-10 w-32 h-32 bg-primary/20 rounded-3xl rotate-45 animate-float blur-sm'></div>
         <div
           className='absolute top-40 right-20 w-24 h-24 bg-accent/20 rounded-2xl rotate-12 animate-float'
           style={{ animationDelay: '2s' }}
         ></div>
-        <div
-          className='absolute bottom-40 left-1/3 w-28 h-28 bg-primary/15 rounded-full animate-float'
-          style={{ animationDelay: '4s' }}
-        ></div>
       </div>
 
       <div className='container relative z-10 flex items-center justify-center px-4'>
-        <div ref={textRef} className='text-center space-y-8 max-w-5xl'>
-          <h1 className='display-xl text-primary leading-tight text-4xl'>
-            Connecting <em className='text-primary'>worlds</em>
-            <br />
-            through <em className='text-accent'>words</em>
-          </h1>
-
-          <div className='space-y-6'>
-            <p className='text-2xl md:text-3xl text-gray-700 max-w-4xl mx-auto font-medium leading-relaxed'>
-              Transform Your English Skills and Unlock Your Career Potential
-            </p>
-            <p className='text-lg md:text-xl text-gray-600 max-w-3xl mx-auto'>
-              Professional tutoring tailored to your goals. Business English,
-              Conversations, and Interview prep.
+        <div ref={textRef} className='text-center space-y-8 max-w-3xl'>
+          <div className='space-y-4'>
+            <h1 className='heading-xl text-gray-900 leading-tight'>
+              Professional English Tutoring
+              <br />
+              <span className='text-gradient-primary'>Tailored to Your Goals</span>
+            </h1>
+            <p className='text-lg md:text-xl text-gray-600 max-w-xl mx-auto leading-relaxed'>
+              Transform your communication skills with personalized lessons in Business English, 
+              Conversational Fluency, and Interview Preparation
             </p>
           </div>
 
           <div className='pt-4'>
             <a
               href='#contact'
-              className='btn-primary shadow-glow-lg hover:shadow-glow-lg text-xl px-12 py-6 rounded-2xl'
+              className='btn-primary shadow-glow-lg hover:shadow-glow-lg text-lg px-10 py-5 rounded-2xl inline-block'
             >
-              Start Your Journey Now
+              Start Learning Today
             </a>
           </div>
         </div>

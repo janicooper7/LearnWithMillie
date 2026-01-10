@@ -8076,7 +8076,7 @@ export default function DebateGenerator() {
             <div className='mt-12 flex justify-center'>
               <button
                 onClick={handleNextDebate}
-                className='btn-primary shadow-glow-lg hover:shadow-glow-lg group'
+                className='btn-primary shadow-glow-lg hover:shadow-glow-lg group flex gap-[15px]'
               >
                 <ArrowPathIcon className='w-5 h-5 group-hover:rotate-180 transition-transform duration-500' />
                 Generate New Debate

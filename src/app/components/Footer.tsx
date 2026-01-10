@@ -30,15 +30,15 @@ export default function Footer() {
   }
 
   return (
-    <footer className='bg-gray-900 text-white'>
+    <footer className='bg-black text-white'>
       <div className='container py-20'>
         <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-12'>
           {/* Brand */}
           <div className='lg:col-span-2 space-y-6'>
             <div className='flex items-center space-x-3'>
               <div className='relative w-12 h-12 flex items-center justify-center'>
-                <div className='absolute inset-0 w-12 h-12 bg-primary rounded-xl shadow-lg rotate-45'></div>
-                <span className='relative z-10 text-xl font-bold text-white'>
+                <div className='absolute inset-0 w-12 h-12 bg-white rounded-xl shadow-lg rotate-45'></div>
+                <span className='relative z-10 text-xl font-bold text-black'>
                   i
                 </span>
               </div>
@@ -62,22 +62,35 @@ export default function Footer() {
             <h4 className='text-xl font-bold text-white'>Quick Links</h4>
             <ul className='space-y-4'>
               {[
-                { name: 'About', hash: '#about' },
+                { name: 'Meet your tutor', href: '/about', isPage: true },
                 { name: 'Services', hash: '#lesson-options' },
                 { name: 'Testimonials', hash: '#testimonials' },
                 { name: 'Pricing', hash: '#pricing' },
                 { name: 'Contact', hash: '#contact' },
-              ].map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={isHomePage ? link.hash : `/${link.hash}`}
-                    onClick={(e) => handleLinkClick(e, link.hash)}
-                    className='text-gray-300 hover:text-primary transition-colors duration-200 font-medium'
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
+              ].map((link) => {
+                const isPageLink = 'isPage' in link && link.isPage
+                const hash = 'hash' in link ? link.hash : undefined
+                return (
+                  <li key={link.name}>
+                    <a
+                      href={
+                        isPageLink ? link.href : isHomePage ? hash : `/${hash}`
+                      }
+                      onClick={(e) => {
+                        if (isPageLink) {
+                          e.preventDefault()
+                          router.push(link.href)
+                        } else if (hash) {
+                          handleLinkClick(e, hash)
+                        }
+                      }}
+                      className='text-gray-300 hover:text-white transition-all duration-200 font-medium'
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                )
+              })}
             </ul>
           </div>
 
@@ -94,7 +107,7 @@ export default function Footer() {
                   <a
                     href={isHomePage ? '#lesson-options' : '/#lesson-options'}
                     onClick={(e) => handleLinkClick(e, '#lesson-options')}
-                    className='text-gray-300 hover:text-primary transition-colors duration-200 font-medium'
+                    className='text-gray-300 hover:text-white transition-all duration-200 font-medium'
                   >
                     {service}
                   </a>
@@ -116,7 +129,7 @@ export default function Footer() {
                 href='https://aiwebhouse.com/'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-gray-400 hover:text-primary transition-colors duration-200 underline'
+                className='text-gray-400 hover:text-white transition-colors duration-200 underline'
               >
                 aiwebhouse.com
               </a>

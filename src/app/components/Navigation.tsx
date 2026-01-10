@@ -6,13 +6,12 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import gsap from 'gsap'
 
 const navigation = [
-  { name: 'Home', href: '/', hash: '' },
-  { name: 'About', href: '/', hash: '#about' },
   { name: 'Services', href: '/', hash: '#lesson-options' },
   { name: 'Testimonials', href: '/', hash: '#testimonials' },
-  { name: 'Pricing', href: '/', hash: '#pricing' },
-  { name: 'Debate Generator', href: '/debate-generator', hash: '' },
   { name: 'FAQ', href: '/', hash: '#faq' },
+  { name: 'Pricing', href: '/', hash: '#pricing' },
+  { name: 'Meet your tutor', href: '/about', hash: '' },
+  { name: 'Debate Generator', href: '/debate-generator', hash: '' },
 ]
 
 export default function Navigation() {
@@ -167,7 +166,7 @@ export default function Navigation() {
         if (!ref) return
         const item = navigation[index]
         let itemIsActive
-        if (item.href === '/debate-generator') {
+        if (item.href === '/debate-generator' || item.href === '/about') {
           itemIsActive = pathname === item.href
         } else if (isHomePage) {
           const targetSectionId =
@@ -190,7 +189,7 @@ export default function Navigation() {
 
       const item = navigation[index]
       let itemIsActive
-      if (item.href === '/debate-generator') {
+      if (item.href === '/debate-generator' || item.href === '/about') {
         itemIsActive = pathname === item.href
       } else if (isHomePage) {
         const targetSectionId =
@@ -245,7 +244,10 @@ export default function Navigation() {
             <nav className='flex items-center space-x-1'>
               {navigation.map((item, index) => {
                 let isActive
-                if (item.href === '/debate-generator') {
+                if (
+                  item.href === '/debate-generator' ||
+                  item.href === '/about'
+                ) {
                   isActive = pathname === item.href
                 } else if (isHomePage) {
                   const targetSectionId =
@@ -330,7 +332,10 @@ export default function Navigation() {
             <div className='space-y-1 p-3'>
               {navigation.map((item) => {
                 let isActive
-                if (item.href === '/debate-generator') {
+                if (
+                  item.href === '/debate-generator' ||
+                  item.href === '/about'
+                ) {
                   isActive = pathname === item.href
                 } else if (isHomePage) {
                   const targetSectionId =
@@ -357,7 +362,7 @@ export default function Navigation() {
               <div className='p-3'>
                 <a
                   href={isHomePage ? '#contact' : '/#contact'}
-                  className='btn-primary w-full text-center shadow-glow-lg'
+                  className='btn-primary w-full text-center shadow-glow-lg hover:shadow-glow-lg'
                   onClick={(e) => {
                     e.preventDefault()
                     if (isHomePage) {

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ArrowRight } from 'lucide-react'
 
 const trackEvent = (action: string, params?: Record<string, any>) => {
   if (typeof window !== 'undefined' && window.gtag) {
@@ -211,6 +212,7 @@ export default function Contact() {
                 required
               >
                 <option value=''>Select a plan</option>
+                <option value='trial'>New Student - FREE Trial Lesson (20 mins)</option>
                 <option value='standard'>
                   Standard - 4 lessons - £136/month
                 </option>
@@ -243,9 +245,10 @@ export default function Contact() {
               <button
                 type='submit'
                 disabled={isSubmitting}
-                className='btn-primary shadow-glow-lg hover:shadow-glow-lg text-xl px-4 py-4 rounded-2xl w-full disabled:opacity-50 disabled:cursor-not-allowed'
+                className='btn-primary shadow-glow-lg hover:shadow-glow-lg text-xl px-4 py-4 rounded-2xl w-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
               >
                 {isSubmitting ? 'Sending...' : 'Submit Your Enquiry'}
+                {!isSubmitting && <ArrowRight className='w-5 h-5' />}
               </button>
               {submitStatus === 'error' && (
                 <div className='text-red-600 text-center space-y-1'>
