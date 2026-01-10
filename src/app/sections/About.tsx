@@ -469,7 +469,7 @@ export default function About() {
               you achieve your goals!
             </p>
             <a
-              href='#contact'
+              href='/#contact'
               className='bg-white text-black shadow-glow-lg hover:shadow-glow-lg hover:scale-105 transform inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all duration-300'
             >
               Book Your First Lesson
