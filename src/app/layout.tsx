@@ -11,7 +11,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fluentify.com'
 const siteName = 'Fluentify'
-const defaultTitle = 'Fluentify - Professional English Tutoring | Business English & Interview Prep'
+const defaultTitle =
+  'Fluentify - Professional English Tutoring | Business English & Interview Prep'
 const defaultDescription =
   'Professional English tutoring tailored to your needs. Learn Business English, improve your conversational skills, and prepare for job interviews with personalized lessons from a certified TEFL teacher in London.'
 
@@ -83,6 +84,11 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: siteUrl,
+  },
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
   },
 }
 
