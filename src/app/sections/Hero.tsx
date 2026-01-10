@@ -82,14 +82,17 @@ export default function Hero() {
       <div className='container relative z-10 flex items-center justify-center px-4'>
         <div ref={textRef} className='text-center space-y-8 max-w-3xl'>
           <div className='space-y-4'>
-            <h1 className='heading-xl text-gray-900 leading-tight'>
+            <h1 className='heading-lg text-gray-900 leading-tight'>
               Professional English Tutoring
               <br />
-              <span className='text-gradient-primary'>Tailored to Your Goals</span>
+              <span className='text-gradient-primary'>
+                Tailored to Your Goals
+              </span>
             </h1>
             <p className='text-lg md:text-xl text-gray-600 max-w-xl mx-auto leading-relaxed'>
-              Transform your communication skills with personalized lessons in Business English, 
-              Conversational Fluency, and Interview Preparation
+              Transform your communication skills with personalized lessons in
+              Business English, Conversational Fluency, and Interview
+              Preparation
             </p>
           </div>
 

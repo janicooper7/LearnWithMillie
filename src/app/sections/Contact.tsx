@@ -212,7 +212,7 @@ export default function Contact() {
                 required
               >
                 <option value=''>Select a plan</option>
-                <option value='trial'>New Student - FREE Trial Lesson (20 mins)</option>
+                <option value='trial'>New Student - FREE Trial Lesson (15 mins)</option>
                 <option value='standard'>
                   Standard - 4 lessons - £136/month
                 </option>
