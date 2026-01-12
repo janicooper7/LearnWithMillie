@@ -11,7 +11,7 @@ const navigation = [
   { name: 'FAQ', href: '/', hash: '#faq' },
   { name: 'Pricing', href: '/', hash: '#pricing' },
   { name: 'Meet your tutor', href: '/about', hash: '' },
-  { name: 'Debate Generator', href: '/debate-generator', hash: '' },
+  { name: 'Teacher Materials', href: '/teacher-materials', hash: '' },
 ]
 
 export default function Navigation() {
@@ -68,7 +68,7 @@ export default function Navigation() {
       setMobileMenuOpen(false)
     }
 
-    // If navigating to a different page (e.g., /debate-generator)
+    // If navigating to a different page (e.g., /teacher-materials)
     if (item.href !== pathname) {
       if (item.hash) {
         // Navigate to page with hash (e.g., /#about)
@@ -166,7 +166,7 @@ export default function Navigation() {
         if (!ref) return
         const item = navigation[index]
         let itemIsActive
-        if (item.href === '/debate-generator' || item.href === '/about') {
+        if (item.href === '/teacher-materials' || item.href === '/about') {
           itemIsActive = pathname === item.href
         } else if (isHomePage) {
           const targetSectionId =
@@ -189,7 +189,7 @@ export default function Navigation() {
 
       const item = navigation[index]
       let itemIsActive
-      if (item.href === '/debate-generator' || item.href === '/about') {
+      if (item.href === '/teacher-materials' || item.href === '/about') {
         itemIsActive = pathname === item.href
       } else if (isHomePage) {
         const targetSectionId =
@@ -245,7 +245,7 @@ export default function Navigation() {
               {navigation.map((item, index) => {
                 let isActive
                 if (
-                  item.href === '/debate-generator' ||
+                  item.href === '/teacher-materials' ||
                   item.href === '/about'
                 ) {
                   isActive = pathname === item.href
@@ -333,7 +333,7 @@ export default function Navigation() {
               {navigation.map((item) => {
                 let isActive
                 if (
-                  item.href === '/debate-generator' ||
+                  item.href === '/teacher-materials' ||
                   item.href === '/about'
                 ) {
                   isActive = pathname === item.href

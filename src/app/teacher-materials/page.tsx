@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: 'ESL Debate Generator - Free Debate Topics & Vocabulary',
     description:
       'Get inspired with thought-provoking ESL debate topics and key vocabulary. Perfect for classroom discussions and speaking practice.',
-    url: '/debate-generator',
+    url: '/teacher-materials',
   },
 }
 

@@ -521,13 +521,33 @@ const debates = [
         ],
       },
       {
-        question: 'Can money change someone’s personality?',
+        question: "Can money change someone's personality?",
         keywords: [
-          'Lifestyle',
-          'Values',
-          'Confidence',
-          'Behaviour',
-          'Priorities',
+          {
+            keyword: 'Lifestyle',
+            example:
+              "Sudden wealth can dramatically change a person's lifestyle, leading to new habits, social circles, and ways of spending time that may alter their personality.",
+          },
+          {
+            keyword: 'Values',
+            example:
+              'Money can shift personal values, as financial security may change what someone prioritizes and how they view relationships and responsibilities.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Having money can increase confidence and self-assurance, but it may also create arrogance or change how someone interacts with others.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Financial changes can alter behavior patterns, from spending habits to how someone treats others, potentially reflecting deeper personality shifts.',
+          },
+          {
+            keyword: 'Priorities',
+            example:
+              'When money becomes available, priorities often shift toward material possessions or experiences, potentially changing what someone values most in life.',
+          },
         ],
       },
       {
@@ -4359,83 +4379,243 @@ const debates = [
       {
         question: 'Do smartphones improve the learning experience?',
         keywords: [
-          'Access',
-          'Engagement',
-          'Convenience',
-          'Distraction',
-          'Technology',
+          {
+            keyword: 'Access',
+            example:
+              'Smartphones provide instant access to educational resources, online courses, and information, making learning available anytime and anywhere.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Interactive apps and multimedia content on smartphones can increase student engagement and make learning more dynamic and enjoyable.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'The convenience of smartphones allows students to study during commutes, breaks, or any spare moment, maximizing learning opportunities.',
+          },
+          {
+            keyword: 'Distraction',
+            example:
+              'Smartphones can be major distractions in learning environments, with notifications and apps pulling attention away from educational content.',
+          },
+          {
+            keyword: 'Technology',
+            example:
+              'Smartphone technology enables innovative learning tools like augmented reality, language apps, and collaborative platforms that enhance education.',
+          },
         ],
       },
       {
         question:
           'Are local businesses at risk due to the influence of large corporations?',
         keywords: [
-          'Competition',
-          'Stability',
-          'Fairness',
-          'Development',
-          'Economy',
+          {
+            keyword: 'Competition',
+            example:
+              'Large corporations can outcompete local businesses through economies of scale, lower prices, and extensive marketing resources.',
+          },
+          {
+            keyword: 'Stability',
+            example:
+              'Local businesses provide economic stability to communities, but competition from corporations threatens their survival and local job security.',
+          },
+          {
+            keyword: 'Fairness',
+            example:
+              'The playing field may be unfair when large corporations receive tax breaks and subsidies that small local businesses cannot access.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Local businesses contribute to community development and character, while corporate dominance can homogenize neighborhoods and reduce local identity.',
+          },
+          {
+            keyword: 'Economy',
+            example:
+              'The local economy benefits when money stays within the community through local businesses, rather than flowing to distant corporate headquarters.',
+          },
         ],
       },
       {
         question: 'Is it better to live near your friends?',
         keywords: [
-          'Support',
-          'Connection',
-          'Lifestyle',
-          'Convenience',
-          'Community',
+          {
+            keyword: 'Support',
+            example:
+              'Living near friends provides emotional and practical support, making it easier to help each other during difficult times or emergencies.',
+          },
+          {
+            keyword: 'Connection',
+            example:
+              'Proximity to friends strengthens social connections and makes it easier to maintain relationships through regular, spontaneous interactions.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'Living near friends can enhance lifestyle by creating opportunities for shared activities, social events, and mutual interests.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'Having friends nearby offers convenience for socializing, but may also limit opportunities to meet new people and explore different communities.',
+          },
+          {
+            keyword: 'Community',
+            example:
+              'A strong friend network creates a sense of community and belonging, contributing to overall happiness and wellbeing.',
+          },
         ],
       },
 
       {
         question: 'Should schools reduce the number of exams?',
         keywords: [
-          'Stress',
-          'Assessment',
-          'Performance',
-          'Learning',
-          'Motivation',
+          {
+            keyword: 'Stress',
+            example:
+              'Reducing exams can lower student stress levels, allowing for more focused learning without the constant pressure of test preparation.',
+          },
+          {
+            keyword: 'Assessment',
+            example:
+              'Fewer exams require alternative assessment methods like projects and presentations that may better evaluate student understanding.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Students may perform better with fewer exams, as they have more time to deeply understand material rather than cramming for tests.',
+          },
+          {
+            keyword: 'Learning',
+            example:
+              'Reducing exams can promote deeper learning and understanding, rather than surface-level memorization for test purposes.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Fewer exams may increase intrinsic motivation to learn, as students focus on understanding rather than just passing tests.',
+          },
         ],
       },
       {
         question: 'Are people reading fewer books because of technology?',
         keywords: [
-          'Habits',
-          'Attention',
-          'Entertainment',
-          'Preference',
-          'Access',
+          {
+            keyword: 'Habits',
+            example:
+              'Technology has changed reading habits, with people spending more time on screens and less time with physical or digital books.',
+          },
+          {
+            keyword: 'Attention',
+            example:
+              'Digital distractions can fragment attention spans, making it harder to maintain focus needed for deep reading of books.',
+          },
+          {
+            keyword: 'Entertainment',
+            example:
+              "Technology offers alternative entertainment like videos and games that compete with books for people's leisure time.",
+          },
+          {
+            keyword: 'Preference',
+            example:
+              'Some people prefer quick, bite-sized digital content over the sustained engagement required for reading books.',
+          },
+          {
+            keyword: 'Access',
+            example:
+              'While technology provides easy access to e-books and audiobooks, many people still choose other digital activities instead.',
+          },
         ],
       },
       {
         question: 'Should companies offer paid time for volunteering?',
         keywords: [
-          'Community',
-          'Support',
-          'Participation',
-          'Responsibility',
-          'Engagement',
+          {
+            keyword: 'Community',
+            example:
+              'Paid volunteer time strengthens community connections as employees contribute to local causes and organizations.',
+          },
+          {
+            keyword: 'Support',
+            example:
+              'Companies supporting volunteering demonstrate commitment to social responsibility and employee wellbeing beyond just work.',
+          },
+          {
+            keyword: 'Participation',
+            example:
+              'Paid time makes volunteering more accessible, increasing employee participation in community service activities.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Offering volunteer time shows corporate responsibility and helps address social issues through employee engagement.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Volunteering opportunities can increase employee engagement and job satisfaction, benefiting both workers and the company.',
+          },
         ],
       },
       {
         question: 'Is it better to take risks when you are young?',
         keywords: [
-          'Opportunity',
-          'Confidence',
-          'Experience',
-          'Independence',
-          'Growth',
+          {
+            keyword: 'Opportunity',
+            example:
+              'Taking risks when young opens opportunities for career advancement, travel, and experiences that may be harder to pursue later.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Early risk-taking builds confidence and resilience, teaching valuable lessons about handling failure and success.',
+          },
+          {
+            keyword: 'Experience',
+            example:
+              'Risks provide diverse experiences that shape personal development and help young people discover their passions and capabilities.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Taking risks fosters independence and decision-making skills, preparing young people for future challenges and responsibilities.',
+          },
+          {
+            keyword: 'Growth',
+            example:
+              'Risk-taking promotes personal growth by pushing individuals out of comfort zones and encouraging learning from both successes and failures.',
+          },
         ],
       },
       {
         question: 'Should schools teach students how to set goals?',
         keywords: [
-          'Motivation',
-          'Planning',
-          'Focus',
-          'Achievement',
-          'Discipline',
+          {
+            keyword: 'Motivation',
+            example:
+              'Goal-setting skills increase student motivation by providing clear targets and a sense of purpose in their academic work.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Teaching goal-setting helps students develop planning skills, breaking down large objectives into manageable steps.',
+          },
+          {
+            keyword: 'Focus',
+            example:
+              'Clear goals help students maintain focus and prioritize tasks, reducing distractions and improving academic performance.',
+          },
+          {
+            keyword: 'Achievement',
+            example:
+              'Goal-setting education can increase achievement rates as students learn to set realistic, measurable, and attainable objectives.',
+          },
+          {
+            keyword: 'Discipline',
+            example:
+              'The process of setting and working toward goals builds discipline and self-regulation skills valuable throughout life.',
+          },
         ],
       },
       {
@@ -4618,144 +4798,424 @@ const debates = [
       {
         question: 'Is it better to take risks or play it safe in life?',
         keywords: [
-          'Confidence',
-          'Consequences',
-          'Opportunity',
-          'Growth',
-          'Decision-making',
+          {
+            keyword: 'Confidence',
+            example:
+              'Taking calculated risks builds confidence and self-belief, while always playing it safe may limit personal growth and opportunities.',
+          },
+          {
+            keyword: 'Consequences',
+            example:
+              'Risks carry potential consequences that must be weighed against potential rewards, requiring careful consideration of outcomes.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Risk-taking opens opportunities for advancement and success that playing it safe may never provide.',
+          },
+          {
+            keyword: 'Growth',
+            example:
+              'Personal growth often requires stepping outside comfort zones and taking risks, while playing it safe maintains the status quo.',
+          },
+          {
+            keyword: 'Decision-making',
+            example:
+              'The choice between risk and safety depends on individual circumstances, values, and the ability to make informed decisions.',
+          },
         ],
       },
       {
         question:
           'Should schools use digital textbooks instead of printed ones?',
         keywords: [
-          'Accessibility',
-          'Cost',
-          'Convenience',
-          'Concentration',
-          'Sustainability',
+          {
+            keyword: 'Accessibility',
+            example:
+              'Digital textbooks improve accessibility with features like text-to-speech, adjustable fonts, and search functions that help all students.',
+          },
+          {
+            keyword: 'Cost',
+            example:
+              'Digital textbooks can reduce costs for schools and students, though initial device investments may be required.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'Digital textbooks offer convenience through portability, instant updates, and the ability to carry multiple books on one device.',
+          },
+          {
+            keyword: 'Concentration',
+            example:
+              'Some students concentrate better with printed books, while others prefer digital formats, making the choice personal.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Digital textbooks are more sustainable, reducing paper use and environmental impact compared to printed materials.',
+          },
         ],
       },
       {
         question: 'Are online reviews reliable when choosing products?',
         keywords: [
-          'Feedback',
-          'Trust',
-          'Accuracy',
-          'Influence',
-          'Expectations',
+          {
+            keyword: 'Feedback',
+            example:
+              'Online reviews provide valuable feedback from real users, but fake reviews can mislead consumers about product quality.',
+          },
+          {
+            keyword: 'Trust',
+            example:
+              'Trust in online reviews varies, as some platforms have verification systems while others are vulnerable to manipulation.',
+          },
+          {
+            keyword: 'Accuracy',
+            example:
+              "Review accuracy depends on the reviewer's honesty and experience, making it important to read multiple reviews for balance.",
+          },
+          {
+            keyword: 'Influence',
+            example:
+              'Reviews significantly influence purchasing decisions, but consumers should consider potential bias and verify information.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Reviews help set realistic expectations, though individual experiences may differ from what reviews suggest.',
+          },
         ],
       },
       {
         question:
           'Would lowering speed limits in cities make urban areas safer?',
         keywords: [
-          'Safety',
-          'Congestion',
-          'Enforcement',
-          'Behaviour',
-          'Planning',
+          {
+            keyword: 'Safety',
+            example:
+              'Lower speed limits can improve safety by reducing the severity of accidents and giving drivers more time to react.',
+          },
+          {
+            keyword: 'Congestion',
+            example:
+              'Lower speed limits may increase congestion and travel times, potentially causing frustration and economic impacts.',
+          },
+          {
+            keyword: 'Enforcement',
+            example:
+              'Speed limit effectiveness depends on proper enforcement, as limits without consequences may be ignored by drivers.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Lower limits can change driver behavior, encouraging more cautious driving and awareness of pedestrians and cyclists.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Urban planning should consider speed limits alongside infrastructure improvements like better crossings and traffic calming measures.',
+          },
         ],
       },
       {
         question: 'Is it better to invest in skills or formal education?',
         keywords: [
-          'Training',
-          'Qualifications',
-          'Development',
-          'Employability',
-          'Opportunity',
+          {
+            keyword: 'Training',
+            example:
+              'Skills training provides practical, job-specific abilities that can be immediately applied in the workplace.',
+          },
+          {
+            keyword: 'Qualifications',
+            example:
+              'Formal education provides recognized qualifications and credentials that many employers require for certain positions.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Both skills and education contribute to personal development, though they may serve different career paths and goals.',
+          },
+          {
+            keyword: 'Employability',
+            example:
+              'Employability depends on industry needs, with some fields valuing skills over degrees and others requiring formal qualifications.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'The best approach may combine both, as skills provide immediate opportunities while education opens long-term career paths.',
+          },
         ],
       },
       {
         question: 'Should schools allow more creative subjects?',
         keywords: [
-          'Expression',
-          'Motivation',
-          'Engagement',
-          'Imagination',
-          'Confidence',
+          {
+            keyword: 'Expression',
+            example:
+              'Creative subjects allow students to express themselves through art, music, drama, and writing, fostering individuality.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Creative subjects can increase student motivation by providing engaging alternatives to traditional academic subjects.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Students often show higher engagement in creative subjects, which can improve overall school attendance and participation.',
+          },
+          {
+            keyword: 'Imagination',
+            example:
+              'Creative subjects develop imagination and innovative thinking skills valuable in all areas of life and work.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Success in creative subjects builds confidence and self-esteem, especially for students who struggle with traditional academics.',
+          },
         ],
       },
       {
         question: 'Do smartphones make learning easier or harder?',
         keywords: [
-          'Distraction',
-          'Access',
-          'Concentration',
-          'Habits',
-          'Efficiency',
+          {
+            keyword: 'Distraction',
+            example:
+              'Smartphones can be major distractions during learning, with notifications and apps pulling attention away from educational content.',
+          },
+          {
+            keyword: 'Access',
+            example:
+              'Smartphones provide easy access to educational resources, online courses, and information that enhances learning opportunities.',
+          },
+          {
+            keyword: 'Concentration',
+            example:
+              'Constant smartphone use can reduce concentration and focus, making deep learning and retention more difficult.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Smartphone habits of quick browsing and multitasking may conflict with the sustained focus needed for effective learning.',
+          },
+          {
+            keyword: 'Efficiency',
+            example:
+              'When used properly, smartphones can increase learning efficiency through quick access to information and educational apps.',
+          },
         ],
       },
       {
         question: 'Should people be encouraged to grow their own food?',
         keywords: [
-          'Health',
-          'Sustainability',
-          'Effort',
-          'Independence',
-          'Lifestyle',
+          {
+            keyword: 'Health',
+            example:
+              'Growing your own food promotes health through fresh, organic produce and physical activity involved in gardening.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Home gardening supports sustainability by reducing food miles, packaging waste, and reliance on industrial agriculture.',
+          },
+          {
+            keyword: 'Effort',
+            example:
+              'Growing food requires significant effort and time, which may not be feasible for everyone due to busy lifestyles or space constraints.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Growing food increases independence and self-sufficiency, reducing reliance on grocery stores and food systems.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'Gardening can enhance lifestyle through outdoor activity, stress relief, and connection with nature, though it requires commitment.',
+          },
         ],
       },
       {
         question: 'Are holidays becoming too commercial?',
         keywords: [
-          'Tradition',
-          'Marketing',
-          'Spending',
-          'Expectations',
-          'Celebration',
+          {
+            keyword: 'Tradition',
+            example:
+              'Commercialization can overshadow traditional meanings of holidays, focusing on consumption rather than cultural or religious significance.',
+          },
+          {
+            keyword: 'Marketing',
+            example:
+              'Aggressive marketing creates pressure to spend money on gifts, decorations, and experiences during holiday seasons.',
+          },
+          {
+            keyword: 'Spending',
+            example:
+              'Holiday spending has increased dramatically, with people feeling obligated to buy expensive gifts and participate in commercial activities.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Commercial holidays create unrealistic expectations about gift-giving and celebration, causing stress and financial pressure.',
+          },
+          {
+            keyword: 'Celebration',
+            example:
+              'While commercialization changes how holidays are celebrated, it also makes traditions accessible to more people through products and services.',
+          },
         ],
       },
 
       {
         question: 'Should public speaking be required in school?',
         keywords: [
-          'Confidence',
-          'Communication',
-          'Preparation',
-          'Expression',
-          'Performance',
+          {
+            keyword: 'Confidence',
+            example:
+              'Public speaking builds confidence and self-assurance, helping students overcome fear and develop presentation skills.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Required public speaking improves communication skills essential for academic success and future career opportunities.',
+          },
+          {
+            keyword: 'Preparation',
+            example:
+              'Preparing speeches teaches research, organization, and critical thinking skills valuable across all subjects.',
+          },
+          {
+            keyword: 'Expression',
+            example:
+              'Public speaking allows students to express ideas clearly and persuasively, developing voice and articulation.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'While some students struggle with performance anxiety, practice helps them develop coping strategies and resilience.',
+          },
         ],
       },
       {
         question: 'Are online courses as effective as traditional classes?',
         keywords: [
-          'Interaction',
-          'Flexibility',
-          'Discipline',
-          'Support',
-          'Engagement',
+          {
+            keyword: 'Interaction',
+            example:
+              'Online courses may lack face-to-face interaction, though video calls and forums can facilitate communication and collaboration.',
+          },
+          {
+            keyword: 'Flexibility',
+            example:
+              'Online courses offer flexibility in scheduling and location, making education accessible to more people with busy lives.',
+          },
+          {
+            keyword: 'Discipline',
+            example:
+              'Online learning requires greater self-discipline and motivation, as students must manage their own time and stay engaged.',
+          },
+          {
+            keyword: 'Support',
+            example:
+              'Traditional classes provide immediate support and feedback, while online courses may have delayed responses from instructors.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Engagement varies in online courses, with some students thriving in digital environments while others need in-person structure.',
+          },
         ],
       },
       {
         question: 'Is affordable housing becoming too difficult to access?',
         keywords: [
-          'Affordability',
-          'Access',
-          'Community',
-          'Planning',
-          'Stability',
+          {
+            keyword: 'Affordability',
+            example:
+              'Housing costs have risen faster than wages, making affordable housing increasingly difficult for many people to access.',
+          },
+          {
+            keyword: 'Access',
+            example:
+              'Limited supply and high demand restrict access to affordable housing, particularly in urban areas with job opportunities.',
+          },
+          {
+            keyword: 'Community',
+            example:
+              'Lack of affordable housing can fragment communities, forcing people to move away from support networks and familiar areas.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Better urban planning and policies are needed to increase affordable housing supply and ensure diverse communities.',
+          },
+          {
+            keyword: 'Stability',
+            example:
+              'Affordable housing provides stability and security, while housing insecurity creates stress and impacts wellbeing.',
+          },
         ],
       },
       {
         question: 'Is it better to specialise in one skill or be a generalist?',
         keywords: [
-          'Expertise',
-          'Flexibility',
-          'Opportunities',
-          'Development',
-          'Career path',
+          {
+            keyword: 'Expertise',
+            example:
+              'Specialization develops deep expertise that can lead to recognition and higher pay in specific fields.',
+          },
+          {
+            keyword: 'Flexibility',
+            example:
+              'Being a generalist provides flexibility to adapt to changing job markets and explore different career opportunities.',
+          },
+          {
+            keyword: 'Opportunities',
+            example:
+              'Specialists may have fewer but higher-quality opportunities, while generalists have more diverse options across industries.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Both paths support professional development, with specialists becoming experts and generalists building broad skill sets.',
+          },
+          {
+            keyword: 'Career path',
+            example:
+              'Career paths differ, with specialists advancing in depth and generalists advancing through versatility and adaptability.',
+          },
         ],
       },
       {
         question: 'Should companies limit meetings to increase productivity?',
         keywords: [
-          'Efficiency',
-          'Communication',
-          'Planning',
-          'Focus',
-          'Resources',
+          {
+            keyword: 'Efficiency',
+            example:
+              'Limiting meetings improves efficiency by reducing interruptions and allowing employees to focus on productive work.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Fewer meetings require better communication methods like email or messaging, which may be more efficient for simple updates.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Better meeting planning ensures necessary discussions happen efficiently, while eliminating unnecessary gatherings.',
+          },
+          {
+            keyword: 'Focus',
+            example:
+              'Reducing meetings helps employees maintain focus and engage in deep work without constant interruptions.',
+          },
+          {
+            keyword: 'Resources',
+            example:
+              'Meetings consume time and resources, so limiting them can increase overall productivity and reduce costs.',
+          },
         ],
       },
       {
@@ -4790,13 +5250,33 @@ const debates = [
       },
       {
         question:
-          'Should schools start later to match students’ sleep patterns?',
+          "Should schools start later to match students' sleep patterns?",
         keywords: [
-          'Concentration',
-          'Wellbeing',
-          'Behaviour',
-          'Performance',
-          'Routine',
+          {
+            keyword: 'Concentration',
+            example:
+              'Later start times can improve student concentration and alertness, as teenagers naturally have later sleep-wake cycles.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Adequate sleep improves student wellbeing, reducing stress, anxiety, and health issues related to sleep deprivation.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Better-rested students show improved behavior, with fewer disciplinary issues and better classroom engagement.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Later starts can improve academic performance, as students are more alert and able to learn effectively.',
+          },
+          {
+            keyword: 'Routine',
+            example:
+              'Later starts require adjusting family routines and may conflict with parent work schedules and after-school activities.',
+          },
         ],
       },
       {
@@ -6567,74 +7047,214 @@ const debates = [
       {
         question: 'Are young people today under too much pressure to succeed?',
         keywords: [
-          'Expectations',
-          'Comparison',
-          'Competition',
-          'Resilience',
-          'Wellbeing',
+          {
+            keyword: 'Expectations',
+            example:
+              'Young people face high expectations from parents, schools, and society to achieve academic and career success early.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              "Social media enables constant comparison with peers, creating pressure to match or exceed others' achievements.",
+          },
+          {
+            keyword: 'Competition',
+            example:
+              'Intense competition for college admissions and jobs creates pressure that can overwhelm young people.',
+          },
+          {
+            keyword: 'Resilience',
+            example:
+              'While pressure can build resilience, excessive pressure may undermine it by causing burnout and mental health issues.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Too much pressure harms wellbeing, leading to anxiety, depression, and physical health problems among young people.',
+          },
         ],
       },
       {
         question:
           'Is it better to have a large network or a few close friends?',
         keywords: [
-          'Connection',
-          'Trust',
-          'Support',
-          'Diversity',
-          'Consistency',
+          {
+            keyword: 'Connection',
+            example:
+              'Large networks provide many connections, while close friends offer deeper, more meaningful relationships.',
+          },
+          {
+            keyword: 'Trust',
+            example:
+              'Close friendships build trust through shared experiences, while large networks may have more superficial relationships.',
+          },
+          {
+            keyword: 'Support',
+            example:
+              'Close friends provide reliable emotional support, while large networks offer diverse perspectives and resources.',
+          },
+          {
+            keyword: 'Diversity',
+            example:
+              'Large networks expose people to diverse perspectives and opportunities that smaller friend groups may not provide.',
+          },
+          {
+            keyword: 'Consistency',
+            example:
+              'Close friendships offer consistency and stability, while large networks require more effort to maintain.',
+          },
         ],
       },
       {
         question: 'Do smartphones make multitasking easier or worse?',
         keywords: [
-          'Efficiency',
-          'Distraction',
-          'Habits',
-          'Performance',
-          'Focus',
+          {
+            keyword: 'Efficiency',
+            example:
+              'Smartphones enable quick task switching, but research shows multitasking actually reduces overall efficiency and quality.',
+          },
+          {
+            keyword: 'Distraction',
+            example:
+              'Multitasking on smartphones increases distraction, as notifications and apps pull attention away from primary tasks.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Smartphone multitasking creates habits of divided attention that can be difficult to break and harmful to productivity.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Multitasking typically reduces performance on all tasks, as the brain cannot effectively focus on multiple things simultaneously.',
+          },
+          {
+            keyword: 'Focus',
+            example:
+              'Constant multitasking weakens focus and attention span, making it harder to concentrate on single tasks deeply.',
+          },
         ],
       },
       {
         question:
           'Should schools give more opportunities for creative expression?',
         keywords: [
-          'Confidence',
-          'Imagination',
-          'Engagement',
-          'Identity',
-          'Motivation',
+          {
+            keyword: 'Confidence',
+            example:
+              'Creative expression builds confidence as students discover their unique talents and learn to express themselves authentically.',
+          },
+          {
+            keyword: 'Imagination',
+            example:
+              'Creative opportunities develop imagination and innovative thinking skills valuable in all areas of life and work.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Creative activities increase student engagement by making learning enjoyable and personally meaningful.',
+          },
+          {
+            keyword: 'Identity',
+            example:
+              'Creative expression helps students develop identity and self-awareness through exploration of their interests and talents.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Creative subjects can increase overall motivation for school, as students find outlets for self-expression and passion.',
+          },
         ],
       },
       {
         question: 'Are people losing interest in long-form reading?',
         keywords: [
-          'Attention',
-          'Habits',
-          'Entertainment',
-          'Comprehension',
-          'Preference',
+          {
+            keyword: 'Attention',
+            example:
+              'Digital distractions have shortened attention spans, making it harder for people to maintain focus for long-form reading.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Reading habits have shifted toward short-form content like articles and social media posts rather than books.',
+          },
+          {
+            keyword: 'Entertainment',
+            example:
+              "Alternative entertainment options like videos and games compete with reading for people's leisure time.",
+          },
+          {
+            keyword: 'Comprehension',
+            example:
+              'Long-form reading develops deeper comprehension and critical thinking that short-form content cannot provide.',
+          },
+          {
+            keyword: 'Preference',
+            example:
+              'Many people prefer quick, digestible content over the sustained engagement required for long-form reading.',
+          },
         ],
       },
 
       {
         question: 'Is it better to live in a noisy area or a very quiet one?',
         keywords: [
-          'Comfort',
-          'Concentration',
-          'Lifestyle',
-          'Stress',
-          'Environment',
+          {
+            keyword: 'Comfort',
+            example:
+              'Quiet areas provide comfort and peace, while noisy areas may be stimulating but can be overwhelming for some people.',
+          },
+          {
+            keyword: 'Concentration',
+            example:
+              'Quiet environments support concentration and focus, while noise can disrupt work, study, and relaxation.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'Noisy areas often offer vibrant lifestyles with entertainment and social opportunities, while quiet areas provide tranquility.',
+          },
+          {
+            keyword: 'Stress',
+            example:
+              'Constant noise can increase stress and impact health, while quiet areas promote relaxation and wellbeing.',
+          },
+          {
+            keyword: 'Environment',
+            example:
+              'The choice depends on personal preferences and lifestyle needs, with both environments offering different benefits.',
+          },
         ],
       },
       {
         question: 'Does technology make parenting easier or more challenging?',
         keywords: [
-          'Supervision',
-          'Habits',
-          'Communication',
-          'Influence',
-          'Boundaries',
+          {
+            keyword: 'Supervision',
+            example:
+              "Technology requires constant supervision of children's online activities, adding new responsibilities for parents.",
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Technology creates habits in children that parents must manage, balancing screen time with other activities.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Technology facilitates communication between parents and children, but may also reduce face-to-face interaction.',
+          },
+          {
+            keyword: 'Influence',
+            example:
+              "Parents must navigate technology's influence on children, including exposure to content and social media pressures.",
+          },
+          {
+            keyword: 'Boundaries',
+            example:
+              "Setting technology boundaries is challenging, as parents balance safety concerns with children's desire for access.",
+          },
         ],
       },
       {
@@ -6756,41 +7376,121 @@ const debates = [
       {
         question: 'Are career changes becoming more important in modern life?',
         keywords: [
-          'Ambition',
-          'Development',
-          'Opportunity',
-          'Flexibility',
-          'Security',
+          {
+            keyword: 'Ambition',
+            example:
+              'Career changes allow people to pursue new ambitions and passions that their initial career path may not have fulfilled.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Changing careers supports personal and professional development by exposing people to new skills and experiences.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Modern economy offers more opportunities for career changes, with diverse industries and flexible work arrangements.',
+          },
+          {
+            keyword: 'Flexibility',
+            example:
+              'Career changes demonstrate flexibility and adaptability, valuable traits in rapidly changing job markets.',
+          },
+          {
+            keyword: 'Security',
+            example:
+              'While career changes can be risky, they may lead to better job security in growing industries or more fulfilling roles.',
+          },
         ],
       },
       {
         question: 'Does social media make people more or less confident?',
         keywords: [
-          'Image',
-          'Validation',
-          'Comparison',
-          'Perception',
-          'Behaviour',
+          {
+            keyword: 'Image',
+            example:
+              'Social media allows people to curate their image, which can boost confidence but also create pressure to maintain appearances.',
+          },
+          {
+            keyword: 'Validation',
+            example:
+              'Likes and comments provide validation that can increase confidence, but dependence on external validation can be fragile.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              'Constant comparison with others on social media often reduces confidence by highlighting perceived inadequacies.',
+          },
+          {
+            keyword: 'Perception',
+            example:
+              'Social media distorts perception, making others seem more successful or attractive, which can undermine self-confidence.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Social media behavior reflects confidence levels, with some people using it to build confidence and others experiencing anxiety.',
+          },
         ],
       },
       {
         question: 'Are strict routines helpful or limiting?',
         keywords: [
-          'Discipline',
-          'Flexibility',
-          'Habits',
-          'Productivity',
-          'Comfort',
+          {
+            keyword: 'Discipline',
+            example:
+              'Strict routines build discipline and structure, helping people maintain consistency and achieve their goals.',
+          },
+          {
+            keyword: 'Flexibility',
+            example:
+              'Rigid routines can limit flexibility, making it difficult to adapt to unexpected opportunities or changes.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Routines create positive habits, but overly strict routines may prevent people from trying new approaches or experiences.',
+          },
+          {
+            keyword: 'Productivity',
+            example:
+              'Structured routines can increase productivity by reducing decision fatigue and creating efficient patterns.',
+          },
+          {
+            keyword: 'Comfort',
+            example:
+              'Routines provide comfort and predictability, though they may also create boredom or resistance to change.',
+          },
         ],
       },
       {
         question: 'Is physical appearance becoming too important in society?',
         keywords: [
-          'Identity',
-          'Pressure',
-          'Expectations',
-          'Self-esteem',
-          'Perception',
+          {
+            keyword: 'Identity',
+            example:
+              'Physical appearance can become overly tied to identity, making people feel their worth depends on how they look.',
+          },
+          {
+            keyword: 'Pressure',
+            example:
+              'Societal pressure to meet appearance standards creates stress and anxiety, especially for young people.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Unrealistic appearance expectations from media and social platforms can harm self-image and mental health.',
+          },
+          {
+            keyword: 'Self-esteem',
+            example:
+              'Overemphasis on appearance can damage self-esteem, as people compare themselves to idealized images.',
+          },
+          {
+            keyword: 'Perception',
+            example:
+              'Appearance-focused culture affects how people perceive themselves and others, prioritizing looks over character.',
+          },
         ],
       },
 
@@ -6798,11 +7498,31 @@ const debates = [
         question:
           'Should students participate more in decision-making at school?',
         keywords: [
-          'Responsibility',
-          'Engagement',
-          'Autonomy',
-          'Communication',
-          'Confidence',
+          {
+            keyword: 'Responsibility',
+            example:
+              'Student participation in decision-making teaches responsibility and helps them understand the consequences of choices.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Involving students in decisions increases engagement and investment in their education and school community.',
+          },
+          {
+            keyword: 'Autonomy',
+            example:
+              'Decision-making participation develops autonomy and prepares students for independent thinking and leadership.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Student participation improves communication between students, teachers, and administrators.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Having a voice in school decisions builds confidence and helps students feel valued and respected.',
+          },
         ],
       },
       {
@@ -6925,53 +7645,153 @@ const debates = [
         question:
           'Should couples talk openly about finances before committing?',
         keywords: [
-          'Trust',
-          'Responsibility',
-          'Communication',
-          'Expectations',
-          'Stability',
+          {
+            keyword: 'Trust',
+            example:
+              'Open financial discussions build trust and transparency, essential foundations for a committed relationship.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              "Discussing finances helps couples understand each other's financial responsibility and money management styles.",
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Financial conversations improve overall communication skills and help couples navigate difficult topics together.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Open discussions set realistic expectations about financial goals, spending habits, and future plans.',
+          },
+          {
+            keyword: 'Stability',
+            example:
+              "Understanding each other's financial situation promotes stability and helps couples plan for their future together.",
+          },
         ],
       },
       {
         question:
           'Is it better to have a predictable career or an unpredictable one?',
         keywords: [
-          'Security',
-          'Excitement',
-          'Opportunity',
-          'Stress',
-          'Ambition',
+          {
+            keyword: 'Security',
+            example:
+              'Predictable careers offer financial security and stability, reducing stress and allowing for better long-term planning.',
+          },
+          {
+            keyword: 'Excitement',
+            example:
+              'Unpredictable careers provide excitement and variety, keeping work interesting and preventing boredom.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Unpredictable careers may offer unexpected opportunities for growth, learning, and advancement.',
+          },
+          {
+            keyword: 'Stress',
+            example:
+              'Unpredictable careers can create stress from uncertainty, while predictable careers may feel monotonous.',
+          },
+          {
+            keyword: 'Ambition',
+            example:
+              'Both paths can satisfy ambition - predictable through steady advancement, unpredictable through diverse experiences.',
+          },
         ],
       },
       {
         question: 'Does nostalgia make people see the past unrealistically?',
         keywords: [
-          'Memory',
-          'Perception',
-          'Emotion',
-          'Comparison',
-          'Expectations',
+          {
+            keyword: 'Memory',
+            example:
+              'Nostalgia filters memory, often highlighting positive experiences while minimizing negative aspects of the past.',
+          },
+          {
+            keyword: 'Perception',
+            example:
+              'Nostalgic perception can idealize the past, making it seem better than it actually was or better than the present.',
+          },
+          {
+            keyword: 'Emotion',
+            example:
+              'Nostalgia is driven by emotion, which can override rational assessment of past experiences and their reality.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              'People compare idealized past memories to current challenges, making the present seem worse by comparison.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Nostalgic expectations can prevent people from appreciating the present or adapting to current circumstances.',
+          },
         ],
       },
       {
         question: 'Are young adults too influenced by social trends?',
         keywords: [
-          'Identity',
-          'Behaviour',
-          'Comparison',
-          'Marketing',
-          'Expectations',
+          {
+            keyword: 'Identity',
+            example:
+              'Social trends can shape identity formation, with young adults adopting trends to fit in or express themselves.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Trend influence affects behavior, from purchasing decisions to lifestyle choices and social interactions.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              'Trends encourage comparison with peers, creating pressure to participate in popular activities or styles.',
+          },
+          {
+            keyword: 'Marketing',
+            example:
+              'Marketing exploits trend influence, targeting young adults with products and services tied to popular culture.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Social trends create expectations about how young adults should look, act, and live, potentially limiting individuality.',
+          },
         ],
       },
       {
         question:
           'Is it better to be optimistic or realistic when facing challenges?',
         keywords: [
-          'Resilience',
-          'Perspective',
-          'Expectations',
-          'Confidence',
-          'Decision-making',
+          {
+            keyword: 'Resilience',
+            example:
+              'Optimism can build resilience by maintaining hope, while realism helps prepare for potential difficulties.',
+          },
+          {
+            keyword: 'Perspective',
+            example:
+              'Both perspectives have value - optimism provides motivation, realism offers practical assessment of situations.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Optimism sets positive expectations, while realism creates more accurate expectations that prevent disappointment.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Optimism boosts confidence, but unrealistic optimism can lead to poor preparation and overconfidence.',
+          },
+          {
+            keyword: 'Decision-making',
+            example:
+              'Realistic assessment improves decision-making, while optimism can motivate action and persistence.',
+          },
         ],
       },
 
@@ -6979,197 +7799,577 @@ const debates = [
         question:
           'Do smartphones make communication more efficient or more confusing?',
         keywords: [
-          'Clarity',
-          'Misunderstanding',
-          'Speed',
-          'Tone',
-          'Connection',
+          {
+            keyword: 'Clarity',
+            example:
+              'Text messages lack nonverbal cues, reducing clarity and increasing potential for misunderstanding.',
+          },
+          {
+            keyword: 'Misunderstanding',
+            example:
+              'Digital communication increases misunderstanding due to absence of tone, facial expressions, and body language.',
+          },
+          {
+            keyword: 'Speed',
+            example:
+              'Smartphones enable rapid communication, but quick responses may lack thoughtfulness and lead to miscommunication.',
+          },
+          {
+            keyword: 'Tone',
+            example:
+              'Written messages can be misinterpreted without tone of voice, causing confusion about intent and emotion.',
+          },
+          {
+            keyword: 'Connection',
+            example:
+              'While smartphones facilitate connection across distances, they may reduce quality of communication and emotional connection.',
+          },
         ],
       },
       {
         question: 'Are people becoming too sensitive to criticism?',
         keywords: [
-          'Feedback',
-          'Confidence',
-          'Judgement',
-          'Resilience',
-          'Perception',
+          {
+            keyword: 'Feedback',
+            example:
+              'Constructive feedback is valuable for growth, but excessive sensitivity can prevent people from learning and improving.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Over-sensitivity to criticism can undermine confidence, making people defensive rather than open to learning.',
+          },
+          {
+            keyword: 'Judgement',
+            example:
+              'People may struggle to distinguish between helpful criticism and harmful judgment, reacting defensively to both.',
+          },
+          {
+            keyword: 'Resilience',
+            example:
+              'Developing resilience to criticism helps people grow, while excessive sensitivity can limit personal and professional development.',
+          },
+          {
+            keyword: 'Perception',
+            example:
+              'Sensitivity affects how people perceive criticism, sometimes interpreting constructive feedback as personal attacks.',
+          },
         ],
       },
       {
         question: 'Is digital art as valuable as traditional art?',
         keywords: [
-          'Creativity',
-          'Expression',
-          'Authenticity',
-          'Technique',
-          'Perception',
+          {
+            keyword: 'Creativity',
+            example:
+              'Both digital and traditional art require creativity, though they use different tools and techniques to express artistic vision.',
+          },
+          {
+            keyword: 'Expression',
+            example:
+              'Artistic expression exists in both mediums, with digital art offering new possibilities and traditional art maintaining historical significance.',
+          },
+          {
+            keyword: 'Authenticity',
+            example:
+              'Traditional art has physical authenticity and uniqueness, while digital art can be reproduced infinitely, affecting perceived value.',
+          },
+          {
+            keyword: 'Technique',
+            example:
+              'Both forms require technical skill, with digital art demanding software proficiency and traditional art requiring mastery of physical materials.',
+          },
+          {
+            keyword: 'Perception',
+            example:
+              "Public perception varies, with some valuing traditional art's tangibility and others appreciating digital art's innovation and accessibility.",
+          },
         ],
       },
       {
         question: 'Do modern diets create unnecessary pressure on people?',
         keywords: [
-          'Identity',
-          'Expectations',
-          'Lifestyle',
-          'Health',
-          'Behaviour',
+          {
+            keyword: 'Identity',
+            example:
+              'Diet choices can become tied to identity, creating pressure to follow specific eating patterns to fit social groups or trends.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Modern diets create unrealistic expectations about quick results and perfect bodies, leading to disappointment and unhealthy behaviors.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'Diet trends can pressure people to change lifestyles dramatically, which may not be sustainable or appropriate for everyone.',
+          },
+          {
+            keyword: 'Health',
+            example:
+              'While some diets promote health, others can create pressure that leads to disordered eating or nutritional deficiencies.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Diet pressure can alter eating behavior negatively, causing anxiety around food and social situations involving meals.',
+          },
         ],
       },
       {
         question: 'Is it better to take regular digital breaks?',
         keywords: [
-          'Balance',
-          'Habits',
-          'Wellbeing',
-          'Concentration',
-          'Boundaries',
+          {
+            keyword: 'Balance',
+            example:
+              'Regular digital breaks help maintain balance between online and offline life, preventing technology from dominating daily routines.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Taking breaks can break unhealthy digital habits and create space for other activities and face-to-face interactions.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Digital breaks improve wellbeing by reducing screen time, eye strain, and mental fatigue from constant connectivity.',
+          },
+          {
+            keyword: 'Concentration',
+            example:
+              'Breaks from digital devices can improve concentration and focus when returning to work or study tasks.',
+          },
+          {
+            keyword: 'Boundaries',
+            example:
+              'Regular breaks help establish healthy boundaries with technology, promoting mindful use rather than constant engagement.',
+          },
         ],
       },
       {
         question: 'Are people too focused on achieving perfection?',
         keywords: [
-          'Expectations',
-          'Confidence',
-          'Pressure',
-          'Motivation',
-          'Behaviour',
+          {
+            keyword: 'Expectations',
+            example:
+              'Perfectionism creates unrealistic expectations that are impossible to meet, leading to constant dissatisfaction and stress.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'The pursuit of perfection can undermine confidence, as people focus on flaws rather than acknowledging achievements.',
+          },
+          {
+            keyword: 'Pressure',
+            example:
+              'Perfectionism creates intense pressure that can lead to anxiety, burnout, and avoidance of challenges for fear of failure.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'While perfectionism can motivate some people, it often leads to procrastination and paralysis from fear of making mistakes.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Perfectionist behavior can interfere with relationships and work, as people struggle to accept anything less than perfect.',
+          },
         ],
       },
       {
         question:
           'Does technology bring families closer together or push them apart?',
         keywords: [
-          'Interaction',
-          'Habits',
-          'Connection',
-          'Communication',
-          'Expectations',
+          {
+            keyword: 'Interaction',
+            example:
+              'Technology can reduce face-to-face interaction within families, with members often focused on individual devices rather than each other.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Digital habits can create distance, as family members spend more time on screens than engaging with each other.',
+          },
+          {
+            keyword: 'Connection',
+            example:
+              'Technology also enables connection through video calls and messaging, helping families stay in touch across distances.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'While technology facilitates communication, it may also reduce quality conversations and emotional connection within families.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Technology creates expectations of constant availability, which can both strengthen and strain family relationships.',
+          },
         ],
       },
       {
         question:
           'Is it better to work steadily or in intense bursts of focus?',
         keywords: [
-          'Productivity',
-          'Concentration',
-          'Habits',
-          'Discipline',
-          'Energy',
+          {
+            keyword: 'Productivity',
+            example:
+              'Both approaches can be productive, with steady work providing consistency and intense bursts enabling rapid progress on specific tasks.',
+          },
+          {
+            keyword: 'Concentration',
+            example:
+              'Intense focus sessions maximize concentration, while steady work maintains consistent attention over longer periods.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Steady work builds sustainable habits, while intense bursts may be harder to maintain consistently over time.',
+          },
+          {
+            keyword: 'Discipline',
+            example:
+              'Steady work requires ongoing discipline, while intense bursts demand self-control to start and maintain focus.',
+          },
+          {
+            keyword: 'Energy',
+            example:
+              'Work style depends on individual energy patterns - some people thrive in bursts, others maintain steady energy throughout the day.',
+          },
         ],
       },
       {
         question:
           'Do young people rely too much on inspirational content online?',
         keywords: [
-          'Motivation',
-          'Comparison',
-          'Expectations',
-          'Influence',
-          'Behaviour',
+          {
+            keyword: 'Motivation',
+            example:
+              'Inspirational content can provide motivation, but over-reliance may prevent young people from developing internal motivation.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              "Inspirational content often leads to comparison with others' success stories, which can create pressure and self-doubt.",
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Online inspiration can create unrealistic expectations about success, making real-world progress feel inadequate.',
+          },
+          {
+            keyword: 'Influence',
+            example:
+              'Young people may be overly influenced by motivational trends rather than developing their own values and goals.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Dependency on inspirational content can create passive behavior, consuming motivation rather than taking action.',
+          },
         ],
       },
       {
-        question: 'Is the fear of missing out affecting people’s decisions?',
+        question: "Is the fear of missing out affecting people's decisions?",
         keywords: [
-          'Anxiety',
-          'Habits',
-          'Comparison',
-          'Expectations',
-          'Behaviour',
+          {
+            keyword: 'Anxiety',
+            example:
+              'FOMO creates anxiety that drives people to make decisions based on fear rather than genuine interest or values.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'FOMO-driven habits can lead to overcommitment and exhaustion as people try to participate in everything.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              "FOMO stems from comparing one's life to others' highlight reels, creating dissatisfaction with current experiences.",
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'FOMO creates expectations that people should always be doing something exciting, making ordinary moments feel inadequate.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'FOMO-driven behavior can lead to poor decision-making, as people choose activities out of fear rather than genuine desire.',
+          },
         ],
       },
 
       {
         question: 'Are modern relationships too focused on convenience?',
         keywords: [
-          'Expectations',
-          'Communication',
-          'Habits',
-          'Compatibility',
-          'Lifestyle',
+          {
+            keyword: 'Expectations',
+            example:
+              'Modern relationships may have expectations of convenience, with people seeking easy connections without investing effort.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Digital communication makes relationships convenient but may reduce depth and quality of face-to-face interactions.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Convenience-focused habits can make people less willing to work through relationship challenges or invest time.',
+          },
+          {
+            keyword: 'Compatibility',
+            example:
+              'While convenience helps find compatible partners through apps, it may also prioritize surface-level compatibility over deeper connection.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'Modern lifestyles prioritize convenience, which can affect how people approach relationships and commitment.',
+          },
         ],
       },
       {
         question:
           'Is it better to learn one language deeply or several at a basic level?',
         keywords: [
-          'Proficiency',
-          'Communication',
-          'Motivation',
-          'Opportunity',
-          'Development',
+          {
+            keyword: 'Proficiency',
+            example:
+              'Deep learning of one language achieves higher proficiency, enabling advanced communication and cultural understanding.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Basic knowledge of multiple languages allows communication in various contexts, though with limited depth.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Deep learning maintains motivation through visible progress, while multiple languages may spread effort too thin.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Multiple languages open more opportunities for travel and work, while deep proficiency enables specialized professional use.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Both approaches support cognitive development, with deep learning building expertise and multiple languages enhancing flexibility.',
+          },
         ],
       },
       {
         question: 'Do smartphones make people more impatient?',
         keywords: [
-          'Behaviour',
-          'Habits',
-          'Expectations',
-          'Attention',
-          'Frustration',
+          {
+            keyword: 'Behaviour',
+            example:
+              'Smartphone use can alter behavior, creating expectations of instant responses and immediate gratification.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Constant smartphone checking creates habits of impatience, making waiting or delayed responses feel intolerable.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Smartphones create expectations of instant information and communication, reducing tolerance for delays or slow processes.',
+          },
+          {
+            keyword: 'Attention',
+            example:
+              'Short-form content and quick interactions on smartphones may reduce attention spans and increase impatience with longer tasks.',
+          },
+          {
+            keyword: 'Frustration',
+            example:
+              'Impatience from smartphone habits can cause frustration in situations requiring patience, like learning or problem-solving.',
+          },
         ],
       },
       {
         question: 'Are people too focused on productivity?',
         keywords: [
-          'Pressure',
-          'Wellbeing',
-          'Motivation',
-          'Balance',
-          'Expectations',
+          {
+            keyword: 'Pressure',
+            example:
+              'Productivity focus creates constant pressure to achieve and accomplish, leading to stress and burnout.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Excessive productivity focus can harm wellbeing by prioritizing output over rest, relationships, and personal fulfillment.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'While productivity can motivate achievement, over-focus may reduce intrinsic motivation and enjoyment of activities.',
+          },
+          {
+            keyword: 'Balance',
+            example:
+              "Productivity focus often lacks balance, neglecting rest, leisure, and activities that don't produce measurable outcomes.",
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Productivity culture creates expectations of constant achievement, making downtime feel like failure or laziness.',
+          },
         ],
       },
       {
         question:
           'Should students get more opportunities for hands-on learning?',
         keywords: [
-          'Engagement',
-          'Understanding',
-          'Experience',
-          'Curiosity',
-          'Motivation',
+          {
+            keyword: 'Engagement',
+            example:
+              'Hands-on learning increases student engagement by making lessons interactive and relevant to real-world applications.',
+          },
+          {
+            keyword: 'Understanding',
+            example:
+              'Practical experiences deepen understanding by allowing students to see, touch, and experience concepts directly.',
+          },
+          {
+            keyword: 'Experience',
+            example:
+              'Hands-on learning provides valuable experience that helps students connect theory to practice and develop practical skills.',
+          },
+          {
+            keyword: 'Curiosity',
+            example:
+              'Active learning stimulates curiosity and encourages students to ask questions and explore topics more deeply.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Hands-on activities increase motivation by making learning enjoyable and demonstrating the practical value of knowledge.',
+          },
         ],
       },
       {
         question: 'Is social comparison becoming unavoidable?',
         keywords: [
-          'Expectations',
-          'Behaviour',
-          'Perception',
-          'Identity',
-          'Pressure',
+          {
+            keyword: 'Expectations',
+            example:
+              "Social comparison creates expectations based on others' achievements, making it difficult to appreciate one's own progress.",
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              "Comparison-driven behavior can lead to unhealthy competition, overspending, or lifestyle choices that don't align with values.",
+          },
+          {
+            keyword: 'Perception',
+            example:
+              "Constant comparison distorts perception, making others' lives seem better while minimizing one's own accomplishments.",
+          },
+          {
+            keyword: 'Identity',
+            example:
+              'Social comparison can shape identity, as people measure self-worth against others rather than internal values and goals.',
+          },
+          {
+            keyword: 'Pressure',
+            example:
+              "Comparison creates pressure to keep up with others, leading to stress, anxiety, and dissatisfaction with one's own life.",
+          },
         ],
       },
       {
         question: 'Do inspirational quotes actually help people?',
         keywords: [
-          'Motivation',
-          'Reflection',
-          'Perspective',
-          'Encouragement',
-          'Behaviour',
+          {
+            keyword: 'Motivation',
+            example:
+              'Inspirational quotes can provide temporary motivation, but lasting change requires action and sustained effort beyond words.',
+          },
+          {
+            keyword: 'Reflection',
+            example:
+              'Quotes can prompt reflection and self-examination, helping people consider their values and goals more deeply.',
+          },
+          {
+            keyword: 'Perspective',
+            example:
+              'Inspirational quotes offer perspective shifts that can help people reframe challenges and see situations differently.',
+          },
+          {
+            keyword: 'Encouragement',
+            example:
+              'Quotes provide encouragement during difficult times, offering comfort and hope when people need emotional support.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              "While quotes may inspire, they don't automatically change behavior - action requires commitment and practical steps.",
+          },
         ],
       },
       {
         question: 'Is gaming becoming a more meaningful form of entertainment?',
         keywords: [
-          'Creativity',
-          'Storytelling',
-          'Engagement',
-          'Community',
-          'Experience',
+          {
+            keyword: 'Creativity',
+            example:
+              'Modern games require creativity from both developers and players, offering artistic expression and innovative gameplay.',
+          },
+          {
+            keyword: 'Storytelling',
+            example:
+              'Games have evolved into sophisticated storytelling mediums, with narratives as complex and meaningful as films or literature.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Gaming provides deep engagement through interactive experiences that traditional media cannot match.',
+          },
+          {
+            keyword: 'Community',
+            example:
+              'Gaming creates communities where people form meaningful connections and friendships through shared experiences.',
+          },
+          {
+            keyword: 'Experience',
+            example:
+              'Games offer immersive experiences that can be educational, emotionally impactful, and personally meaningful.',
+          },
         ],
       },
       {
         question: 'Are people too worried about looking productive?',
         keywords: [
-          'Appearance',
-          'Expectations',
-          'Pressure',
-          'Behaviour',
-          'Identity',
+          {
+            keyword: 'Appearance',
+            example:
+              'People often focus on appearing productive rather than actually being productive, prioritizing image over results.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Social expectations require visible productivity, making people feel they must constantly demonstrate busyness and achievement.',
+          },
+          {
+            keyword: 'Pressure',
+            example:
+              'Pressure to appear productive creates stress and anxiety, as people worry about how others perceive their work ethic.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              "Productivity-focused behavior can include performative busyness that doesn't contribute to actual meaningful work.",
+          },
+          {
+            keyword: 'Identity',
+            example:
+              'Productivity becomes tied to identity and self-worth, making people feel valuable only when appearing busy or accomplished.',
+          },
         ],
       },
       {
@@ -7938,9 +9138,6 @@ export default function DebateGenerator() {
       <div className='container'>
         {/* Hero Section */}
         <div className='text-center mb-16'>
-          <span className='inline-block px-6 py-3 bg-primary/10 text-primary font-bold rounded-full text-sm mb-6'>
-            💬 ESL Tool
-          </span>
           <h1 className='heading-lg text-gray-900 mb-6'>
             Random Debate{' '}
             <span className='text-gradient-primary'>Generator</span>

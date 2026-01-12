@@ -17,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/debate-generator`,
+      url: `${baseUrl}/teacher-materials`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.7,
