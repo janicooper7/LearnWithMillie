@@ -1571,11 +1571,31 @@ const debates = [
       {
         question: 'Is it better to live in a city or the countryside?',
         keywords: [
-          'Lifestyle',
-          'Community',
-          'Opportunities',
-          'Environment',
-          'Transport',
+          {
+            keyword: 'Lifestyle',
+            example:
+              'City living offers vibrant lifestyle with entertainment and culture, while countryside provides peaceful, slower-paced living.',
+          },
+          {
+            keyword: 'Community',
+            example:
+              'Countryside often has stronger community connections, while cities offer diverse social networks and anonymity.',
+          },
+          {
+            keyword: 'Opportunities',
+            example:
+              'Cities provide more job opportunities, education, and services, while countryside offers natural beauty and space.',
+          },
+          {
+            keyword: 'Environment',
+            example:
+              'Countryside offers cleaner air and natural environment, while cities have more pollution but better infrastructure.',
+          },
+          {
+            keyword: 'Transport',
+            example:
+              'Cities have better public transport and walkability, while countryside requires car ownership and longer commutes.',
+          },
         ],
       },
       {
@@ -1905,13 +1925,33 @@ const debates = [
         ],
       },
       {
-        question: 'Should parents control their children’s social media use?',
+        question: "Should parents control their children's social media use?",
         keywords: [
-          'Privacy',
-          'Safety',
-          'Supervision',
-          'Communication',
-          'Boundaries',
+          {
+            keyword: 'Privacy',
+            example:
+              "Parental control must balance children's privacy with safety, respecting growing independence while ensuring protection.",
+          },
+          {
+            keyword: 'Safety',
+            example:
+              'Controlling social media use helps protect children from online dangers including predators, cyberbullying, and inappropriate content.',
+          },
+          {
+            keyword: 'Supervision',
+            example:
+              'Supervision teaches responsible online behavior, but excessive control may prevent children from learning independence.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Open communication about social media is more effective than strict control, helping children understand risks and make good choices.',
+          },
+          {
+            keyword: 'Boundaries',
+            example:
+              'Setting appropriate boundaries protects children while allowing them to develop digital literacy and social skills.',
+          },
         ],
       },
       {
@@ -2548,11 +2588,31 @@ const debates = [
         question:
           'Should there be penalties for failing to meet climate targets?',
         keywords: [
-          'Accountability',
-          'Responsibility',
-          'Emissions',
-          'Reputation',
-          'Consequences',
+          {
+            keyword: 'Accountability',
+            example:
+              'Penalties create accountability, ensuring governments and organizations take climate commitments seriously.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Penalties enforce responsibility for environmental impact, making climate action a priority rather than optional.',
+          },
+          {
+            keyword: 'Emissions',
+            example:
+              'Penalties can reduce emissions by creating financial incentives to meet targets and avoid consequences.',
+          },
+          {
+            keyword: 'Reputation',
+            example:
+              'Penalties may damage reputation, but they also demonstrate commitment to environmental protection when targets are met.',
+          },
+          {
+            keyword: 'Consequences',
+            example:
+              'Consequences for missing targets ensure that climate promises translate into real action and measurable results.',
+          },
         ],
       },
       {
@@ -2589,11 +2649,31 @@ const debates = [
       {
         question: 'Is democracy the best form of government?',
         keywords: [
-          'Freedom',
-          'Representation',
-          'Stability',
-          'Participation',
-          'Fairness',
+          {
+            keyword: 'Freedom',
+            example:
+              'Democracy protects individual freedoms and rights, allowing citizens to express opinions and participate in governance.',
+          },
+          {
+            keyword: 'Representation',
+            example:
+              'Democratic systems ensure representation of diverse voices and interests through elected officials and voting.',
+          },
+          {
+            keyword: 'Stability',
+            example:
+              'Democracy can provide stability through peaceful transitions of power, though some argue it can be slow and inefficient.',
+          },
+          {
+            keyword: 'Participation',
+            example:
+              'Democracy encourages citizen participation in decision-making, though voter apathy can undermine this ideal.',
+          },
+          {
+            keyword: 'Fairness',
+            example:
+              'Democratic processes aim for fairness and equality, though implementation may fall short of these ideals.',
+          },
         ],
       },
 
@@ -2629,13 +2709,33 @@ const debates = [
         ],
       },
       {
-        question: 'Are smartphones reducing people’s attention spans?',
+        question: "Are smartphones reducing people's attention spans?",
         keywords: [
-          'Distraction',
-          'Habits',
-          'Behaviour',
-          'Concentration',
-          'Technology',
+          {
+            keyword: 'Distraction',
+            example:
+              'Smartphones create constant distractions through notifications and apps, making it harder to maintain focus on tasks.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Frequent smartphone checking creates habits of divided attention that can reduce ability to concentrate for extended periods.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Smartphone behavior patterns, like quick scrolling and multitasking, may train the brain to prefer rapid stimulation over deep focus.',
+          },
+          {
+            keyword: 'Concentration',
+            example:
+              'Research suggests smartphones may reduce concentration and attention span, especially among heavy users.',
+          },
+          {
+            keyword: 'Technology',
+            example:
+              'While technology offers benefits, smartphone design encourages brief interactions that may undermine sustained attention.',
+          },
         ],
       },
       {
@@ -2757,11 +2857,31 @@ const debates = [
       {
         question: 'Should some city areas become completely car-free?',
         keywords: [
-          'Pollution',
-          'Safety',
-          'Planning',
-          'Mobility',
-          'Environment',
+          {
+            keyword: 'Pollution',
+            example:
+              'Car-free zones reduce air and noise pollution, creating cleaner and healthier urban environments.',
+          },
+          {
+            keyword: 'Safety',
+            example:
+              'Eliminating cars improves pedestrian and cyclist safety, reducing accidents and creating safer public spaces.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Car-free areas require careful urban planning to ensure alternative transport and access for residents and businesses.',
+          },
+          {
+            keyword: 'Mobility',
+            example:
+              'While car-free zones improve mobility for pedestrians and cyclists, they may create challenges for people with mobility needs.',
+          },
+          {
+            keyword: 'Environment',
+            example:
+              'Car-free areas significantly improve local environment by reducing emissions and creating more green space.',
+          },
         ],
       },
       {
@@ -2920,11 +3040,31 @@ const debates = [
       {
         question: 'Should people be encouraged to take afternoon naps?',
         keywords: [
-          'Energy',
-          'Productivity',
-          'Routine',
-          'Health',
-          'Performance',
+          {
+            keyword: 'Energy',
+            example:
+              'Afternoon naps can boost energy levels and help people recharge during the day, improving afternoon performance.',
+          },
+          {
+            keyword: 'Productivity',
+            example:
+              'Short naps may increase productivity by reducing fatigue and improving focus and cognitive function.',
+          },
+          {
+            keyword: 'Routine',
+            example:
+              'Napping can disrupt nighttime sleep routines if not managed carefully, potentially causing sleep problems.',
+          },
+          {
+            keyword: 'Health',
+            example:
+              'Research shows naps can benefit health by reducing stress and improving heart health, though individual needs vary.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Strategic napping can improve performance and alertness, especially for people with irregular sleep schedules.',
+          },
         ],
       },
       {
@@ -3071,11 +3211,31 @@ const debates = [
         question:
           'Is local tourism important enough to deserve more support and attention?',
         keywords: [
-          'Economy',
-          'Community',
-          'Promotion',
-          'Development',
-          'Sustainability',
+          {
+            keyword: 'Economy',
+            example:
+              'Local tourism supports regional economies by keeping money within communities and creating jobs in hospitality and services.',
+          },
+          {
+            keyword: 'Community',
+            example:
+              'Local tourism strengthens communities by preserving cultural heritage and supporting local businesses and attractions.',
+          },
+          {
+            keyword: 'Promotion',
+            example:
+              'Increased promotion of local tourism helps people discover nearby destinations and reduces need for long-distance travel.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Supporting local tourism drives development of infrastructure, attractions, and services that benefit residents and visitors.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Local tourism is more sustainable than international travel, reducing carbon emissions and environmental impact.',
+          },
         ],
       },
       {
@@ -3142,11 +3302,31 @@ const debates = [
       {
         question: 'Is it better to stay in one career or change paths often?',
         keywords: [
-          'Stability',
-          'Experience',
-          'Ambition',
-          'Development',
-          'Opportunity',
+          {
+            keyword: 'Stability',
+            example:
+              'Staying in one career provides stability and financial security, while frequent changes may offer variety but less security.',
+          },
+          {
+            keyword: 'Experience',
+            example:
+              'Long-term careers build deep expertise, while changing paths provides diverse experience across different fields.',
+          },
+          {
+            keyword: 'Ambition',
+            example:
+              'Career changes can satisfy ambition by exploring new challenges, while staying put may offer steady advancement.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Both paths support professional development - one through specialization, the other through diverse skill building.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Changing careers opens new opportunities, while staying in one field may limit exposure to different possibilities.',
+          },
         ],
       },
       {
@@ -3215,11 +3395,31 @@ const debates = [
         question:
           'Would replacing street parking with green spaces improve city living?',
         keywords: [
-          'Environment',
-          'Planning',
-          'Mobility',
-          'Wellbeing',
-          'Sustainability',
+          {
+            keyword: 'Environment',
+            example:
+              'Green spaces improve urban environment by reducing pollution, providing shade, and supporting biodiversity.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Replacing parking requires careful planning to ensure alternative parking solutions and maintain city functionality.',
+          },
+          {
+            keyword: 'Mobility',
+            example:
+              'While reducing parking may challenge car users, green spaces improve mobility for pedestrians and cyclists.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Green spaces enhance wellbeing by providing areas for recreation, relaxation, and connection with nature.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Green spaces support sustainability by reducing urban heat, improving air quality, and managing stormwater.',
+          },
         ],
       },
       {
@@ -3255,11 +3455,31 @@ const debates = [
       {
         question: 'Is it better to keep a small wardrobe or own many clothes?',
         keywords: [
-          'Consumption',
-          'Style',
-          'Sustainability',
-          'Habits',
-          'Organisation',
+          {
+            keyword: 'Consumption',
+            example:
+              'Small wardrobes reduce consumption and waste, while large wardrobes may lead to overconsumption and unused items.',
+          },
+          {
+            keyword: 'Style',
+            example:
+              'Small wardrobes encourage thoughtful style choices, while large wardrobes offer more variety and options.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Minimal wardrobes support sustainability by reducing textile waste and environmental impact of fashion industry.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Small wardrobes develop habits of mindful purchasing, while large wardrobes may encourage impulse buying.',
+          },
+          {
+            keyword: 'Organisation',
+            example:
+              'Small wardrobes are easier to organize and maintain, while large wardrobes require more space and management.',
+          },
         ],
       },
       {
@@ -3959,168 +4179,488 @@ const debates = [
         ],
       },
       {
-        question: 'Are smart homes improving people’s lives?',
+        question: "Are smart homes improving people's lives?",
         keywords: [
-          'Convenience',
-          'Security',
-          'Efficiency',
-          'Privacy',
-          'Technology',
+          {
+            keyword: 'Convenience',
+            example:
+              'Smart homes offer convenience through automated systems that control lighting, temperature, and appliances with voice commands or apps.',
+          },
+          {
+            keyword: 'Security',
+            example:
+              'Smart home security systems provide enhanced protection through cameras, alarms, and remote monitoring capabilities.',
+          },
+          {
+            keyword: 'Efficiency',
+            example:
+              'Smart home technology improves energy efficiency by optimizing heating, cooling, and lighting based on usage patterns.',
+          },
+          {
+            keyword: 'Privacy',
+            example:
+              'Smart homes raise privacy concerns as devices collect data about daily routines, habits, and personal information.',
+          },
+          {
+            keyword: 'Technology',
+            example:
+              'Smart home technology continues to evolve, offering new features but also creating dependence on complex systems.',
+          },
         ],
       },
 
       {
         question: 'Should people avoid multitasking?',
         keywords: [
-          'Focus',
-          'Efficiency',
-          'Habits',
-          'Performance',
-          'Concentration',
+          {
+            keyword: 'Focus',
+            example:
+              'Avoiding multitasking improves focus by allowing people to concentrate fully on one task at a time.',
+          },
+          {
+            keyword: 'Efficiency',
+            example:
+              'Single-tasking can increase efficiency as people complete tasks more accurately and quickly without switching between activities.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Breaking multitasking habits requires conscious effort but can lead to better work quality and reduced stress.',
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Research shows that multitasking reduces performance on all tasks, as the brain cannot effectively focus on multiple things simultaneously.',
+          },
+          {
+            keyword: 'Concentration',
+            example:
+              'Avoiding multitasking strengthens concentration skills and improves ability to maintain attention on important tasks.',
+          },
         ],
       },
       {
         question: 'Is it better to study in silence or with background noise?',
         keywords: [
-          'Focus',
-          'Comfort',
-          'Preference',
-          'Productivity',
-          'Concentration',
+          {
+            keyword: 'Focus',
+            example:
+              'Some people focus better in silence, while others find background noise helps them concentrate by blocking distractions.',
+          },
+          {
+            keyword: 'Comfort',
+            example:
+              'The choice between silence and noise depends on personal comfort and what environment helps individuals feel most relaxed.',
+          },
+          {
+            keyword: 'Preference',
+            example:
+              'Study environment preference varies by individual, with some needing complete silence and others preferring ambient sounds.',
+          },
+          {
+            keyword: 'Productivity',
+            example:
+              'Productivity depends on finding the right environment, whether that means silence, music, or background noise.',
+          },
+          {
+            keyword: 'Concentration',
+            example:
+              'Concentration levels can be affected by both silence and noise, depending on the type of work and individual preferences.',
+          },
         ],
       },
       {
         question: 'Should companies offer gym memberships to employees?',
         keywords: [
-          'Health',
-          'Motivation',
-          'Engagement',
-          'Wellbeing',
-          'Incentives',
+          {
+            keyword: 'Health',
+            example:
+              'Gym memberships promote employee health, reducing healthcare costs and improving overall physical fitness.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Company-provided gym memberships can motivate employees to exercise regularly and maintain healthy lifestyles.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Wellness benefits like gym memberships increase employee engagement and demonstrate company investment in worker wellbeing.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Physical activity through gym memberships supports overall wellbeing, including mental health and stress reduction.',
+          },
+          {
+            keyword: 'Incentives',
+            example:
+              'Gym memberships serve as valuable employee incentives that can improve job satisfaction and retention.',
+          },
         ],
       },
       {
         question: 'Are shopping malls becoming less relevant?',
         keywords: [
-          'Convenience',
-          'Trends',
-          'Experience',
-          'Economy',
-          'Consumer behaviour',
+          {
+            keyword: 'Convenience',
+            example:
+              'Online shopping offers greater convenience than malls, allowing people to shop from home at any time.',
+          },
+          {
+            keyword: 'Trends',
+            example:
+              'Shopping trends have shifted toward online retail, reducing foot traffic and relevance of traditional malls.',
+          },
+          {
+            keyword: 'Experience',
+            example:
+              'Malls still offer social experiences and immediate product access that online shopping cannot replicate.',
+          },
+          {
+            keyword: 'Economy',
+            example:
+              'Mall closures reflect economic changes as retail adapts to digital commerce and changing consumer preferences.',
+          },
+          {
+            keyword: 'Consumer behaviour',
+            example:
+              'Changing consumer behavior favors online shopping, but some people still prefer the in-person mall experience.',
+          },
         ],
       },
       {
         question: 'Should schools allow students to retake assignments?',
         keywords: [
-          'Fairness',
-          'Improvement',
-          'Motivation',
-          'Responsibility',
-          'Performance',
+          {
+            keyword: 'Fairness',
+            example:
+              'Allowing retakes can promote fairness by giving students second chances, but may also create unequal opportunities.',
+          },
+          {
+            keyword: 'Improvement',
+            example:
+              'Retakes encourage improvement and learning from mistakes, helping students master material rather than just pass tests.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'The opportunity to retake assignments can motivate students to learn from feedback and improve their work.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              "Retakes may reduce responsibility if students don't put full effort into initial attempts, knowing they can retake.",
+          },
+          {
+            keyword: 'Performance',
+            example:
+              'Retakes can improve overall performance as students have opportunities to demonstrate learning after additional study.',
+          },
         ],
       },
       {
         question: 'Is it better to buy local products?',
         keywords: [
-          'Quality',
-          'Community',
-          'Sustainability',
-          'Value',
-          'Preference',
+          {
+            keyword: 'Quality',
+            example:
+              "Local products often have higher quality and freshness, especially for food items that don't travel long distances.",
+          },
+          {
+            keyword: 'Community',
+            example:
+              'Buying local supports community businesses and keeps money within the local economy, creating jobs and economic stability.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Local products reduce transportation emissions and environmental impact, supporting more sustainable consumption patterns.',
+          },
+          {
+            keyword: 'Value',
+            example:
+              'While local products may cost more, they often provide better value through quality, freshness, and community support.',
+          },
+          {
+            keyword: 'Preference',
+            example:
+              'The choice between local and imported products depends on personal preferences, budget, and availability.',
+          },
         ],
       },
       {
         question:
           'Should workplaces allow shorter lunch breaks for earlier finishing times?',
         keywords: [
-          'Productivity',
-          'Choice',
-          'Wellbeing',
-          'Balance',
-          'Efficiency',
+          {
+            keyword: 'Productivity',
+            example:
+              'Shorter breaks may increase productivity by allowing earlier departure, but could reduce afternoon energy and focus.',
+          },
+          {
+            keyword: 'Choice',
+            example:
+              'Giving employees choice in break length provides flexibility to match individual needs and preferences.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Adequate lunch breaks support wellbeing, while shorter breaks may not provide enough time for proper rest and nutrition.',
+          },
+          {
+            keyword: 'Balance',
+            example:
+              'Flexible break policies help employees balance work and personal needs, improving job satisfaction.',
+          },
+          {
+            keyword: 'Efficiency',
+            example:
+              'Earlier finishing times can improve work-life balance, but may reduce efficiency if employees rush through lunch.',
+          },
         ],
       },
       {
-        question: 'Do smartphones affect children’s social skills?',
+        question: "Do smartphones affect children's social skills?",
         keywords: [
-          'Communication',
-          'Behaviour',
-          'Development',
-          'Interaction',
-          'Confidence',
+          {
+            keyword: 'Communication',
+            example:
+              'Smartphones can reduce face-to-face communication skills as children spend more time on digital devices.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Excessive smartphone use can alter behavior, reducing opportunities for developing social skills through real-world interaction.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Social skill development may be hindered when children prefer digital communication over in-person interactions.',
+          },
+          {
+            keyword: 'Interaction',
+            example:
+              'Smartphones can both facilitate and replace social interaction, affecting how children learn to interact with others.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Digital communication may reduce confidence in face-to-face social situations, as children become more comfortable online.',
+          },
         ],
       },
       {
         question:
           'Should public sports facilities be made more affordable for everyone?',
         keywords: [
-          'Accessibility',
-          'Health',
-          'Community',
-          'Affordability',
-          'Participation',
+          {
+            keyword: 'Accessibility',
+            example:
+              'Affordable facilities increase accessibility, allowing people from all income levels to participate in sports and fitness.',
+          },
+          {
+            keyword: 'Health',
+            example:
+              'Making facilities affordable promotes public health by encouraging physical activity across all socioeconomic groups.',
+          },
+          {
+            keyword: 'Community',
+            example:
+              'Affordable sports facilities strengthen communities by bringing people together and providing shared recreational spaces.',
+          },
+          {
+            keyword: 'Affordability',
+            example:
+              'Reducing costs removes financial barriers that prevent many people from accessing sports and fitness opportunities.',
+          },
+          {
+            keyword: 'Participation',
+            example:
+              'Lower costs increase participation rates, helping more people engage in physical activity and sports.',
+          },
         ],
       },
       {
         question: 'Is it better to have a predictable morning routine?',
         keywords: [
-          'Consistency',
-          'Productivity',
-          'Habits',
-          'Energy',
-          'Organisation',
+          {
+            keyword: 'Consistency',
+            example:
+              'Predictable routines create consistency that can reduce stress and decision fatigue in the morning.',
+          },
+          {
+            keyword: 'Productivity',
+            example:
+              'Morning routines can increase productivity by establishing efficient patterns and reducing time spent on decisions.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Consistent morning routines build positive habits that support long-term goals and wellbeing.',
+          },
+          {
+            keyword: 'Energy',
+            example:
+              'Structured routines can help manage energy levels, ensuring important tasks are completed when energy is highest.',
+          },
+          {
+            keyword: 'Organisation',
+            example:
+              'Predictable routines improve organisation by creating structure and reducing morning chaos.',
+          },
         ],
       },
 
       {
         question: 'Should schools teach students how to manage money?',
         keywords: [
-          'Responsibility',
-          'Planning',
-          'Budgeting',
-          'Awareness',
-          'Independence',
+          {
+            keyword: 'Responsibility',
+            example:
+              'Financial education teaches responsibility and helps students understand the importance of managing money wisely.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Money management education includes planning skills that help students set financial goals and make informed decisions.',
+          },
+          {
+            keyword: 'Budgeting',
+            example:
+              'Teaching budgeting prepares students for real-world financial challenges and helps them live within their means.',
+          },
+          {
+            keyword: 'Awareness',
+            example:
+              'Financial education increases awareness of money matters, helping students avoid debt and make smart financial choices.',
+          },
+          {
+            keyword: 'Independence',
+            example:
+              'Money management skills promote financial independence, enabling students to support themselves as adults.',
+          },
         ],
       },
       {
         question: 'Are people too reliant on digital reminders?',
         keywords: [
-          'Memory',
-          'Habits',
-          'Convenience',
-          'Dependence',
-          'Organisation',
+          {
+            keyword: 'Memory',
+            example:
+              'Over-reliance on digital reminders may weaken natural memory skills as people depend on technology to remember tasks.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Digital reminders create habits of external memory storage, potentially reducing ability to remember without devices.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'Digital reminders offer convenience and reliability, helping people manage busy schedules and never miss appointments.',
+          },
+          {
+            keyword: 'Dependence',
+            example:
+              'Dependence on digital reminders can become problematic if technology fails or devices are unavailable.',
+          },
+          {
+            keyword: 'Organisation',
+            example:
+              'Digital reminders improve organisation by ensuring important tasks and appointments are not forgotten.',
+          },
         ],
       },
       {
         question: 'Should companies limit the use of plastic packaging?',
         keywords: [
-          'Waste',
-          'Sustainability',
-          'Production',
-          'Responsibility',
-          'Consumption',
+          {
+            keyword: 'Waste',
+            example:
+              'Reducing plastic packaging decreases waste and environmental pollution, addressing a major environmental concern.',
+          },
+          {
+            keyword: 'Sustainability',
+            example:
+              'Limiting plastic supports sustainability by reducing reliance on non-renewable resources and environmental impact.',
+          },
+          {
+            keyword: 'Production',
+            example:
+              'Reducing plastic packaging requires changes in production processes, which may increase costs initially.',
+          },
+          {
+            keyword: 'Responsibility',
+            example:
+              'Companies have responsibility to reduce plastic use and find sustainable alternatives that protect the environment.',
+          },
+          {
+            keyword: 'Consumption',
+            example:
+              'Less plastic packaging can change consumption patterns and encourage more sustainable product choices.',
+          },
         ],
       },
       {
         question: 'Is it better to follow a schedule or be spontaneous?',
         keywords: [
-          'Flexibility',
-          'Structure',
-          'Habits',
-          'Balance',
-          'Preference',
+          {
+            keyword: 'Flexibility',
+            example:
+              'Spontaneity offers flexibility to adapt to opportunities and changes, while schedules provide structure and predictability.',
+          },
+          {
+            keyword: 'Structure',
+            example:
+              'Schedules create structure that helps people stay organized and accomplish goals, but may limit spontaneity.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Scheduled routines build positive habits, while spontaneity can break monotony and create excitement.',
+          },
+          {
+            keyword: 'Balance',
+            example:
+              'The best approach may balance both, with structure for important tasks and spontaneity for enjoyment and flexibility.',
+          },
+          {
+            keyword: 'Preference',
+            example:
+              'The choice depends on personal preference, work requirements, and lifestyle needs for structure versus flexibility.',
+          },
         ],
       },
       {
         question:
           'Are outdoor community spaces receiving enough support and investment?',
         keywords: [
-          'Wellbeing',
-          'Engagement',
-          'Planning',
-          'Environment',
-          'Connection',
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Outdoor spaces support community wellbeing by providing areas for recreation, exercise, and relaxation.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Well-maintained outdoor spaces increase community engagement and bring people together for shared activities.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Adequate investment requires careful planning to create spaces that meet community needs and preferences.',
+          },
+          {
+            keyword: 'Environment',
+            example:
+              'Outdoor spaces improve local environments by providing green areas, reducing pollution, and supporting biodiversity.',
+          },
+          {
+            keyword: 'Connection',
+            example:
+              'Community spaces facilitate connection between neighbors and create opportunities for social interaction.',
+          },
         ],
       },
       {
@@ -6785,11 +7325,31 @@ const debates = [
         question:
           'Is it better to live in a modern apartment or an older house?',
         keywords: [
-          'Comfort',
-          'Maintenance',
-          'Design',
-          'Character',
-          'Lifestyle',
+          {
+            keyword: 'Comfort',
+            example:
+              'Modern apartments often offer better comfort with updated amenities, while older houses may have more character but require more maintenance.',
+          },
+          {
+            keyword: 'Maintenance',
+            example:
+              'Modern apartments typically require less maintenance, while older houses may need frequent repairs and updates.',
+          },
+          {
+            keyword: 'Design',
+            example:
+              'Modern apartments feature contemporary design and efficient layouts, while older houses offer unique architectural character.',
+          },
+          {
+            keyword: 'Character',
+            example:
+              'Older houses have unique character and history, while modern apartments offer sleek, uniform design.',
+          },
+          {
+            keyword: 'Lifestyle',
+            example:
+              'The choice depends on lifestyle preferences - apartments suit urban living, while houses offer more space and privacy.',
+          },
         ],
       },
 
@@ -6797,11 +7357,31 @@ const debates = [
         question:
           'Is it better to focus on one long-term goal or many short-term ones?',
         keywords: [
-          'Motivation',
-          'Priorities',
-          'Planning',
-          'Discipline',
-          'Achievement',
+          {
+            keyword: 'Motivation',
+            example:
+              'Short-term goals provide frequent motivation through quick wins, while long-term goals require sustained motivation over time.',
+          },
+          {
+            keyword: 'Priorities',
+            example:
+              'Focusing on one long-term goal helps prioritize efforts, while multiple short-term goals may spread focus too thin.',
+          },
+          {
+            keyword: 'Planning',
+            example:
+              'Long-term goals require detailed planning and strategy, while short-term goals allow for more flexibility and adaptation.',
+          },
+          {
+            keyword: 'Discipline',
+            example:
+              'Both approaches require discipline, but long-term goals demand more sustained commitment and delayed gratification.',
+          },
+          {
+            keyword: 'Achievement',
+            example:
+              'Short-term goals provide frequent achievements, while long-term goals offer potentially greater but less frequent accomplishments.',
+          },
         ],
       },
       {
@@ -8512,53 +9092,153 @@ const debates = [
       {
         question: 'Is online learning making education more accessible?',
         keywords: [
-          'Flexibility',
-          'Opportunity',
-          'Resources',
-          'Engagement',
-          'Convenience',
+          {
+            keyword: 'Flexibility',
+            example:
+              'Online learning offers flexibility in scheduling and location, making education accessible to people with busy lives or limited mobility.',
+          },
+          {
+            keyword: 'Opportunity',
+            example:
+              'Online courses create opportunities for people who cannot attend traditional classes due to distance, work, or family commitments.',
+          },
+          {
+            keyword: 'Resources',
+            example:
+              'Digital resources make educational materials accessible to more people, regardless of geographic location or financial constraints.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'While online learning increases access, engagement levels may vary, with some students thriving and others struggling in digital environments.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'The convenience of online learning removes barriers like transportation and scheduling conflicts that prevent people from accessing education.',
+          },
         ],
       },
       {
         question: 'Are people avoiding difficult conversations too often?',
         keywords: [
-          'Communication',
-          'Conflict',
-          'Honesty',
-          'Boundaries',
-          'Trust',
+          {
+            keyword: 'Communication',
+            example:
+              'Avoiding difficult conversations can harm communication and prevent resolution of important issues in relationships.',
+          },
+          {
+            keyword: 'Conflict',
+            example:
+              'While avoiding conflict may seem easier short-term, it often leads to larger problems and unresolved tensions.',
+          },
+          {
+            keyword: 'Honesty',
+            example:
+              'Difficult conversations require honesty and courage, but they are essential for authentic relationships and problem-solving.',
+          },
+          {
+            keyword: 'Boundaries',
+            example:
+              'Having difficult conversations helps establish healthy boundaries and clear expectations in relationships.',
+          },
+          {
+            keyword: 'Trust',
+            example:
+              'Avoiding difficult conversations can erode trust, while addressing issues openly can strengthen relationships.',
+          },
         ],
       },
       {
         question: 'Is it better to read a physical book or an e-book?',
         keywords: [
-          'Experience',
-          'Convenience',
-          'Habits',
-          'Preference',
-          'Engagement',
+          {
+            keyword: 'Experience',
+            example:
+              'Physical books offer a tactile experience with paper and binding, while e-books provide digital convenience.',
+          },
+          {
+            keyword: 'Convenience',
+            example:
+              'E-books offer convenience through portability and instant access, while physical books require carrying and storage.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Reading habits may differ between formats, with some people preferring physical books and others enjoying digital reading.',
+          },
+          {
+            keyword: 'Preference',
+            example:
+              'The choice between physical and e-books depends on personal preference, reading context, and individual needs.',
+          },
+          {
+            keyword: 'Engagement',
+            example:
+              'Both formats can provide engaging reading experiences, though some people find physical books more immersive.',
+          },
         ],
       },
       {
         question:
           'Are people too focused on taking photos instead of being present?',
         keywords: [
-          'Memory',
-          'Attention',
-          'Distraction',
-          'Experience',
-          'Habits',
+          {
+            keyword: 'Memory',
+            example:
+              'While photos help preserve memories, excessive photo-taking may reduce ability to form lasting mental memories of experiences.',
+          },
+          {
+            keyword: 'Attention',
+            example:
+              'Focusing on taking photos can divert attention from fully experiencing and appreciating the present moment.',
+          },
+          {
+            keyword: 'Distraction',
+            example:
+              'Photo-taking can be a distraction that prevents people from being fully present and engaged in their experiences.',
+          },
+          {
+            keyword: 'Experience',
+            example:
+              'Being present enhances experience quality, while constant photo-taking may reduce depth of engagement with activities.',
+          },
+          {
+            keyword: 'Habits',
+            example:
+              'Photo-taking habits can become automatic, making it difficult to simply enjoy moments without documenting them.',
+          },
         ],
       },
       {
         question:
           'Does giving children too much praise affect their confidence?',
         keywords: [
-          'Motivation',
-          'Resilience',
-          'Expectations',
-          'Behaviour',
-          'Development',
+          {
+            keyword: 'Motivation',
+            example:
+              'Excessive praise may reduce intrinsic motivation, as children become dependent on external validation rather than internal satisfaction.',
+          },
+          {
+            keyword: 'Resilience',
+            example:
+              'Too much praise can undermine resilience by preventing children from learning to handle failure and criticism.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Over-praising can create unrealistic expectations and make children feel pressure to always perform perfectly.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Children may develop behavior patterns of seeking constant praise rather than focusing on genuine achievement.',
+          },
+          {
+            keyword: 'Development',
+            example:
+              'Balanced feedback supports healthy development, while excessive praise may hinder growth and self-awareness.',
+          },
         ],
       },
 
@@ -8669,53 +9349,153 @@ const debates = [
       {
         question: 'Are social skills becoming harder to develop online?',
         keywords: [
-          'Interaction',
-          'Communication',
-          'Confidence',
-          'Behaviour',
-          'Expectations',
+          {
+            keyword: 'Interaction',
+            example:
+              'Online interaction lacks nonverbal cues and face-to-face communication that are essential for developing social skills.',
+          },
+          {
+            keyword: 'Communication',
+            example:
+              'Digital communication may reduce opportunities to practice real-world communication skills needed for in-person interactions.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'While some people gain confidence online, it may not transfer to face-to-face social situations requiring different skills.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Online behavior patterns may differ from real-world social behavior, potentially hindering development of appropriate social skills.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Online social expectations may differ from real-world norms, making it harder to develop appropriate social skills.',
+          },
         ],
       },
       {
         question: 'Do people rely too much on online advice?',
         keywords: [
-          'Guidance',
-          'Judgement',
-          'Influence',
-          'Behaviour',
-          'Expectations',
+          {
+            keyword: 'Guidance',
+            example:
+              'Online advice provides easy access to guidance, but may lack personalization and context needed for individual situations.',
+          },
+          {
+            keyword: 'Judgement',
+            example:
+              "Over-reliance on online advice can reduce people's ability to exercise good judgement and make independent decisions.",
+          },
+          {
+            keyword: 'Influence',
+            example:
+              'Online advice can be influential, but sources may lack credibility or expertise, leading to poor decision-making.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Dependence on online advice can alter behavior patterns, making people less confident in their own decision-making abilities.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              "Online advice may create unrealistic expectations or provide generic solutions that don't fit individual circumstances.",
+          },
         ],
       },
       {
         question:
           'Is it better to challenge yourself regularly or stay comfortable?',
         keywords: [
-          'Growth',
-          'Confidence',
-          'Motivation',
-          'Resilience',
-          'Wellbeing',
+          {
+            keyword: 'Growth',
+            example:
+              'Regular challenges promote personal growth by pushing people beyond their comfort zones and developing new capabilities.',
+          },
+          {
+            keyword: 'Confidence',
+            example:
+              'Overcoming challenges builds confidence, while staying comfortable may limit opportunities to prove capabilities.',
+          },
+          {
+            keyword: 'Motivation',
+            example:
+              'Challenges can increase motivation by providing goals and achievements, while comfort may lead to stagnation.',
+          },
+          {
+            keyword: 'Resilience',
+            example:
+              'Facing challenges regularly builds resilience and ability to handle difficulties, while comfort may reduce adaptability.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Balance is important - some comfort supports wellbeing, while excessive challenges can cause stress and burnout.',
+          },
         ],
       },
       {
         question: 'Does humour help people deal with stress?',
         keywords: [
-          'Coping',
-          'Perspective',
-          'Connection',
-          'Wellbeing',
-          'Behaviour',
+          {
+            keyword: 'Coping',
+            example:
+              'Humour serves as an effective coping mechanism, helping people manage stress by providing emotional relief and perspective.',
+          },
+          {
+            keyword: 'Perspective',
+            example:
+              'Humour can shift perspective on stressful situations, making problems seem more manageable and less overwhelming.',
+          },
+          {
+            keyword: 'Connection',
+            example:
+              'Shared humour creates connection with others, providing social support that helps people cope with stress.',
+          },
+          {
+            keyword: 'Wellbeing',
+            example:
+              'Laughter and humour improve wellbeing by reducing stress hormones and promoting positive emotions.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Using humour to cope can become a positive behavior pattern that helps people navigate difficult situations.',
+          },
         ],
       },
 
       {
         question: 'Are young people too influenced by celebrity lifestyles?',
         keywords: [
-          'Identity',
-          'Comparison',
-          'Expectations',
-          'Behaviour',
-          'Pressure',
+          {
+            keyword: 'Identity',
+            example:
+              "Celebrity influence can shape young people's identity formation, as they try to emulate famous people they admire.",
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              'Young people often compare their lives to idealized celebrity lifestyles, leading to dissatisfaction and unrealistic expectations.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Celebrity lifestyles create unrealistic expectations about success, wealth, and appearance that are difficult to achieve.',
+          },
+          {
+            keyword: 'Behaviour',
+            example:
+              'Celebrity influence affects behavior, from fashion choices to lifestyle decisions and spending habits.',
+          },
+          {
+            keyword: 'Pressure',
+            example:
+              'Pressure to match celebrity lifestyles can cause stress, financial problems, and negative self-image among young people.',
+          },
         ],
       },
       {
@@ -8966,21 +9746,61 @@ const debates = [
       {
         question: 'Is curiosity more important than intelligence for success?',
         keywords: [
-          'Motivation',
-          'Learning',
-          'Exploration',
-          'Potential',
-          'Mindset',
+          {
+            keyword: 'Motivation',
+            example:
+              'Curiosity provides intrinsic motivation to learn and explore, which can be more valuable than raw intelligence alone.',
+          },
+          {
+            keyword: 'Learning',
+            example:
+              'Curiosity drives continuous learning and skill development, while intelligence without curiosity may remain underutilized.',
+          },
+          {
+            keyword: 'Exploration',
+            example:
+              'Curiosity encourages exploration of new ideas and opportunities, leading to innovation and discovery.',
+          },
+          {
+            keyword: 'Potential',
+            example:
+              'Curiosity unlocks potential by motivating people to develop their intelligence and capabilities through learning.',
+          },
+          {
+            keyword: 'Mindset',
+            example:
+              'A curious mindset promotes growth and adaptability, which are essential for long-term success in changing environments.',
+          },
         ],
       },
       {
         question: 'Are people too influenced by motivational trends?',
         keywords: [
-          'Behaviour',
-          'Expectations',
-          'Comparison',
-          'Identity',
-          'Influence',
+          {
+            keyword: 'Behaviour',
+            example:
+              'Motivational trends can influence behavior, but following trends without personal reflection may not lead to genuine change.',
+          },
+          {
+            keyword: 'Expectations',
+            example:
+              'Trends create expectations about success and happiness that may not align with individual values or circumstances.',
+          },
+          {
+            keyword: 'Comparison',
+            example:
+              "Following trends encourages comparison with others, potentially leading to dissatisfaction with one's own progress.",
+          },
+          {
+            keyword: 'Identity',
+            example:
+              'Over-reliance on trends can shape identity around external influences rather than authentic personal values.',
+          },
+          {
+            keyword: 'Influence',
+            example:
+              'While trends can provide inspiration, excessive influence may prevent people from developing their own unique approaches.',
+          },
         ],
       },
       {
