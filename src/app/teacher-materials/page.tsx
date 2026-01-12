@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function DebateGeneratorPage() {
   return (
-    <main className='relative pt-16'>
+    <main className='relative pt-6'>
       <DebateGenerator />
     </main>
   )
