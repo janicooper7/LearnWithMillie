@@ -9,7 +9,7 @@ import { ArrowRight } from 'lucide-react'
 const plans = [
   {
     name: 'Standard',
-    price: 34,
+    price: 40,
     lessons: 4,
     description: 'Ideal for flexible learning',
     features: [
@@ -23,7 +23,7 @@ const plans = [
   },
   {
     name: 'Advanced',
-    price: 32,
+    price: 38,
     lessons: 8,
     description: 'Perfect for steady progress',
     features: [
@@ -37,7 +37,7 @@ const plans = [
   },
   {
     name: 'Pro',
-    price: 30,
+    price: 35,
     lessons: 12,
     description: 'Best for intensive learning',
     features: [
@@ -84,7 +84,7 @@ export default function Pricing() {
             start: 'top bottom-=100',
             end: 'bottom center',
           },
-        }
+        },
       )
     })
 
@@ -172,7 +172,7 @@ export default function Pricing() {
                   <div className='space-y-2 mb-8'>
                     <div className='flex items-end justify-center gap-1'>
                       <span className='text-5xl font-bold text-gradient-primary'>
-                        £{plan.price}
+                        ${plan.price}
                       </span>
                       <span className='text-gray-600 mb-2'>/ lesson</span>
                     </div>
@@ -180,7 +180,7 @@ export default function Pricing() {
                       50 minutes per lesson
                     </p>
                     <p className='text-lg font-semibold text-gray-500'>
-                      £{plan.price * plan.lessons} per month
+                      ${plan.price * plan.lessons} per month
                     </p>
                   </div>
                 </div>
