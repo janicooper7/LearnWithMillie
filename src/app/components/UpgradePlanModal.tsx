@@ -75,7 +75,7 @@ export default function UpgradePlanModal({ onClose, trialPurchased }: UpgradePla
         {/* Header */}
         <div className='mb-7 text-center'>
           <p className='text-[10px] uppercase tracking-[0.25em] font-semibold mb-2' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-            No credits remaining
+            No lessons remaining
           </p>
           <h2 className='text-2xl font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
             Choose a plan to continue booking

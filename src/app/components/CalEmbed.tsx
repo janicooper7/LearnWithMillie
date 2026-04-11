@@ -91,10 +91,10 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset, 
             Booking cancelled
           </p>
           <h3 className='text-xl font-bold mb-3' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            No credits remaining
+            No lessons remaining
           </h3>
           <p className='text-sm leading-relaxed mb-7 max-w-xs' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
-            Your booking was automatically cancelled because you have no lesson credits left. Credits reset on {nextReset}.
+            Your booking was automatically cancelled because you have no lessons left. Lessons reset on {nextReset}.
           </p>
           <button
             onClick={() => setShowUpgradeModal(true)}
@@ -141,7 +141,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset, 
           A calendar invitation has been sent to your email.
         </p>
         <p className='text-sm font-medium mb-8' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-          {allowance} {allowance === 1 ? 'credit' : 'credits'} remaining this month
+          {allowance} {allowance === 1 ? 'lesson' : 'lessons'} remaining this month
         </p>
         <button
           onClick={() => { setBooked(false); setIframeHidden(false) }}

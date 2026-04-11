@@ -35,7 +35,7 @@ export default function CreditsCardActions({ trialPurchased }: CreditsCardAction
           className='inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200 hover:brightness-110'
           style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
         >
-          Buy Credits <ArrowRight className='w-3.5 h-3.5' />
+          Buy Lessons <ArrowRight className='w-3.5 h-3.5' />
         </button>
         {!trialPurchased && (
           <button

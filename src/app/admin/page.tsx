@@ -60,7 +60,7 @@ export default async function AdminPage() {
                   Role
                 </th>
                 <th className='text-left px-6 py-4 text-[11px] uppercase tracking-[0.15em] font-semibold' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  Credits
+                  Lessons
                 </th>
                 <th className='text-left px-6 py-4 text-[11px] uppercase tracking-[0.15em] font-semibold' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
                   Joined

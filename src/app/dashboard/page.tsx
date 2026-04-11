@@ -146,7 +146,7 @@ export default async function DashboardPage() {
                 return (
                   <>
                     <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      {showTrialReady ? 'Trial Lesson' : 'Credits this month'}
+                      {showTrialReady ? 'Trial Lesson' : 'Lessons this month'}
                     </p>
                     <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
                       {showTrialReady ? '1 trial lesson ready to book' : `${user.allowance} ${user.allowance === 1 ? 'lesson' : 'lessons'} remaining`}
@@ -238,13 +238,13 @@ export default async function DashboardPage() {
             <div>
               <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Book a Lesson</p>
               <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                {user.allowance > 0 ? 'Select an available slot below' : 'No credits remaining'}
+                {user.allowance > 0 ? 'Use the calendar below to pick a time that works for you.' : 'No lessons remaining'}
               </p>
             </div>
             <div className='flex items-center gap-2 px-4 py-2 rounded-xl' style={{ backgroundColor: 'rgba(31,58,52,0.06)' }}>
               <span className='text-lg font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{user.allowance}</span>
               <span className='text-xs' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                {user.allowance === 1 ? 'credit left' : 'credits left'}
+                {user.allowance === 1 ? 'lesson left' : 'lessons left'}
               </span>
             </div>
           </div>

@@ -15,7 +15,7 @@ const termsSections = [
     id: 'bookings', title: 'Lesson Bookings',
     items: [
       'All lessons are 50 minutes in duration and conducted online via Google Meet.',
-      'Lessons must be booked through your student dashboard using available lesson credits.',
+      'Lessons must be booked through your student dashboard using available lessons.',
       'A booking confirmation email will be sent to you immediately after scheduling.',
       'You are responsible for ensuring your technical setup (camera, microphone, and internet connection) is working prior to each session.',
       'Millie reserves the right to reschedule a lesson in exceptional circumstances, with as much notice as possible.',
@@ -24,19 +24,19 @@ const termsSections = [
   {
     id: 'cancellation', title: 'Cancellation Policy',
     items: [
-      'You may cancel or reschedule a lesson up to 24 hours before the scheduled start time to receive a credit refund.',
-      'Cancellations made within 24 hours of the lesson start time are non-refundable and the lesson credit will not be returned.',
+      'You may cancel or reschedule a lesson up to 24 hours before the scheduled start time to receive a lesson refund.',
+      'Cancellations made within 24 hours of the lesson start time are non-refundable and the lesson will not be returned.',
       'To cancel a lesson, use the link provided in your booking confirmation email or contact Millie directly.',
       'No-shows (failing to attend without prior notice) are treated as late cancellations and are non-refundable.',
-      'If Millie is unable to attend a scheduled lesson, you will receive a full credit refund regardless of notice period.',
+      'If Millie is unable to attend a scheduled lesson, you will receive a full lesson refund regardless of notice period.',
     ],
   },
   {
     id: 'refunds', title: 'Refund Policy',
     items: [
       'Subscription payments are non-refundable once the billing period has commenced.',
-      'Unused lesson credits do not carry over to the following billing period unless otherwise agreed in writing.',
-      'If you cancel your subscription, you retain access to your remaining credits until the end of the current billing period.',
+      'Unused lessons do not carry over to the following billing period unless otherwise agreed in writing.',
+      'If you cancel your subscription, you retain access to your remaining lessons until the end of the current billing period.',
       'Refunds will only be considered in exceptional circumstances at Millie\'s sole discretion.',
       'Any approved refunds will be processed to the original payment method within 5–10 business days.',
     ],
@@ -47,16 +47,16 @@ const termsSections = [
       'Trial lessons are available to new students only and may only be purchased once per account.',
       'Trial lessons are strictly non-refundable under any circumstances once payment has been completed.',
       'Trial lessons are non-amendable — the date and time cannot be changed once the booking is confirmed.',
-      'If you do not attend your trial lesson, the credit is forfeited and no refund or replacement will be issued.',
+      'If you do not attend your trial lesson, the lesson is forfeited and no refund or replacement will be issued.',
       'The trial lesson is intended as an introductory session and does not guarantee continuation of lessons.',
-      'Trial lesson credits cannot be transferred to another account.',
+      'Trial lessons cannot be transferred to another account.',
     ],
   },
   {
     id: 'subscriptions', title: 'Subscriptions',
     items: [
       'Subscriptions are billed monthly on a recurring basis via Stripe.',
-      'Your lesson credit allowance is refreshed at the start of each billing cycle.',
+      'Your lesson allowance is refreshed at the start of each billing cycle.',
       'You may cancel your subscription at any time through your student dashboard. Cancellation takes effect at the end of the current billing period.',
       'Downgrading or upgrading your plan mid-cycle is not currently supported. Please cancel and re-subscribe to change plans.',
       'LearnWithMillie reserves the right to adjust pricing with 30 days\' written notice.',

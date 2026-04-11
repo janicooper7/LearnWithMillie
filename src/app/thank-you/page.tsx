@@ -73,7 +73,7 @@ export default function ThankYou() {
         >
           {isContact
             ? 'Thank you for getting in touch. Millie will review your message and get back to you within 24 hours.'
-            : 'Welcome aboard! Your subscription is confirmed and your lesson credits are ready to use.'}
+            : 'Welcome aboard! Your subscription is confirmed and your lessons are ready to use.'}
         </p>
         <p
           className='text-base leading-relaxed mb-8'

@@ -17,7 +17,7 @@ const steps = [
   {
     number: '02',
     icon: CreditCard,
-    title: 'Buy credits or a trial lesson',
+    title: 'Buy lessons or a trial lesson',
     description: 'New students can book a 20-minute trial lesson for $20. Ready to commit? Choose a monthly plan.',
   },
   {

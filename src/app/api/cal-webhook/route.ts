@@ -19,7 +19,7 @@ async function cancelCalBooking(bookingUid: string) {
       'Authorization': `Bearer ${process.env.CAL_API_KEY}`,
       'cal-api-version': '2024-08-13',
     },
-    body: JSON.stringify({ cancellationReason: 'Insufficient lesson credits.' }),
+    body: JSON.stringify({ cancellationReason: 'Insufficient lessons.' }),
   })
   const text = await res.text()
   console.log('[cal-webhook] Cancel response:', res.status, text)
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     if (triggerEvent === 'BOOKING_CANCELLED') {
       // Don't refund if this was our own auto-cancellation for 0 credits
       const reason: string = payload?.cancellationReason ?? payload?.reason ?? ''
-      if (reason === 'Insufficient lesson credits.') {
+      if (reason === 'Insufficient lessons.') {
         return NextResponse.json({ received: true, action: 'no refund — auto-cancelled for 0 credits' })
       }
 

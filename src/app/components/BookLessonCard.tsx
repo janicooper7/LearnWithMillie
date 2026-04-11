@@ -37,17 +37,13 @@ export default function BookLessonCard({ trialPurchased }: BookLessonCardProps) 
         <p className='text-sm leading-relaxed' style={{ color: 'rgba(255,255,255,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
           Book a session with Millie and keep making progress toward your goals.
         </p>
-        <p className='text-sm leading-relaxed mt-3 mb-6' style={{ color: 'rgba(194,170,106,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}>
-          Use the calendar below to pick a time that works for you.
-        </p>
-
-        <div className='flex flex-col gap-2.5 mt-auto'>
+        <div className='flex flex-col gap-2.5 mt-6'>
           <button
             onClick={() => setShowModal(true)}
             className='w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 hover:brightness-110'
             style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
           >
-            Buy Credits <ArrowRight className='w-4 h-4' />
+            Buy Lessons <ArrowRight className='w-4 h-4' />
           </button>
           {!trialPurchased && (
             <button
