@@ -36,20 +36,28 @@ export async function POST(req: NextRequest) {
     const event = JSON.parse(body)
     const { triggerEvent, payload } = event
 
+    console.log('[cal-webhook] Event:', triggerEvent, '| Attendees:', JSON.stringify(payload?.attendees ?? []), '| Reason:', payload?.cancellationReason ?? payload?.reason ?? '')
+
     // Respond OK to ping/test events
     if (!triggerEvent || triggerEvent === 'PING') {
       return NextResponse.json({ received: true, action: 'ping ok' })
     }
 
     const attendeeEmail = payload?.attendees?.[0]?.email as string | undefined
-    if (!attendeeEmail) return NextResponse.json({ received: true })
+    if (!attendeeEmail) {
+      console.log('[cal-webhook] No attendee email found in payload')
+      return NextResponse.json({ received: true })
+    }
 
     const user = await prisma.user.findUnique({
       where: { email: attendeeEmail },
       select: { id: true, allowance: true },
     })
 
-    if (!user) return NextResponse.json({ received: true })
+    if (!user) {
+      console.log('[cal-webhook] No user found for email:', attendeeEmail)
+      return NextResponse.json({ received: true })
+    }
 
     if (triggerEvent === 'BOOKING_CREATED') {
       if (user.allowance <= 0) {
