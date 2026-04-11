@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useSession, signOut } from 'next-auth/react'
+import Link from 'next/link'
 
 const navigation = [
   { name: 'Meet your tutor', href: '/about', hash: '' },
@@ -216,7 +217,7 @@ export default function Navigation() {
               </div>
             ) : (
               <div className='flex items-center gap-3'>
-                <a
+                <Link
                   href='/auth/login'
                   className='text-[13px] font-medium transition-colors duration-200'
                   style={{ color: 'rgba(31,58,52,0.55)' }}
@@ -230,10 +231,10 @@ export default function Navigation() {
                   }}
                 >
                   Log in
-                </a>
-                <a href='/auth/signup' className='btn-primary'>
+                </Link>
+                <Link href='/auth/signup' className='btn-primary'>
                   Sign up
-                </a>
+                </Link>
               </div>
             )}
           </div>
@@ -326,13 +327,13 @@ export default function Navigation() {
               </div>
             ) : (
               <div className='space-y-2'>
-                <a
+                <Link
                   href='/auth/signup'
                   className='btn-primary w-full text-center block'
                 >
                   Sign up
-                </a>
-                <a
+                </Link>
+                <Link
                   href='/auth/login'
                   className='w-full text-center text-sm font-medium py-2 block'
                   style={{
@@ -341,7 +342,7 @@ export default function Navigation() {
                   }}
                 >
                   Log in
-                </a>
+                </Link>
               </div>
             )}
           </div>
