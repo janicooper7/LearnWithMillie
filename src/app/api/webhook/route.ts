@@ -10,6 +10,8 @@ const PRICE_TO_LESSONS: Record<string, number> = {
   [process.env.STRIPE_TWELVELESSONS_PRICE_ID!]: 12,
 }
 
+const TRIAL_PRICE_ID = process.env.STRIPE_TRIAL_PRICE_ID!
+
 export async function POST(req: NextRequest) {
   const body = await req.text()
   const sig = req.headers.get('stripe-signature')!
@@ -28,6 +30,24 @@ export async function POST(req: NextRequest) {
       const userId = session.metadata?.userId
       if (!userId) break
 
+      // One-time trial payment
+      if (session.mode === 'payment') {
+        const lineItems = await stripe.checkout.sessions.listLineItems(session.id)
+        const priceId = lineItems.data[0]?.price?.id
+        if (priceId === TRIAL_PRICE_ID) {
+          await prisma.user.update({
+            where: { id: userId },
+            data: {
+              allowance: { increment: 1 },
+              trialPurchased: true,
+              stripeCustomerId: session.customer as string,
+            },
+          })
+        }
+        break
+      }
+
+      // Subscription payment
       const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
       const priceId = subscription.items.data[0].price.id
       const lessons = PRICE_TO_LESSONS[priceId] ?? 0

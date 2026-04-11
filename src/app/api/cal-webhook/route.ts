@@ -10,14 +10,19 @@ function verifySignature(body: string, signature: string, secret: string): boole
 }
 
 async function cancelCalBooking(bookingUid: string) {
-  await fetch(`https://api.cal.com/v1/bookings/${bookingUid}/cancel`, {
-    method: 'DELETE',
+  const url = `https://api.cal.com/v2/bookings/${bookingUid}/cancel`
+  console.log('[cal-webhook] Cancelling booking uid:', bookingUid)
+  const res = await fetch(url, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.CAL_API_KEY}`,
+      'Authorization': `Bearer ${process.env.CAL_API_KEY}`,
+      'cal-api-version': '2024-08-13',
     },
-    body: JSON.stringify({ reason: 'Insufficient lesson credits.' }),
+    body: JSON.stringify({ cancellationReason: 'Insufficient lesson credits.' }),
   })
+  const text = await res.text()
+  console.log('[cal-webhook] Cancel response:', res.status, text)
 }
 
 export async function POST(req: NextRequest) {
@@ -36,7 +41,7 @@ export async function POST(req: NextRequest) {
     const event = JSON.parse(body)
     const { triggerEvent, payload } = event
 
-    console.log('[cal-webhook] Event:', triggerEvent, '| Attendees:', JSON.stringify(payload?.attendees ?? []), '| Reason:', payload?.cancellationReason ?? payload?.reason ?? '')
+    console.log('[cal-webhook] Event:', triggerEvent, '| Booking id:', payload?.id, '| uid:', payload?.uid, '| Attendees:', JSON.stringify(payload?.attendees ?? []), '| Reason:', payload?.cancellationReason ?? payload?.reason ?? '')
 
     // Respond OK to ping/test events
     if (!triggerEvent || triggerEvent === 'PING') {
@@ -60,14 +65,21 @@ export async function POST(req: NextRequest) {
     }
 
     if (triggerEvent === 'BOOKING_CREATED') {
-      // Credit deduction is handled client-side (CalEmbed → /api/deduct-credit)
-      // Webhook only auto-cancels if the student somehow has 0 credits
-      if (user.allowance <= 0) {
+      // Atomically deduct 1 credit only if the user has credits available.
+      // Using updateMany with allowance > 0 ensures no race condition with the client check.
+      const result = await prisma.user.updateMany({
+        where: { email: attendeeEmail, allowance: { gt: 0 } },
+        data: { allowance: { decrement: 1 } },
+      })
+
+      if (result.count === 0) {
+        // No credit was available — cancel the booking using numeric id
+        console.log('[cal-webhook] No credits — attempting cancel. payload.uid:', payload?.uid)
         await cancelCalBooking(payload.uid)
         return NextResponse.json({ received: true, action: 'cancelled — no credits' })
       }
 
-      return NextResponse.json({ received: true, action: 'booking acknowledged' })
+      return NextResponse.json({ received: true, action: 'credit deducted' })
     }
 
     if (triggerEvent === 'BOOKING_CANCELLED') {

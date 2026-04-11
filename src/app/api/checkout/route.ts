@@ -4,16 +4,22 @@ import { auth } from '@/auth'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-const PRICE_IDS: Record<string, string> = {
+const SUBSCRIPTION_PRICE_IDS: Record<string, string> = {
   four: process.env.STRIPE_FOURLESSONS_PRICE_ID!,
   eight: process.env.STRIPE_EIGHTLESSONS_PRICE_ID!,
   twelve: process.env.STRIPE_TWELVELESSONS_PRICE_ID!,
 }
 
+const ONE_TIME_PRICE_IDS: Record<string, string> = {
+  trial: process.env.STRIPE_TRIAL_PRICE_ID!,
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth()
   const { plan } = await req.json()
-  const priceId = PRICE_IDS[plan]
+
+  const isOneTime = plan in ONE_TIME_PRICE_IDS
+  const priceId = isOneTime ? ONE_TIME_PRICE_IDS[plan] : SUBSCRIPTION_PRICE_IDS[plan]
 
   if (!priceId) {
     return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
@@ -21,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const checkoutSession = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+      mode: isOneTime ? 'payment' : 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${process.env.NEXTAUTH_URL}/thank-you`,
       cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,

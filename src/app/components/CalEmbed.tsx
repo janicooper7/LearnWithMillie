@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { CheckCircle, XCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import UpgradePlanModal from './UpgradePlanModal'
 
 interface CalEmbedProps {
   src: string
@@ -22,6 +23,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
   const [allowance, setAllowance] = useState(initialAllowance)
   const [bookingInfo, setBookingInfo] = useState<BookingInfo | null>(null)
   const [iframeHidden, setIframeHidden] = useState(false)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
   useEffect(() => {
     const handler = async (e: MessageEvent) => {
@@ -44,7 +46,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
         // Hide iframe immediately — no flash
         setIframeHidden(true)
 
-        // Deduct credit in background
+        // Check current allowance — actual deduction is handled by the Cal.com webhook
         try {
           const res = await fetch('/api/deduct-credit', { method: 'POST' })
           if (res.ok) {
@@ -53,13 +55,14 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
               setCancelled(true)
               return
             }
-            setAllowance(json.allowance ?? 0)
+            // Show optimistic allowance (webhook will decrement by 1)
+            setAllowance(Math.max(0, (json.allowance ?? 1) - 1))
           }
         } catch {}
 
         setBooked(true)
-        // Refresh server-rendered parts (credits card) to match the deducted value
-        router.refresh()
+        // Refresh server-rendered credits card after a short delay to let the webhook fire
+        setTimeout(() => router.refresh(), 3000)
       } catch {}
     }
 
@@ -77,27 +80,30 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
 
   if (cancelled) {
     return (
-      <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
-        <div className='w-14 h-14 rounded-full flex items-center justify-center mb-6' style={{ backgroundColor: 'rgba(192,57,43,0.07)' }}>
-          <XCircle className='w-7 h-7' style={{ color: '#c0392b' }} />
+      <>
+        {showUpgradeModal && <UpgradePlanModal onClose={() => { setShowUpgradeModal(false); setCancelled(false); setIframeHidden(false) }} />}
+        <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
+          <div className='w-14 h-14 rounded-full flex items-center justify-center mb-6' style={{ backgroundColor: 'rgba(192,57,43,0.07)' }}>
+            <XCircle className='w-7 h-7' style={{ color: '#c0392b' }} />
+          </div>
+          <p className='text-xs uppercase tracking-[0.2em] font-semibold mb-2' style={{ color: '#c0392b', fontFamily: 'var(--font-inter), sans-serif' }}>
+            Booking cancelled
+          </p>
+          <h3 className='text-xl font-bold mb-3' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+            No credits remaining
+          </h3>
+          <p className='text-sm leading-relaxed mb-7 max-w-xs' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+            Your booking was automatically cancelled because you have no lesson credits left. Credits reset on {nextReset}.
+          </p>
+          <button
+            onClick={() => setShowUpgradeModal(true)}
+            className='inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white rounded-xl transition-all duration-200 hover:brightness-110'
+            style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+          >
+            View Plans
+          </button>
         </div>
-        <p className='text-xs uppercase tracking-[0.2em] font-semibold mb-2' style={{ color: '#c0392b', fontFamily: 'var(--font-inter), sans-serif' }}>
-          Booking cancelled
-        </p>
-        <h3 className='text-xl font-bold mb-3' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-          No credits remaining
-        </h3>
-        <p className='text-sm leading-relaxed mb-7 max-w-xs' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
-          Your booking was automatically cancelled because you have no lesson credits left. Credits reset on {nextReset}.
-        </p>
-        <a
-          href='/#pricing'
-          className='inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white rounded-xl transition-all duration-200 hover:brightness-110'
-          style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          Upgrade Plan
-        </a>
-      </div>
+      </>
     )
   }
 
@@ -152,12 +158,21 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <>
+      {showUpgradeModal && <UpgradePlanModal onClose={() => { setShowUpgradeModal(false); setCancelled(false); setIframeHidden(false) }} />}
       <iframe
         src={src}
-        style={{ border: 0, width: '100%', height: '600px', display: 'block', opacity: iframeHidden ? 0 : 1, pointerEvents: iframeHidden ? 'none' : 'auto', transition: 'opacity 0.1s' }}
+        style={{
+          border: 0,
+          width: '100%',
+          height: '600px',
+          display: 'block',
+          opacity: iframeHidden ? 0 : 1,
+          pointerEvents: iframeHidden ? 'none' : 'auto',
+          transition: 'opacity 0.1s',
+        }}
         frameBorder='0'
       />
-    </div>
+    </>
   )
 }

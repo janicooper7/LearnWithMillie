@@ -316,28 +316,29 @@ export default function Pricing() {
                   className='text-base font-semibold mb-0.5'
                   style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
                 >
-                  Start with a free 15-minute trial lesson
+                  Start with a 20-minute trial lesson — $20
                 </p>
                 <p
                   className='text-sm'
                   style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
                 >
-                  No commitment, no card required. Discuss your goals and see if we&apos;re a good fit.
+                  No commitment. Discuss your goals and see if we&apos;re a good fit.
                 </p>
               </div>
             </div>
-            <a
-              href='/auth/signup'
-              className='flex-shrink-0 inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:brightness-105'
+            <button
+              onClick={() => handleCheckout('trial', 'Trial')}
+              disabled={loadingPlan !== null}
+              className='flex-shrink-0 inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:brightness-105 disabled:opacity-60'
               style={{
                 backgroundColor: '#1F3A34',
                 color: 'white',
                 fontFamily: 'var(--font-inter), sans-serif',
               }}
             >
-              Claim Free Trial
-              <ArrowRight className='w-4 h-4' />
-            </a>
+              {loadingPlan === 'Trial' ? 'Redirecting…' : 'Book Trial Lesson'}
+              {loadingPlan !== 'Trial' && <ArrowRight className='w-4 h-4' />}
+            </button>
           </div>
         </div>
 

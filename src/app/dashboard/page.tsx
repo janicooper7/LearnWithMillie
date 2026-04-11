@@ -5,6 +5,8 @@ import { User, Mail, Calendar } from 'lucide-react'
 import Stripe from 'stripe'
 import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
 import CalEmbed from '@/app/components/CalEmbed'
+import BookLessonCard from '@/app/components/BookLessonCard'
+import CreditsCardActions from '@/app/components/CreditsCardActions'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -16,7 +18,7 @@ export default async function DashboardPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { id: true, name: true, email: true, createdAt: true, image: true, role: true, allowance: true, stripeSubscriptionId: true },
+    select: { id: true, name: true, email: true, createdAt: true, image: true, role: true, allowance: true, trialPurchased: true, stripeSubscriptionId: true },
   })
 
   if (!user) redirect('/auth/login')
@@ -33,8 +35,14 @@ export default async function DashboardPage() {
       ? stripe.subscriptions.retrieve(user.stripeSubscriptionId)
       : Promise.resolve(null),
     fetch(
-      `https://api.cal.com/v1/bookings?apiKey=${process.env.CAL_API_KEY}&attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming`,
-      { cache: 'no-store' }
+      `https://api.cal.com/v2/bookings?attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming`,
+      {
+        headers: {
+          'Authorization': `Bearer ${process.env.CAL_API_KEY}`,
+          'cal-api-version': '2024-08-13',
+        },
+        cache: 'no-store',
+      }
     ),
   ])
 
@@ -52,7 +60,7 @@ export default async function DashboardPage() {
       const res = calResult.value as Response
       if (res.ok) {
         const calData = await res.json()
-        const all: CalBooking[] = calData.bookings ?? []
+        const all: CalBooking[] = calData.data ?? calData.bookings ?? []
         upcomingBookings = all
           .filter((b) => new Date(b.startTime) > now)
           .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
@@ -118,25 +126,10 @@ export default async function DashboardPage() {
           </div>
 
           {/* Book a lesson */}
-          <div
-            className='rounded-2xl p-7 flex flex-col justify-between'
-            style={{ backgroundColor: '#1F3A34' }}
-          >
-            <div>
-              <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
-              <h2 className='text-xl font-bold text-white mb-3' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                Ready for your next lesson?
-              </h2>
-              <p className='text-sm leading-relaxed' style={{ color: 'rgba(255,255,255,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                Book a session with Millie and keep making progress toward your goals.
-              </p>
-              <p className='text-sm leading-relaxed mt-3' style={{ color: 'rgba(194,170,106,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                Use the calendar below to pick a time that works for you.
-              </p>
-            </div>
-          </div>
+          <BookLessonCard trialPurchased={user.trialPurchased} />
 
         </div>
+
 
         {/* Credits + Subscription + Upcoming bookings combined */}
         <div className='mt-5 bg-white rounded-2xl p-7' style={{ border: '1px solid #EDE4D8' }}>
@@ -153,6 +146,7 @@ export default async function DashboardPage() {
                   Resets {nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
                 </p>
               )}
+              <CreditsCardActions trialPurchased={user.trialPurchased} />
             </div>
 
             {user.stripeSubscriptionId && (

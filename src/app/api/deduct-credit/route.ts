@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 
+// This endpoint only CHECKS current allowance — actual deduction is handled
+// atomically by the Cal.com webhook (BOOKING_CREATED) to avoid race conditions.
 export async function POST() {
   const session = await auth()
   if (!session?.user?.id) {
@@ -21,11 +23,5 @@ export async function POST() {
     return NextResponse.json({ allowance: 0, skipped: true })
   }
 
-  const updated = await prisma.user.update({
-    where: { id: session.user.id },
-    data: { allowance: { decrement: 1 } },
-    select: { allowance: true },
-  })
-
-  return NextResponse.json({ allowance: updated.allowance })
+  return NextResponse.json({ allowance: user.allowance })
 }
