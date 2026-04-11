@@ -1,19 +1,12 @@
 import NextAuth from 'next-auth'
-import Google from 'next-auth/providers/google'
 import Credentials from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/prisma'
+import { authConfig } from '@/auth.config'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  session: { strategy: 'jwt' },
-  pages: {
-    signIn: '/auth/login',
-    error: '/auth/login',
-  },
+  ...authConfig,
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    ...authConfig.providers,
     Credentials({
       name: 'credentials',
       credentials: {
@@ -48,8 +41,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    ...authConfig.callbacks,
     async signIn({ user, account }) {
-      // Handle Google OAuth — upsert user in a single DB round-trip
       if (account?.provider === 'google') {
         if (!user.email) return false
         try {
@@ -71,20 +64,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
       return true
-    },
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = (user as any).id
-        token.role = (user as any).role
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-      }
-      return session
     },
   },
 })
