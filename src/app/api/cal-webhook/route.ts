@@ -24,9 +24,10 @@ export async function POST(req: NextRequest) {
   const body = await req.text()
   const signature = req.headers.get('x-cal-signature-256') ?? ''
 
-  if (process.env.CAL_WEBHOOK_SECRET) {
+  if (process.env.CAL_WEBHOOK_SECRET && signature) {
     const valid = verifySignature(body, signature, process.env.CAL_WEBHOOK_SECRET)
     if (!valid) {
+      console.error('[cal-webhook] Invalid signature. Received:', signature)
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
   }

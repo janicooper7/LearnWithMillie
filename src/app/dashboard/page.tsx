@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { User, Mail, Calendar } from 'lucide-react'
 import Stripe from 'stripe'
 import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
+import CalEmbed from '@/app/components/CalEmbed'
 
 export default async function DashboardPage() {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
@@ -226,30 +227,11 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className='relative'>
-            <iframe
-              src={`${process.env.CAL_EVENT_URL}?embed=true&name=${encodeURIComponent(user.name ?? '')}&email=${encodeURIComponent(user.email ?? '')}`}
-              style={{ border: 0, width: '100%', height: '600px', opacity: user.allowance === 0 ? 0.4 : 1 }}
-              frameBorder='0'
-            />
-            {user.allowance === 0 && (
-              <div className='absolute inset-0 flex flex-col items-center justify-center' style={{ backgroundColor: 'rgba(244,237,228,0.6)' }}>
-                <p className='text-sm font-medium mb-1' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  No credits remaining
-                </p>
-                <p className='text-xs mb-5' style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  Credits reset on {nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
-                </p>
-                <a
-                  href='/#pricing'
-                  className='inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:brightness-110'
-                  style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
-                >
-                  Upgrade Plan
-                </a>
-              </div>
-            )}
-          </div>
+          <CalEmbed
+            src={`${process.env.CAL_EVENT_URL}?embed=true&name=${encodeURIComponent(user.name ?? '')}&email=${encodeURIComponent(user.email ?? '')}`}
+            allowance={user.allowance}
+            nextReset={nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
+          />
         </div>
 
       </main>
