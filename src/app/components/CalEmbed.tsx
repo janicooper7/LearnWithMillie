@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CheckCircle } from 'lucide-react'
 
 interface CalEmbedProps {
@@ -9,24 +9,35 @@ interface CalEmbedProps {
   nextReset: string
 }
 
-export default function CalEmbed({ src, allowance, nextReset }: CalEmbedProps) {
+export default function CalEmbed({ src, allowance: initialAllowance, nextReset }: CalEmbedProps) {
   const [booked, setBooked] = useState(false)
+  const [allowance, setAllowance] = useState(initialAllowance)
 
   useEffect(() => {
-    const handler = (e: MessageEvent) => {
+    const handler = async (e: MessageEvent) => {
       try {
         const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data
-        // Cal.com fires this event on successful booking
-        if (
+        const isBookingSuccess =
           data?.type === 'cal:bookingSuccessful' ||
           data?.type === 'bookingSuccessful' ||
           data?.action === 'bookingSuccessful' ||
           data?.eventType === 'BOOKING_SUCCESSFUL'
-        ) {
-          setBooked(true)
-        }
+
+        if (!isBookingSuccess) return
+
+        // Deduct credit immediately when booking confirmation is shown
+        try {
+          const res = await fetch('/api/deduct-credit', { method: 'POST' })
+          if (res.ok) {
+            const data = await res.json()
+            setAllowance(data.allowance ?? 0)
+          }
+        } catch {}
+
+        setBooked(true)
       } catch {}
     }
+
     window.addEventListener('message', handler)
     return () => window.removeEventListener('message', handler)
   }, [])
@@ -53,10 +64,16 @@ export default function CalEmbed({ src, allowance, nextReset }: CalEmbedProps) {
           You&apos;re all set!
         </h3>
         <p
-          className='text-sm leading-relaxed mb-8 max-w-xs'
+          className='text-sm leading-relaxed mb-2 max-w-xs'
           style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
         >
           A calendar invitation has been sent to your email. We look forward to seeing you in your lesson.
+        </p>
+        <p
+          className='text-sm font-medium mb-8'
+          style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+        >
+          {allowance} {allowance === 1 ? 'credit' : 'credits'} remaining this month
         </p>
         <button
           onClick={() => setBooked(false)}
