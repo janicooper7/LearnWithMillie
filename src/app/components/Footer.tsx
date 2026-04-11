@@ -69,6 +69,7 @@ export default function Footer() {
                 { name: 'Testimonials', hash: '#testimonials' },
                 { name: 'Pricing', hash: '#pricing' },
                 { name: 'Contact', href: '/contact', isPage: true },
+                { name: 'Teacher Materials', href: '/teacher-materials', isPage: true },
               ].map((link) => {
                 const isPageLink = 'isPage' in link && link.isPage
                 const hash = 'hash' in link ? link.hash : undefined

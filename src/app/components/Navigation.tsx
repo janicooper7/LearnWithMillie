@@ -11,10 +11,8 @@ const navigation = [
   { name: 'Testimonials', href: '/', hash: '#testimonials' },
   { name: 'How it works', href: '/', hash: '#how-it-works' },
   { name: 'Services', href: '/', hash: '#lesson-options' },
-  { name: 'FAQ', href: '/', hash: '#faq' },
   { name: 'Pricing', href: '/', hash: '#pricing' },
-  { name: 'Teacher Materials', href: '/teacher-materials', hash: '' },
-  { name: 'Contact me', href: '/contact', hash: '' },
+  { name: 'FAQ', href: '/', hash: '#faq' },
 ]
 
 export default function Navigation() {
