@@ -23,6 +23,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -220,6 +221,24 @@ export default function SignupPage() {
                 </div>
               ))}
 
+              {/* Terms checkbox */}
+              <div className='flex items-start gap-3 pt-1'>
+                <input
+                  type='checkbox'
+                  id='terms'
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  className='mt-0.5 flex-shrink-0 w-4 h-4 rounded cursor-pointer'
+                  style={{ accentColor: '#1F3A34' }}
+                />
+                <label htmlFor='terms' className='text-xs leading-relaxed cursor-pointer' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  I agree to the{' '}
+                  <Link href='/terms' target='_blank' className='font-semibold underline underline-offset-2' style={{ color: '#1F3A34' }}>
+                    Terms & Conditions
+                  </Link>
+                </label>
+              </div>
+
               {error && (
                 <p className='text-sm py-2.5 px-4 rounded-lg' style={{ color: '#c0392b', backgroundColor: 'rgba(192,57,43,0.06)', border: '1px solid rgba(192,57,43,0.12)', fontFamily: 'var(--font-inter), sans-serif' }}>
                   {error}
@@ -229,7 +248,7 @@ export default function SignupPage() {
               <div style={{ paddingTop: '8px' }}>
                 <button
                   type='submit'
-                  disabled={loading}
+                  disabled={loading || !agreedToTerms}
                   className='w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-white rounded-xl transition-all duration-200 disabled:opacity-50'
                   style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif', letterSpacing: '0.02em' }}
                   onMouseEnter={(e) => { if (!loading) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#162e28' }}
