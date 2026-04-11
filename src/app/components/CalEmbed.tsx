@@ -47,45 +47,6 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
     return () => window.removeEventListener('message', handler)
   }, [router])
 
-  // No credits — don't show the iframe at all
-  if (allowance === 0 && !booked) {
-    return (
-      <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
-        <div
-          className='w-12 h-12 rounded-full flex items-center justify-center mb-5'
-          style={{ backgroundColor: 'rgba(31,58,52,0.07)' }}
-        >
-          <span className='text-xl' style={{ color: '#1F3A34' }}>0</span>
-        </div>
-        <p
-          className='text-xs uppercase tracking-[0.2em] font-semibold mb-2'
-          style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          No credits remaining
-        </p>
-        <p
-          className='text-sm mb-1'
-          style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          Your credits reset on {nextReset}
-        </p>
-        <p
-          className='text-xs mb-7'
-          style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          Upgrade your plan to book more lessons this month.
-        </p>
-        <a
-          href='/#pricing'
-          className='inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 hover:brightness-110'
-          style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          Upgrade Plan
-        </a>
-      </div>
-    )
-  }
-
   if (booked) {
     return (
       <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
@@ -135,10 +96,29 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
   }
 
   return (
-    <iframe
-      src={src}
-      style={{ border: 0, width: '100%', height: '600px', display: 'block' }}
-      frameBorder='0'
-    />
+    <div className='relative'>
+      <iframe
+        src={src}
+        style={{ border: 0, width: '100%', height: '600px', display: 'block', opacity: allowance === 0 ? 0.45 : 1 }}
+        frameBorder='0'
+      />
+      {allowance === 0 && (
+        <div
+          className='absolute inset-0 flex flex-col items-center justify-center gap-3'
+          style={{ backgroundColor: 'rgba(244,237,228,0.55)' }}
+        >
+          <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+            No credits remaining — credits reset on {nextReset}
+          </p>
+          <a
+            href='/#pricing'
+            className='inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 hover:brightness-110'
+            style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+          >
+            Upgrade Plan
+          </a>
+        </div>
+      )}
+    </div>
   )
 }
