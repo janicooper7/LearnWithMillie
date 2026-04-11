@@ -24,10 +24,6 @@ export default async function DashboardPage() {
   if (!user) redirect('/auth/login')
 
   const now = new Date()
-  const signupDay = user.createdAt.getDate()
-  const nextReset = now.getDate() < signupDay
-    ? new Date(now.getFullYear(), now.getMonth(), signupDay)
-    : new Date(now.getFullYear(), now.getMonth() + 1, signupDay)
 
   // Fetch Stripe + Cal.com in parallel
   const [stripeResult, calResult] = await Promise.allSettled([
@@ -53,6 +49,14 @@ export default async function DashboardPage() {
     cancelAtPeriodEnd = sub.cancel_at_period_end
     periodEnd = new Date(sub.current_period_end * 1000)
   }
+
+  // Reset date comes from Stripe billing period; fall back to signup day if no subscription
+  const nextReset = periodEnd ?? (() => {
+    const signupDay = user.createdAt.getDate()
+    return now.getDate() < signupDay
+      ? new Date(now.getFullYear(), now.getMonth(), signupDay)
+      : new Date(now.getFullYear(), now.getMonth() + 1, signupDay)
+  })()
 
   let upcomingBookings: CalBooking[] = []
   if (calResult.status === 'fulfilled') {

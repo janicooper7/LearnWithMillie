@@ -9,6 +9,7 @@ import Link from 'next/link'
 const navigation = [
   { name: 'Meet your tutor', href: '/about', hash: '' },
   { name: 'Testimonials', href: '/', hash: '#testimonials' },
+  { name: 'How it works', href: '/', hash: '#how-it-works' },
   { name: 'Services', href: '/', hash: '#lesson-options' },
   { name: 'FAQ', href: '/', hash: '#faq' },
   { name: 'Pricing', href: '/', hash: '#pricing' },

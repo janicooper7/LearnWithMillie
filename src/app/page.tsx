@@ -4,6 +4,7 @@ import Pricing from './sections/Pricing'
 import FAQ from './sections/FAQ'
 import LessonOptions from './sections/LessonOptions'
 import MeetTutor from './sections/MeetTutor'
+import HowItWorks from './sections/HowItWorks'
 
 export const metadata: Metadata = {
   title: 'Professional English Tutoring | Business English & Interview Prep',
@@ -22,6 +23,7 @@ export default function Home() {
     <>
       <MeetTutor />
       <Testimonials />
+      <HowItWorks />
       <LessonOptions />
       <Pricing />
       <FAQ />
