@@ -21,62 +21,69 @@ async function cancelCalBooking(bookingUid: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.text()
-  const signature = req.headers.get('x-cal-signature-256') ?? ''
+  try {
+    const body = await req.text()
+    const signature = req.headers.get('x-cal-signature-256') ?? ''
 
-  if (process.env.CAL_WEBHOOK_SECRET && signature) {
-    const valid = verifySignature(body, signature, process.env.CAL_WEBHOOK_SECRET)
-    if (!valid) {
-      console.error('[cal-webhook] Invalid signature. Received:', signature)
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
-    }
-  }
-
-  const event = JSON.parse(body)
-  const { triggerEvent, payload } = event
-
-  const attendeeEmail = payload?.attendees?.[0]?.email as string | undefined
-  if (!attendeeEmail) return NextResponse.json({ received: true })
-
-  const user = await prisma.user.findUnique({
-    where: { email: attendeeEmail },
-    select: { id: true, allowance: true },
-  })
-
-  if (!user) return NextResponse.json({ received: true })
-
-  if (triggerEvent === 'BOOKING_CREATED') {
-    if (user.allowance <= 0) {
-      // No credits — cancel the booking automatically
-      await cancelCalBooking(payload.uid)
-      return NextResponse.json({ received: true, action: 'cancelled — no credits' })
+    if (process.env.CAL_WEBHOOK_SECRET && signature) {
+      const valid = verifySignature(body, signature, process.env.CAL_WEBHOOK_SECRET)
+      if (!valid) {
+        console.error('[cal-webhook] Invalid signature. Received:', signature)
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+      }
     }
 
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { allowance: { decrement: 1 } },
+    const event = JSON.parse(body)
+    const { triggerEvent, payload } = event
+
+    // Respond OK to ping/test events
+    if (!triggerEvent || triggerEvent === 'PING') {
+      return NextResponse.json({ received: true, action: 'ping ok' })
+    }
+
+    const attendeeEmail = payload?.attendees?.[0]?.email as string | undefined
+    if (!attendeeEmail) return NextResponse.json({ received: true })
+
+    const user = await prisma.user.findUnique({
+      where: { email: attendeeEmail },
+      select: { id: true, allowance: true },
     })
 
-    return NextResponse.json({ received: true, action: 'credit deducted' })
-  }
+    if (!user) return NextResponse.json({ received: true })
 
-  if (triggerEvent === 'BOOKING_CANCELLED') {
-    const lessonStart = new Date(payload.startTime)
-    const now = new Date()
-    const hoursUntilLesson = (lessonStart.getTime() - now.getTime()) / (1000 * 60 * 60)
+    if (triggerEvent === 'BOOKING_CREATED') {
+      if (user.allowance <= 0) {
+        await cancelCalBooking(payload.uid)
+        return NextResponse.json({ received: true, action: 'cancelled — no credits' })
+      }
 
-    if (hoursUntilLesson >= 24) {
-      // More than 24h away — refund the credit
       await prisma.user.update({
         where: { id: user.id },
-        data: { allowance: { increment: 1 } },
+        data: { allowance: { decrement: 1 } },
       })
-      return NextResponse.json({ received: true, action: 'credit refunded' })
+
+      return NextResponse.json({ received: true, action: 'credit deducted' })
     }
 
-    // Within 24h — no refund
-    return NextResponse.json({ received: true, action: 'no refund — within 24h' })
-  }
+    if (triggerEvent === 'BOOKING_CANCELLED') {
+      const lessonStart = new Date(payload.startTime)
+      const now = new Date()
+      const hoursUntilLesson = (lessonStart.getTime() - now.getTime()) / (1000 * 60 * 60)
 
-  return NextResponse.json({ received: true })
+      if (hoursUntilLesson >= 24) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { allowance: { increment: 1 } },
+        })
+        return NextResponse.json({ received: true, action: 'credit refunded' })
+      }
+
+      return NextResponse.json({ received: true, action: 'no refund — within 24h' })
+    }
+
+    return NextResponse.json({ received: true })
+  } catch (err) {
+    console.error('[cal-webhook] Error:', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
