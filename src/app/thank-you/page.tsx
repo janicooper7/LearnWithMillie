@@ -9,7 +9,6 @@ export default function ThankYou() {
   const router = useRouter()
 
   useEffect(() => {
-    // Trigger confetti animation
     const duration = 3 * 1000
     const animationEnd = Date.now() + duration
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 }
@@ -27,47 +26,72 @@ export default function ThankYou() {
 
       const particleCount = 50 * (timeLeft / duration)
 
-      // Confetti from the left
       confetti({
         ...defaults,
         particleCount,
         origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        colors: ['#4A5568', '#718096', '#90A4AE', '#A0AEC0'],
+        colors: ['#1F3A34', '#C2AA6A', '#2A4D45', '#D4C08A', '#F4EDE4'],
       })
 
-      // Confetti from the right
       confetti({
         ...defaults,
         particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        colors: ['#4A5568', '#718096', '#90A4AE', '#A0AEC0'],
+        colors: ['#1F3A34', '#C2AA6A', '#2A4D45', '#D4C08A', '#F4EDE4'],
       })
     }, 250)
 
-    // Cleanup
     return () => clearInterval(interval)
   }, [])
 
   return (
-    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
-      <div className='max-w-2xl w-full text-center bg-white/80 backdrop-blur-lg border border-gray-200 shadow-xl rounded-3xl p-8 md:p-12'>
-        <h1 className='heading-lg text-gray-900 mb-6'>Thank You!</h1>
-        <p className='text-gray-600 text-lg mb-8'>
-          Your enquiry has been received successfully. I&apos;ll get back to you
-          as soon as possible to discuss your English learning journey.
+    <div
+      className='min-h-screen flex items-center justify-center px-4'
+      style={{ backgroundColor: '#F4EDE4' }}
+    >
+      <div
+        className='max-w-xl w-full text-center bg-white rounded-xl p-8 md:p-12 border'
+        style={{ borderColor: '#EDE4D8' }}
+      >
+        {/* Top accent */}
+        <div
+          className='w-12 h-1 rounded-full mx-auto mb-8'
+          style={{ backgroundColor: '#C2AA6A' }}
+        ></div>
+
+        <h1
+          className='text-3xl md:text-4xl font-bold mb-4'
+          style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
+        >
+          You&apos;re all set!
+        </h1>
+        <p
+          className='text-base leading-relaxed mb-3'
+          style={{ color: '#1F3A34', opacity: 0.7 }}
+        >
+          Welcome aboard! Your subscription is confirmed and your lesson credits are ready to use.
         </p>
-        <div className='space-y-4'>
-          <Link
-            href='/'
-            className='inline-block w-full md:w-auto px-8 py-3 rounded-full bg-custom-pink text-white font-semibold hover:bg-opacity-90 transition-colors'
-          >
-            Return to Home
-          </Link>
-          <p className='text-gray-500 text-sm'>
-            In the meantime, feel free to explore more about my teaching methods
-            and success stories.
-          </p>
-        </div>
+        <p
+          className='text-base leading-relaxed mb-8'
+          style={{ color: '#1F3A34', opacity: 0.7 }}
+        >
+          Head to your dashboard and use the calendar to book your first lesson with Millie.
+        </p>
+
+        <Link
+          href='/dashboard'
+          className='inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white rounded-lg transition-all duration-200 hover:brightness-105'
+          style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+        >
+          Go to My Dashboard
+        </Link>
+
+        <p
+          className='text-xs mt-6'
+          style={{ color: '#1F3A34', opacity: 0.45 }}
+        >
+          Can&apos;t wait to see you in your first lesson!
+        </p>
       </div>
     </div>
   )

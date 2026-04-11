@@ -1,18 +1,28 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Playfair_Display } from 'next/font/google'
 import { Suspense } from 'react'
 import './globals.css'
 import Navigation from './components/Navigation'
 import Footer from './components/Footer'
+import SessionProvider from './components/SessionProvider'
 import GoogleAnalytics from './components/GoogleAnalytics'
 import StructuredData from './components/StructuredData'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fluentify.com'
-const siteName = 'Fluentify'
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  weight: ['400', '500', '600', '700', '800'],
+})
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://learnwithmillie.com'
+const siteName = 'LearnWithMillie'
 const defaultTitle =
-  'Fluentify - Professional English Tutoring | Business English & Interview Prep'
+  'LearnWithMillie - Professional English Tutoring | Business English & Interview Prep'
 const defaultDescription =
   'Professional English tutoring tailored to your needs. Learn Business English, improve your conversational skills, and prepare for job interviews with personalized lessons from a certified TEFL teacher in London.'
 
@@ -55,7 +65,7 @@ export const metadata: Metadata = {
         url: '/images/HeaderImage.png',
         width: 1200,
         height: 630,
-        alt: 'Professional English tutoring with Fluentify',
+        alt: 'Professional English tutoring with LearnWithMillie',
       },
     ],
   },
@@ -76,12 +86,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    // Add your verification codes here when available
-    // google: 'your-google-verification-code',
-    // yandex: 'your-yandex-verification-code',
-    // bing: 'your-bing-verification-code',
-  },
   alternates: {
     canonical: siteUrl,
   },
@@ -98,19 +102,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang='en' className='scroll-smooth overflow-x-hidden'>
+    <html lang='en' className={`scroll-smooth overflow-x-hidden ${inter.variable} ${playfair.variable}`}>
       <head>
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>
         <StructuredData />
       </head>
-      <body className={inter.className}>
-        <Navigation />
-        <main className='relative pt-16 overflow-x-hidden'>
-          <Suspense fallback={null}>{children}</Suspense>
-        </main>
-        <Footer />
+      <body>
+        <SessionProvider>
+          <Navigation />
+          <main className='relative pt-[72px] overflow-x-hidden'>
+            <Suspense fallback={null}>{children}</Suspense>
+          </main>
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   )

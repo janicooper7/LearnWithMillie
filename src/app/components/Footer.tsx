@@ -30,28 +30,25 @@ export default function Footer() {
   }
 
   return (
-    <footer className='bg-black text-white'>
-      <div className='container py-20'>
+    <footer style={{ backgroundColor: '#F4EDE4', borderTop: '1px solid rgba(31,58,52,0.1)' }}>
+      <div className='container py-16 md:py-20'>
         <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-12'>
           {/* Brand */}
           <div className='lg:col-span-2 space-y-6'>
-            <div className='flex items-center space-x-3'>
-              <div className='relative w-12 h-12 flex items-center justify-center'>
-                <div className='absolute inset-0 w-12 h-12 bg-white rounded-xl shadow-lg rotate-45'></div>
-                <span className='relative z-10 text-xl font-bold text-black'>
-                  i
-                </span>
-              </div>
-              <span className='text-3xl font-bold'>Fluentify</span>
-            </div>
-            <p className='text-gray-300 text-lg leading-relaxed max-w-md'>
+            <span
+              className='text-3xl font-bold'
+              style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
+            >
+              LearnWithMillie
+            </span>
+            <p className='text-base leading-relaxed max-w-md' style={{ color: 'rgba(31,58,52,0.6)' }}>
               Connecting worlds through words. Professional English tutoring
               tailored to your needs with personalized attention and flexible
               scheduling.
             </p>
             <div className='flex items-center gap-3'>
-              <div className='w-3 h-3 bg-green-500 rounded-full animate-pulse'></div>
-              <span className='text-gray-300 font-medium'>
+              <div className='w-2 h-2 bg-[#C2AA6A] rounded-full'></div>
+              <span className='text-sm font-medium' style={{ color: 'rgba(31,58,52,0.6)' }}>
                 Available for new students
               </span>
             </div>
@@ -59,14 +56,19 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className='space-y-6'>
-            <h4 className='text-xl font-bold text-white'>Quick Links</h4>
-            <ul className='space-y-4'>
+            <h4
+              className='text-base font-semibold uppercase tracking-widest'
+              style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
+            >
+              Quick Links
+            </h4>
+            <ul className='space-y-3'>
               {[
                 { name: 'Meet your tutor', href: '/about', isPage: true },
                 { name: 'Services', hash: '#lesson-options' },
                 { name: 'Testimonials', hash: '#testimonials' },
                 { name: 'Pricing', hash: '#pricing' },
-                { name: 'Contact', hash: '#contact' },
+                { name: 'Contact', href: '/contact', isPage: true },
               ].map((link) => {
                 const isPageLink = 'isPage' in link && link.isPage
                 const hash = 'hash' in link ? link.hash : undefined
@@ -84,7 +86,10 @@ export default function Footer() {
                           handleLinkClick(e, hash)
                         }
                       }}
-                      className='text-gray-300 hover:text-white transition-all duration-200 font-medium'
+                      className='text-sm transition-colors duration-200'
+                      style={{ color: 'rgba(31,58,52,0.7)' }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#1F3A34' }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(31,58,52,0.7)' }}
                     >
                       {link.name}
                     </a>
@@ -96,8 +101,13 @@ export default function Footer() {
 
           {/* Services */}
           <div className='space-y-6'>
-            <h4 className='text-xl font-bold text-white'>Services</h4>
-            <ul className='space-y-4'>
+            <h4
+              className='text-base font-semibold uppercase tracking-widest'
+              style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
+            >
+              Services
+            </h4>
+            <ul className='space-y-3'>
               {[
                 'Business English',
                 'Conversational English',
@@ -107,7 +117,10 @@ export default function Footer() {
                   <a
                     href={isHomePage ? '#lesson-options' : '/#lesson-options'}
                     onClick={(e) => handleLinkClick(e, '#lesson-options')}
-                    className='text-gray-300 hover:text-white transition-all duration-200 font-medium'
+                    className='text-sm transition-colors duration-200'
+                    style={{ color: 'rgba(31,58,52,0.7)' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#1F3A34' }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(31,58,52,0.7)' }}
                   >
                     {service}
                   </a>
@@ -117,42 +130,28 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom section */}
-        <div className='mt-16 pt-8 border-t border-gray-700'>
-          <div className='text-center'>
-            <p className='text-gray-400 mb-2'>
-              © {new Date().getFullYear()} Fluentify. All rights reserved.
+        {/* Divider */}
+        <div className='mt-16 pt-8' style={{ borderTop: '1px solid rgba(31,58,52,0.1)' }}>
+          <div className='text-center space-y-3'>
+            <p className='text-sm' style={{ color: 'rgba(31,58,52,0.65)' }}>
+              © {new Date().getFullYear()} LearnWithMillie. All rights reserved.
             </p>
-            <p className='text-gray-500 text-sm'>
+            <p className='text-xs' style={{ color: 'rgba(31,58,52,0.7)' }}>
               Website maintained by:{' '}
               <a
                 href='https://aiwebhouse.com/'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-gray-400 hover:text-white transition-colors duration-200 underline'
+                className='transition-colors duration-200 underline'
+                style={{ color: 'rgba(31,58,52,0.65)' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#1F3A34' }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(31,58,52,0.65)' }}
               >
                 aiwebhouse.com
               </a>
             </p>
           </div>
 
-          {/* Trust indicators */}
-          <div className='mt-8 pt-6 border-t border-gray-700'>
-            <div className='flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500'>
-              <div className='flex items-center gap-2'>
-                <div className='w-2 h-2 bg-green-500 rounded-full'></div>
-                <span>TEFL Certified</span>
-              </div>
-              <div className='flex items-center gap-2'>
-                <div className='w-2 h-2 bg-blue-500 rounded-full'></div>
-                <span>London Based</span>
-              </div>
-              <div className='flex items-center gap-2'>
-                <div className='w-2 h-2 bg-purple-500 rounded-full'></div>
-                <span>DBS Checked</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </footer>

@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useSession } from 'next-auth/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CheckIcon } from '@heroicons/react/24/solid'
@@ -12,9 +13,11 @@ const plans = [
     price: 40,
     lessons: 4,
     description: 'Ideal for flexible learning',
+    featured: false,
+    planKey: 'four',
     features: [
       '4 lessons per month',
-      'Personalized lesson plans',
+      'Personalised lesson plans',
       'Progress tracking',
       'Learning materials included',
       'Priority scheduling',
@@ -26,9 +29,11 @@ const plans = [
     price: 38,
     lessons: 8,
     description: 'Perfect for steady progress',
+    featured: true,
+    planKey: 'eight',
     features: [
       '8 lessons per month',
-      'Personalized lesson plans',
+      'Personalised lesson plans',
       'Progress tracking',
       'Learning materials included',
       'Priority scheduling',
@@ -40,9 +45,11 @@ const plans = [
     price: 35,
     lessons: 12,
     description: 'Best for intensive learning',
+    featured: false,
+    planKey: 'twelve',
     features: [
       '12 lessons per month',
-      'Personalized lesson plans',
+      'Personalised lesson plans',
       'Progress tracking',
       'Learning materials included',
       'Priority scheduling',
@@ -52,167 +59,288 @@ const plans = [
 ]
 
 export default function Pricing() {
-  const sectionRef = useRef(null)
-  const cardsRef = useRef<HTMLDivElement[]>([])
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([])
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+  const { data: session } = useSession()
+
+  const handleCheckout = async (planKey: string, planName: string) => {
+    if (!session) {
+      window.location.href = `/auth/signup?next=%2F%23pricing`
+      return
+    }
+    setLoadingPlan(planName)
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: planKey }),
+      })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+      else console.error('Checkout error:', data.error)
+    } catch (err) {
+      console.error('Checkout failed:', err)
+    } finally {
+      setLoadingPlan(null)
+    }
+  }
 
   useEffect(() => {
-    // Disable animations on mobile
     const isMobile = window.innerWidth < 768
     if (isMobile) {
-      // Set elements to final state immediately on mobile
-      cardsRef.current.forEach((card) => {
-        if (card) {
-          gsap.set(card, { y: 0, opacity: 1 })
-        }
-      })
+      cardsRef.current.forEach((c) => c && gsap.set(c, { y: 0, opacity: 1 }))
       return
     }
 
     gsap.registerPlugin(ScrollTrigger)
 
-    cardsRef.current.forEach((card, index) => {
+    cardsRef.current.forEach((card, i) => {
       gsap.fromTo(
         card,
-        { y: 100, opacity: 0 },
+        { y: 40, opacity: 0 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          delay: index * 0.2,
-          scrollTrigger: {
-            trigger: card,
-            start: 'top bottom-=100',
-            end: 'bottom center',
-          },
-        },
+          y: 0, opacity: 1, duration: 0.6, delay: i * 0.1,
+          scrollTrigger: { trigger: card, start: 'top bottom-=80' },
+        }
       )
     })
 
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-    }
+    return () => ScrollTrigger.getAll().forEach((t) => t.kill())
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      className='section-padding bg-gray-50'
-      id='pricing'
-    >
+    <section className='section-padding' id='pricing' style={{ backgroundColor: '#F4EDE4' }}>
       <div className='container'>
-        <div className='text-center max-w-4xl mx-auto mb-20'>
-          <h2 className='heading-lg text-gray-900 mb-8'>Available Plans</h2>
-          <p className='text-xl text-gray-600 leading-relaxed'>
-            Choose the perfect plan for your learning journey. All plans include
-            personalized attention and flexible scheduling.
+
+        {/* Header */}
+        <div className='flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12'>
+          <div>
+            <div className='flex items-center gap-3 mb-4'>
+              <div className='h-px w-8' style={{ backgroundColor: '#C2AA6A' }} />
+              <span
+                className='text-xs uppercase tracking-[0.25em] font-medium'
+                style={{ color: 'rgba(31,58,52,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}
+              >
+                Investment
+              </span>
+            </div>
+            <h2 className='heading-lg' style={{ color: '#1F3A34' }}>
+              Simple,<br />Transparent Pricing
+            </h2>
+          </div>
+          <p
+            className='text-base leading-relaxed max-w-xs md:text-right'
+            style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
+          >
+            All plans include personalised attention and flexible scheduling.
           </p>
         </div>
 
-        {/* Free Trial Section - Full Width Card */}
-        <div className='max-w-4xl mx-auto mb-12'>
-          <div className='bg-gradient-primary rounded-2xl p-8 md:p-10 text-left text-white relative overflow-hidden border-2 border-primary/20'>
-            {/* Decorative Elements */}
-            <div className='absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16'></div>
-            <div className='absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12'></div>
-
-            <div className='relative z-10'>
-              <div className='space-y-4'>
-                <div>
-                  <h3 className='text-3xl md:text-4xl font-bold mb-2 flex items-center gap-3 flex-wrap'>
-                    FREE Trial Lesson (15 Minutes)
-                    <span className='inline-block px-5 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold'>
-                      🎁 New Student Offer
-                    </span>
-                  </h3>
-                  <p className='text-white/90 text-base md:text-lg max-w-2xl'>
-                    Try your first lesson completely free! Perfect for new
-                    students to experience personalized English tutoring and get
-                    to know your tutor. This is a great opportunity to discuss
-                    your learning goals, ask questions, and see if we're a good
-                    fit before committing to a paid plan.
-                  </p>
-                </div>
-                <div>
-                  <a
-                    href='#contact'
-                    className='inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary font-bold rounded-2xl hover:scale-105 transform transition-all duration-300 shadow-lg'
-                  >
-                    Claim Your Free Trial
-                    <ArrowRight className='w-5 h-5' />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className='grid lg:grid-cols-3 gap-8'>
+        {/* Pricing Cards */}
+        <div className='grid md:grid-cols-3 gap-5 mb-6'>
           {plans.map((plan, index) => (
             <div
               key={plan.name}
-              ref={(el) => {
-                if (el) cardsRef.current[index] = el
+              ref={(el) => { cardsRef.current[index] = el }}
+              className='relative rounded-2xl bg-white flex flex-col'
+              style={{
+                border: plan.featured ? '2px solid #1F3A34' : '1px solid #EDE4D8',
+                transform: plan.featured ? 'translateY(-6px)' : 'none',
+                boxShadow: plan.featured
+                  ? '0 20px 50px rgba(31,58,52,0.13)'
+                  : '0 2px 12px rgba(31,58,52,0.05)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
               }}
-              className='card group relative overflow-visible'
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLDivElement
+                el.style.boxShadow = plan.featured
+                  ? '0 24px 60px rgba(31,58,52,0.18)'
+                  : '0 12px 32px rgba(31,58,52,0.1)'
+                if (!plan.featured) el.style.transform = 'translateY(-4px)'
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLDivElement
+                el.style.boxShadow = plan.featured
+                  ? '0 20px 50px rgba(31,58,52,0.13)'
+                  : '0 2px 12px rgba(31,58,52,0.05)'
+                el.style.transform = plan.featured ? 'translateY(-6px)' : 'none'
+              }}
             >
-              {/* Most Popular Badge */}
-              {plan.name === 'Advanced' && (
-                <div className='absolute -top-3 left-1/2 -translate-x-1/2 z-20 px-4 py-1.5 bg-gradient-primary text-white font-bold rounded-full text-xs uppercase tracking-wide shadow-lg'>
-                  Most Popular
+              {/* Most Popular badge */}
+              {plan.featured && (
+                <div className='absolute -top-3.5 left-0 right-0 flex justify-center'>
+                  <span
+                    className='text-[10px] uppercase tracking-[0.18em] font-semibold px-4 py-1.5 rounded-full'
+                    style={{
+                      backgroundColor: '#C2AA6A',
+                      color: 'white',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                    }}
+                  >
+                    Most Popular
+                  </span>
                 </div>
               )}
-              <div className='p-8 lg:p-10'>
-                {/* Header */}
-                <div className='text-center mb-8'>
-                  <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+
+              <div className='p-8 flex flex-col flex-1'>
+
+                {/* Plan name + description */}
+                <div className='mb-6'>
+                  <h3
+                    className='text-2xl font-bold mb-1.5'
+                    style={{
+                      color: '#1F3A34',
+                      fontFamily: 'var(--font-playfair), Georgia, serif',
+                    }}
+                  >
                     {plan.name}
                   </h3>
-                  <p className='text-gray-600 mb-6'>{plan.description}</p>
+                  <p
+                    className='text-sm'
+                    style={{
+                      color: 'rgba(31,58,52,0.7)',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                    }}
+                  >
+                    {plan.description}
+                  </p>
+                </div>
 
-                  <div className='space-y-2 mb-8'>
-                    <div className='flex items-end justify-center gap-1'>
-                      <span className='text-5xl font-bold text-gradient-primary'>
-                        ${plan.price}
-                      </span>
-                      <span className='text-gray-600 mb-2'>/ lesson</span>
-                    </div>
-                    <p className='text-sm text-gray-500 mb-1'>
-                      50 minutes per lesson
-                    </p>
-                    <p className='text-lg font-semibold text-gray-500'>
-                      ${plan.price * plan.lessons} per month
-                    </p>
+                {/* Price */}
+                <div
+                  className='mb-7 pb-7'
+                  style={{ borderBottom: '1px solid #EDE4D8' }}
+                >
+                  <div className='flex items-end gap-2 mb-1.5'>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-playfair), Georgia, serif',
+                        fontSize: '3.2rem',
+                        fontWeight: 700,
+                        lineHeight: 1,
+                        color: '#1F3A34',
+                      }}
+                    >
+                      ${plan.price}
+                    </span>
+                    <span
+                      className='text-base mb-1.5'
+                      style={{
+                        color: 'rgba(31,58,52,0.65)',
+                        fontFamily: 'var(--font-inter), sans-serif',
+                      }}
+                    >
+                      / lesson
+                    </span>
                   </div>
+                  <p
+                    className='text-sm'
+                    style={{
+                      color: 'rgba(31,58,52,0.65)',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                    }}
+                  >
+                    ${plan.price * plan.lessons} / month &nbsp;·&nbsp; 50 min per lesson
+                  </p>
                 </div>
 
                 {/* Features */}
-                <div className='space-y-4 mb-8'>
-                  {plan.features.map((feature) => (
-                    <div key={feature} className='flex items-start gap-3'>
-                      <div className='flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center bg-gradient-primary text-white'>
-                        <CheckIcon className='h-4 w-4' />
+                <ul className='space-y-3.5 mb-8 flex-1'>
+                  {plan.features.map((feature, i) => (
+                    <li key={feature} className='flex items-center gap-3'>
+                      <div
+                        className='w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0'
+                        style={{ backgroundColor: 'rgba(31,58,52,0.08)' }}
+                      >
+                        <CheckIcon className='w-3 h-3' style={{ color: '#1F3A34' }} />
                       </div>
-                      <span className='text-gray-700 leading-relaxed'>
+                      <span
+                        className='text-sm leading-relaxed'
+                        style={{
+                          color: 'rgba(31,58,52,0.75)',
+                          fontFamily: 'var(--font-inter), sans-serif',
+                          fontWeight: i === 0 ? 600 : 400,
+                        }}
+                      >
                         {feature}
                       </span>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
 
                 {/* CTA */}
-                <div>
-                  <a
-                    href='#contact'
-                    className='btn-primary block w-full py-4 px-6 text-center rounded-2xl font-bold text-lg transition-all duration-300 shadow-glow-lg hover:shadow-glow-lg flex items-center justify-center gap-2'
-                  >
-                    Get Started
-                    <ArrowRight className='w-5 h-5' />
-                  </a>
-                </div>
+                <button
+                  onClick={() => handleCheckout(plan.planKey, plan.name)}
+                  disabled={loadingPlan !== null}
+                  className='w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed'
+                  style={{
+                    backgroundColor: '#1F3A34',
+                    color: 'white',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                    letterSpacing: '0.03em',
+                  }}
+                  onMouseEnter={(e) => { if (!loadingPlan) (e.currentTarget as HTMLButtonElement).style.opacity = '0.85' }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '1' }}
+                >
+                  {loadingPlan === plan.name ? 'Redirecting…' : 'Get Started'}
+                  {loadingPlan !== plan.name && <ArrowRight className='w-4 h-4' />}
+                </button>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Free Trial Banner */}
+        <div
+          className='rounded-2xl overflow-hidden'
+          style={{ border: '1px solid #EDE4D8' }}
+        >
+          <div
+            className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 px-8 py-7'
+            style={{ backgroundColor: '#fff' }}
+          >
+            <div className='flex items-start gap-5'>
+              {/* Gold left accent */}
+              <div
+                className='w-0.5 self-stretch rounded-full flex-shrink-0'
+                style={{ backgroundColor: '#C2AA6A', minHeight: '40px' }}
+              />
+              <div>
+                <p
+                  className='text-[11px] uppercase tracking-[0.2em] font-semibold mb-1'
+                  style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  New Students
+                </p>
+                <p
+                  className='text-base font-semibold mb-0.5'
+                  style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
+                >
+                  Start with a free 15-minute trial lesson
+                </p>
+                <p
+                  className='text-sm'
+                  style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  No commitment, no card required. Discuss your goals and see if we&apos;re a good fit.
+                </p>
+              </div>
+            </div>
+            <a
+              href='/auth/signup'
+              className='flex-shrink-0 inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:brightness-105'
+              style={{
+                backgroundColor: '#1F3A34',
+                color: 'white',
+                fontFamily: 'var(--font-inter), sans-serif',
+              }}
+            >
+              Claim Free Trial
+              <ArrowRight className='w-4 h-4' />
+            </a>
+          </div>
+        </div>
+
       </div>
     </section>
   )

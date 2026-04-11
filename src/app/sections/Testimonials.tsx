@@ -7,59 +7,66 @@ import { motion } from 'framer-motion'
 
 const testimonials = [
   {
-    name: 'Blanche Pearson',
-    role: 'Marketing Manager',
+    name: 'Sophie',
+    role: 'France',
     content:
-      "Millie's teaching approach is exceptional. She helped me improve my business English significantly, which has been invaluable in my career.",
+      'Militsa is a wonderful and brilliant woman. It\'s always a pleasure to talk with her. Time flies, her lessons are well-prepared and tailored to my level. I can already feel that my level has improved. Every exchange is enriching. Our lessons start with a discussion, followed by vocabulary work. After each session, she sends me the words we covered together. I can only highly recommend her.',
     rating: 5,
   },
   {
-    name: 'Jonas Brauers',
-    role: 'Software Developer',
+    name: 'Verena',
+    role: 'Germany',
     content:
-      'The personalized attention and focus on technical vocabulary has made a huge difference in my ability to communicate with international colleagues.',
+      'Millie is a great teacher! The lessons are very well prepared, and each lesson covers a different topic. There is a lot of discussion, so the individual speaking time is very high. Millie is super friendly and empathetic! Absolute recommendation 😊',
     rating: 5,
   },
   {
-    name: 'Kristina Zasiadko',
-    role: 'HR Professional',
+    name: 'Johanna',
+    role: 'Austria',
     content:
-      "Thanks to Millie's interview preparation sessions, I successfully landed my dream job at an international company.",
+      'Millie is an extraordinary teacher who stands out for her professionalism, empathy, patience, and also humor. Due to her friendly, motivating, and incredibly competent manner, learning is fun and does not focus on deficits. Her lessons are designed in such a way that you not only practice conversation with targeted phrases but also discuss current topics. I look forward to every lesson and my further learning journeys with her!',
     rating: 5,
   },
   {
-    name: 'Maria Santos',
-    role: 'Project Manager',
+    name: 'Emanuela',
+    role: 'Italy',
     content:
-      'I was nervous about speaking English in meetings, but Millie created a safe and supportive environment. My confidence has grown tremendously, and I now actively participate in all team discussions.',
+      'Militsa is an excellent tutor, highly knowledgeable and passionate about her work. She offers lessons on current topics, making discussions enjoyable due to her deep understanding of current affairs. With remarkable patience, she guides her students through complex subjects with ease. I wholeheartedly recommend her to anyone seeking an enriching English learning experience.',
     rating: 5,
   },
   {
-    name: 'Ahmed Hassan',
-    role: 'Data Analyst',
+    name: 'Patrycja',
+    role: 'Poland',
     content:
-      "Millie's conversational English lessons are fantastic. She uses real-world scenarios that I encounter at work, making every lesson practical and immediately applicable.",
+      'Millie is a fantastic teacher. Always cheerful, she puts you at ease right away, seeks to understand all possible areas of improvement, and never makes the lesson boring. I\'m truly satisfied and happy with the journey I have undertaken with her. Highly recommend her as well!',
     rating: 5,
   },
   {
-    name: 'Sophie Laurent',
-    role: 'Sales Executive',
+    name: 'Lubica',
+    role: 'Slovakia',
     content:
-      'The business English course exceeded my expectations. Millie helped me master presentation skills and negotiation language that directly contributed to closing major deals.',
+      'I have found the ideal conversation teacher in Millie. She brings interesting topics to each lesson and makes every session enjoyable. It feels like a natural conversation with her, as she encourages me to speak as much as possible. Her practice of sending actual vocabulary with explanations after each session greatly enhances my learning experience. I highly recommend her!',
     rating: 5,
   },
   {
-    name: 'David Chen',
-    role: 'Product Designer',
+    name: 'Dmytro',
+    role: 'Ukraine',
     content:
-      "As a non-native speaker, I struggled with expressing complex ideas. Millie's patient teaching style and tailored approach helped me articulate my thoughts clearly and professionally.",
+      'Millie is a true gem. She is not just a tutor but a wonderful human being who makes learning enjoyable. Her kindness, confidence, and communication skills will make a significant difference in your English language journey. I\'m grateful for her lesson and would highly recommend her to anyone seeking to improve their English skills. Thank you for being such an inspiring tutor!',
     rating: 5,
   },
   {
-    name: 'Elena Petrov',
-    role: 'Financial Analyst',
+    name: '학배',
+    role: 'South Korea',
     content:
-      "Millie's lessons are always well-prepared and engaging. She adapts to my learning pace and focuses on areas where I need the most improvement. Highly recommend!",
+      'Militsa is very hard-working, well-prepared, encouraged, well-organized and customer-oriented. I had the great time with her for my English improvement. Thank you so much !!!',
+    rating: 5,
+  },
+  {
+    name: 'Xintong',
+    role: 'China',
+    content:
+      'Militsa is an amazing tutor. She has very clear accent and she\'s always very patient and nice. Also, she is good at choosing the course content, and the lessons are very interesting and useful. She really helps me to improve a lot. I would highly recommend to choose her as your English tutor, and I\'ll keep learning with her.',
     rating: 5,
   },
 ]
@@ -95,42 +102,42 @@ export default function Testimonials() {
     setCurrentIndex(index)
   }
 
-  // Auto-play functionality
   useEffect(() => {
     if (testimonials.length <= itemsPerView) return
-
     const interval = setInterval(() => {
       goToNext()
-    }, 5000) // Change slide every 5 seconds
-
+    }, 5000)
     return () => clearInterval(interval)
   }, [currentIndex, itemsPerView])
 
-  const getVisibleTestimonials = () => {
-    const visible = []
-    for (let i = 0; i < itemsPerView; i++) {
-      const index = (currentIndex + i) % testimonials.length
-      visible.push({ ...testimonials[index], originalIndex: index })
-    }
-    return visible
-  }
-
-  const visibleTestimonials = getVisibleTestimonials()
   const maxSlideIndex = Math.max(0, testimonials.length - itemsPerView)
 
   return (
     <section className='section-padding bg-white' id='testimonials'>
       <div className='container'>
-        <div className='text-center max-w-3xl mx-auto mb-16'>
-          <h2 className='heading-lg mb-6'>Student Testimonials</h2>
-          <p className='text-gray-600 text-lg'>
-            Hear what my students have to say about their learning experience
-            and achievements.
+        {/* Header */}
+        <div className='text-center max-w-2xl mx-auto mb-14'>
+          <div className='flex items-center justify-center gap-3 mb-6'>
+            <div className='h-px w-10' style={{ backgroundColor: '#C2AA6A' }}></div>
+            <span
+              className='text-xs uppercase tracking-[0.25em] font-medium'
+              style={{ color: '#1F3A34', opacity: 0.6 }}
+            >
+              Student Stories
+            </span>
+            <div className='h-px w-10' style={{ backgroundColor: '#C2AA6A' }}></div>
+          </div>
+          <h2 className='heading-lg mb-4' style={{ color: '#1F3A34' }}>
+            What My Students Say
+          </h2>
+          <p className='text-base leading-relaxed' style={{ color: '#1F3A34', opacity: 0.65 }}>
+            Hear from students who have transformed their English skills and
+            confidence through personalized lessons.
           </p>
         </div>
 
         <div className='relative'>
-          {/* Carousel Container */}
+          {/* Carousel */}
           <div className='relative overflow-hidden'>
             <motion.div
               className='flex'
@@ -144,26 +151,52 @@ export default function Testimonials() {
               {testimonials.map((testimonial, index) => (
                 <div
                   key={`${testimonial.name}-${index}`}
-                  className={`flex-shrink-0 ${
-                    isMobile ? 'w-full' : 'w-1/3'
-                  } px-4`}
+                  className={`flex-shrink-0 ${isMobile ? 'w-full' : 'w-1/3'} px-3`}
                 >
-                  <div className='bg-gray-50 rounded-2xl p-8 transition-all duration-300 h-full border border-gray-100 flex flex-col'>
-                    <div className='flex mb-4'>
+                  <div
+                    className='rounded-xl p-7 h-full flex flex-col border'
+                    style={{
+                      backgroundColor: '#F4EDE4',
+                      borderColor: '#EDE4D8',
+                    }}
+                  >
+                    {/* Stars */}
+                    <div className='flex gap-0.5 mb-5'>
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <StarIcon key={i} className='h-5 w-5 text-yellow-400' />
+                        <StarIcon key={i} className='h-4 w-4' style={{ color: '#C2AA6A' }} />
                       ))}
                     </div>
-                    <p className='text-gray-700 mb-6 text-lg leading-relaxed flex-grow'>
-                      &quot;{testimonial.content}&quot;
+
+                    {/* Quote */}
+                    <p
+                      className='text-base leading-relaxed flex-grow mb-6'
+                      style={{ color: '#1F3A34', opacity: 0.75 }}
+                    >
+                      &ldquo;{testimonial.content}&rdquo;
                     </p>
-                    <div className='pt-4 border-t border-gray-200 mt-auto'>
-                      <p className='font-bold text-gray-900 text-lg'>
-                        {testimonial.name}
-                      </p>
-                      <p className='text-gray-500 text-sm mt-1'>
-                        {testimonial.role}
-                      </p>
+
+                    {/* Author */}
+                    <div
+                      className='pt-5 border-t flex items-center gap-3'
+                      style={{ borderColor: '#EDE4D8' }}
+                    >
+                      <div
+                        className='w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0'
+                        style={{ backgroundColor: '#1F3A34' }}
+                      >
+                        {testimonial.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p
+                          className='font-semibold text-sm'
+                          style={{ color: '#1F3A34' }}
+                        >
+                          {testimonial.name}
+                        </p>
+                        <p className='text-xs mt-0.5' style={{ color: '#1F3A34', opacity: 0.5 }}>
+                          {testimonial.role}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -171,37 +204,40 @@ export default function Testimonials() {
             </motion.div>
           </div>
 
-          {/* Navigation Arrows */}
+          {/* Navigation arrows */}
           {testimonials.length > itemsPerView && (
             <>
               <button
                 onClick={goToPrevious}
-                className='absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-gray-200 group'
+                className='absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-10 z-10 bg-white rounded-full p-2.5 shadow-md hover:shadow-lg transition-all duration-300 border group'
+                style={{ borderColor: '#EDE4D8' }}
                 aria-label='Previous testimonial'
               >
-                <ChevronLeftIcon className='w-6 h-6 text-gray-700 group-hover:text-primary transition-colors' />
+                <ChevronLeftIcon className='w-5 h-5' style={{ color: '#1F3A34' }} />
               </button>
               <button
                 onClick={goToNext}
-                className='absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-gray-200 group'
+                className='absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-10 z-10 bg-white rounded-full p-2.5 shadow-md hover:shadow-lg transition-all duration-300 border group'
+                style={{ borderColor: '#EDE4D8' }}
                 aria-label='Next testimonial'
               >
-                <ChevronRightIcon className='w-6 h-6 text-gray-700 group-hover:text-primary transition-colors' />
+                <ChevronRightIcon className='w-5 h-5' style={{ color: '#1F3A34' }} />
               </button>
             </>
           )}
 
-          {/* Dots Indicator */}
-          <div className='flex justify-center gap-2 mt-12'>
+          {/* Dots */}
+          <div className='flex justify-center gap-2 mt-10'>
             {Array.from({ length: maxSlideIndex + 1 }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  currentIndex === index
-                    ? 'bg-primary w-8'
-                    : 'bg-gray-300 w-2 hover:bg-gray-400'
-                }`}
+                className='h-1.5 rounded-full transition-all duration-300'
+                style={{
+                  width: currentIndex === index ? '2rem' : '0.5rem',
+                  backgroundColor: currentIndex === index ? '#1F3A34' : '#C2AA6A',
+                  opacity: currentIndex === index ? 1 : 0.4,
+                }}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}

@@ -1,0 +1,36 @@
+import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
+import { auth } from '@/auth'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+
+const PRICE_IDS: Record<string, string> = {
+  four: process.env.STRIPE_FOURLESSONS_PRICE_ID!,
+  eight: process.env.STRIPE_EIGHTLESSONS_PRICE_ID!,
+  twelve: process.env.STRIPE_TWELVELESSONS_PRICE_ID!,
+}
+
+export async function POST(req: NextRequest) {
+  const session = await auth()
+  const { plan } = await req.json()
+  const priceId = PRICE_IDS[plan]
+
+  if (!priceId) {
+    return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
+  }
+
+  try {
+    const checkoutSession = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${process.env.NEXTAUTH_URL}/thank-you`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
+      ...(session?.user?.email && { customer_email: session.user.email }),
+      metadata: { userId: session?.user?.id ?? '' },
+    })
+    return NextResponse.json({ url: checkoutSession.url })
+  } catch (err: any) {
+    console.error('Stripe error:', err.message)
+    return NextResponse.json({ error: err.message }, { status: 500 })
+  }
+}

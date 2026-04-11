@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className='relative pt-16'>
+    <>
       <About />
       <LessonOptions />
-    </main>
+    </>
   )
 }

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     'ESL activities',
   ],
   openGraph: {
-    title: 'Teacher Materials - Free Debate Topics & Vocabulary | Fluentify',
+    title: 'Teacher Materials - Free Debate Topics & Vocabulary | LearnWithMillie',
     description:
       'Get inspired with thought-provoking ESL debate topics and key vocabulary. Perfect for classroom discussions and speaking practice.',
     url: '/teacher-materials',
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
 
 export default function TeacherMaterialsPage() {
   return (
-    <main className='relative pt-6'>
+    <>
       <DebateGenerator />
       <FreeLessonPlans />
-    </main>
+    </>
   )
 }

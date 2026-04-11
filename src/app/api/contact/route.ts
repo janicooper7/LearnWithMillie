@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     const mailOptions = {
       from: process.env.SMTP_USER,
       to: process.env.RECIPIENT_EMAIL,
-      subject: `iFluentify customer enquiry from ${fullName}`,
+      subject: `LearnWithMillie enquiry from ${fullName}`,
       html: `
         <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> ${fullName}</p>

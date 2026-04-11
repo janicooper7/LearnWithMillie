@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(node:*)",
+      "Bash(npx next:*)",
+      "Bash(xargs grep:*)",
+      "Bash(npm show:*)",
+      "Bash(ngrok http:*)"
+    ]
+  }
+}

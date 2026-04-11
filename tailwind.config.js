@@ -12,7 +12,17 @@ module.exports = {
         foreground: 'hsl(var(--foreground))',
         primary: 'hsl(var(--primary))',
         'primary-foreground': 'hsl(var(--primary-foreground))',
-        'custom-pink': '#e27d86',
+        cream: '#F4EDE4',
+        'cream-dark': '#EDE4D8',
+        forest: '#1F3A34',
+        'forest-light': '#2A4D45',
+        gold: '#C2AA6A',
+        'gold-light': '#D4C08A',
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'Georgia', 'serif'],
+        playfair: ['var(--font-playfair)', 'Georgia', 'serif'],
       },
       container: {
         center: true,

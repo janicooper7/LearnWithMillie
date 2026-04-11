@@ -1,10 +1,10 @@
 export default function StructuredData() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fluentify.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://learnwithmillie.com'
 
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'EducationalOrganization',
-    name: 'Fluentify',
+    name: 'LearnWithMillie',
     description:
       'Professional English tutoring service offering Business English, Conversational English, and Interview Preparation.',
     url: siteUrl,

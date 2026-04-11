@@ -1,113 +1,40 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { PlusIcon, MinusIcon } from '@heroicons/react/24/outline'
 import { ArrowRight } from 'lucide-react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const teachingApproach = [
+const approach = [
   {
+    number: '01',
     title: 'Personalised Lessons',
-    content: (
-      <div className='space-y-3'>
-        <p>
-          Every student is unique, and so should be their learning journey. I
-          design lessons specifically tailored to your individual goals, whether
-          you're focusing on Business English for professional advancement,
-          preparing for important interviews, or simply wanting to improve your
-          everyday conversational skills.
-        </p>
-        <p>
-          Before we begin, I take time to understand your current level, your
-          objectives, and your preferred learning style. This allows me to
-          create a customized curriculum that addresses your specific needs and
-          helps you progress at the right pace.
-        </p>
-        <p>
-          From structured Business English sessions to casual small talk
-          practice, each lesson is crafted to match what you want to achieve.
-        </p>
-      </div>
-    ),
+    body: 'Every lesson is built around your goals, your level, and your learning style — not a generic template.',
   },
   {
-    title: 'Supportive & Friendly Approach',
-    content: (
-      <div className='space-y-3'>
-        <p>
-          Learning a new language can feel intimidating, but it doesn't have to
-          be. I create a relaxed, welcoming learning environment where you feel
-          comfortable making mistakes, asking questions, and expressing yourself
-          freely.
-        </p>
-        <p>
-          My teaching style is built on kindness and encouragement. I believe
-          that confidence grows when you feel supported, not judged. Whether
-          you're struggling with pronunciation, grammar, or finding the right
-          words, I'm here to help you overcome challenges with patience and
-          understanding.
-        </p>
-        <p>
-          Together, we'll build your confidence step by step, celebrating your
-          progress along the way. Remember, every mistake is a learning
-          opportunity, and every lesson brings you closer to your goals.
-        </p>
-      </div>
-    ),
+    number: '02',
+    title: 'Supportive Environment',
+    body: 'A relaxed, judgment-free space where you feel confident making mistakes and asking questions freely.',
   },
   {
-    title: 'Practical & Engaging Topics',
-    content: (
-      <div className='space-y-3'>
-        <p>
-          I believe the best way to learn English is through real-world
-          application. That's why my lessons focus on practical, engaging topics
-          that you'll actually use in your daily life and professional
-          environment.
-        </p>
-        <p>
-          We'll explore relevant scenarios through role-playing exercises,
-          meaningful discussions, and interactive activities. Whether we're
-          practicing a job interview, discussing current events, or working
-          through a business presentation, every activity is designed to build
-          your confidence and help you speak naturally.
-        </p>
-        <p>
-          You'll learn not just the language, but how to use it effectively in
-          real situations. This practical approach ensures that what you learn
-          in our lessons translates directly to your everyday conversations and
-          professional interactions.
-        </p>
-      </div>
-    ),
+    number: '03',
+    title: 'Real-World Topics',
+    body: 'We practice through relevant scenarios — interviews, presentations, everyday conversation — things you actually use.',
   },
   {
-    title: 'Comprehensive Support',
-    content: (
-      <div className='space-y-3'>
-        <p>
-          Your learning doesn't stop when the lesson ends. After each session, I
-          provide detailed lesson notes that include all the new vocabulary we
-          covered, key grammar points, and practical examples you can review at
-          your own pace.
-        </p>
-        <p>
-          These notes serve as a valuable reference tool, helping you reinforce
-          what you've learned and continue practicing between lessons. You'll
-          also receive personalized feedback on your progress, highlighting your
-          strengths and areas for improvement.
-        </p>
-        <p>
-          I'm committed to supporting your learning journey beyond our scheduled
-          lessons. If you have questions or need clarification on anything we've
-          covered, I'm here to help. Your success is my priority, and I want to
-          make sure you have all the resources you need to achieve your English
-          learning goals.
-        </p>
-      </div>
-    ),
+    number: '04',
+    title: 'Support Between Sessions',
+    body: 'Detailed lesson notes, vocabulary lists, and open communication between sessions keep your progress moving.',
   },
+]
+
+const credentials = [
+  { label: 'TEFL Certified', sub: 'Qualified Teacher' },
+  { label: 'UCL Master\'s', sub: 'Public Policy' },
+  { label: "King's College", sub: 'International Politics' },
+  { label: '4+ Years', sub: 'Online Teaching' },
 ]
 
 const aboutSections = [
@@ -115,32 +42,21 @@ const aboutSections = [
     title: 'My Qualifications & Background',
     content: (
       <div className='space-y-4'>
-        <p className='text-gray-700 leading-relaxed'>
-          I hold a Master's in Public Policy from UCL (University College
-          London) and a Bachelor's in International Politics from King's College
-          London. These academic foundations, combined with my professional
-          experience in local government, management, and accounting, give me a
-          unique perspective on business communication and professional
-          development.
+        <p className='leading-relaxed'>
+          I hold a Master's in Public Policy from UCL (University College London) and a Bachelor's in
+          International Politics from King's College London. These academic foundations, combined with
+          my professional experience in local government, management, and accounting, give me a unique
+          perspective on business communication and professional development.
         </p>
-        <p className='text-gray-700 leading-relaxed'>
-          My diverse background allows me to offer valuable insights for
-          business communication, professional writing, and interview success. I
-          understand the challenges professionals face when communicating in
-          English, whether it's writing emails, giving presentations, or
-          participating in meetings.
+        <p className='leading-relaxed'>
+          I am a TEFL certified teacher with four years of experience teaching English online. I
+          specialise in Business English, interview preparation, and helping learners improve fluency,
+          pronunciation, and confidence in both professional and everyday conversations.
         </p>
-        <p className='text-gray-700 leading-relaxed'>
-          I am a TEFL certified teacher with four years of experience teaching
-          English online. I specialise in Business English, interview
-          preparation, and helping learners improve fluency, pronunciation, and
-          confidence in both professional and everyday conversations.
-        </p>
-        <p className='text-gray-700 leading-relaxed'>
-          My real-world experience in various professional settings means I can
-          help you navigate the specific language challenges you face in your
-          career, from understanding business terminology to mastering the art
-          of professional small talk.
+        <p className='leading-relaxed'>
+          My real-world experience in various professional settings means I can help you navigate the
+          specific language challenges you face in your career, from business terminology to mastering
+          professional small talk.
         </p>
       </div>
     ),
@@ -149,37 +65,21 @@ const aboutSections = [
     title: 'My Teaching Philosophy',
     content: (
       <div className='space-y-4'>
-        <p className='text-gray-700 leading-relaxed'>
-          Learning English should be enjoyable, engaging, and easygoing! I
-          believe that when you're having fun and feeling comfortable, you learn
-          more effectively. That's why I create a positive and supportive space
-          where you can build confidence and improve your skills without fear of
-          judgment.
+        <p className='leading-relaxed'>
+          Learning English should be enjoyable, engaging, and easygoing. I believe that when you're
+          having fun and feeling comfortable, you learn more effectively. That's why I create a positive
+          and supportive space where you can build confidence without fear of judgment.
         </p>
-        <p className='text-gray-700 leading-relaxed'>
-          My teaching style is warm, encouraging, and tailored to your needs.
-          Whether you're working on fluency, confidence, or business
-          communication, I adapt my approach to match your learning style and
-          goals. I understand that everyone learns differently, and I'm
-          committed to finding the methods that work best for you.
+        <p className='leading-relaxed'>
+          My teaching style is warm, encouraging, and tailored to your needs. I provide all materials
+          for fun and engaging lessons — no textbooks or extra resources required.
         </p>
-        <p className='text-gray-700 leading-relaxed'>
-          I provide all materials for fun and engaging lessons, so you don't
-          need to worry about purchasing textbooks or resources. Everything you
-          need is included, and I'm always happy to incorporate topics that
-          interest you personally or relate to your professional field.
+        <p className='leading-relaxed'>
+          Outside of teaching, I enjoy reading, travelling, and writing books. These passions keep me
+          curious and help me bring fresh perspectives and interesting topics into our lessons.
         </p>
-        <p className='text-gray-700 leading-relaxed'>
-          Outside of teaching, I enjoy reading, traveling, and writing books.
-          These passions keep me curious and help me bring fresh perspectives
-          and interesting topics into our lessons. I believe that learning a
-          language is about more than just grammar and vocabulary—it's about
-          connecting with people, cultures, and ideas.
-        </p>
-        <p className='text-gray-700 leading-relaxed font-medium'>
-          Book your first lesson today—I look forward to helping you achieve
-          your goals and making your English learning journey both successful
-          and enjoyable!
+        <p className='leading-relaxed font-medium'>
+          Book your first lesson today — I look forward to helping you achieve your goals!
         </p>
       </div>
     ),
@@ -188,296 +88,331 @@ const aboutSections = [
 
 export default function About() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
-  const [openApproachIndex, setOpenApproachIndex] = useState<number | null>(
-    null
-  )
   const answerRefs = useRef<Array<HTMLElement | null>>([])
-  const approachRefs = useRef<Array<HTMLElement | null>>([])
   const sectionRef = useRef(null)
-  const textRef = useRef(null)
 
   useEffect(() => {
-    // Initialize refs
     answerRefs.current = answerRefs.current.slice(0, aboutSections.length)
-    approachRefs.current = approachRefs.current.slice(
-      0,
-      teachingApproach.length
-    )
-
-    // Initialize all answers to be closed
     answerRefs.current.forEach((el) => {
-      if (el) {
-        gsap.set(el, { height: 0, opacity: 0, display: 'none' })
-      }
-    })
-    approachRefs.current.forEach((el) => {
-      if (el) {
-        gsap.set(el, { height: 0, opacity: 0, display: 'none' })
-      }
+      if (el) gsap.set(el, { height: 0, opacity: 0, display: 'none' })
     })
 
-    // Disable animations on mobile
     const isMobile = window.innerWidth < 768
-    if (isMobile) {
-      if (textRef.current) {
-        gsap.set(textRef.current, { x: 0, opacity: 1 })
-      }
-      return
-    }
+    if (isMobile) return
 
     gsap.registerPlugin(ScrollTrigger)
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top center',
-        end: 'bottom center',
-      },
-    })
-
-    tl.fromTo(
-      textRef.current,
-      { x: -100, opacity: 0 },
-      { x: 0, opacity: 1, duration: 1 }
-    )
-
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-    }
+    return () => { ScrollTrigger.getAll().forEach((t) => t.kill()) }
   }, [])
 
-  const handleToggle = (indexToToggle: number, type: 'about' | 'approach') => {
+  const handleToggle = (idx: number) => {
     const isMobile = window.innerWidth < 768
-    const refs = type === 'about' ? answerRefs : approachRefs
-    const setOpen = type === 'about' ? setOpenIndex : setOpenApproachIndex
-    const currentOpen = type === 'about' ? openIndex : openApproachIndex
 
-    // If clicking the currently open item to close it
-    if (currentOpen === indexToToggle) {
-      const elToClose = refs.current[indexToToggle]
-      if (elToClose) {
+    if (openIndex === idx) {
+      const el = answerRefs.current[idx]
+      if (el) {
         if (isMobile) {
-          gsap.set(elToClose, { display: 'none', height: 0, opacity: 0 })
-          setOpen(null)
+          gsap.set(el, { display: 'none', height: 0, opacity: 0 })
         } else {
-          gsap.to(elToClose, {
-            height: 0,
-            opacity: 0,
-            duration: 0.3,
-            ease: 'power1.inOut',
-            onComplete: () => {
-              gsap.set(elToClose, { display: 'none' })
-              setOpen(null)
-            },
+          gsap.to(el, {
+            height: 0, opacity: 0, duration: 0.3, ease: 'power1.inOut',
+            onComplete: () => { gsap.set(el, { display: 'none' }) },
           })
         }
       }
+      setOpenIndex(null)
     } else {
-      // Close the currently open item first (if any)
-      if (currentOpen !== null) {
-        const currentOpenEl = refs.current[currentOpen]
-        if (currentOpenEl) {
+      if (openIndex !== null) {
+        const prev = answerRefs.current[openIndex]
+        if (prev) {
           if (isMobile) {
-            gsap.set(currentOpenEl, { display: 'none', height: 0, opacity: 0 })
+            gsap.set(prev, { display: 'none', height: 0, opacity: 0 })
           } else {
-            gsap.to(currentOpenEl, {
-              height: 0,
-              opacity: 0,
-              duration: 0.3,
-              ease: 'power1.inOut',
-              onComplete: () => {
-                gsap.set(currentOpenEl, { display: 'none' })
-              },
+            gsap.to(prev, {
+              height: 0, opacity: 0, duration: 0.3, ease: 'power1.inOut',
+              onComplete: () => { gsap.set(prev, { display: 'none' }) },
             })
           }
         }
       }
-
-      // Open the new item
-      const elToOpen = refs.current[indexToToggle]
-      if (elToOpen) {
-        setOpen(indexToToggle)
-        gsap.set(elToOpen, { display: 'block', height: 'auto' })
-        const autoHeight = elToOpen.scrollHeight
-
+      const el = answerRefs.current[idx]
+      if (el) {
+        setOpenIndex(idx)
+        gsap.set(el, { display: 'block', height: 'auto' })
+        const h = el.scrollHeight
         if (isMobile) {
-          gsap.set(elToOpen, { height: autoHeight, opacity: 1 })
+          gsap.set(el, { height: h, opacity: 1 })
         } else {
-          gsap.fromTo(
-            elToOpen,
-            { height: 0, opacity: 0 },
-            {
-              height: autoHeight,
-              opacity: 1,
-              duration: 0.3,
-              ease: 'power1.inOut',
-            }
-          )
+          gsap.fromTo(el, { height: 0, opacity: 0 }, { height: h, opacity: 1, duration: 0.3, ease: 'power1.inOut' })
         }
       }
     }
   }
 
   return (
-    <section ref={sectionRef} className='section-padding bg-white' id='about'>
-      <div className='container'>
-        {/* Hero Section */}
-        <div className='mb-16'>
-          <div ref={textRef} className='space-y-6'>
-            <div className='space-y-4'>
-              <h1 className='heading-lg text-gray-900'>
-                Hi! I'm Millie, a certified TEFL teacher from London
-              </h1>
-            </div>
+    <section ref={sectionRef} id='about' style={{ backgroundColor: '#F4EDE4' }}>
 
-            <div className='space-y-4'>
-              <p className='text-xl text-gray-700 leading-relaxed'>
-                Passionate about helping students gain confidence in English.
-              </p>
-              <p className='text-lg text-gray-600 leading-relaxed'>
-                With four years of experience teaching online, I tailor lessons
-                to individual needs in a calm, supportive, and engaging way. My
-                background in management, local government and accounting also
-                makes me a great fit for those looking to improve their Business
-                English.
-              </p>
-              <p className='text-lg text-gray-600 leading-relaxed'>
-                I hold a Master's in Public Policy from UCL and a Bachelor's in
-                International Politics from King's College London. Outside
-                teaching, I enjoy reading, traveling, and writing books.
-              </p>
-              <p className='text-lg text-gray-700 font-medium leading-relaxed'>
-                Learning a language can be challenging, but you don't have to do
-                it alone. Let's learn together!
-              </p>
+      {/* ── Hero split ── */}
+      <div className='container section-padding'>
+        <div className='grid lg:grid-cols-2 gap-12 lg:gap-16 items-center'>
+
+          {/* Left — photo */}
+          <div className='relative hidden lg:block'>
+            <div className='relative mx-auto' style={{ maxWidth: '420px' }}>
+              {/* Gold vertical accent */}
+              <div
+                className='absolute rounded-full'
+                style={{ left: '-20px', top: '10%', bottom: '10%', width: '2px', backgroundColor: '#C2AA6A', opacity: 0.55 }}
+              />
+              {/* Offset green block */}
+              <div
+                className='absolute rounded-2xl'
+                style={{ top: '22px', left: '22px', right: '-22px', bottom: '-22px', backgroundColor: '#1F3A34', zIndex: 1 }}
+              />
+              {/* Photo */}
+              <div className='relative rounded-2xl overflow-hidden' style={{ aspectRatio: '3/4', zIndex: 2 }}>
+                <Image
+                  src='/images/aboutme.png'
+                  alt='Millie — English Tutor'
+                  fill
+                  className='object-cover object-top'
+                  sizes='420px'
+                  quality={92}
+                />
+                <div
+                  className='absolute inset-0 pointer-events-none'
+                  style={{ background: 'linear-gradient(to top, rgba(31,58,52,0.2) 0%, transparent 50%)' }}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* YouTube Video Section */}
-        <div className='mb-16'>
+          {/* Right — text */}
           <div>
-            <div
-              className='relative w-full'
-              style={{ paddingBottom: '56.25%' }}
-            >
-              <iframe
-                className='absolute top-0 left-0 w-full h-full rounded-2xl shadow-xl'
-                src='https://www.youtube.com/embed/GevjT36pwJI?si=CasLXflYe670jtEJ'
-                title='YouTube video player'
-                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-                referrerPolicy='strict-origin-when-cross-origin'
-                allowFullScreen
-              ></iframe>
+            <div className='flex items-center gap-3 mb-6'>
+              <div className='h-px w-8' style={{ backgroundColor: '#C2AA6A' }} />
+              <span
+                className='text-xs uppercase tracking-[0.25em] font-medium'
+                style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
+              >
+                Meet Your Tutor
+              </span>
             </div>
-          </div>
-        </div>
 
-        {/* My Teaching Approach - Dropdown Section */}
-        <div className='mb-16'>
-          <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mb-8'>
-            My Teaching Approach
-          </h2>
-          <div className='space-y-4'>
-            {teachingApproach.map((item, index) => (
-              <div
-                key={index}
-                className='bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden'
-              >
-                <button
-                  onClick={() => handleToggle(index, 'approach')}
-                  className='flex w-full items-center justify-between text-left p-6 hover:bg-gray-100 transition-colors duration-200'
-                >
-                  <span className='text-lg font-semibold text-gray-900'>
-                    {item.title}
-                  </span>
-                  <span className='ml-6 flex h-7 items-center flex-shrink-0'>
-                    {openApproachIndex === index ? (
-                      <MinusIcon className='h-6 w-6 text-primary' />
-                    ) : (
-                      <PlusIcon className='h-6 w-6 text-primary' />
-                    )}
-                  </span>
-                </button>
-                <div
-                  ref={(el) => {
-                    approachRefs.current[index] = el
-                  }}
-                  className='overflow-hidden'
-                >
-                  <div className='px-8 py-6 text-gray-700 leading-relaxed'>
-                    {typeof item.content === 'string' ? (
-                      <p>{item.content}</p>
-                    ) : (
-                      item.content
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Additional About Sections - Dropdown */}
-        <div>
-          <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mb-8'>
-            Learn More About Me
-          </h2>
-          <div className='space-y-4'>
-            {aboutSections.map((section, index) => (
-              <div
-                key={index}
-                className='bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden'
-              >
-                <button
-                  onClick={() => handleToggle(index, 'about')}
-                  className='flex w-full items-center justify-between text-left p-6 hover:bg-gray-100 transition-colors duration-200'
-                >
-                  <span className='text-lg font-semibold text-gray-900'>
-                    {section.title}
-                  </span>
-                  <span className='ml-6 flex h-7 items-center flex-shrink-0'>
-                    {openIndex === index ? (
-                      <MinusIcon className='h-6 w-6 text-primary' />
-                    ) : (
-                      <PlusIcon className='h-6 w-6 text-primary' />
-                    )}
-                  </span>
-                </button>
-                <div
-                  ref={(el) => {
-                    answerRefs.current[index] = el
-                  }}
-                  className='overflow-hidden'
-                >
-                  <div className='px-8 py-6'>{section.content}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className='mt-16 text-center'>
-          <div className='bg-gradient-primary rounded-3xl p-8 md:p-12 text-white'>
-            <h3 className='text-2xl md:text-3xl font-bold mb-4'>
-              Ready to Start Your English Learning Journey?
-            </h3>
-            <p className='text-lg md:text-xl mb-6 opacity-90'>
-              If you're looking to improve business communication, preparing for
-              an interview, or refining your English skills, I'd love to help
-              you achieve your goals!
-            </p>
-            <a
-              href='/#contact'
-              className='bg-white text-black shadow-glow-lg hover:shadow-glow-lg hover:scale-105 transform inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all duration-300'
+            <h1
+              className='heading-lg mb-5'
+              style={{ color: '#1F3A34' }}
             >
+              Hi, I&apos;m Millie
+            </h1>
+
+            <p className='text-lg leading-relaxed mb-4' style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}>
+              A certified TEFL teacher from London, passionate about helping students speak English with real confidence.
+            </p>
+            <p className='text-base leading-relaxed mb-8' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
+              With four years of experience teaching online, I tailor every lesson to your individual goals in a calm,
+              supportive, and engaging environment. My background in management, local government, and accounting makes
+              me especially effective for Business English learners.
+            </p>
+
+            {/* Credential chips */}
+            <div className='flex flex-wrap gap-2.5 mb-8'>
+              {credentials.map((c) => (
+                <div
+                  key={c.label}
+                  className='px-4 py-2.5 rounded-xl'
+                  style={{ backgroundColor: 'white', border: '1px solid #EDE4D8' }}
+                >
+                  <p className='text-xs font-semibold' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    {c.label}
+                  </p>
+                  <p className='text-[11px]' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    {c.sub}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <a href='/auth/signup' className='btn-primary inline-flex items-center gap-2'>
               Book Your First Lesson
-              <ArrowRight className='w-5 h-5' />
+              <ArrowRight className='w-4 h-4' />
             </a>
           </div>
         </div>
       </div>
+
+      {/* ── Video ── */}
+      <div style={{ backgroundColor: '#1F3A34' }}>
+        <div className='container py-16 md:py-20'>
+          <div className='max-w-3xl mx-auto'>
+            <div className='text-center mb-8'>
+              <p
+                className='text-xs uppercase tracking-[0.25em] font-medium mb-3'
+                style={{ color: 'rgba(194,170,106,0.9)', fontFamily: 'var(--font-inter), sans-serif' }}
+              >
+                Watch & Learn
+              </p>
+              <h2
+                className='text-2xl md:text-3xl font-bold text-white'
+                style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
+              >
+                See How I Teach
+              </h2>
+            </div>
+            <div
+              className='relative w-full rounded-2xl overflow-hidden shadow-2xl'
+              style={{ paddingBottom: '56.25%', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <iframe
+                className='absolute top-0 left-0 w-full h-full'
+                src='https://www.youtube.com/embed/GevjT36pwJI?si=CasLXflYe670jtEJ'
+                title='Millie teaching English'
+                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                referrerPolicy='strict-origin-when-cross-origin'
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Teaching Approach ── */}
+      <div className='container section-padding'>
+        <div className='flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12'>
+          <div>
+            <div className='flex items-center gap-3 mb-4'>
+              <div className='h-px w-8' style={{ backgroundColor: '#C2AA6A' }} />
+              <span
+                className='text-xs uppercase tracking-[0.25em] font-medium'
+                style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
+              >
+                How I Teach
+              </span>
+            </div>
+            <h2 className='heading-lg' style={{ color: '#1F3A34' }}>
+              My Approach
+            </h2>
+          </div>
+          <p
+            className='text-base leading-relaxed max-w-xs md:text-right'
+            style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
+          >
+            Every lesson is different — because every student is.
+          </p>
+        </div>
+
+        <div className='grid sm:grid-cols-2 gap-4'>
+          {approach.map((item) => (
+            <div
+              key={item.number}
+              className='bg-white rounded-2xl p-7'
+              style={{ border: '1px solid #EDE4D8' }}
+            >
+              <div className='flex items-start gap-4'>
+                <span
+                  className='text-[11px] font-bold flex-shrink-0 mt-0.5'
+                  style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif', letterSpacing: '0.08em' }}
+                >
+                  {item.number}
+                </span>
+                <div>
+                  <h3
+                    className='text-base font-semibold mb-2'
+                    style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p
+                    className='text-sm leading-relaxed'
+                    style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    {item.body}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Learn More accordion ── */}
+        <div className='mt-16'>
+          <h2 className='heading-md mb-8' style={{ color: '#1F3A34' }}>
+            Learn More About Me
+          </h2>
+          <div className='space-y-3'>
+            {aboutSections.map((section, index) => {
+              const isOpen = openIndex === index
+              return (
+                <div
+                  key={index}
+                  className='rounded-xl border overflow-hidden transition-all duration-300'
+                  style={{
+                    borderColor: isOpen ? 'rgba(31,58,52,0.2)' : '#EDE4D8',
+                    backgroundColor: isOpen ? 'rgba(31,58,52,0.03)' : 'white',
+                  }}
+                >
+                  <button
+                    onClick={() => handleToggle(index)}
+                    className='flex w-full items-center justify-between text-left px-6 py-5 transition-colors duration-200'
+                  >
+                    <span className='text-base font-semibold leading-relaxed' style={{ color: '#1F3A34' }}>
+                      {section.title}
+                    </span>
+                    <span
+                      className='flex h-6 w-6 items-center justify-center rounded-full flex-shrink-0 ml-4 transition-all duration-200'
+                      style={{ backgroundColor: isOpen ? '#1F3A34' : 'rgba(31,58,52,0.08)' }}
+                    >
+                      {isOpen
+                        ? <MinusIcon className='h-3.5 w-3.5 text-white' aria-hidden='true' />
+                        : <PlusIcon className='h-3.5 w-3.5' style={{ color: '#1F3A34' }} aria-hidden='true' />
+                      }
+                    </span>
+                  </button>
+                  <div ref={(el) => { answerRefs.current[index] = el }} className='overflow-hidden'>
+                    <div
+                      className='px-6 pb-6 text-sm leading-7'
+                      style={{ color: 'rgba(31,58,52,0.72)', fontFamily: 'var(--font-inter), sans-serif' }}
+                    >
+                      {section.content}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* ── CTA block ── */}
+        <div
+          className='mt-16 rounded-2xl p-8 md:p-12 text-white relative overflow-hidden'
+          style={{ backgroundColor: '#1F3A34' }}
+        >
+          <div className='absolute top-0 left-0 right-0 h-0.5' style={{ backgroundColor: '#C2AA6A', opacity: 0.6 }} />
+          <div className='relative z-10 text-center'>
+            <h3
+              className='text-2xl md:text-3xl font-bold mb-4'
+              style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
+            >
+              Ready to Start Your English Journey?
+            </h3>
+            <p
+              className='text-base md:text-lg mb-8 max-w-xl mx-auto'
+              style={{ opacity: 0.75, fontFamily: 'var(--font-inter), sans-serif' }}
+            >
+              Whether you're improving business communication, preparing for an interview, or
+              refining your everyday English — I'd love to help.
+            </p>
+            <a
+              href='/auth/signup'
+              className='inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium bg-white rounded-lg transition-all duration-200 hover:bg-[#F4EDE4]'
+              style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+            >
+              Book Your First Lesson
+              <ArrowRight className='w-4 h-4' />
+            </a>
+          </div>
+        </div>
+      </div>
+
     </section>
   )
 }

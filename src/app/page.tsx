@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
-import Hero from './sections/Hero'
 import Testimonials from './sections/Testimonials'
 import Pricing from './sections/Pricing'
-import Contact from './sections/Contact'
 import FAQ from './sections/FAQ'
 import LessonOptions from './sections/LessonOptions'
+import MeetTutor from './sections/MeetTutor'
 
 export const metadata: Metadata = {
   title: 'Professional English Tutoring | Business English & Interview Prep',
@@ -21,14 +20,11 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <Hero />
-      <LessonOptions />
+      <MeetTutor />
       <Testimonials />
+      <LessonOptions />
       <Pricing />
-      <section id='faq'>
-        <FAQ />
-      </section>
-      <Contact />
+      <FAQ />
     </>
   )
 }

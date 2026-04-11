@@ -4,18 +4,25 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 220 15% 20%;
-    --primary: 35 0% 0%;
-    --primary-foreground: 0 0% 100%;
-    --accent: 35 0% 0%;
-    --accent-foreground: 0 0% 100%;
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 15% 45%;
-    --border: 220 15% 90%;
+    /* Warm cream background */
+    --background: 34 42% 93%;
+    /* Dark charcoal text */
+    --foreground: 160 10% 15%;
+    /* Forest green primary */
+    --primary: 167 30% 17%;
+    --primary-foreground: 34 42% 96%;
+    /* Gold accent */
+    --accent: 44 42% 59%;
+    --accent-foreground: 160 10% 15%;
+    /* Muted tones */
+    --muted: 34 20% 88%;
+    --muted-foreground: 160 8% 40%;
+    /* Borders */
+    --border: 34 20% 85%;
+    /* Card */
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 20%;
-    --ring: 35 0% 0%;
+    --card-foreground: 160 10% 15%;
+    --ring: 167 30% 17%;
   }
 
   html {
@@ -24,6 +31,7 @@
 
   body {
     @apply antialiased text-foreground bg-background min-h-screen;
+    font-family: var(--font-inter), sans-serif;
     font-feature-settings: 'rlig' 1, 'calt' 1;
     overflow-x: hidden;
     width: 100%;
@@ -32,18 +40,19 @@
     padding: 0;
   }
 
-  /* Prevent Next.js and other wrappers from creating scrollbars */
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-playfair), Georgia, serif;
+  }
+
   #__next {
     overflow: visible !important;
     height: auto !important;
   }
 
-  /* Ensure main doesn't create scrollbars */
   main {
     overflow: visible !important;
   }
 
-  /* Allow sections to have their own overflow settings for background images */
   section {
     position: relative;
   }
@@ -68,15 +77,9 @@
   }
 
   @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   /* Disable animations on mobile devices */
@@ -101,15 +104,15 @@
   }
 
   .glass {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
   }
 
   .glass-dark {
-    background: rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(31, 58, 52, 0.25);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
   }
 }
 
@@ -119,52 +122,69 @@
   }
 
   .heading-xl {
-    @apply text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight leading-tight;
+    @apply text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight leading-tight font-serif;
   }
 
   .heading-lg {
-    @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight;
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight font-serif;
   }
 
   .heading-md {
-    @apply text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight;
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight font-serif;
   }
 
   .heading-sm {
-    @apply text-xl md:text-2xl font-semibold tracking-tight;
+    @apply text-xl md:text-2xl font-semibold tracking-tight font-serif;
   }
 
+  /* Primary CTA — forest green */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
-    background-color: hsl(var(--primary));
-  }
-
-  .btn-primary:hover {
-    background-color: hsl(var(--accent));
+    @apply inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white rounded-lg hover:brightness-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    background-color: #1F3A34;
+    font-family: var(--font-inter), sans-serif;
+    letter-spacing: 0.03em;
   }
 
   .btn-primary:focus {
-    @apply ring-primary;
+    --tw-ring-color: #1F3A34;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium text-gray-700 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-primary hover:text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+    @apply inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    color: #1F3A34;
+    border-color: rgba(31,58,52,0.35);
+    background: transparent;
+    font-family: var(--font-inter), sans-serif;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-secondary:hover {
+    background-color: #1F3A34;
+    color: white;
+    border-color: #1F3A34;
   }
 
   .card {
-    @apply bg-white rounded-2xl shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] backdrop-blur-sm;
+    @apply bg-white rounded-xl shadow-sm border transition-all duration-300 hover:shadow-md;
+    border-color: hsl(34, 20%, 88%);
   }
 
   .card-featured {
-    @apply bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.05] backdrop-blur-sm relative;
-    border: 2px solid hsl(var(--primary));
+    @apply bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg relative;
+    border: 2px solid #1F3A34;
   }
 
   .section-padding {
-    @apply py-12 md:py-24 lg:py-12;
+    @apply py-16 md:py-24;
   }
 
   .grid-auto-fit {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  /* Warm divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, hsl(34, 20%, 78%), transparent);
   }
 }

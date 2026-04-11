@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  serverExternalPackages: ['@prisma/client'],
   images: {
     remotePatterns: [
       {

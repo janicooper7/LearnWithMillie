@@ -9954,7 +9954,7 @@ export default function DebateGenerator() {
   }, [currentIdx])
 
   return (
-    <div className='min-h-screen bg-gray-50 py-20'>
+    <div className='min-h-screen py-20' style={{ backgroundColor: '#F4EDE4' }}>
       <div className='container'>
         {/* Hero Section */}
         <div className='text-center mb-16'>
@@ -10093,7 +10093,7 @@ export default function DebateGenerator() {
             <div className='mt-12 flex justify-center'>
               <button
                 onClick={handleNextDebate}
-                className='btn-primary shadow-glow-lg hover:shadow-glow-lg group flex gap-[15px]'
+                className='btn-primary gap-2 group'
               >
                 <ArrowPathIcon className='w-5 h-5 group-hover:rotate-180 transition-transform duration-500' />
                 Generate New Debate

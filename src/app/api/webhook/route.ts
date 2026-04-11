@@ -1,0 +1,75 @@
+import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
+import { prisma } from '@/lib/prisma'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+
+const PRICE_TO_LESSONS: Record<string, number> = {
+  [process.env.STRIPE_FOURLESSONS_PRICE_ID!]: 4,
+  [process.env.STRIPE_EIGHTLESSONS_PRICE_ID!]: 8,
+  [process.env.STRIPE_TWELVELESSONS_PRICE_ID!]: 12,
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.text()
+  const sig = req.headers.get('stripe-signature')!
+
+  let event: Stripe.Event
+  try {
+    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
+  } catch (err: any) {
+    console.error('Webhook signature error:', err.message)
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
+  }
+
+  switch (event.type) {
+    case 'checkout.session.completed': {
+      const session = event.data.object as Stripe.Checkout.Session
+      const userId = session.metadata?.userId
+      if (!userId) break
+
+      const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
+      const priceId = subscription.items.data[0].price.id
+      const lessons = PRICE_TO_LESSONS[priceId] ?? 0
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          allowance: lessons,
+          stripeCustomerId: session.customer as string,
+          stripeSubscriptionId: session.subscription as string,
+        },
+      })
+      break
+    }
+
+    case 'invoice.paid': {
+      // Reset allowance on each billing cycle renewal
+      const invoice = event.data.object as Stripe.Invoice
+      const subId = (invoice as any).subscription as string
+      if (!subId) break
+
+      const subscription = await stripe.subscriptions.retrieve(subId)
+      const priceId = subscription.items.data[0].price.id
+      const lessons = PRICE_TO_LESSONS[priceId] ?? 0
+      const customerId = invoice.customer as string
+
+      await prisma.user.updateMany({
+        where: { stripeCustomerId: customerId },
+        data: { allowance: lessons },
+      })
+      break
+    }
+
+    case 'customer.subscription.deleted': {
+      const subscription = event.data.object as Stripe.Subscription
+      await prisma.user.updateMany({
+        where: { stripeSubscriptionId: subscription.id },
+        data: { allowance: 0, stripeSubscriptionId: null },
+      })
+      break
+    }
+  }
+
+  return NextResponse.json({ received: true })
+}
