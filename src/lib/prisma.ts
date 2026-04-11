@@ -1,12 +1,8 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaNeon } from '@prisma/adapter-neon'
-import { neonConfig } from '@neondatabase/serverless'
-
-// Cache HTTP connections across invocations in the same serverless instance
-neonConfig.fetchConnectionCache = true
+import { PrismaPg } from '@prisma/adapter-pg'
 
 function createPrismaClient() {
-  const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! })
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
   return new PrismaClient({ adapter } as any)
 }
 
