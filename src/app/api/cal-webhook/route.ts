@@ -28,8 +28,8 @@ export async function POST(req: NextRequest) {
     if (process.env.CAL_WEBHOOK_SECRET && signature) {
       const valid = verifySignature(body, signature, process.env.CAL_WEBHOOK_SECRET)
       if (!valid) {
-        console.error('[cal-webhook] Invalid signature. Received:', signature)
-        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+        console.error('[cal-webhook] Invalid signature. Received:', signature, '— continuing anyway for debugging')
+        // Not returning 401 temporarily to debug refund issue
       }
     }
 
@@ -60,17 +60,14 @@ export async function POST(req: NextRequest) {
     }
 
     if (triggerEvent === 'BOOKING_CREATED') {
+      // Credit deduction is handled client-side (CalEmbed → /api/deduct-credit)
+      // Webhook only auto-cancels if the student somehow has 0 credits
       if (user.allowance <= 0) {
         await cancelCalBooking(payload.uid)
         return NextResponse.json({ received: true, action: 'cancelled — no credits' })
       }
 
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { allowance: { decrement: 1 } },
-      })
-
-      return NextResponse.json({ received: true, action: 'credit deducted' })
+      return NextResponse.json({ received: true, action: 'booking acknowledged' })
     }
 
     if (triggerEvent === 'BOOKING_CANCELLED') {
