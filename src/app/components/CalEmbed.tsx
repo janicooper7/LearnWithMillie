@@ -10,11 +10,18 @@ interface CalEmbedProps {
   nextReset: string
 }
 
+interface BookingInfo {
+  startTime: string
+  endTime: string
+}
+
 export default function CalEmbed({ src, allowance: initialAllowance, nextReset }: CalEmbedProps) {
   const router = useRouter()
   const [booked, setBooked] = useState(false)
   const [cancelled, setCancelled] = useState(false)
   const [allowance, setAllowance] = useState(initialAllowance)
+  const [bookingInfo, setBookingInfo] = useState<BookingInfo | null>(null)
+  const [iframeHidden, setIframeHidden] = useState(false)
 
   useEffect(() => {
     const handler = async (e: MessageEvent) => {
@@ -28,13 +35,21 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
 
         if (!isBookingSuccess) return
 
-        // Deduct credit immediately
+        // Extract booking date/time from Cal.com payload
+        const booking = data?.data?.booking ?? data?.booking ?? data?.payload ?? {}
+        const startTime = booking?.startTime ?? booking?.start ?? null
+        const endTime = booking?.endTime ?? booking?.end ?? null
+        if (startTime) setBookingInfo({ startTime, endTime })
+
+        // Hide iframe immediately — no flash
+        setIframeHidden(true)
+
+        // Deduct credit in background
         try {
           const res = await fetch('/api/deduct-credit', { method: 'POST' })
           if (res.ok) {
             const json = await res.json()
             if (json.skipped) {
-              // 0 credits — webhook will cancel the booking server-side
               setCancelled(true)
               return
             }
@@ -43,9 +58,8 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
         } catch {}
 
         setBooked(true)
-
-        // Refresh server data so upcoming bookings appear
-        setTimeout(() => router.refresh(), 2000)
+        // Refresh server-rendered parts (credits card) to match the deducted value
+        router.refresh()
       } catch {}
     }
 
@@ -53,31 +67,27 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
     return () => window.removeEventListener('message', handler)
   }, [router])
 
+  const formatDate = (iso: string) => {
+    const d = new Date(iso)
+    return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+  }
+  const formatTime = (iso: string) => {
+    return new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+  }
+
   if (cancelled) {
     return (
       <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
-        <div
-          className='w-14 h-14 rounded-full flex items-center justify-center mb-6'
-          style={{ backgroundColor: 'rgba(192,57,43,0.07)' }}
-        >
+        <div className='w-14 h-14 rounded-full flex items-center justify-center mb-6' style={{ backgroundColor: 'rgba(192,57,43,0.07)' }}>
           <XCircle className='w-7 h-7' style={{ color: '#c0392b' }} />
         </div>
-        <p
-          className='text-xs uppercase tracking-[0.2em] font-semibold mb-2'
-          style={{ color: '#c0392b', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
+        <p className='text-xs uppercase tracking-[0.2em] font-semibold mb-2' style={{ color: '#c0392b', fontFamily: 'var(--font-inter), sans-serif' }}>
           Booking cancelled
         </p>
-        <h3
-          className='text-xl font-bold mb-3'
-          style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
-        >
+        <h3 className='text-xl font-bold mb-3' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
           No credits remaining
         </h3>
-        <p
-          className='text-sm leading-relaxed mb-7 max-w-xs'
-          style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
+        <p className='text-sm leading-relaxed mb-7 max-w-xs' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
           Your booking was automatically cancelled because you have no lesson credits left. Credits reset on {nextReset}.
         </p>
         <a
@@ -94,39 +104,41 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
   if (booked) {
     return (
       <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
-        <div
-          className='w-14 h-14 rounded-full flex items-center justify-center mb-6'
-          style={{ backgroundColor: 'rgba(31,58,52,0.07)' }}
-        >
+        <div className='w-14 h-14 rounded-full flex items-center justify-center mb-6' style={{ backgroundColor: 'rgba(31,58,52,0.07)' }}>
           <CheckCircle className='w-7 h-7' style={{ color: '#1F3A34' }} />
         </div>
-        <p
-          className='text-xs uppercase tracking-[0.2em] font-semibold mb-2'
-          style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
+        <p className='text-xs uppercase tracking-[0.2em] font-semibold mb-2' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
           Booking confirmed
         </p>
-        <h3
-          className='text-xl font-bold mb-3'
-          style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
-        >
+        <h3 className='text-xl font-bold mb-4' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
           You&apos;re all set!
         </h3>
-        <p
-          className='text-sm leading-relaxed mb-2 max-w-xs'
-          style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          A calendar invitation has been sent to your email. We look forward to seeing you in your lesson.
+
+        {bookingInfo && (
+          <div className='mb-6 px-6 py-4 rounded-2xl' style={{ backgroundColor: '#F4EDE4', border: '1px solid #EDE4D8' }}>
+            <p className='text-xs uppercase tracking-[0.15em] font-semibold mb-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+              Your lesson
+            </p>
+            <p className='text-base font-semibold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+              {formatDate(bookingInfo.startTime)}
+            </p>
+            {bookingInfo.endTime && (
+              <p className='text-sm mt-1' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                {formatTime(bookingInfo.startTime)} – {formatTime(bookingInfo.endTime)}
+              </p>
+            )}
+          </div>
+        )}
+
+        <p className='text-sm leading-relaxed mb-2 max-w-xs' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+          A calendar invitation has been sent to your email.
         </p>
-        <p
-          className='text-sm font-medium mb-8'
-          style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
+        <p className='text-sm font-medium mb-8' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
           {allowance} {allowance === 1 ? 'credit' : 'credits'} remaining this month
         </p>
         {allowance > 0 && (
           <button
-            onClick={() => setBooked(false)}
+            onClick={() => { setBooked(false); setIframeHidden(false) }}
             className='inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white rounded-xl transition-all duration-200'
             style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#162e28' }}
@@ -140,10 +152,12 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
   }
 
   return (
-    <iframe
-      src={src}
-      style={{ border: 0, width: '100%', height: '600px', display: 'block' }}
-      frameBorder='0'
-    />
+    <div style={{ position: 'relative' }}>
+      <iframe
+        src={src}
+        style={{ border: 0, width: '100%', height: '600px', display: 'block', opacity: iframeHidden ? 0 : 1, pointerEvents: iframeHidden ? 'none' : 'auto', transition: 'opacity 0.1s' }}
+        frameBorder='0'
+      />
+    </div>
   )
 }

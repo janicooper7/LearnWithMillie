@@ -34,7 +34,7 @@ export default async function DashboardPage() {
       : Promise.resolve(null),
     fetch(
       `https://api.cal.com/v1/bookings?apiKey=${process.env.CAL_API_KEY}&attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming`,
-      { next: { revalidate: 60 } }
+      { cache: 'no-store' }
     ),
   ])
 
