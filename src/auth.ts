@@ -49,22 +49,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account }) {
-      // Handle Google OAuth — find or create user in DB
+      // Handle Google OAuth — upsert user in a single DB round-trip
       if (account?.provider === 'google') {
         if (!user.email) return false
         try {
-          let dbUser = await prisma.user.findUnique({ where: { email: user.email } })
-          if (!dbUser) {
-            dbUser = await prisma.user.create({
-              data: {
-                email: user.email,
-                name: user.name ?? null,
-                image: user.image ?? null,
-                role: 'STUDENT',
-              },
-            })
-          }
-          // Attach DB id and role onto the user object so jwt callback can read them
+          const dbUser = await prisma.user.upsert({
+            where: { email: user.email },
+            update: {},
+            create: {
+              email: user.email,
+              name: user.name ?? null,
+              image: user.image ?? null,
+              role: 'STUDENT',
+            },
+            select: { id: true, role: true },
+          })
           ;(user as any).id = dbUser.id
           ;(user as any).role = dbUser.role
         } catch {
@@ -77,14 +76,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.id = (user as any).id
         token.role = (user as any).role
-      }
-      // Refresh role from DB on every token creation (not every request) so promotions take effect
-      if (token.id && !token.role) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { role: true },
-        })
-        if (dbUser) token.role = dbUser.role
       }
       return token
     },
