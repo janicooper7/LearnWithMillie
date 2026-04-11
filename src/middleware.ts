@@ -22,15 +22,9 @@ export default auth((req) => {
     }
   }
 
-  // Redirect logged-in users away from auth pages
-  if (pathname.startsWith('/auth') && session) {
-    const dest = session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'
-    return NextResponse.redirect(new URL(dest, req.url))
-  }
-
   return NextResponse.next()
 })
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/auth/:path*'],
+  matcher: ['/dashboard/:path*', '/admin/:path*'],
 }

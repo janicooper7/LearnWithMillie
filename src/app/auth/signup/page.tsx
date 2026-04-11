@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { useState, useEffect } from 'react'
+import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
@@ -17,6 +17,7 @@ const GoogleIcon = () => (
 
 export default function SignupPage() {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -45,6 +46,12 @@ export default function SignupPage() {
     await signIn('credentials', { email, password, redirect: false })
     router.push('/dashboard')
   }
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace(session?.user?.role === 'ADMIN' ? '/admin' : '/dashboard')
+    }
+  }, [status, session, router])
 
   const handleGoogle = () => signIn('google', { callbackUrl: '/dashboard' })
 
