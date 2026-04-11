@@ -66,6 +66,12 @@ export async function POST(req: NextRequest) {
     }
 
     if (triggerEvent === 'BOOKING_CANCELLED') {
+      // Don't refund if this was our own auto-cancellation for 0 credits
+      const reason: string = payload?.cancellationReason ?? payload?.reason ?? ''
+      if (reason === 'Insufficient lesson credits.') {
+        return NextResponse.json({ received: true, action: 'no refund — auto-cancelled for 0 credits' })
+      }
+
       const lessonStart = new Date(payload.startTime)
       const now = new Date()
       const hoursUntilLesson = (lessonStart.getTime() - now.getTime()) / (1000 * 60 * 60)
