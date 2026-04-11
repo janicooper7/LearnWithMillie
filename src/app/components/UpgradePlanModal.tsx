@@ -33,9 +33,10 @@ const plans = [
 
 interface UpgradePlanModalProps {
   onClose: () => void
+  trialPurchased?: boolean
 }
 
-export default function UpgradePlanModal({ onClose }: UpgradePlanModalProps) {
+export default function UpgradePlanModal({ onClose, trialPurchased }: UpgradePlanModalProps) {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
   const handleCheckout = async (planKey: string, planName: string) => {
@@ -83,8 +84,8 @@ export default function UpgradePlanModal({ onClose }: UpgradePlanModalProps) {
 
         {/* Cards */}
         <div className='grid md:grid-cols-3 gap-4'>
-          {/* Trial card */}
-          <div
+          {/* Trial card — hidden if already purchased */}
+          {!trialPurchased && <div
             className='md:col-span-3 rounded-2xl bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-5'
             style={{ border: '1px solid #EDE4D8' }}
           >
@@ -111,7 +112,7 @@ export default function UpgradePlanModal({ onClose }: UpgradePlanModalProps) {
               {loadingPlan === 'Trial' ? 'Redirecting…' : 'Book Trial'}
               {loadingPlan !== 'Trial' && <ArrowRight className='w-4 h-4' />}
             </button>
-          </div>
+          </div>}
 
           {plans.map((plan) => (
             <div

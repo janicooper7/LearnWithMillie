@@ -59,23 +59,12 @@ export async function POST(request: Request) {
     const body = await request.json()
     console.log('Received form submission:', { ...body, email: '[REDACTED]' })
 
-    const { fullName, email, lessonType, plan, message } = body
+    const { fullName, email, message } = body
 
-    // Validate required fields
-    if (!fullName || !email || !lessonType || !plan) {
-      console.error('Missing required fields:', {
-        hasFullName: !!fullName,
-        hasEmail: !!email,
-        hasLessonType: !!lessonType,
-        hasPlan: !!plan,
-      })
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+    if (!fullName || !email) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Create email content
     const mailOptions = {
       from: process.env.SMTP_USER,
       to: process.env.RECIPIENT_EMAIL,
@@ -84,13 +73,7 @@ export async function POST(request: Request) {
         <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> ${fullName}</p>
         <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Lesson Type:</strong> ${lessonType}</p>
-        <p><strong>Selected Plan:</strong> ${plan}</p>
-        ${
-          message
-            ? `<p><strong>Additional Comments:</strong> ${message}</p>`
-            : ''
-        }
+        ${message ? `<p><strong>Message:</strong> ${message}</p>` : ''}
       `,
     }
 

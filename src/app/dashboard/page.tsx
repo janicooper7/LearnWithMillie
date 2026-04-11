@@ -18,7 +18,7 @@ export default async function DashboardPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { id: true, name: true, email: true, createdAt: true, image: true, role: true, allowance: true, trialPurchased: true, stripeSubscriptionId: true },
+    select: { id: true, name: true, email: true, createdAt: true, image: true, role: true, allowance: true, trialPurchased: true, trialUsed: true, stripeSubscriptionId: true },
   })
 
   if (!user) redirect('/auth/login')
@@ -126,7 +126,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Book a lesson */}
-          <BookLessonCard trialPurchased={user.trialPurchased} />
+          <BookLessonCard trialPurchased={user.trialPurchased || user.trialUsed} />
 
         </div>
 
@@ -137,16 +137,29 @@ export default async function DashboardPage() {
           {/* Top row: credits + subscription */}
           <div className='flex items-start justify-between gap-6'>
             <div>
-              <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Credits this month</p>
-              <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                {user.allowance} {user.allowance === 1 ? 'lesson' : 'lessons'} remaining
-              </p>
-              {!cancelAtPeriodEnd && (
-                <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  Resets {nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
-                </p>
-              )}
-              <CreditsCardActions trialPurchased={user.trialPurchased} />
+              {(() => {
+                const showTrialReady = user.trialPurchased && !user.trialUsed && !user.stripeSubscriptionId && user.allowance > 0
+                return (
+                  <>
+                    <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      {showTrialReady ? 'Trial Lesson' : 'Credits this month'}
+                    </p>
+                    <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      {showTrialReady ? '1 trial lesson ready to book' : `${user.allowance} ${user.allowance === 1 ? 'lesson' : 'lessons'} remaining`}
+                    </p>
+                    {showTrialReady ? (
+                      <p className='text-xs mt-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        Use the calendar below to book your 20-min session
+                      </p>
+                    ) : !cancelAtPeriodEnd && (
+                      <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        Resets {nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
+                      </p>
+                    )}
+                  </>
+                )
+              })()}
+              <CreditsCardActions trialPurchased={user.trialPurchased || user.trialUsed} />
             </div>
 
             {user.stripeSubscriptionId && (
@@ -233,9 +246,14 @@ export default async function DashboardPage() {
           </div>
 
           <CalEmbed
-            src={`${process.env.CAL_EVENT_URL}?embed=true&name=${encodeURIComponent(user.name ?? '')}&email=${encodeURIComponent(user.email ?? '')}`}
+            src={`${
+              user.stripeSubscriptionId || user.trialUsed
+                ? process.env.CAL_EVENT_URL
+                : 'https://cal.com/millie-cooper-rqg072/trial-lesson-with-millie-cooper'
+            }?embed=true&name=${encodeURIComponent(user.name ?? '')}&email=${encodeURIComponent(user.email ?? '')}`}
             allowance={user.allowance}
             nextReset={nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
+            trialPurchased={user.trialPurchased}
           />
         </div>
 

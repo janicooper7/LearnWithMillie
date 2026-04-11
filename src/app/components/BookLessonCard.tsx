@@ -28,7 +28,7 @@ export default function BookLessonCard({ trialPurchased }: BookLessonCardProps) 
 
   return (
     <>
-      {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} />}
+      {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} trialPurchased={trialPurchased} />}
       <div className='rounded-2xl p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
         <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
         <h2 className='text-xl font-bold text-white mb-3' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>

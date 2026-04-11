@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import confetti from 'canvas-confetti'
 import Link from 'next/link'
 
 export default function ThankYou() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const isContact = searchParams.get('from') === 'contact'
 
   useEffect(() => {
     const duration = 3 * 1000
@@ -63,34 +65,38 @@ export default function ThankYou() {
           className='text-3xl md:text-4xl font-bold mb-4'
           style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
         >
-          You&apos;re all set!
+          {isContact ? 'Message received!' : 'You\'re all set!'}
         </h1>
         <p
           className='text-base leading-relaxed mb-3'
           style={{ color: '#1F3A34', opacity: 0.7 }}
         >
-          Welcome aboard! Your subscription is confirmed and your lesson credits are ready to use.
+          {isContact
+            ? 'Thank you for getting in touch. Millie will review your message and get back to you within 24 hours.'
+            : 'Welcome aboard! Your subscription is confirmed and your lesson credits are ready to use.'}
         </p>
         <p
           className='text-base leading-relaxed mb-8'
           style={{ color: '#1F3A34', opacity: 0.7 }}
         >
-          Head to your dashboard and use the calendar to book your first lesson with Millie.
+          {isContact
+            ? 'In the meantime, feel free to explore the site and learn more about what\'s on offer.'
+            : 'Head to your dashboard and use the calendar to book your first lesson with Millie.'}
         </p>
 
         <Link
-          href='/dashboard'
+          href={isContact ? '/' : '/dashboard'}
           className='inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white rounded-lg transition-all duration-200 hover:brightness-105'
           style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
         >
-          Go to My Dashboard
+          {isContact ? 'Back to Home' : 'Go to My Dashboard'}
         </Link>
 
         <p
           className='text-xs mt-6'
           style={{ color: '#1F3A34', opacity: 0.45 }}
         >
-          Can&apos;t wait to see you in your first lesson!
+          {isContact ? 'We look forward to speaking with you soon.' : 'Can\'t wait to see you in your first lesson!'}
         </p>
       </div>
     </div>

@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: { email: attendeeEmail },
-      select: { id: true, allowance: true },
+      select: { id: true, allowance: true, trialPurchased: true, trialUsed: true, stripeSubscriptionId: true },
     })
 
     if (!user) {
@@ -67,19 +67,23 @@ export async function POST(req: NextRequest) {
     if (triggerEvent === 'BOOKING_CREATED') {
       // Atomically deduct 1 credit only if the user has credits available.
       // Using updateMany with allowance > 0 ensures no race condition with the client check.
+      const isTrialUser = user.trialPurchased && !user.stripeSubscriptionId && !user.trialUsed
+
       const result = await prisma.user.updateMany({
         where: { email: attendeeEmail, allowance: { gt: 0 } },
-        data: { allowance: { decrement: 1 } },
+        data: {
+          allowance: { decrement: 1 },
+          ...(isTrialUser ? { trialUsed: true } : {}),
+        },
       })
 
       if (result.count === 0) {
-        // No credit was available — cancel the booking using numeric id
         console.log('[cal-webhook] No credits — attempting cancel. payload.uid:', payload?.uid)
         await cancelCalBooking(payload.uid)
         return NextResponse.json({ received: true, action: 'cancelled — no credits' })
       }
 
-      return NextResponse.json({ received: true, action: 'credit deducted' })
+      return NextResponse.json({ received: true, action: isTrialUser ? 'trial credit deducted, trialUsed set' : 'credit deducted' })
     }
 
     if (triggerEvent === 'BOOKING_CANCELLED') {

@@ -9,6 +9,7 @@ interface CalEmbedProps {
   src: string
   allowance: number
   nextReset: string
+  trialPurchased: boolean
 }
 
 interface BookingInfo {
@@ -16,7 +17,7 @@ interface BookingInfo {
   endTime: string
 }
 
-export default function CalEmbed({ src, allowance: initialAllowance, nextReset }: CalEmbedProps) {
+export default function CalEmbed({ src, allowance: initialAllowance, nextReset, trialPurchased }: CalEmbedProps) {
   const router = useRouter()
   const [booked, setBooked] = useState(false)
   const [cancelled, setCancelled] = useState(false)
@@ -81,7 +82,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
   if (cancelled) {
     return (
       <>
-        {showUpgradeModal && <UpgradePlanModal onClose={() => { setShowUpgradeModal(false); setCancelled(false); setIframeHidden(false) }} />}
+        {showUpgradeModal && <UpgradePlanModal onClose={() => { setShowUpgradeModal(false); setCancelled(false); setIframeHidden(false) }} trialPurchased={trialPurchased} />}
         <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
           <div className='w-14 h-14 rounded-full flex items-center justify-center mb-6' style={{ backgroundColor: 'rgba(192,57,43,0.07)' }}>
             <XCircle className='w-7 h-7' style={{ color: '#c0392b' }} />
@@ -142,17 +143,15 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset }
         <p className='text-sm font-medium mb-8' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
           {allowance} {allowance === 1 ? 'credit' : 'credits'} remaining this month
         </p>
-        {allowance > 0 && (
-          <button
-            onClick={() => { setBooked(false); setIframeHidden(false) }}
-            className='inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white rounded-xl transition-all duration-200'
-            style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#162e28' }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1F3A34' }}
-          >
-            Book Another Lesson
-          </button>
-        )}
+        <button
+          onClick={() => { setBooked(false); setIframeHidden(false) }}
+          className='inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white rounded-xl transition-all duration-200'
+          style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#162e28' }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1F3A34' }}
+        >
+          {allowance > 0 ? 'Book Another Lesson' : 'View Calendar'}
+        </button>
       </div>
     )
   }

@@ -28,7 +28,7 @@ export default function CreditsCardActions({ trialPurchased }: CreditsCardAction
 
   return (
     <>
-      {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} />}
+      {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} trialPurchased={trialPurchased} />}
       <div className='flex flex-row gap-2.5 mt-4'>
         <button
           onClick={() => setShowModal(true)}

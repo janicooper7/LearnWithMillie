@@ -84,7 +84,7 @@ export default function Contact() {
         event_label: 'Contact Form',
       })
 
-      router.push('/thank-you')
+      router.push('/thank-you?from=contact')
     } catch (error) {
       setSubmitStatus('error')
       setErrorMessage(

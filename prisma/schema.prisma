@@ -22,6 +22,7 @@ model User {
   role          Role      @default(STUDENT)
   allowance            Int       @default(0)
   trialPurchased       Boolean   @default(false)
+  trialUsed            Boolean   @default(false)
   stripeCustomerId     String?
   stripeSubscriptionId String?
   createdAt            DateTime  @default(now())

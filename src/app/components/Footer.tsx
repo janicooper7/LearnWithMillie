@@ -136,6 +136,15 @@ export default function Footer() {
             <p className='text-sm' style={{ color: 'rgba(31,58,52,0.65)' }}>
               © {new Date().getFullYear()} LearnWithMillie. All rights reserved.
             </p>
+            <a
+              href='/terms'
+              className='text-xs transition-colors duration-200'
+              style={{ color: 'rgba(31,58,52,0.5)' }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#1F3A34' }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(31,58,52,0.5)' }}
+            >
+              Terms & Conditions
+            </a>
             <p className='text-xs' style={{ color: 'rgba(31,58,52,0.7)' }}>
               Website maintained by:{' '}
               <a

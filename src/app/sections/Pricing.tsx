@@ -136,8 +136,40 @@ export default function Pricing() {
           </p>
         </div>
 
+        {/* Free Trial Banner */}
+        <div className='rounded-2xl overflow-hidden mb-6' style={{ border: '1px solid #EDE4D8' }}>
+          <div
+            className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 px-8 py-7'
+            style={{ backgroundColor: '#fff' }}
+          >
+            <div className='flex items-start gap-5'>
+              <div className='w-0.5 self-stretch rounded-full flex-shrink-0' style={{ backgroundColor: '#C2AA6A', minHeight: '40px' }} />
+              <div>
+                <p className='text-[11px] uppercase tracking-[0.2em] font-semibold mb-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  New Students
+                </p>
+                <p className='text-base font-semibold mb-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                  Start with a 20-minute trial lesson — $20
+                </p>
+                <p className='text-sm' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  No commitment. Discuss your goals and see if we&apos;re a good fit.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => handleCheckout('trial', 'Trial')}
+              disabled={loadingPlan !== null}
+              className='flex-shrink-0 inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:brightness-105 disabled:opacity-60'
+              style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+            >
+              {loadingPlan === 'Trial' ? 'Redirecting…' : 'Book Trial Lesson'}
+              {loadingPlan !== 'Trial' && <ArrowRight className='w-4 h-4' />}
+            </button>
+          </div>
+        </div>
+
         {/* Pricing Cards */}
-        <div className='grid md:grid-cols-3 gap-5 mb-6'>
+        <div className='grid md:grid-cols-3 gap-5 mb-0'>
           {plans.map((plan, index) => (
             <div
               key={plan.name}
@@ -288,58 +320,6 @@ export default function Pricing() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Free Trial Banner */}
-        <div
-          className='rounded-2xl overflow-hidden'
-          style={{ border: '1px solid #EDE4D8' }}
-        >
-          <div
-            className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 px-8 py-7'
-            style={{ backgroundColor: '#fff' }}
-          >
-            <div className='flex items-start gap-5'>
-              {/* Gold left accent */}
-              <div
-                className='w-0.5 self-stretch rounded-full flex-shrink-0'
-                style={{ backgroundColor: '#C2AA6A', minHeight: '40px' }}
-              />
-              <div>
-                <p
-                  className='text-[11px] uppercase tracking-[0.2em] font-semibold mb-1'
-                  style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
-                >
-                  New Students
-                </p>
-                <p
-                  className='text-base font-semibold mb-0.5'
-                  style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
-                >
-                  Start with a 20-minute trial lesson — $20
-                </p>
-                <p
-                  className='text-sm'
-                  style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
-                >
-                  No commitment. Discuss your goals and see if we&apos;re a good fit.
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => handleCheckout('trial', 'Trial')}
-              disabled={loadingPlan !== null}
-              className='flex-shrink-0 inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:brightness-105 disabled:opacity-60'
-              style={{
-                backgroundColor: '#1F3A34',
-                color: 'white',
-                fontFamily: 'var(--font-inter), sans-serif',
-              }}
-            >
-              {loadingPlan === 'Trial' ? 'Redirecting…' : 'Book Trial Lesson'}
-              {loadingPlan !== 'Trial' && <ArrowRight className='w-4 h-4' />}
-            </button>
-          </div>
         </div>
 
       </div>
