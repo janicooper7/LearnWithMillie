@@ -6,8 +6,11 @@ import Stripe from 'stripe'
 import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
 import CalEmbed from '@/app/components/CalEmbed'
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+
+type CalBooking = { uid: string; title: string; startTime: string; endTime: string; status: string }
+
 export default async function DashboardPage() {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
   const session = await auth()
   if (!session?.user) redirect('/auth/login')
 
@@ -18,37 +21,45 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/auth/login')
 
-  const signupDay = user.createdAt.getDate()
   const now = new Date()
+  const signupDay = user.createdAt.getDate()
   const nextReset = now.getDate() < signupDay
     ? new Date(now.getFullYear(), now.getMonth(), signupDay)
     : new Date(now.getFullYear(), now.getMonth() + 1, signupDay)
 
+  // Fetch Stripe + Cal.com in parallel
+  const [stripeResult, calResult] = await Promise.allSettled([
+    user.stripeSubscriptionId
+      ? stripe.subscriptions.retrieve(user.stripeSubscriptionId)
+      : Promise.resolve(null),
+    fetch(
+      `https://api.cal.com/v1/bookings?apiKey=${process.env.CAL_API_KEY}&attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming`,
+      { next: { revalidate: 60 } }
+    ),
+  ])
+
   let cancelAtPeriodEnd = false
   let periodEnd: Date | null = null
-  if (user.stripeSubscriptionId) {
-    const sub = await stripe.subscriptions.retrieve(user.stripeSubscriptionId) as any
+  if (stripeResult.status === 'fulfilled' && stripeResult.value) {
+    const sub = stripeResult.value as any
     cancelAtPeriodEnd = sub.cancel_at_period_end
     periodEnd = new Date(sub.current_period_end * 1000)
   }
 
-  // Fetch upcoming bookings from Cal.com
-  type CalBooking = { uid: string; title: string; startTime: string; endTime: string; status: string }
   let upcomingBookings: CalBooking[] = []
-  try {
-    const calRes = await fetch(
-      `https://api.cal.com/v1/bookings?apiKey=${process.env.CAL_API_KEY}&attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming`,
-      { next: { revalidate: 60 } }
-    )
-    if (calRes.ok) {
-      const calData = await calRes.json()
-      const all: CalBooking[] = calData.bookings ?? []
-      upcomingBookings = all
-        .filter((b) => new Date(b.startTime) > now)
-        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
-        .slice(0, 5)
-    }
-  } catch {}
+  if (calResult.status === 'fulfilled') {
+    try {
+      const res = calResult.value as Response
+      if (res.ok) {
+        const calData = await res.json()
+        const all: CalBooking[] = calData.bookings ?? []
+        upcomingBookings = all
+          .filter((b) => new Date(b.startTime) > now)
+          .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+          .slice(0, 5)
+      }
+    } catch {}
+  }
 
 
   return (
