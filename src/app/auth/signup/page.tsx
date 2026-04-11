@@ -4,7 +4,180 @@ import { useState, useEffect } from 'react'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, X } from 'lucide-react'
+
+const termsSections = [
+  {
+    id: 'overview', title: 'Overview',
+    content: `These Terms and Conditions govern your use of LearnWithMillie and the English tutoring services provided by Millie Cooper. By booking a lesson or creating an account, you agree to be bound by these terms. Please read them carefully before making any purchase.`,
+  },
+  {
+    id: 'bookings', title: 'Lesson Bookings',
+    items: [
+      'All lessons are 50 minutes in duration and conducted online via Google Meet.',
+      'Lessons must be booked through your student dashboard using available lesson credits.',
+      'A booking confirmation email will be sent to you immediately after scheduling.',
+      'You are responsible for ensuring your technical setup (camera, microphone, and internet connection) is working prior to each session.',
+      'Millie reserves the right to reschedule a lesson in exceptional circumstances, with as much notice as possible.',
+    ],
+  },
+  {
+    id: 'cancellation', title: 'Cancellation Policy',
+    items: [
+      'You may cancel or reschedule a lesson up to 24 hours before the scheduled start time to receive a credit refund.',
+      'Cancellations made within 24 hours of the lesson start time are non-refundable and the lesson credit will not be returned.',
+      'To cancel a lesson, use the link provided in your booking confirmation email or contact Millie directly.',
+      'No-shows (failing to attend without prior notice) are treated as late cancellations and are non-refundable.',
+      'If Millie is unable to attend a scheduled lesson, you will receive a full credit refund regardless of notice period.',
+    ],
+  },
+  {
+    id: 'refunds', title: 'Refund Policy',
+    items: [
+      'Subscription payments are non-refundable once the billing period has commenced.',
+      'Unused lesson credits do not carry over to the following billing period unless otherwise agreed in writing.',
+      'If you cancel your subscription, you retain access to your remaining credits until the end of the current billing period.',
+      'Refunds will only be considered in exceptional circumstances at Millie\'s sole discretion.',
+      'Any approved refunds will be processed to the original payment method within 5–10 business days.',
+    ],
+  },
+  {
+    id: 'trial', title: 'Trial Lessons', highlight: true,
+    items: [
+      'Trial lessons are available to new students only and may only be purchased once per account.',
+      'Trial lessons are strictly non-refundable under any circumstances once payment has been completed.',
+      'Trial lessons are non-amendable — the date and time cannot be changed once the booking is confirmed.',
+      'If you do not attend your trial lesson, the credit is forfeited and no refund or replacement will be issued.',
+      'The trial lesson is intended as an introductory session and does not guarantee continuation of lessons.',
+      'Trial lesson credits cannot be transferred to another account.',
+    ],
+  },
+  {
+    id: 'subscriptions', title: 'Subscriptions',
+    items: [
+      'Subscriptions are billed monthly on a recurring basis via Stripe.',
+      'Your lesson credit allowance is refreshed at the start of each billing cycle.',
+      'You may cancel your subscription at any time through your student dashboard. Cancellation takes effect at the end of the current billing period.',
+      'Downgrading or upgrading your plan mid-cycle is not currently supported. Please cancel and re-subscribe to change plans.',
+      'LearnWithMillie reserves the right to adjust pricing with 30 days\' written notice.',
+    ],
+  },
+  {
+    id: 'conduct', title: 'Student Conduct',
+    items: [
+      'Students are expected to be respectful and professional during all sessions.',
+      'Millie reserves the right to terminate a session and cancel a student\'s account if conduct is deemed inappropriate or abusive.',
+      'Lessons are for personal use only and may not be recorded, shared, or redistributed without prior written consent.',
+    ],
+  },
+  {
+    id: 'liability', title: 'Limitation of Liability',
+    content: `LearnWithMillie provides tutoring services on a best-efforts basis. While every effort is made to deliver high-quality lessons, no guarantees are made regarding specific learning outcomes or exam results. To the fullest extent permitted by law, Millie Cooper shall not be liable for any indirect, incidental, or consequential damages arising from the use of this service.`,
+  },
+  {
+    id: 'changes', title: 'Changes to These Terms',
+    content: `We reserve the right to update these Terms and Conditions at any time. Changes will be posted on this page with an updated effective date. Continued use of our services following any changes constitutes acceptance of the revised terms.`,
+  },
+  {
+    id: 'contact', title: 'Contact', contact: true,
+  },
+]
+
+function TermsModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className='fixed inset-0 z-[100] flex items-center justify-center p-4'
+      style={{ backgroundColor: 'rgba(31,58,52,0.5)', backdropFilter: 'blur(4px)' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div
+        className='relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl bg-white overflow-hidden'
+        style={{ border: '1px solid #EDE4D8', boxShadow: '0 24px 80px rgba(31,58,52,0.18)' }}
+      >
+        {/* Header */}
+        <div className='flex items-center justify-between px-7 py-5 flex-shrink-0' style={{ borderBottom: '1px solid #EDE4D8' }}>
+          <div>
+            <p className='text-[10px] uppercase tracking-[0.22em] font-semibold mb-0.5' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>Legal</p>
+            <h2 className='text-xl font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>Terms & Conditions</h2>
+          </div>
+          <button
+            onClick={onClose}
+            className='w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200'
+            style={{ backgroundColor: 'rgba(31,58,52,0.06)', color: '#1F3A34' }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(31,58,52,0.12)' }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(31,58,52,0.06)' }}
+          >
+            <X className='w-4 h-4' />
+          </button>
+        </div>
+
+        {/* Scrollable content */}
+        <div className='overflow-y-auto flex-1 px-7 py-6' style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
+          <p className='text-xs mb-6' style={{ color: 'rgba(31,58,52,0.4)' }}>Effective date: 11 April 2026</p>
+          <div className='space-y-8'>
+            {termsSections.map((section, i) => (
+              <div key={section.id}>
+                <div className='flex items-center gap-2.5 mb-3'>
+                  <span className='text-xs font-semibold' style={{ color: '#C2AA6A' }}>{String(i + 1).padStart(2, '0')}</span>
+                  <h3 className='text-base font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{section.title}</h3>
+                  {'highlight' in section && section.highlight && (
+                    <span className='text-[10px] uppercase tracking-[0.12em] px-2 py-0.5 rounded-full font-semibold' style={{ backgroundColor: 'rgba(194,170,106,0.15)', color: '#C2AA6A' }}>Important</span>
+                  )}
+                </div>
+
+                {'highlight' in section && section.highlight && (
+                  <div className='flex items-start gap-3 mb-3 p-3 rounded-xl' style={{ backgroundColor: 'rgba(194,170,106,0.08)', border: '1px solid rgba(194,170,106,0.25)' }}>
+                    <div className='w-0.5 self-stretch rounded-full flex-shrink-0' style={{ backgroundColor: '#C2AA6A' }} />
+                    <p className='text-xs font-semibold leading-relaxed' style={{ color: '#8a6f2e' }}>
+                      Please read this section carefully. Trial lesson payments are final and non-refundable, and bookings cannot be changed once confirmed.
+                    </p>
+                  </div>
+                )}
+
+                {'contact' in section && section.contact ? (
+                  <p className='text-sm leading-relaxed' style={{ color: 'rgba(31,58,52,0.7)' }}>
+                    If you have any questions about these Terms and Conditions, please contact Millie directly via the{' '}
+                    <a href='/contact' target='_blank' style={{ color: '#1F3A34', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '3px' }}>contact form</a>.
+                  </p>
+                ) : 'content' in section && section.content ? (
+                  <p className='text-sm leading-relaxed' style={{ color: 'rgba(31,58,52,0.7)' }}>{section.content}</p>
+                ) : null}
+
+                {'items' in section && section.items && (
+                  <ul className='space-y-2.5'>
+                    {section.items.map((item) => (
+                      <li key={item} className='flex items-start gap-3'>
+                        <div className='w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5' style={{ backgroundColor: '#C2AA6A' }} />
+                        <p className='text-sm leading-relaxed' style={{ color: 'rgba(31,58,52,0.7)' }}>{item}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {i < termsSections.length - 1 && (
+                  <div className='mt-6 h-px' style={{ backgroundColor: '#EDE4D8' }} />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className='px-7 py-4 flex-shrink-0' style={{ borderTop: '1px solid #EDE4D8', backgroundColor: '#FAFAF8' }}>
+          <button
+            onClick={onClose}
+            className='w-full py-2.5 text-sm font-medium rounded-xl transition-all duration-200'
+            style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#162e28' }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1F3A34' }}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const GoogleIcon = () => (
   <svg width='18' height='18' viewBox='0 0 18 18'>
@@ -24,6 +197,7 @@ export default function SignupPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [showTerms, setShowTerms] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,6 +232,7 @@ export default function SignupPage() {
 
   return (
     <div className='min-h-screen flex' style={{ backgroundColor: '#F4EDE4' }}>
+      {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
 
       {/* Left panel */}
       <div
@@ -233,9 +408,14 @@ export default function SignupPage() {
                 />
                 <label htmlFor='terms' className='text-xs leading-relaxed cursor-pointer' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
                   I agree to the{' '}
-                  <Link href='/terms' target='_blank' className='font-semibold underline underline-offset-2' style={{ color: '#1F3A34' }}>
+                  <button
+                    type='button'
+                    onClick={() => setShowTerms(true)}
+                    className='font-semibold underline underline-offset-2'
+                    style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
                     Terms & Conditions
-                  </Link>
+                  </button>
                 </label>
               </div>
 
