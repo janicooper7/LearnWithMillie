@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${process.env.NEXTAUTH_URL}/thank-you`,
       cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
+      allow_promotion_codes: true,
       ...(session?.user?.email && { customer_email: session.user.email }),
       metadata: { userId: session?.user?.id ?? '' },
     })
