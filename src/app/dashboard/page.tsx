@@ -78,6 +78,7 @@ export default async function DashboardPage() {
 
   return (
     <div className='min-h-screen' style={{ backgroundColor: '#F4EDE4' }}>
+      <ChatButton userName={user.name?.split(' ')[0] ?? 'there'} />
 
       <main className='max-w-5xl mx-auto px-6 py-12'>
 
@@ -232,11 +233,6 @@ export default async function DashboardPage() {
               </div>
             </>
           )}
-        </div>
-
-        {/* Message Millie */}
-        <div className='mt-5'>
-          <ChatButton userName={user.name ?? 'there'} />
         </div>
 
         {/* Booking calendar */}
