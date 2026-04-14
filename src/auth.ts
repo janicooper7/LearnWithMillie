@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
+import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { authConfig } from '@/auth.config'
 
@@ -46,6 +47,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === 'google') {
         if (!user.email) return false
         try {
+          let assignedRole: 'STUDENT' | 'TEACHER' = 'STUDENT'
+          try {
+            const cookieStore = await cookies()
+            if (cookieStore.get('_pending_role')?.value === 'TEACHER') {
+              assignedRole = 'TEACHER'
+            }
+          } catch {
+            // cookies() unavailable in this context — default to STUDENT
+          }
+
           const dbUser = await prisma.user.upsert({
             where: { email: user.email },
             update: {},
@@ -53,7 +64,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               email: user.email,
               name: user.name ?? null,
               image: user.image ?? null,
-              role: 'STUDENT',
+              role: assignedRole,
             },
             select: { id: true, role: true },
           })

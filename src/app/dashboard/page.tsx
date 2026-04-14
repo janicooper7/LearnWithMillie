@@ -23,6 +23,7 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/auth/login')
 
+  const isTeacher = user.role === 'TEACHER'
   const now = new Date()
 
   // Fetch Stripe + Cal.com in parallel
@@ -82,7 +83,7 @@ export default async function DashboardPage() {
         {/* Welcome */}
         <div className='mb-10'>
           <p className='text-xs uppercase tracking-[0.2em] font-semibold mb-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-            Student Portal
+            {isTeacher ? 'Teacher Portal' : 'Student Portal'}
           </p>
           <h1 className='text-3xl font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
             Welcome back, {user.name?.split(' ')[0] ?? 'there'}
@@ -129,8 +130,8 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Book a lesson */}
-          <BookLessonCard trialPurchased={user.trialPurchased || user.trialUsed} />
+          {/* Book a lesson / session */}
+          <BookLessonCard trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />
 
         </div>
 
@@ -146,10 +147,10 @@ export default async function DashboardPage() {
                 return (
                   <>
                     <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      {showTrialReady ? 'Trial Lesson' : 'Lessons this month'}
+                      {showTrialReady ? 'Trial Lesson' : isTeacher ? 'Sessions' : 'Lessons this month'}
                     </p>
                     <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      {showTrialReady ? '1 trial lesson ready to book' : `${user.allowance} ${user.allowance === 1 ? 'lesson' : 'lessons'} remaining`}
+                      {showTrialReady ? '1 trial lesson ready to book' : `${user.allowance} ${user.allowance === 1 ? (isTeacher ? 'session' : 'lesson') : (isTeacher ? 'sessions' : 'lessons')} remaining`}
                     </p>
                     {showTrialReady ? (
                       <p className='text-xs mt-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
@@ -163,7 +164,7 @@ export default async function DashboardPage() {
                   </>
                 )
               })()}
-              <CreditsCardActions trialPurchased={user.trialPurchased || user.trialUsed} />
+              <CreditsCardActions trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />
             </div>
 
             {user.stripeSubscriptionId && (
@@ -195,7 +196,7 @@ export default async function DashboardPage() {
           {upcomingBookings.length > 0 && (
             <>
               <div className='my-6 h-px' style={{ backgroundColor: '#EDE4D8' }} />
-              <p className='text-[11px] uppercase tracking-[0.12em] mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Upcoming Lessons</p>
+              <p className='text-[11px] uppercase tracking-[0.12em] mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
               <div className='space-y-3'>
                 {upcomingBookings.map((booking) => {
                   const start = new Date(booking.startTime)
@@ -236,28 +237,31 @@ export default async function DashboardPage() {
         <div className='mt-5 bg-white rounded-2xl overflow-hidden' style={{ border: '1px solid #EDE4D8' }}>
           <div className='px-7 pt-7 pb-5 flex items-center justify-between' style={{ borderBottom: '1px solid #EDE4D8' }}>
             <div>
-              <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Book a Lesson</p>
+              <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Book a Session' : 'Book a Lesson'}</p>
               <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                {user.allowance > 0 ? 'Use the calendar below to pick a time that works for you.' : 'No lessons remaining'}
+                {user.allowance > 0 ? 'Use the calendar below to pick a time that works for you.' : isTeacher ? 'No sessions remaining' : 'No lessons remaining'}
               </p>
             </div>
             <div className='flex items-center gap-2 px-4 py-2 rounded-xl' style={{ backgroundColor: 'rgba(31,58,52,0.06)' }}>
               <span className='text-lg font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{user.allowance}</span>
               <span className='text-xs' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                {user.allowance === 1 ? 'lesson left' : 'lessons left'}
+                {isTeacher ? (user.allowance === 1 ? 'session left' : 'sessions left') : (user.allowance === 1 ? 'lesson left' : 'lessons left')}
               </span>
             </div>
           </div>
 
           <CalEmbed
             src={`${
-              user.stripeSubscriptionId || user.trialUsed
-                ? process.env.CAL_EVENT_URL
-                : 'https://cal.com/millie-cooper-rqg072/trial-lesson-with-millie-cooper'
+              isTeacher
+                ? 'https://cal.com/millie-cooper-rqg072/mentorship-session-with-millie-cooper'
+                : user.stripeSubscriptionId || user.trialUsed
+                  ? process.env.CAL_EVENT_URL
+                  : 'https://cal.com/millie-cooper-rqg072/trial-lesson-with-millie-cooper'
             }?embed=true&name=${encodeURIComponent(user.name ?? '')}&email=${encodeURIComponent(user.email ?? '')}`}
             allowance={user.allowance}
             nextReset={nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
             trialPurchased={user.trialPurchased}
+            isTeacher={isTeacher}
           />
         </div>
 

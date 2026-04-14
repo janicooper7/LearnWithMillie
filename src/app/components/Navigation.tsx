@@ -13,6 +13,7 @@ const navigation = [
   { name: 'Services', href: '/', hash: '#lesson-options' },
   { name: 'Pricing', href: '/', hash: '#pricing' },
   { name: 'FAQ', href: '/', hash: '#faq' },
+  { name: 'Mentorship', href: '/mentorship', hash: '' },
 ]
 
 export default function Navigation() {

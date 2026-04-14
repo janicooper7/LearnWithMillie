@@ -12,6 +12,9 @@ const SUBSCRIPTION_PRICE_IDS: Record<string, string> = {
 
 const ONE_TIME_PRICE_IDS: Record<string, string> = {
   trial: process.env.STRIPE_TRIAL_PRICE_ID!,
+  'mentorship-single': process.env.STRIPE_MENTORSHIP_SINGLE_PRICE_ID!,
+  'mentorship-double': process.env.STRIPE_MENTORSHIP_DOUBLE_PRICE_ID!,
+  'mentorship-triple': process.env.STRIPE_MENTORSHIP_TRIPLE_PRICE_ID!,
 }
 
 export async function POST(req: NextRequest) {

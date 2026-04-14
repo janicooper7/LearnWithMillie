@@ -6,9 +6,10 @@ import UpgradePlanModal from './UpgradePlanModal'
 
 interface BookLessonCardProps {
   trialPurchased: boolean
+  isTeacher?: boolean
 }
 
-export default function BookLessonCard({ trialPurchased }: BookLessonCardProps) {
+export default function BookLessonCard({ trialPurchased, isTeacher }: BookLessonCardProps) {
   const [showModal, setShowModal] = useState(false)
   const [loadingTrial, setLoadingTrial] = useState(false)
 
@@ -28,14 +29,16 @@ export default function BookLessonCard({ trialPurchased }: BookLessonCardProps) 
 
   return (
     <>
-      {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} trialPurchased={trialPurchased} />}
+      {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} trialPurchased={trialPurchased} isTeacher={isTeacher} />}
       <div className='rounded-2xl p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
         <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
         <h2 className='text-xl font-bold text-white mb-3' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-          Ready for your next lesson?
+          {isTeacher ? 'Ready for your mentorship session?' : 'Ready for your next lesson?'}
         </h2>
         <p className='text-sm leading-relaxed' style={{ color: 'rgba(255,255,255,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
-          Book a session with Millie and keep making progress toward your goals.
+          {isTeacher
+            ? 'Book a mentorship session with Millie and keep developing your teaching craft.'
+            : 'Book a session with Millie and keep making progress toward your goals.'}
         </p>
         <div className='flex flex-col gap-2.5 mt-6'>
           <button
@@ -43,9 +46,9 @@ export default function BookLessonCard({ trialPurchased }: BookLessonCardProps) 
             className='w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 hover:brightness-110'
             style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
           >
-            Buy Lessons <ArrowRight className='w-4 h-4' />
+            {isTeacher ? 'Pick your package' : 'Buy Lessons'} <ArrowRight className='w-4 h-4' />
           </button>
-          {!trialPurchased && (
+          {!isTeacher && !trialPurchased && (
             <button
               onClick={handleTrialCheckout}
               disabled={loadingTrial}

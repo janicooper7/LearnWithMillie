@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { signIn, useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, X } from 'lucide-react'
 
@@ -190,6 +190,8 @@ const GoogleIcon = () => (
 
 export default function SignupPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const isTeacher = searchParams.get('type') === 'teacher'
   const { data: session, status } = useSession()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -207,7 +209,7 @@ export default function SignupPage() {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, role: isTeacher ? 'TEACHER' : 'STUDENT' }),
     })
 
     const data = await res.json()
@@ -228,7 +230,12 @@ export default function SignupPage() {
     }
   }, [status, session, router])
 
-  const handleGoogle = () => signIn('google', { callbackUrl: '/dashboard' })
+  const handleGoogle = () => {
+    if (isTeacher) {
+      document.cookie = '_pending_role=TEACHER; path=/; max-age=300; SameSite=Lax'
+    }
+    signIn('google', { callbackUrl: '/dashboard' })
+  }
 
   return (
     <div className='min-h-screen flex' style={{ backgroundColor: '#F4EDE4' }}>
@@ -270,7 +277,9 @@ export default function SignupPage() {
         <div className='relative z-10 max-w-sm'>
           <div className='flex items-center gap-3 mb-10'>
             <div className='h-px w-8' style={{ backgroundColor: '#C2AA6A' }} />
-            <span className='text-[10px] uppercase tracking-[0.25em]' style={{ color: 'rgba(194,170,106,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}>Get Started</span>
+            <span className='text-[10px] uppercase tracking-[0.25em]' style={{ color: 'rgba(194,170,106,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}>
+              {isTeacher ? 'Mentorship Program' : 'Get Started'}
+            </span>
           </div>
           <h2 style={{
             color: 'rgba(255,255,255,0.92)',
@@ -279,19 +288,28 @@ export default function SignupPage() {
             lineHeight: 1.5,
             fontWeight: 400,
           }}>
-            Start your journey to confident, fluent English.
+            {isTeacher
+              ? 'Develop your teaching. Grow with purpose.'
+              : 'Start your journey to confident, fluent English.'}
           </h2>
           <p className='mt-5 text-sm leading-relaxed' style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-            Join students who have transformed their English with personalised one-to-one lessons.
+            {isTeacher
+              ? 'Join Millie\'s mentorship programme and build the skills, structure, and confidence to teach at your best.'
+              : 'Join students who have transformed their English with personalised one-to-one lessons.'}
           </p>
 
           <ul className='mt-9 space-y-4'>
-            {[
+            {(isTeacher ? [
+              'Personalised teaching feedback',
+              'Structured 1-on-1 sessions',
+              'Expert guidance from Millie',
+              'Flexible scheduling',
+            ] : [
               'Personalised lesson plans',
               'Flexible scheduling',
               'Progress tracking',
               'Learning materials included',
-            ].map((item) => (
+            ]).map((item) => (
               <li key={item} className='flex items-center gap-4'>
                 <div className='w-5 h-px flex-shrink-0' style={{ backgroundColor: 'rgba(194,170,106,0.5)' }} />
                 <span className='text-sm' style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>

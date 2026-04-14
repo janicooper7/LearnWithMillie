@@ -6,9 +6,10 @@ import UpgradePlanModal from './UpgradePlanModal'
 
 interface CreditsCardActionsProps {
   trialPurchased: boolean
+  isTeacher?: boolean
 }
 
-export default function CreditsCardActions({ trialPurchased }: CreditsCardActionsProps) {
+export default function CreditsCardActions({ trialPurchased, isTeacher }: CreditsCardActionsProps) {
   const [showModal, setShowModal] = useState(false)
   const [loadingTrial, setLoadingTrial] = useState(false)
 
@@ -28,16 +29,16 @@ export default function CreditsCardActions({ trialPurchased }: CreditsCardAction
 
   return (
     <>
-      {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} trialPurchased={trialPurchased} />}
+      {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} trialPurchased={trialPurchased} isTeacher={isTeacher} />}
       <div className='flex flex-row gap-2.5 mt-4'>
         <button
           onClick={() => setShowModal(true)}
           className='inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200 hover:brightness-110'
           style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
         >
-          Buy Lessons <ArrowRight className='w-3.5 h-3.5' />
+          {isTeacher ? 'Pick your package' : 'Buy Lessons'} <ArrowRight className='w-3.5 h-3.5' />
         </button>
-        {!trialPurchased && (
+        {!isTeacher && !trialPurchased && (
           <button
             onClick={handleTrialCheckout}
             disabled={loadingTrial}

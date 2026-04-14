@@ -4,11 +4,11 @@ import { useState } from 'react'
 import { X, ArrowRight } from 'lucide-react'
 import { CheckIcon } from '@heroicons/react/24/solid'
 
-const plans = [
+const studentPlans = [
   {
     name: 'Standard',
     price: 40,
-    lessons: 4,
+    sessions: 4,
     description: 'Ideal for flexible learning',
     featured: false,
     planKey: 'four',
@@ -16,7 +16,7 @@ const plans = [
   {
     name: 'Advanced',
     price: 38,
-    lessons: 8,
+    sessions: 8,
     description: 'Perfect for steady progress',
     featured: true,
     planKey: 'eight',
@@ -24,19 +24,47 @@ const plans = [
   {
     name: 'Pro',
     price: 35,
-    lessons: 12,
+    sessions: 12,
     description: 'Best for intensive learning',
     featured: false,
     planKey: 'twelve',
   },
 ]
 
+const teacherPlans = [
+  {
+    name: 'Single',
+    price: 50,
+    sessions: 1,
+    description: 'Try a session and see how it feels',
+    featured: false,
+    planKey: 'mentorship-single',
+  },
+  {
+    name: 'Double',
+    price: 95,
+    sessions: 2,
+    description: 'Build on your first session with follow-up',
+    featured: true,
+    planKey: 'mentorship-double',
+  },
+  {
+    name: 'Triple',
+    price: 140,
+    sessions: 3,
+    description: 'The best value for focused development',
+    featured: false,
+    planKey: 'mentorship-triple',
+  },
+]
+
 interface UpgradePlanModalProps {
   onClose: () => void
   trialPurchased?: boolean
+  isTeacher?: boolean
 }
 
-export default function UpgradePlanModal({ onClose, trialPurchased }: UpgradePlanModalProps) {
+export default function UpgradePlanModal({ onClose, trialPurchased, isTeacher }: UpgradePlanModalProps) {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
   const handleCheckout = async (planKey: string, planName: string) => {
@@ -74,18 +102,20 @@ export default function UpgradePlanModal({ onClose, trialPurchased }: UpgradePla
 
         {/* Header */}
         <div className='mb-7 text-center'>
-          <p className='text-[10px] uppercase tracking-[0.25em] font-semibold mb-2' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-            No lessons remaining
-          </p>
+          {!isTeacher && (
+            <p className='text-[10px] uppercase tracking-[0.25em] font-semibold mb-2' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+              No lessons remaining
+            </p>
+          )}
           <h2 className='text-2xl font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            Choose a plan to continue booking
+            {isTeacher ? 'Choose a mentorship package' : 'Choose a plan to continue booking'}
           </h2>
         </div>
 
         {/* Cards */}
         <div className='grid md:grid-cols-3 gap-4'>
-          {/* Trial card — hidden if already purchased */}
-          {!trialPurchased && <div
+          {/* Trial card — students only, hidden if already purchased */}
+          {!isTeacher && !trialPurchased && <div
             className='md:col-span-3 rounded-2xl bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-5'
             style={{ border: '1px solid #EDE4D8' }}
           >
@@ -114,7 +144,7 @@ export default function UpgradePlanModal({ onClose, trialPurchased }: UpgradePla
             </button>
           </div>}
 
-          {plans.map((plan) => (
+          {(isTeacher ? teacherPlans : studentPlans).map((plan) => (
             <div
               key={plan.name}
               className='relative rounded-2xl bg-white flex flex-col'
@@ -148,22 +178,30 @@ export default function UpgradePlanModal({ onClose, trialPurchased }: UpgradePla
                     <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: '2.4rem', fontWeight: 700, lineHeight: 1, color: '#1F3A34' }}>
                       ${plan.price}
                     </span>
-                    <span className='text-sm mb-1' style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      / lesson
-                    </span>
+                    {!isTeacher && (
+                      <span className='text-sm mb-1' style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        / lesson
+                      </span>
+                    )}
                   </div>
                   <p className='text-xs' style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                    ${plan.price * plan.lessons} / month · {plan.lessons} lessons
+                    {isTeacher
+                      ? `One-time · ${plan.sessions} × 50-min ${plan.sessions === 1 ? 'session' : 'sessions'}`
+                      : `$${plan.price * plan.sessions} / month · ${plan.sessions} lessons`}
                   </p>
                 </div>
 
                 <ul className='space-y-2.5 mb-6 flex-1'>
-                  {[
-                    `${plan.lessons} lessons per month`,
+                  {(isTeacher ? [
+                    `${plan.sessions} × 50-min mentorship ${plan.sessions === 1 ? 'session' : 'sessions'}`,
+                    'Personalised feedback',
+                    'Resource recommendations',
+                  ] : [
+                    `${plan.sessions} lessons per month`,
                     'Personalised lesson plans',
                     'Progress tracking',
                     'Learning materials included',
-                  ].map((feature, i) => (
+                  ]).map((feature, i) => (
                     <li key={feature} className='flex items-center gap-2.5'>
                       <div className='w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0' style={{ backgroundColor: 'rgba(31,58,52,0.08)' }}>
                         <CheckIcon className='w-2.5 h-2.5' style={{ color: '#1F3A34' }} />
@@ -183,7 +221,7 @@ export default function UpgradePlanModal({ onClose, trialPurchased }: UpgradePla
                   onMouseEnter={(e) => { if (!loadingPlan) (e.currentTarget as HTMLButtonElement).style.opacity = '0.85' }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '1' }}
                 >
-                  {loadingPlan === plan.name ? 'Redirecting…' : 'Get Started'}
+                  {loadingPlan === plan.name ? 'Redirecting…' : isTeacher ? 'Pick this one' : 'Get Started'}
                   {loadingPlan !== plan.name && <ArrowRight className='w-4 h-4' />}
                 </button>
               </div>

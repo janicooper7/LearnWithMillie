@@ -10,6 +10,7 @@ interface CalEmbedProps {
   allowance: number
   nextReset: string
   trialPurchased: boolean
+  isTeacher?: boolean
 }
 
 interface BookingInfo {
@@ -17,7 +18,7 @@ interface BookingInfo {
   endTime: string
 }
 
-export default function CalEmbed({ src, allowance: initialAllowance, nextReset, trialPurchased }: CalEmbedProps) {
+export default function CalEmbed({ src, allowance: initialAllowance, nextReset, trialPurchased, isTeacher }: CalEmbedProps) {
   const router = useRouter()
   const [booked, setBooked] = useState(false)
   const [cancelled, setCancelled] = useState(false)
@@ -82,7 +83,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset, 
   if (cancelled) {
     return (
       <>
-        {showUpgradeModal && <UpgradePlanModal onClose={() => { setShowUpgradeModal(false); setCancelled(false); setIframeHidden(false) }} trialPurchased={trialPurchased} />}
+        {showUpgradeModal && <UpgradePlanModal onClose={() => { setShowUpgradeModal(false); setCancelled(false); setIframeHidden(false) }} trialPurchased={trialPurchased} isTeacher={isTeacher} />}
         <div className='flex flex-col items-center justify-center py-16 px-6 text-center'>
           <div className='w-14 h-14 rounded-full flex items-center justify-center mb-6' style={{ backgroundColor: 'rgba(192,57,43,0.07)' }}>
             <XCircle className='w-7 h-7' style={{ color: '#c0392b' }} />
@@ -91,17 +92,19 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset, 
             Booking cancelled
           </p>
           <h3 className='text-xl font-bold mb-3' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            No lessons remaining
+            {isTeacher ? 'No sessions remaining' : 'No lessons remaining'}
           </h3>
           <p className='text-sm leading-relaxed mb-7 max-w-xs' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
-            Your booking was automatically cancelled because you have no lessons left. Lessons reset on {nextReset}.
+            {isTeacher
+              ? `Your booking was automatically cancelled because you have no sessions left.`
+              : `Your booking was automatically cancelled because you have no lessons left. Lessons reset on ${nextReset}.`}
           </p>
           <button
             onClick={() => setShowUpgradeModal(true)}
             className='inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white rounded-xl transition-all duration-200 hover:brightness-110'
             style={{ backgroundColor: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
           >
-            View Plans
+            {isTeacher ? 'View Packages' : 'View Plans'}
           </button>
         </div>
       </>
@@ -124,7 +127,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset, 
         {bookingInfo && (
           <div className='mb-6 px-6 py-4 rounded-2xl' style={{ backgroundColor: '#F4EDE4', border: '1px solid #EDE4D8' }}>
             <p className='text-xs uppercase tracking-[0.15em] font-semibold mb-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-              Your lesson
+              {isTeacher ? 'Your session' : 'Your lesson'}
             </p>
             <p className='text-base font-semibold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
               {formatDate(bookingInfo.startTime)}
@@ -141,7 +144,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset, 
           A calendar invitation has been sent to your email.
         </p>
         <p className='text-sm font-medium mb-8' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-          {allowance} {allowance === 1 ? 'lesson' : 'lessons'} remaining this month
+          {allowance} {isTeacher ? (allowance === 1 ? 'session' : 'sessions') : (allowance === 1 ? 'lesson' : 'lessons')} remaining
         </p>
         <button
           onClick={() => { setBooked(false); setIframeHidden(false) }}
@@ -150,7 +153,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset, 
           onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#162e28' }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1F3A34' }}
         >
-          {allowance > 0 ? 'Book Another Lesson' : 'View Calendar'}
+          {allowance > 0 ? (isTeacher ? 'Book Another Session' : 'Book Another Lesson') : 'View Calendar'}
         </button>
       </div>
     )
@@ -158,7 +161,7 @@ export default function CalEmbed({ src, allowance: initialAllowance, nextReset, 
 
   return (
     <>
-      {showUpgradeModal && <UpgradePlanModal onClose={() => { setShowUpgradeModal(false); setCancelled(false); setIframeHidden(false) }} />}
+      {showUpgradeModal && <UpgradePlanModal onClose={() => { setShowUpgradeModal(false); setCancelled(false); setIframeHidden(false) }} isTeacher={isTeacher} />}
       <iframe
         src={src}
         style={{
