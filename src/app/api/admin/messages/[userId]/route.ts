@@ -51,3 +51,19 @@ export async function POST(
 
   return NextResponse.json(message, { status: 201 })
 }
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: { userId: string } }
+) {
+  const session = await auth()
+  if (!session?.user || session.user.role !== 'ADMIN') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { userId } = params
+
+  await prisma.message.deleteMany({ where: { userId } })
+
+  return NextResponse.json({ deleted: true })
+}

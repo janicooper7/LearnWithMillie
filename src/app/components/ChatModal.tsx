@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { X, Send } from 'lucide-react'
+import { X, Send, Trash2 } from 'lucide-react'
 
 interface Message {
   id: string
@@ -15,12 +15,15 @@ interface ChatModalProps {
   userName: string
   isAdmin: boolean
   onClose: () => void
+  onDeleted?: () => void  // called after admin deletes the chat
 }
 
-export default function ChatModal({ userId, userName, isAdmin, onClose }: ChatModalProps) {
+export default function ChatModal({ userId, userName, isAdmin, onClose, onDeleted }: ChatModalProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const prevLengthRef = useRef(0)
 
@@ -80,6 +83,14 @@ export default function ChatModal({ userId, userName, isAdmin, onClose }: ChatMo
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
   }
 
+  const deleteChat = async () => {
+    setDeleting(true)
+    await fetch(`/api/admin/messages/${userId}`, { method: 'DELETE' })
+    setDeleting(false)
+    onDeleted?.()
+    onClose()
+  }
+
   return (
     <div
       className='fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4'
@@ -98,31 +109,74 @@ export default function ChatModal({ userId, userName, isAdmin, onClose }: ChatMo
         {/* Header */}
         <div
           className='flex items-center justify-between px-5 py-4 flex-shrink-0'
-          style={{ backgroundColor: '#1F3A34' }}
+          style={{ backgroundColor: confirmDelete ? '#7f1d1d' : '#1F3A34', transition: 'background-color 0.2s' }}
         >
-          <div>
-            <p
-              className='text-[10px] uppercase tracking-[0.2em] font-medium'
-              style={{ color: 'rgba(194,170,106,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}
-            >
-              {isAdmin ? 'Conversation' : 'Message Millie'}
-            </p>
-            <p
-              className='text-sm font-semibold text-white mt-0.5'
-              style={{ fontFamily: 'var(--font-inter), sans-serif' }}
-            >
-              {isAdmin ? userName : 'Millie Cooper'}
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className='w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200'
-            style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.18)' }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.1)' }}
-          >
-            <X className='w-4 h-4 text-white' />
-          </button>
+          {confirmDelete ? (
+            /* Delete confirmation row */
+            <>
+              <p className='text-sm font-medium text-white' style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
+                Delete this conversation?
+              </p>
+              <div className='flex items-center gap-2'>
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className='px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150'
+                  style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={deleteChat}
+                  disabled={deleting}
+                  className='px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors duration-150 disabled:opacity-60'
+                  style={{ backgroundColor: '#ef4444', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  {deleting ? 'Deleting…' : 'Yes, delete'}
+                </button>
+              </div>
+            </>
+          ) : (
+            /* Normal header */
+            <>
+              <div>
+                <p
+                  className='text-[10px] uppercase tracking-[0.2em] font-medium'
+                  style={{ color: 'rgba(194,170,106,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  {isAdmin ? 'Conversation' : 'Message Millie'}
+                </p>
+                <p
+                  className='text-sm font-semibold text-white mt-0.5'
+                  style={{ fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  {isAdmin ? userName : 'Millie Cooper'}
+                </p>
+              </div>
+              <div className='flex items-center gap-2'>
+                {isAdmin && (
+                  <button
+                    onClick={() => setConfirmDelete(true)}
+                    className='w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200'
+                    style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(239,68,68,0.35)' }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.1)' }}
+                    title='Delete conversation'
+                  >
+                    <Trash2 className='w-3.5 h-3.5 text-white' />
+                  </button>
+                )}
+                <button
+                  onClick={onClose}
+                  className='w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200'
+                  style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.18)' }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.1)' }}
+                >
+                  <X className='w-4 h-4 text-white' />
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Messages area */}

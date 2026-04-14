@@ -77,6 +77,10 @@ export default function AdminUsersTable({ users }: AdminUsersTableProps) {
             setSelectedUser(null)
             fetchConversations()
           }}
+          onDeleted={() => {
+            setSelectedUser(null)
+            fetchConversations()
+          }}
         />
       )}
 
