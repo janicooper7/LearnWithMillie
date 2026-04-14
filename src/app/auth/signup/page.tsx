@@ -220,7 +220,13 @@ export default function SignupPage() {
       return
     }
 
-    await signIn('credentials', { email, password, redirect: false })
+    const result = await signIn('credentials', { email, password, redirect: false })
+    if (result?.error) {
+      setError('Account created but sign-in failed. Please log in.')
+      setLoading(false)
+      router.push('/auth/login')
+      return
+    }
     router.push('/dashboard')
   }
 
