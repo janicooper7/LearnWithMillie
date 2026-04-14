@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Terms & Conditions | LearnWithMillie',
-  description: 'Terms and conditions for LearnWithMillie, including our cancellation policy, refund policy, and trial lesson terms.',
+  description:
+    'Terms and conditions for LearnWithMillie, including our cancellation policy, refund policy, and trial lesson terms.',
 }
 
 const sections = [
@@ -40,7 +41,7 @@ const sections = [
       'Subscription payments are non-refundable once the billing period has commenced.',
       'Unused lessons do not carry over to the following billing period unless otherwise agreed in writing.',
       'If you cancel your subscription, you retain access to your remaining lessons until the end of the current billing period.',
-      'Refunds will only be considered in exceptional circumstances at Millie\'s sole discretion.',
+      "Refunds will only be considered in exceptional circumstances at Millie's sole discretion.",
       'Any approved refunds will be processed to the original payment method within 5–10 business days.',
     ],
   },
@@ -65,7 +66,7 @@ const sections = [
       'Your lesson allowance is refreshed at the start of each billing cycle.',
       'You may cancel your subscription at any time through your student dashboard. Cancellation takes effect at the end of the current billing period.',
       'Downgrading or upgrading your plan mid-cycle is not currently supported. Please cancel and re-subscribe to change plans.',
-      'LearnWithMillie reserves the right to adjust pricing with 30 days\' written notice.',
+      "LearnWithMillie reserves the right to adjust pricing with 30 days' written notice.",
     ],
   },
   {
@@ -73,7 +74,7 @@ const sections = [
     title: 'Student Conduct',
     items: [
       'Students are expected to be respectful and professional during all sessions.',
-      'Millie reserves the right to terminate a session and cancel a student\'s account if conduct is deemed inappropriate or abusive.',
+      "Millie reserves the right to terminate a session and cancel a student's account if conduct is deemed inappropriate or abusive.",
       'Lessons are for personal use only and may not be recorded, shared, or redistributed without prior written consent.',
     ],
   },
@@ -88,6 +89,19 @@ const sections = [
     content: `We reserve the right to update these Terms and Conditions at any time. Changes will be posted on this page with an updated effective date. Continued use of our services following any changes constitutes acceptance of the revised terms.`,
   },
   {
+    id: 'tutors',
+    title: 'Tutor Mentorship Services',
+    content: `Tutor mentorship services provided by LearnWithMillie are intended for guidance, education, and support purposes only. By purchasing or participating in mentorship, you acknowledge and agree that:`,
+    items: [
+      'No guarantees are made regarding income, client acquisition, business growth, or professional success',
+      'Results will vary depending on individual effort, experience, and external factors beyond LearnWithMillie’s control',
+      'Any examples of success (including testimonials or case studies) are illustrative only and do not guarantee similar outcomes',
+      'You are solely responsible for the decisions you make and actions you take based on mentorship advice',
+      'All mentorship services are provided on a best-efforts basis only.',
+      'To the fullest extent permitted by law, LearnWithMillie shall not be liable for any loss of income, business opportunities, or other financial outcomes arising from participation in mentorship services.',
+    ],
+  },
+  {
     id: 'contact',
     title: 'Contact',
     content: null,
@@ -98,24 +112,50 @@ export default function TermsPage() {
   return (
     <div className='min-h-screen' style={{ backgroundColor: '#F4EDE4' }}>
       <main className='max-w-3xl mx-auto px-6 py-16'>
-
         {/* Header */}
         <div className='mb-12'>
-          <p className='text-xs uppercase tracking-[0.25em] font-semibold mb-3' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+          <p
+            className='text-xs uppercase tracking-[0.25em] font-semibold mb-3'
+            style={{
+              color: '#C2AA6A',
+              fontFamily: 'var(--font-inter), sans-serif',
+            }}
+          >
             Legal
           </p>
-          <h1 className='text-4xl font-bold mb-4' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+          <h1
+            className='text-4xl font-bold mb-4'
+            style={{
+              color: '#1F3A34',
+              fontFamily: 'var(--font-playfair), Georgia, serif',
+            }}
+          >
             Terms & Conditions
           </h1>
-          <p className='text-sm' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+          <p
+            className='text-sm'
+            style={{
+              color: 'rgba(31,58,52,0.5)',
+              fontFamily: 'var(--font-inter), sans-serif',
+            }}
+          >
             Effective date: 11 April 2026
           </p>
           <div className='mt-6 h-px' style={{ backgroundColor: '#EDE4D8' }} />
         </div>
 
         {/* Table of contents */}
-        <nav className='mb-12 p-6 rounded-2xl bg-white' style={{ border: '1px solid #EDE4D8' }}>
-          <p className='text-[11px] uppercase tracking-[0.18em] font-semibold mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+        <nav
+          className='mb-12 p-6 rounded-2xl bg-white'
+          style={{ border: '1px solid #EDE4D8' }}
+        >
+          <p
+            className='text-[11px] uppercase tracking-[0.18em] font-semibold mb-4'
+            style={{
+              color: 'rgba(31,58,52,0.45)',
+              fontFamily: 'var(--font-inter), sans-serif',
+            }}
+          >
             Contents
           </p>
           <ol className='space-y-2'>
@@ -124,12 +164,29 @@ export default function TermsPage() {
                 <a
                   href={`#${s.id}`}
                   className='text-sm transition-opacity hover:opacity-70 flex items-center gap-2'
-                  style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+                  style={{
+                    color: '#1F3A34',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                  }}
                 >
-                  <span style={{ color: '#C2AA6A', fontWeight: 600, minWidth: '1.2rem' }}>{i + 1}.</span>
+                  <span
+                    style={{
+                      color: '#C2AA6A',
+                      fontWeight: 600,
+                      minWidth: '1.2rem',
+                    }}
+                  >
+                    {i + 1}.
+                  </span>
                   {s.title}
                   {s.highlight && (
-                    <span className='text-[10px] uppercase tracking-[0.12em] px-2 py-0.5 rounded-full font-semibold' style={{ backgroundColor: 'rgba(194,170,106,0.15)', color: '#C2AA6A' }}>
+                    <span
+                      className='text-[10px] uppercase tracking-[0.12em] px-2 py-0.5 rounded-full font-semibold'
+                      style={{
+                        backgroundColor: 'rgba(194,170,106,0.15)',
+                        color: '#C2AA6A',
+                      }}
+                    >
                       Important
                     </span>
                   )}
@@ -144,42 +201,105 @@ export default function TermsPage() {
           {sections.map((section, i) => (
             <div key={section.id} id={section.id}>
               <div className='flex items-center gap-3 mb-4'>
-                <span className='text-sm font-semibold' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+                <span
+                  className='text-sm font-semibold'
+                  style={{
+                    color: '#C2AA6A',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                  }}
+                >
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <h2 className='text-xl font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                <h2
+                  className='text-xl font-bold'
+                  style={{
+                    color: '#1F3A34',
+                    fontFamily: 'var(--font-playfair), Georgia, serif',
+                  }}
+                >
                   {section.title}
                 </h2>
               </div>
 
               {section.highlight && (
-                <div className='flex items-start gap-3 mb-4 p-4 rounded-xl' style={{ backgroundColor: 'rgba(194,170,106,0.1)', border: '1px solid rgba(194,170,106,0.3)' }}>
-                  <div className='w-0.5 self-stretch rounded-full flex-shrink-0' style={{ backgroundColor: '#C2AA6A' }} />
-                  <p className='text-xs font-semibold leading-relaxed' style={{ color: '#8a6f2e', fontFamily: 'var(--font-inter), sans-serif' }}>
-                    Please read this section carefully. Trial lesson payments are final and non-refundable, and bookings cannot be changed once confirmed.
+                <div
+                  className='flex items-start gap-3 mb-4 p-4 rounded-xl'
+                  style={{
+                    backgroundColor: 'rgba(194,170,106,0.1)',
+                    border: '1px solid rgba(194,170,106,0.3)',
+                  }}
+                >
+                  <div
+                    className='w-0.5 self-stretch rounded-full flex-shrink-0'
+                    style={{ backgroundColor: '#C2AA6A' }}
+                  />
+                  <p
+                    className='text-xs font-semibold leading-relaxed'
+                    style={{
+                      color: '#8a6f2e',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                    }}
+                  >
+                    Please read this section carefully. Trial lesson payments
+                    are final and non-refundable, and bookings cannot be changed
+                    once confirmed.
                   </p>
                 </div>
               )}
 
               {section.id === 'contact' ? (
-                <p className='text-sm leading-relaxed' style={{ color: 'rgba(31,58,52,0.75)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  If you have any questions about these Terms and Conditions, please contact Millie directly via the{' '}
-                  <a href='/contact' style={{ color: '#1F3A34', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <p
+                  className='text-sm leading-relaxed'
+                  style={{
+                    color: 'rgba(31,58,52,0.75)',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                  }}
+                >
+                  If you have any questions about these Terms and Conditions,
+                  please contact Millie directly via the{' '}
+                  <a
+                    href='/contact'
+                    style={{
+                      color: '#1F3A34',
+                      fontWeight: 600,
+                      textDecoration: 'underline',
+                      textUnderlineOffset: '3px',
+                    }}
+                  >
                     contact form
-                  </a>.
+                  </a>
+                  .
                 </p>
-              ) : 'content' in section && section.content && (
-                <p className='text-sm leading-relaxed' style={{ color: 'rgba(31,58,52,0.75)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  {section.content}
-                </p>
+              ) : (
+                'content' in section &&
+                section.content && (
+                  <p
+                    className='text-sm leading-relaxed'
+                    style={{
+                      color: 'rgba(31,58,52,0.75)',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                    }}
+                  >
+                    {section.content}
+                  </p>
+                )
               )}
 
               {'items' in section && section.items && (
                 <ul className='space-y-3'>
                   {section.items.map((item) => (
                     <li key={item} className='flex items-start gap-3'>
-                      <div className='w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5' style={{ backgroundColor: '#C2AA6A' }} />
-                      <p className='text-sm leading-relaxed' style={{ color: 'rgba(31,58,52,0.75)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      <div
+                        className='w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5'
+                        style={{ backgroundColor: '#C2AA6A' }}
+                      />
+                      <p
+                        className='text-sm leading-relaxed'
+                        style={{
+                          color: 'rgba(31,58,52,0.75)',
+                          fontFamily: 'var(--font-inter), sans-serif',
+                        }}
+                      >
                         {item}
                       </p>
                     </li>
@@ -187,16 +307,25 @@ export default function TermsPage() {
                 </ul>
               )}
 
-              <div className='mt-8 h-px' style={{ backgroundColor: '#EDE4D8' }} />
+              <div
+                className='mt-8 h-px'
+                style={{ backgroundColor: '#EDE4D8' }}
+              />
             </div>
           ))}
         </div>
 
         {/* Footer note */}
-        <p className='mt-10 text-xs text-center' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-          © {new Date().getFullYear()} LearnWithMillie · Millie Cooper · All rights reserved
+        <p
+          className='mt-10 text-xs text-center'
+          style={{
+            color: 'rgba(31,58,52,0.4)',
+            fontFamily: 'var(--font-inter), sans-serif',
+          }}
+        >
+          © {new Date().getFullYear()} LearnWithMillie · Millie Cooper · All
+          rights reserved
         </p>
-
       </main>
     </div>
   )
