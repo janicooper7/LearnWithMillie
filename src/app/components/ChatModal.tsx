@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { X, Send } from 'lucide-react'
 
 interface Message {
@@ -24,18 +24,22 @@ export default function ChatModal({ userId, userName, isAdmin, onClose }: ChatMo
   const bottomRef = useRef<HTMLDivElement>(null)
   const prevLengthRef = useRef(0)
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     const url = isAdmin ? `/api/admin/messages/${userId}` : '/api/messages'
-    const res = await fetch(url)
-    if (res.ok) setMessages(await res.json())
-  }
+    const res = await fetch(url, { cache: 'no-store' })
+    if (res.ok) {
+      const data = await res.json()
+      setMessages(data)
+    }
+  }, [isAdmin, userId])
 
   useEffect(() => {
     fetchMessages()
     const interval = setInterval(fetchMessages, 4000)
     return () => clearInterval(interval)
-  }, [userId])
+  }, [fetchMessages])
 
+  // Scroll to bottom when new messages arrive
   useEffect(() => {
     if (messages.length !== prevLengthRef.current) {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -44,16 +48,31 @@ export default function ChatModal({ userId, userName, isAdmin, onClose }: ChatMo
   }, [messages])
 
   const send = async () => {
-    if (!input.trim() || sending) return
+    const content = input.trim()
+    if (!content || sending) return
+
+    // Clear input and show message immediately (optimistic)
+    setInput('')
     setSending(true)
+    const optimistic: Message = {
+      id: `optimistic-${Date.now()}`,
+      content,
+      fromAdmin: isAdmin,
+      createdAt: new Date().toISOString(),
+    }
+    setMessages((prev) => [...prev, optimistic])
+
     const url = isAdmin ? `/api/admin/messages/${userId}` : '/api/messages'
-    await fetch(url, {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: input.trim() }),
+      body: JSON.stringify({ content }),
     })
-    setInput('')
-    await fetchMessages()
+
+    if (res.ok) {
+      // Replace optimistic message with real server data
+      await fetchMessages()
+    }
     setSending(false)
   }
 
@@ -117,7 +136,7 @@ export default function ChatModal({ userId, userName, isAdmin, onClose }: ChatMo
                 <Send className='w-4 h-4' style={{ color: 'rgba(31,58,52,0.3)' }} />
               </div>
               <p
-                className='text-sm text-center'
+                className='text-sm text-center max-w-[220px]'
                 style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}
               >
                 {isAdmin ? 'No messages yet.' : 'Send a message to Millie — she typically replies within 24 hours.'}
@@ -127,6 +146,7 @@ export default function ChatModal({ userId, userName, isAdmin, onClose }: ChatMo
 
           {messages.map((msg) => {
             const isMine = isAdmin ? msg.fromAdmin : !msg.fromAdmin
+            const isOptimistic = msg.id.startsWith('optimistic-')
             return (
               <div key={msg.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
                 <div
@@ -138,14 +158,14 @@ export default function ChatModal({ userId, userName, isAdmin, onClose }: ChatMo
                     fontFamily: 'var(--font-inter), sans-serif',
                     borderBottomRightRadius: isMine ? '4px' : '16px',
                     borderBottomLeftRadius: isMine ? '16px' : '4px',
+                    opacity: isOptimistic ? 0.7 : 1,
                   }}
                 >
                   <p>{msg.content}</p>
-                  <p
-                    className='text-[10px] mt-1.5'
-                    style={{ opacity: 0.45 }}
-                  >
-                    {new Date(msg.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                  <p className='text-[10px] mt-1.5' style={{ opacity: 0.45 }}>
+                    {isOptimistic
+                      ? 'Sending…'
+                      : new Date(msg.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
               </div>
