@@ -19,6 +19,10 @@ const ONE_TIME_PRICE_IDS: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   const session = await auth()
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { plan } = await req.json()
 
   const isOneTime = plan in ONE_TIME_PRICE_IDS

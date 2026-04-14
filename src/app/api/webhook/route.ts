@@ -32,50 +32,63 @@ export async function POST(req: NextRequest) {
 
   switch (event.type) {
     case 'checkout.session.completed': {
-      const session = event.data.object as Stripe.Checkout.Session
-      const userId = session.metadata?.userId
-      if (!userId) break
-
-      // One-time payment (trial or mentorship)
-      if (session.mode === 'payment') {
-        const lineItems = await stripe.checkout.sessions.listLineItems(session.id)
-        const priceId = lineItems.data[0]?.price?.id
-
-        if (priceId === TRIAL_PRICE_ID) {
-          await prisma.user.update({
-            where: { id: userId },
-            data: {
-              allowance: { increment: 1 },
-              trialPurchased: true,
-              stripeCustomerId: session.customer as string,
-            },
-          })
-        } else if (priceId && priceId in MENTORSHIP_PRICE_TO_SESSIONS) {
-          const sessions = MENTORSHIP_PRICE_TO_SESSIONS[priceId]
-          await prisma.user.update({
-            where: { id: userId },
-            data: {
-              allowance: { increment: sessions },
-              stripeCustomerId: session.customer as string,
-            },
-          })
+      try {
+        const session = event.data.object as Stripe.Checkout.Session
+        const userId = session.metadata?.userId
+        if (!userId) {
+          console.error('Webhook checkout.session.completed: missing userId in metadata', { sessionId: session.id })
+          break
         }
-        break
+
+        // One-time payment (trial or mentorship)
+        if (session.mode === 'payment') {
+          const lineItems = await stripe.checkout.sessions.listLineItems(session.id)
+          const priceId = lineItems.data[0]?.price?.id
+
+          console.log('Webhook payment:', { sessionId: session.id, userId, priceId })
+
+          if (priceId === TRIAL_PRICE_ID) {
+            await prisma.user.update({
+              where: { id: userId },
+              data: {
+                allowance: { increment: 1 },
+                trialPurchased: true,
+                stripeCustomerId: session.customer as string ?? undefined,
+              },
+            })
+          } else if (priceId && priceId in MENTORSHIP_PRICE_TO_SESSIONS) {
+            const sessions = MENTORSHIP_PRICE_TO_SESSIONS[priceId]
+            await prisma.user.update({
+              where: { id: userId },
+              data: {
+                allowance: { increment: sessions },
+                stripeCustomerId: session.customer as string ?? undefined,
+              },
+            })
+            console.log('Webhook: mentorship allowance incremented', { userId, sessions })
+          } else {
+            console.warn('Webhook: unrecognised payment priceId', { priceId, userId })
+          }
+          break
+        }
+
+        // Subscription payment
+        const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
+        const priceId = subscription.items.data[0].price.id
+        const lessons = PRICE_TO_LESSONS[priceId] ?? 0
+
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            allowance: lessons,
+            stripeCustomerId: session.customer as string ?? undefined,
+            stripeSubscriptionId: session.subscription as string,
+          },
+        })
+      } catch (err: any) {
+        console.error('Webhook checkout.session.completed error:', err.message)
+        return NextResponse.json({ error: 'Processing error' }, { status: 500 })
       }
-
-      // Subscription payment
-      const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
-      const priceId = subscription.items.data[0].price.id
-      const lessons = PRICE_TO_LESSONS[priceId] ?? 0
-
-      await prisma.user.update({
-        where: { id: userId },
-        data: {
-          allowance: lessons,
-          stripeCustomerId: session.customer as string,
-          stripeSubscriptionId: session.subscription as string,
-        },
-      })
       break
     }
 
