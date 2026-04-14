@@ -4,16 +4,15 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const session = await auth()
   if (!session?.user || session.user.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { userId } = params
+  const { userId } = await params
 
-  // Mark the user's messages as read by admin
   await prisma.message.updateMany({
     where: { userId, fromAdmin: false, readByAdmin: false },
     data: { readByAdmin: true },
@@ -30,14 +29,14 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const session = await auth()
   if (!session?.user || session.user.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { userId } = params
+  const { userId } = await params
   const { content } = await req.json()
   if (!content?.trim()) return NextResponse.json({ error: 'Message required' }, { status: 400 })
 
@@ -54,14 +53,14 @@ export async function POST(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const session = await auth()
   if (!session?.user || session.user.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { userId } = params
+  const { userId } = await params
 
   await prisma.message.deleteMany({ where: { userId } })
 
