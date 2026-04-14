@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { Users } from 'lucide-react'
 import CreditAdjuster from '@/app/components/CreditAdjuster'
+import AdminMessagesPanel from '@/app/components/AdminMessagesPanel'
 
 export default async function AdminPage() {
   const session = await auth()
@@ -123,6 +124,9 @@ export default async function AdminPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Messages */}
+        <AdminMessagesPanel />
 
       </main>
     </div>

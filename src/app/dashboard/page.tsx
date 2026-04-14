@@ -7,6 +7,7 @@ import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
 import CalEmbed from '@/app/components/CalEmbed'
 import BookLessonCard from '@/app/components/BookLessonCard'
 import CreditsCardActions from '@/app/components/CreditsCardActions'
+import ChatButton from '@/app/components/ChatButton'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -231,6 +232,11 @@ export default async function DashboardPage() {
               </div>
             </>
           )}
+        </div>
+
+        {/* Message Millie */}
+        <div className='mt-5'>
+          <ChatButton userName={user.name ?? 'there'} />
         </div>
 
         {/* Booking calendar */}
