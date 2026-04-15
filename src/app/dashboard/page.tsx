@@ -236,8 +236,8 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        {/* Add-on lessons banner — students only */}
-        {!isTeacher && (
+        {/* Add-on lessons banner — students who have completed their trial */}
+        {!isTeacher && (user.trialPurchased || user.trialUsed) && (
           <div className='mt-5'>
             <AddonLessonsBanner />
           </div>
