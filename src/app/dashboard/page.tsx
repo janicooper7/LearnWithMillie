@@ -50,7 +50,9 @@ export default async function DashboardPage() {
   if (stripeResult.status === 'fulfilled' && stripeResult.value) {
     const sub = stripeResult.value as any
     cancelAtPeriodEnd = sub.cancel_at_period_end
-    periodEnd = new Date(sub.current_period_end * 1000)
+    // current_period_end moved to items in newer Stripe API versions
+    const periodEndTs = sub.current_period_end ?? sub.items?.data?.[0]?.current_period_end
+    if (periodEndTs) periodEnd = new Date(periodEndTs * 1000)
   }
 
   // Reset date comes from Stripe billing period; fall back to signup day if no subscription
@@ -160,11 +162,11 @@ export default async function DashboardPage() {
                         <p className='text-xs mt-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
                           Use the calendar below to book your 20-min session
                         </p>
-                      ) : !cancelAtPeriodEnd && (
+                      ) : user.stripeSubscriptionId && !cancelAtPeriodEnd && periodEnd ? (
                         <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                          Resets {nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
+                          Resets {periodEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
                         </p>
-                      )}
+                      ) : null}
                     </>
                   )
                 })()}

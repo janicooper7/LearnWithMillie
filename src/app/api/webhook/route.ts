@@ -96,14 +96,14 @@ export async function POST(req: NextRequest) {
           break
         }
 
-        // Subscription payment
+        // Subscription payment — increment so existing unused lessons are preserved
         const priceId = session.metadata?.priceId
         const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0
 
         await prisma.user.update({
           where: { id: userId },
           data: {
-            allowance: lessons,
+            allowance: { increment: lessons },
             stripeCustomerId: session.customer as string ?? undefined,
             stripeSubscriptionId: session.subscription as string,
           },
@@ -116,10 +116,13 @@ export async function POST(req: NextRequest) {
     }
 
     case 'invoice.paid': {
-      // Reset allowance on each billing cycle renewal
       const invoice = event.data.object as Stripe.Invoice
       const subId = (invoice as any).subscription as string
       if (!subId) break
+
+      // Skip the first invoice — already handled by checkout.session.completed
+      // Only reset allowance on renewals (subscription_cycle)
+      if ((invoice as any).billing_reason !== 'subscription_cycle') break
 
       const priceId = invoice.lines.data[0]?.price?.id
       const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0

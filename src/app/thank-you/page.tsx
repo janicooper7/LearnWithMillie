@@ -73,7 +73,7 @@ export default function ThankYou() {
         >
           {isContact
             ? 'Thank you for getting in touch. Millie will review your message and get back to you within 24 hours.'
-            : 'Welcome aboard! Your subscription is confirmed and your lessons are ready to use.'}
+            : 'Your payment is confirmed and your session credits are ready to use.'}
         </p>
         <p
           className='text-base leading-relaxed mb-8'
@@ -81,7 +81,7 @@ export default function ThankYou() {
         >
           {isContact
             ? 'In the meantime, feel free to explore the site and learn more about what\'s on offer.'
-            : 'Head to your dashboard and use the calendar to book your first lesson with Millie.'}
+            : 'Head to your dashboard and use the calendar to pick a time that works for you.'}
         </p>
 
         <Link
@@ -96,7 +96,7 @@ export default function ThankYou() {
           className='text-xs mt-6'
           style={{ color: '#1F3A34', opacity: 0.45 }}
         >
-          {isContact ? 'We look forward to speaking with you soon.' : 'Can\'t wait to see you in your first lesson!'}
+          {isContact ? 'We look forward to speaking with you soon.' : 'Looking forward to seeing you soon!'}
         </p>
       </div>
     </div>
