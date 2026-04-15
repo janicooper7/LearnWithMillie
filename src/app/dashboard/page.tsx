@@ -251,7 +251,7 @@ export default async function DashboardPage() {
                 {user.allowance > 0 ? 'Use the calendar below to pick a time that works for you.' : isTeacher ? 'No sessions remaining' : 'No lessons remaining'}
               </p>
               <p className='text-xs mt-1.5' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                Can't find a time that suits you? Use the chat to get in touch and I'll find something that works.
+                Not seeing a time that works for you? Drop me a message and I'll make sure we find a time that works best for both of us.
               </p>
             </div>
             <div className='flex items-center gap-2 px-4 py-2 rounded-xl' style={{ backgroundColor: 'rgba(31,58,52,0.06)' }}>
