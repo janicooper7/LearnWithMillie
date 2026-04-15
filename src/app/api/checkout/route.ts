@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         ? { discounts: [discount] }
         : { allow_promotion_codes: true }),
       ...(session?.user?.email && { customer_email: session.user.email }),
-      metadata: { userId: session?.user?.id ?? '' },
+      metadata: { userId: session?.user?.id ?? '', priceId, quantity: String(qty) },
     })
 
     return NextResponse.json({ url: checkoutSession.url })

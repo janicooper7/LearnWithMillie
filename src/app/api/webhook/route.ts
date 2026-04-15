@@ -56,13 +56,13 @@ export async function POST(req: NextRequest) {
 
         // One-time payment (trial or mentorship)
         if (session.mode === 'payment') {
-          const lineItems = await stripe.checkout.sessions.listLineItems(session.id)
-          const priceId = lineItems.data[0]?.price?.id
+          // Read priceId from metadata (set at checkout creation) — avoids an extra Stripe API call
+          const priceId = session.metadata?.priceId
+          const qty = Number(session.metadata?.quantity ?? '1') || 1
 
-          console.log('Webhook payment:', { sessionId: session.id, userId, priceId })
+          console.log('Webhook payment:', { sessionId: session.id, userId, priceId, qty })
 
           if (priceId === ADDITIONAL_LESSON_PRICE_ID) {
-            const qty = lineItems.data[0]?.quantity ?? 1
             await prisma.user.update({
               where: { id: userId },
               data: {
