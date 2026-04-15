@@ -35,9 +35,22 @@ export async function POST(req: NextRequest) {
     case 'checkout.session.completed': {
       try {
         const session = event.data.object as Stripe.Checkout.Session
-        const userId = session.metadata?.userId
+        let userId = session.metadata?.userId
+
+        // Fall back to email lookup (e.g. manual Stripe payment links)
         if (!userId) {
-          console.error('Webhook checkout.session.completed: missing userId in metadata', { sessionId: session.id })
+          const email = session.customer_details?.email ?? session.customer_email
+          if (email) {
+            const found = await prisma.user.findUnique({ where: { email }, select: { id: true } })
+            if (found) {
+              userId = found.id
+              console.log('Webhook: resolved userId from email', { email, userId })
+            }
+          }
+        }
+
+        if (!userId) {
+          console.error('Webhook checkout.session.completed: could not resolve userId', { sessionId: session.id })
           break
         }
 
