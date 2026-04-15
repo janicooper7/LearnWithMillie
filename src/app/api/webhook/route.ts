@@ -121,9 +121,8 @@ export async function POST(req: NextRequest) {
       const subId = (invoice as any).subscription as string
       if (!subId) break
 
-      const subscription = await stripe.subscriptions.retrieve(subId)
-      const priceId = subscription.items.data[0].price.id
-      const lessons = PRICE_TO_LESSONS[priceId] ?? 0
+      const priceId = invoice.lines.data[0]?.price?.id
+      const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0
       const customerId = invoice.customer as string
 
       await prisma.user.updateMany({
