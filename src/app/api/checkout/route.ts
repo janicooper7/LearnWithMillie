@@ -35,14 +35,31 @@ export async function POST(req: NextRequest) {
 
   const qty = plan === 'additional-lessons' ? Math.max(1, Math.min(20, Number(quantity))) : 1
 
-  // Resolve promo code to a Stripe promotion code ID if provided
-  let resolvedPromoId: string | null = null
+  // Resolve promo code if provided
+  type DiscountEntry = { promotion_code: string } | { coupon: string }
+  let discount: DiscountEntry | null = null
+
   if (promoCode?.trim()) {
     const codes = await stripe.promotionCodes.list({ code: promoCode.trim(), active: true, limit: 1 })
     if (codes.data.length === 0) {
       return NextResponse.json({ error: 'Invalid or expired promo code.' }, { status: 400 })
     }
-    resolvedPromoId = codes.data[0].id
+
+    const promo = codes.data[0]
+    const coupon = promo.coupon
+
+    if (coupon.amount_off && plan === 'additional-lessons' && qty > 1) {
+      // Fixed-amount coupon: scale by qty so the discount applies per lesson, not per order
+      const scaled = await stripe.coupons.create({
+        amount_off: coupon.amount_off * qty,
+        currency: coupon.currency ?? 'usd',
+        duration: 'once',
+      })
+      discount = { coupon: scaled.id }
+    } else {
+      // Percentage coupons scale naturally; single-unit fixed amounts need no scaling
+      discount = { promotion_code: promo.id }
+    }
   }
 
   try {
@@ -51,9 +68,8 @@ export async function POST(req: NextRequest) {
       line_items: [{ price: priceId, quantity: qty }],
       success_url: `${process.env.NEXTAUTH_URL}/thank-you`,
       cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
-      // If a promo code was supplied apply it directly; otherwise let user enter one on Stripe's page
-      ...(resolvedPromoId
-        ? { discounts: [{ promotion_code: resolvedPromoId }] }
+      ...(discount
+        ? { discounts: [discount] }
         : { allow_promotion_codes: true }),
       ...(session?.user?.email && { customer_email: session.user.email }),
       metadata: { userId: session?.user?.id ?? '' },
