@@ -43,9 +43,8 @@ export default function AddonLessonsBanner() {
       className='rounded-2xl overflow-hidden'
       style={{ backgroundColor: '#1F3A34' }}
     >
-      {/* Main row */}
-      <div className='px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5'>
-        {/* Left — copy */}
+      <div className='px-6 py-5 flex flex-col gap-5'>
+        {/* Copy */}
         <div className='flex items-center gap-4'>
           <div className='w-0.5 h-10 rounded-full flex-shrink-0' style={{ backgroundColor: '#C2AA6A' }} />
           <div>
@@ -64,9 +63,8 @@ export default function AddonLessonsBanner() {
           </div>
         </div>
 
-        {/* Right — qty + total + CTA */}
-        <div className='flex items-center gap-3 flex-shrink-0'>
-          {/* Quantity control */}
+        {/* Qty + total + CTA */}
+        <div className='flex items-center gap-3'>
           <div
             className='flex items-center rounded-xl overflow-hidden'
             style={{ border: '1px solid rgba(255,255,255,0.15)', backgroundColor: 'rgba(255,255,255,0.07)' }}
@@ -98,15 +96,13 @@ export default function AddonLessonsBanner() {
             </button>
           </div>
 
-          {/* Total */}
           <span
-            className='text-sm font-semibold w-14 text-right'
+            className='text-sm font-semibold w-14'
             style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
           >
             ${qty * 40}
           </span>
 
-          {/* CTA */}
           <button
             onClick={handleCheckout}
             disabled={loading}
@@ -117,46 +113,40 @@ export default function AddonLessonsBanner() {
             {!loading && <ArrowRight className='w-4 h-4' />}
           </button>
         </div>
-      </div>
 
-      {/* Promo code row */}
-      <div
-        className='px-6 pb-5 flex flex-col sm:flex-row sm:items-center gap-3'
-        style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
-      >
-        <div className='flex items-center gap-2 flex-1 max-w-xs pt-4'>
-          <Tag className='w-3.5 h-3.5 flex-shrink-0' style={{ color: 'rgba(194,170,106,0.7)' }} />
-          <input
-            type='text'
-            value={promoCode}
-            onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoError('') }}
-            placeholder='Promo code'
-            className='flex-1 text-sm bg-transparent outline-none placeholder:uppercase placeholder:tracking-widest'
-            style={{
-              color: 'white',
-              fontFamily: 'var(--font-inter), sans-serif',
-              letterSpacing: promoCode ? '0.08em' : undefined,
-            }}
-          />
+        {/* Promo code */}
+        <div
+          className='flex flex-col gap-2 pt-4'
+          style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+        >
+          <div className='flex items-center gap-2'>
+            <Tag className='w-3.5 h-3.5 flex-shrink-0' style={{ color: 'rgba(194,170,106,0.7)' }} />
+            <input
+              type='text'
+              value={promoCode}
+              onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoError('') }}
+              placeholder='Promo code'
+              className='flex-1 text-sm bg-transparent outline-none placeholder:uppercase placeholder:tracking-widest'
+              style={{
+                color: 'white',
+                fontFamily: 'var(--font-inter), sans-serif',
+                letterSpacing: promoCode ? '0.08em' : undefined,
+              }}
+            />
+          </div>
+
+          {promoError && (
+            <p className='text-xs' style={{ color: '#fca5a5', fontFamily: 'var(--font-inter), sans-serif' }}>
+              {promoError}
+            </p>
+          )}
+
+          {!promoError && promoCode && (
+            <p className='text-xs' style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+              Applied at checkout
+            </p>
+          )}
         </div>
-
-        {promoError && (
-          <p
-            className='text-xs pt-4 sm:pt-0'
-            style={{ color: '#fca5a5', fontFamily: 'var(--font-inter), sans-serif' }}
-          >
-            {promoError}
-          </p>
-        )}
-
-        {!promoError && promoCode && (
-          <p
-            className='text-xs pt-4 sm:pt-0'
-            style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}
-          >
-            Applied at checkout
-          </p>
-        )}
       </div>
     </div>
   )
