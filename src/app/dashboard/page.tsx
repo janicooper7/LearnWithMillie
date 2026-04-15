@@ -139,107 +139,106 @@ export default async function DashboardPage() {
         </div>
 
 
-        {/* Credits + Subscription + Upcoming bookings combined */}
-        <div className='mt-5 bg-white rounded-2xl p-7' style={{ border: '1px solid #EDE4D8' }}>
+        {/* Credits row — lessons card + addon banner side by side */}
+        <div className={`mt-5 grid gap-5 ${!isTeacher && (user.trialPurchased || user.trialUsed) ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
 
-          {/* Top row: credits + subscription */}
-          <div className='flex items-start justify-between gap-6'>
-            <div>
-              {(() => {
-                const showTrialReady = user.trialPurchased && !user.trialUsed && !user.stripeSubscriptionId && user.allowance > 0
-                return (
-                  <>
-                    <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      {showTrialReady ? 'Trial Lesson' : isTeacher ? 'Sessions' : 'Lessons this month'}
-                    </p>
-                    <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      {showTrialReady ? '1 trial lesson ready to book' : `${user.allowance} ${user.allowance === 1 ? (isTeacher ? 'session' : 'lesson') : (isTeacher ? 'sessions' : 'lessons')} remaining`}
-                    </p>
-                    {showTrialReady ? (
-                      <p className='text-xs mt-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        Use the calendar below to book your 20-min session
+          {/* Lessons / sessions card */}
+          <div className='bg-white rounded-2xl p-7 flex flex-col justify-between' style={{ border: '1px solid #EDE4D8' }}>
+            <div className='flex items-start justify-between gap-6'>
+              <div>
+                {(() => {
+                  const showTrialReady = user.trialPurchased && !user.trialUsed && !user.stripeSubscriptionId && user.allowance > 0
+                  return (
+                    <>
+                      <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        {showTrialReady ? 'Trial Lesson' : isTeacher ? 'Sessions' : 'Lessons this month'}
                       </p>
-                    ) : !cancelAtPeriodEnd && (
-                      <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        Resets {nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
+                      <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        {showTrialReady ? '1 trial lesson ready to book' : `${user.allowance} ${user.allowance === 1 ? (isTeacher ? 'session' : 'lesson') : (isTeacher ? 'sessions' : 'lessons')} remaining`}
                       </p>
-                    )}
-                  </>
-                )
-              })()}
-              <CreditsCardActions trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />
-            </div>
-
-            {user.stripeSubscriptionId && (
-              <div className='text-right'>
-                {cancelAtPeriodEnd && periodEnd ? (
-                  <>
-                    <p className='text-xs font-medium' style={{ color: '#c0392b', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      Cancels {periodEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
-                    </p>
-                    <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      You'll keep access until then.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p className='text-[11px] uppercase tracking-[0.12em] mb-2' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Subscription</p>
-                    <div className='flex items-center gap-1.5 justify-end mb-2'>
-                      <div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: '#2ecc71' }} />
-                      <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>Active</p>
-                    </div>
-                    <CancelSubscriptionButton />
-                  </>
-                )}
+                      {showTrialReady ? (
+                        <p className='text-xs mt-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          Use the calendar below to book your 20-min session
+                        </p>
+                      ) : !cancelAtPeriodEnd && (
+                        <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          Resets {nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
+                        </p>
+                      )}
+                    </>
+                  )
+                })()}
+                <CreditsCardActions trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />
               </div>
-            )}
+
+              {user.stripeSubscriptionId && (
+                <div className='text-right flex-shrink-0'>
+                  {cancelAtPeriodEnd && periodEnd ? (
+                    <>
+                      <p className='text-xs font-medium' style={{ color: '#c0392b', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        Cancels {periodEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
+                      </p>
+                      <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        You'll keep access until then.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className='text-[11px] uppercase tracking-[0.12em] mb-2' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Subscription</p>
+                      <div className='flex items-center gap-1.5 justify-end mb-2'>
+                        <div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: '#2ecc71' }} />
+                        <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>Active</p>
+                      </div>
+                      <CancelSubscriptionButton />
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Upcoming bookings — only shown if there are any */}
-          {upcomingBookings.length > 0 && (
-            <>
-              <div className='my-6 h-px' style={{ backgroundColor: '#EDE4D8' }} />
-              <p className='text-[11px] uppercase tracking-[0.12em] mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
-              <div className='space-y-3'>
-                {upcomingBookings.map((booking) => {
-                  const start = new Date(booking.startTime)
-                  const end = new Date(booking.endTime)
-                  return (
-                    <div key={booking.uid} className='flex items-center justify-between py-3 px-4 rounded-xl' style={{ backgroundColor: '#F4EDE4' }}>
-                      <div className='flex items-center gap-4'>
-                        <div className='text-center'>
-                          <p className='text-xs font-semibold uppercase' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-                            {start.toLocaleDateString('en-GB', { month: 'short' })}
-                          </p>
-                          <p className='text-xl font-bold leading-none' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                            {start.toLocaleDateString('en-GB', { day: 'numeric' })}
-                          </p>
-                        </div>
-                        <div className='w-px h-8' style={{ backgroundColor: '#EDE4D8' }} />
-                        <div>
-                          <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                            {start.toLocaleDateString('en-GB', { weekday: 'long' })}
-                          </p>
-                          <p className='text-xs' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                            {start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} – {end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-                          </p>
-                        </div>
-                      </div>
-                      <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full' style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        Confirmed
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-            </>
+          {/* Add-on lessons banner — students who have completed their trial */}
+          {!isTeacher && (user.trialPurchased || user.trialUsed) && (
+            <AddonLessonsBanner />
           )}
         </div>
 
-        {/* Add-on lessons banner — students who have completed their trial */}
-        {!isTeacher && (user.trialPurchased || user.trialUsed) && (
-          <div className='mt-5'>
-            <AddonLessonsBanner />
+        {/* Upcoming bookings — only shown if there are any */}
+        {upcomingBookings.length > 0 && (
+          <div className='mt-5 bg-white rounded-2xl p-7' style={{ border: '1px solid #EDE4D8' }}>
+            <p className='text-[11px] uppercase tracking-[0.12em] mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
+            <div className='space-y-3'>
+              {upcomingBookings.map((booking) => {
+                const start = new Date(booking.startTime)
+                const end = new Date(booking.endTime)
+                return (
+                  <div key={booking.uid} className='flex items-center justify-between py-3 px-4 rounded-xl' style={{ backgroundColor: '#F4EDE4' }}>
+                    <div className='flex items-center gap-4'>
+                      <div className='text-center'>
+                        <p className='text-xs font-semibold uppercase' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          {start.toLocaleDateString('en-GB', { month: 'short' })}
+                        </p>
+                        <p className='text-xl font-bold leading-none' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                          {start.toLocaleDateString('en-GB', { day: 'numeric' })}
+                        </p>
+                      </div>
+                      <div className='w-px h-8' style={{ backgroundColor: '#EDE4D8' }} />
+                      <div>
+                        <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          {start.toLocaleDateString('en-GB', { weekday: 'long' })}
+                        </p>
+                        <p className='text-xs' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          {start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} – {end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                    </div>
+                    <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full' style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      Confirmed
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         )}
 
