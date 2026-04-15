@@ -97,9 +97,8 @@ export async function POST(req: NextRequest) {
         }
 
         // Subscription payment
-        const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
-        const priceId = subscription.items.data[0].price.id
-        const lessons = PRICE_TO_LESSONS[priceId] ?? 0
+        const priceId = session.metadata?.priceId
+        const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0
 
         await prisma.user.update({
           where: { id: userId },
