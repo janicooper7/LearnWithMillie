@@ -250,11 +250,9 @@ export default async function DashboardPage() {
               <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
                 {user.allowance > 0 ? 'Use the calendar below to pick a time that works for you.' : isTeacher ? 'No sessions remaining' : 'No lessons remaining'}
               </p>
-              {user.allowance > 0 && (
-                <p className='text-xs mt-1.5' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  Can't find a time that suits you? Use the chat to get in touch and I'll find something that works.
-                </p>
-              )}
+              <p className='text-xs mt-1.5' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                Can't find a time that suits you? Use the chat to get in touch and I'll find something that works.
+              </p>
             </div>
             <div className='flex items-center gap-2 px-4 py-2 rounded-xl' style={{ backgroundColor: 'rgba(31,58,52,0.06)' }}>
               <span className='text-lg font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{user.allowance}</span>
