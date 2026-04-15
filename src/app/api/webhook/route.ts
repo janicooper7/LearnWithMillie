@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
       // Only reset allowance on renewals (subscription_cycle)
       if ((invoice as any).billing_reason !== 'subscription_cycle') break
 
-      const priceId = invoice.lines.data[0]?.price?.id
+      const priceId = (invoice.lines.data[0] as any)?.price?.id
       const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0
       const customerId = invoice.customer as string
 
