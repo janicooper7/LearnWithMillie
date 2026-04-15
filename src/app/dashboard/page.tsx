@@ -20,7 +20,7 @@ export default async function DashboardPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { id: true, name: true, email: true, createdAt: true, image: true, role: true, allowance: true, trialPurchased: true, trialUsed: true, stripeSubscriptionId: true },
+    select: { id: true, name: true, email: true, createdAt: true, image: true, role: true, allowance: true, trialPurchased: true, trialUsed: true, stripeSubscriptionId: true, addonLessonsEnabled: true },
   })
 
   if (!user) redirect('/auth/login')
@@ -140,7 +140,7 @@ export default async function DashboardPage() {
 
 
         {/* Credits row — lessons card + addon banner side by side */}
-        <div className={`mt-5 grid gap-5 ${!isTeacher && (user.trialPurchased || user.trialUsed) ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+        <div className={`mt-5 grid gap-5 ${!isTeacher && user.addonLessonsEnabled ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
 
           {/* Lessons / sessions card */}
           <div className='bg-white rounded-2xl p-7 flex flex-col justify-between' style={{ border: '1px solid #EDE4D8' }}>
@@ -197,8 +197,8 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Add-on lessons banner — students who have completed their trial */}
-          {!isTeacher && (user.trialPurchased || user.trialUsed) && (
+          {/* Add-on lessons banner — admin-enabled students only */}
+          {!isTeacher && user.addonLessonsEnabled && (
             <AddonLessonsBanner />
           )}
         </div>

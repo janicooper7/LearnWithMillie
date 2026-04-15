@@ -10,7 +10,7 @@ export default async function AdminPage() {
   const users = await prisma.user.findMany({
     where: { id: { not: session.user.id } },
     orderBy: { createdAt: 'desc' },
-    select: { id: true, name: true, email: true, role: true, allowance: true, createdAt: true, image: true },
+    select: { id: true, name: true, email: true, role: true, allowance: true, addonLessonsEnabled: true, createdAt: true, image: true },
   })
 
   return (

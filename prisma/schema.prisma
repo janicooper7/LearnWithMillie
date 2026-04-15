@@ -26,6 +26,7 @@ model User {
   trialUsed            Boolean   @default(false)
   stripeCustomerId     String?
   stripeSubscriptionId String?
+  addonLessonsEnabled  Boolean   @default(false)
   createdAt            DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]

@@ -13,6 +13,7 @@ interface User {
   email: string
   role: string
   allowance: number
+  addonLessonsEnabled: boolean
   createdAt: Date
 }
 
@@ -29,10 +30,20 @@ interface AdminUsersTableProps {
   users: User[]
 }
 
-export default function AdminUsersTable({ users }: AdminUsersTableProps) {
+export default function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
   const [filter, setFilter] = useState<FilterType>('ALL')
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedUser, setSelectedUser] = useState<{ id: string; name: string } | null>(null)
+  const [users, setUsers] = useState(initialUsers)
+
+  const toggleAddon = async (userId: string, enabled: boolean) => {
+    setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, addonLessonsEnabled: enabled } : u))
+    await fetch('/api/admin/toggle-addon', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, enabled }),
+    })
+  }
 
   const studentCount = users.filter((u) => u.role === 'STUDENT').length
   const teacherCount = users.filter((u) => u.role === 'TEACHER').length
@@ -247,7 +258,7 @@ export default function AdminUsersTable({ users }: AdminUsersTableProps) {
           <table className='w-full'>
             <thead>
               <tr style={{ borderBottom: '1px solid #EDE4D8' }}>
-                {['User', 'Email', 'Role', filter === 'TEACHER' ? 'Sessions' : 'Lessons', 'Joined'].map((col) => (
+                {['User', 'Email', 'Role', filter === 'TEACHER' ? 'Sessions' : 'Lessons', 'Add-ons', 'Joined'].map((col) => (
                   <th
                     key={col}
                     className='text-left px-6 py-4 text-[11px] uppercase tracking-[0.15em] font-semibold'
@@ -293,6 +304,23 @@ export default function AdminUsersTable({ users }: AdminUsersTableProps) {
                     <CreditAdjuster userId={user.id} allowance={user.allowance} />
                   </td>
                   <td className='px-6 py-4'>
+                    {user.role === 'STUDENT' ? (
+                      <button
+                        onClick={() => toggleAddon(user.id, !user.addonLessonsEnabled)}
+                        className='relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none'
+                        style={{ backgroundColor: user.addonLessonsEnabled ? '#1F3A34' : 'rgba(31,58,52,0.15)' }}
+                        title={user.addonLessonsEnabled ? 'Disable add-on lessons' : 'Enable add-on lessons'}
+                      >
+                        <span
+                          className='inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform duration-200'
+                          style={{ transform: user.addonLessonsEnabled ? 'translateX(18px)' : 'translateX(3px)' }}
+                        />
+                      </button>
+                    ) : (
+                      <span className='text-sm' style={{ color: 'rgba(31,58,52,0.25)', fontFamily: 'var(--font-inter), sans-serif' }}>—</span>
+                    )}
+                  </td>
+                  <td className='px-6 py-4'>
                     <span className='text-sm' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
                       {new Date(user.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
@@ -301,7 +329,7 @@ export default function AdminUsersTable({ users }: AdminUsersTableProps) {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className='px-6 py-12 text-center text-sm' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  <td colSpan={6} className='px-6 py-12 text-center text-sm' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
                     No {filter === 'STUDENT' ? 'students' : filter === 'TEACHER' ? 'teachers' : 'users'} yet.
                   </td>
                 </tr>
