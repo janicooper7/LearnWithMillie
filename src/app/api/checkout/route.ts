@@ -15,6 +15,7 @@ const ONE_TIME_PRICE_IDS: Record<string, string> = {
   'mentorship-single': process.env.STRIPE_MENTORSHIP_SINGLE_PRICE_ID!,
   'mentorship-double': process.env.STRIPE_MENTORSHIP_DOUBLE_PRICE_ID!,
   'mentorship-triple': process.env.STRIPE_MENTORSHIP_TRIPLE_PRICE_ID!,
+  'additional-lessons': process.env.STRIPE_ADDITIONAL_LESSON_PRICE_ID!,
 }
 
 export async function POST(req: NextRequest) {
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { plan } = await req.json()
+  const { plan, quantity = 1 } = await req.json()
 
   const isOneTime = plan in ONE_TIME_PRICE_IDS
   const priceId = isOneTime ? ONE_TIME_PRICE_IDS[plan] : SUBSCRIPTION_PRICE_IDS[plan]
@@ -32,10 +33,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
   }
 
+  const qty = plan === 'additional-lessons' ? Math.max(1, Math.min(20, Number(quantity))) : 1
+
   try {
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: isOneTime ? 'payment' : 'subscription',
-      line_items: [{ price: priceId, quantity: 1 }],
+      line_items: [{ price: priceId, quantity: qty }],
       success_url: `${process.env.NEXTAUTH_URL}/thank-you`,
       cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
       allow_promotion_codes: true,

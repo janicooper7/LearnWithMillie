@@ -8,6 +8,7 @@ import CalEmbed from '@/app/components/CalEmbed'
 import BookLessonCard from '@/app/components/BookLessonCard'
 import CreditsCardActions from '@/app/components/CreditsCardActions'
 import ChatButton from '@/app/components/ChatButton'
+import AddonLessonsBanner from '@/app/components/AddonLessonsBanner'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -234,6 +235,13 @@ export default async function DashboardPage() {
             </>
           )}
         </div>
+
+        {/* Add-on lessons banner — students only */}
+        {!isTeacher && (
+          <div className='mt-5'>
+            <AddonLessonsBanner />
+          </div>
+        )}
 
         {/* Booking calendar */}
         <div className='mt-5 bg-white rounded-2xl overflow-hidden' style={{ border: '1px solid #EDE4D8' }}>

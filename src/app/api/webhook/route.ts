@@ -11,6 +11,7 @@ const PRICE_TO_LESSONS: Record<string, number> = {
 }
 
 const TRIAL_PRICE_ID = process.env.STRIPE_TRIAL_PRICE_ID!
+const ADDITIONAL_LESSON_PRICE_ID = process.env.STRIPE_ADDITIONAL_LESSON_PRICE_ID!
 
 const MENTORSHIP_PRICE_TO_SESSIONS: Record<string, number> = {
   [process.env.STRIPE_MENTORSHIP_SINGLE_PRICE_ID!]: 1,
@@ -47,7 +48,17 @@ export async function POST(req: NextRequest) {
 
           console.log('Webhook payment:', { sessionId: session.id, userId, priceId })
 
-          if (priceId === TRIAL_PRICE_ID) {
+          if (priceId === ADDITIONAL_LESSON_PRICE_ID) {
+            const qty = lineItems.data[0]?.quantity ?? 1
+            await prisma.user.update({
+              where: { id: userId },
+              data: {
+                allowance: { increment: qty },
+                stripeCustomerId: session.customer as string ?? undefined,
+              },
+            })
+            console.log('Webhook: additional lessons credited', { userId, qty })
+          } else if (priceId === TRIAL_PRICE_ID) {
             await prisma.user.update({
               where: { id: userId },
               data: {
