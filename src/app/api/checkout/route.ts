@@ -44,22 +44,7 @@ export async function POST(req: NextRequest) {
       if (codes.data.length === 0) {
         return NextResponse.json({ error: 'Invalid or expired promo code.' }, { status: 400 })
       }
-
-      const promo = codes.data[0]
-      const coupon = promo.coupon
-
-      if (coupon.amount_off && plan === 'additional-lessons' && qty > 1) {
-        // Fixed-amount coupon: scale by qty so the discount applies per lesson, not per order
-        const scaled = await stripe.coupons.create({
-          amount_off: coupon.amount_off * qty,
-          currency: coupon.currency ?? 'usd',
-          duration: 'once',
-        })
-        discount = { coupon: scaled.id }
-      } else {
-        // Percentage coupons scale naturally; single-unit fixed amounts need no scaling
-        discount = { promotion_code: promo.id }
-      }
+      discount = { promotion_code: codes.data[0].id }
     }
 
     const checkoutSession = await stripe.checkout.sessions.create({
