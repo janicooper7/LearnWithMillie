@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Users, GraduationCap, MessageCircle } from 'lucide-react'
+import { Users, GraduationCap, MessageCircle, Trash2 } from 'lucide-react'
 import CreditAdjuster from './CreditAdjuster'
 import ChatModal from './ChatModal'
 
@@ -35,6 +35,17 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedUser, setSelectedUser] = useState<{ id: string; name: string } | null>(null)
   const [users, setUsers] = useState(initialUsers)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+
+  const deleteUser = async (userId: string) => {
+    await fetch('/api/admin/delete-user', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
+    })
+    setUsers((prev) => prev.filter((u) => u.id !== userId))
+    setConfirmDeleteId(null)
+  }
 
   const toggleAddon = async (userId: string, enabled: boolean) => {
     setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, addonLessonsEnabled: enabled } : u))
@@ -258,7 +269,7 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
           <table className='w-full'>
             <thead>
               <tr style={{ borderBottom: '1px solid #EDE4D8' }}>
-                {['User', 'Email', 'Role', filter === 'TEACHER' ? 'Sessions' : 'Lessons', 'Add-ons', 'Joined'].map((col) => (
+                {['User', 'Email', 'Role', filter === 'TEACHER' ? 'Sessions' : 'Lessons', 'Add-ons', 'Joined', ''].map((col) => (
                   <th
                     key={col}
                     className='text-left px-6 py-4 text-[11px] uppercase tracking-[0.15em] font-semibold'
@@ -325,11 +336,42 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
                       {new Date(user.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                   </td>
+                  <td className='px-4 py-4'>
+                    {confirmDeleteId === user.id ? (
+                      <div className='flex items-center gap-2'>
+                        <button
+                          onClick={() => deleteUser(user.id)}
+                          className='text-xs font-semibold px-2.5 py-1 rounded-lg transition-colors duration-150'
+                          style={{ backgroundColor: '#c0392b', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => setConfirmDeleteId(null)}
+                          className='text-xs font-semibold px-2.5 py-1 rounded-lg transition-colors duration-150'
+                          style={{ backgroundColor: 'rgba(31,58,52,0.08)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmDeleteId(user.id)}
+                        className='w-7 h-7 flex items-center justify-center rounded-lg transition-colors duration-150'
+                        style={{ color: 'rgba(31,58,52,0.3)' }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#c0392b'; (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(192,57,43,0.07)' }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(31,58,52,0.3)'; (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent' }}
+                        title='Delete user'
+                      >
+                        <Trash2 className='w-3.5 h-3.5' />
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={6} className='px-6 py-12 text-center text-sm' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  <td colSpan={7} className='px-6 py-12 text-center text-sm' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
                     No {filter === 'STUDENT' ? 'students' : filter === 'TEACHER' ? 'teachers' : 'users'} yet.
                   </td>
                 </tr>
