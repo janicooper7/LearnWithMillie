@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { sendMail } from '@/lib/mailer'
 
 export async function GET(req: NextRequest) {
   const session = await auth()
@@ -38,10 +39,34 @@ export async function POST(req: NextRequest) {
   const { content } = await req.json()
   if (!content?.trim()) return NextResponse.json({ error: 'Message required' }, { status: 400 })
 
+  // Check before inserting — if there are already unread messages from this user, admin has already been notified
+  const existingUnread = await prisma.message.count({
+    where: { userId: session.user.id, fromAdmin: false, readByAdmin: false },
+  })
+
   const message = await prisma.message.create({
     data: { userId: session.user.id, content: content.trim(), fromAdmin: false },
     select: { id: true, content: true, fromAdmin: true, createdAt: true },
   })
+
+  // Only notify on the first unread message to avoid spamming
+  if (existingUnread === 0 && process.env.RECIPIENT_EMAIL) {
+    const senderName = session.user.name ?? session.user.email ?? 'A student'
+    sendMail({
+      to: process.env.RECIPIENT_EMAIL,
+      subject: `New message from ${senderName}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 480px;">
+          <h2 style="color: #1F3A34;">New message on LearnWithMillie</h2>
+          <p><strong>${senderName}</strong> sent you a message:</p>
+          <blockquote style="border-left: 3px solid #C2AA6A; margin: 16px 0; padding: 10px 16px; background: #F4EDE4; border-radius: 4px;">
+            ${content.trim()}
+          </blockquote>
+          <p style="color: #666; font-size: 13px;">Log in to your admin dashboard to reply.</p>
+        </div>
+      `,
+    }).catch(() => {})
+  }
 
   return NextResponse.json(message, { status: 201 })
 }
