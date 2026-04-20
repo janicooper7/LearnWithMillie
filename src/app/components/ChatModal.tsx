@@ -182,20 +182,61 @@ export default function ChatModal({ userId, userName, isAdmin, onClose, onDelete
         {/* Messages area */}
         <div className='flex-1 overflow-y-auto p-4 space-y-3' style={{ backgroundColor: '#FAFAF8' }}>
           {messages.length === 0 && (
-            <div className='flex flex-col items-center justify-center h-full gap-2'>
-              <div
-                className='w-10 h-10 rounded-full flex items-center justify-center'
-                style={{ backgroundColor: 'rgba(31,58,52,0.07)' }}
-              >
-                <Send className='w-4 h-4' style={{ color: 'rgba(31,58,52,0.3)' }} />
+            isAdmin ? (
+              <div className='flex flex-col items-center justify-center h-full gap-2'>
+                <p className='text-sm text-center' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  No messages yet.
+                </p>
               </div>
-              <p
-                className='text-sm text-center max-w-[220px]'
-                style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}
-              >
-                {isAdmin ? 'No messages yet.' : 'Send a message to Millie — she typically replies within 24 hours.'}
-              </p>
-            </div>
+            ) : (
+              <div className='flex flex-col gap-3 pt-2'>
+                {/* Avatar + name */}
+                <div className='flex items-center gap-2.5 px-1'>
+                  <div
+                    className='w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0'
+                    style={{ backgroundColor: '#1F3A34' }}
+                  >
+                    M
+                  </div>
+                  <span className='text-xs font-semibold' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    Millie Cooper
+                  </span>
+                </div>
+
+                {/* Welcome bubble */}
+                <div className='flex justify-start'>
+                  <div
+                    className='max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed'
+                    style={{
+                      backgroundColor: 'white',
+                      color: '#1F3A34',
+                      border: '1px solid #EDE4D8',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                      borderBottomLeftRadius: '4px',
+                    }}
+                  >
+                    Hi {userName}! 👋 Welcome — I&apos;m so glad you&apos;re here.
+                  </div>
+                </div>
+                <div className='flex justify-start'>
+                  <div
+                    className='max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed'
+                    style={{
+                      backgroundColor: 'white',
+                      color: '#1F3A34',
+                      border: '1px solid #EDE4D8',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                      borderBottomLeftRadius: '4px',
+                    }}
+                  >
+                    How can I help you today? Feel free to ask me anything about lessons, scheduling, or anything else. 😊
+                  </div>
+                </div>
+                <p className='text-[10px] px-1' style={{ color: 'rgba(31,58,52,0.35)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  Millie typically replies within 24 hours.
+                </p>
+              </div>
+            )
           )}
 
           {messages.map((msg) => {

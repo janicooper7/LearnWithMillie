@@ -5,7 +5,7 @@ import { Users, GraduationCap, MessageCircle, Trash2 } from 'lucide-react'
 import CreditAdjuster from './CreditAdjuster'
 import ChatModal from './ChatModal'
 
-type FilterType = 'ALL' | 'STUDENT' | 'TEACHER' | 'MESSAGES'
+type FilterType = 'ALL' | 'STUDENT' | 'ACTIVE' | 'TEACHER' | 'MESSAGES'
 
 interface User {
   id: string
@@ -14,6 +14,10 @@ interface User {
   role: string
   allowance: number
   addonLessonsEnabled: boolean
+  trialPurchased: boolean
+  trialUsed: boolean
+  stripeSubscriptionId: string | null
+  upcomingLessons: number
   createdAt: Date
 }
 
@@ -56,8 +60,18 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
     })
   }
 
+  const toggleTrial = async (userId: string, value: boolean) => {
+    setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, trialPurchased: value, trialUsed: value } : u))
+    await fetch('/api/admin/toggle-trial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, value }),
+    })
+  }
+
   const studentCount = users.filter((u) => u.role === 'STUDENT').length
   const teacherCount = users.filter((u) => u.role === 'TEACHER').length
+  const activeCount = users.filter((u) => u.role === 'STUDENT' && (!!u.stripeSubscriptionId || u.allowance > 0 || u.upcomingLessons > 0)).length
   const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
 
   const fetchConversations = useCallback(async () => {
@@ -71,7 +85,11 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
     return () => clearInterval(interval)
   }, [fetchConversations])
 
-  const filtered = filter === 'ALL' ? users : users.filter((u) => u.role === filter)
+  const filtered = filter === 'ALL'
+    ? users
+    : filter === 'ACTIVE'
+      ? users.filter((u) => u.role === 'STUDENT' && (!!u.stripeSubscriptionId || u.allowance > 0 || u.upcomingLessons > 0))
+      : users.filter((u) => u.role === filter)
 
   const formatTime = (dateStr: string) => {
     const d = new Date(dateStr)
@@ -84,6 +102,7 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
   const tabs: { label: string; value: FilterType; count: number }[] = [
     { label: 'All', value: 'ALL', count: users.length },
     { label: 'Students', value: 'STUDENT', count: studentCount },
+    { label: 'Active', value: 'ACTIVE', count: activeCount },
     { label: 'Teachers', value: 'TEACHER', count: teacherCount },
     { label: 'Messages', value: 'MESSAGES', count: totalUnread },
   ]
@@ -113,7 +132,7 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
             Admin Portal
           </p>
           <h1 className='text-3xl font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            {filter === 'MESSAGES' ? 'Messages' : 'Users'}
+            {filter === 'MESSAGES' ? 'Messages' : filter === 'ACTIVE' ? 'Active Students' : 'Users'}
           </h1>
         </div>
 
@@ -132,6 +151,13 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
               <div>
                 <p className='text-[10px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>Teachers</p>
                 <p className='text-xl font-bold leading-none' style={{ color: '#C2AA6A', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{teacherCount}</p>
+              </div>
+            </div>
+            <div className='flex items-center gap-3 px-5 py-3 rounded-xl bg-white' style={{ border: '1px solid #EDE4D8' }}>
+              <Users className='w-4 h-4' style={{ color: '#4A9068' }} />
+              <div>
+                <p className='text-[10px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>Active</p>
+                <p className='text-xl font-bold leading-none' style={{ color: '#4A9068', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{activeCount}</p>
               </div>
             </div>
           </div>
@@ -269,11 +295,15 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
           <table className='w-full'>
             <thead>
               <tr style={{ borderBottom: '1px solid #EDE4D8' }}>
-                {['User', 'Email', 'Role', filter === 'TEACHER' ? 'Sessions' : 'Lessons', 'Add-ons', 'Joined', ''].map((col) => (
+                {['User', 'Email', 'Role', filter === 'TEACHER' ? 'Sessions' : 'Lessons', 'Add-ons', 'Trial', 'Joined', ''].map((col) => (
                   <th
                     key={col}
                     className='text-left px-6 py-4 text-[11px] uppercase tracking-[0.15em] font-semibold'
-                    style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}
+                    style={{
+                      color: 'rgba(31,58,52,0.45)',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                      ...(col === 'Email' ? { width: '160px', maxWidth: '160px' } : {}),
+                    }}
                   >
                     {col}
                   </th>
@@ -296,8 +326,8 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
                       </span>
                     </div>
                   </td>
-                  <td className='px-6 py-4'>
-                    <span className='text-sm' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>{user.email}</span>
+                  <td className='px-6 py-4' style={{ width: '160px', maxWidth: '160px' }}>
+                    <span className='text-sm block truncate' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>{user.email}</span>
                   </td>
                   <td className='px-6 py-4'>
                     <span
@@ -325,6 +355,23 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
                         <span
                           className='inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform duration-200'
                           style={{ transform: user.addonLessonsEnabled ? 'translateX(18px)' : 'translateX(3px)' }}
+                        />
+                      </button>
+                    ) : (
+                      <span className='text-sm' style={{ color: 'rgba(31,58,52,0.25)', fontFamily: 'var(--font-inter), sans-serif' }}>—</span>
+                    )}
+                  </td>
+                  <td className='px-6 py-4'>
+                    {user.role === 'STUDENT' ? (
+                      <button
+                        onClick={() => toggleTrial(user.id, !user.trialPurchased)}
+                        className='relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none'
+                        style={{ backgroundColor: user.trialPurchased ? '#C2AA6A' : 'rgba(31,58,52,0.15)' }}
+                        title={user.trialPurchased ? 'Remove trial' : 'Grant trial'}
+                      >
+                        <span
+                          className='inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform duration-200'
+                          style={{ transform: user.trialPurchased ? 'translateX(18px)' : 'translateX(3px)' }}
                         />
                       </button>
                     ) : (
@@ -371,8 +418,8 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className='px-6 py-12 text-center text-sm' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                    No {filter === 'STUDENT' ? 'students' : filter === 'TEACHER' ? 'teachers' : 'users'} yet.
+                  <td colSpan={8} className='px-6 py-12 text-center text-sm' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    No {filter === 'STUDENT' ? 'students' : filter === 'TEACHER' ? 'teachers' : filter === 'ACTIVE' ? 'active students' : 'users'} yet.
                   </td>
                 </tr>
               )}

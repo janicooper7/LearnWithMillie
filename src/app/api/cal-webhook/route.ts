@@ -73,6 +73,7 @@ export async function POST(req: NextRequest) {
         where: { email: attendeeEmail, allowance: { gt: 0 } },
         data: {
           allowance: { decrement: 1 },
+          upcomingLessons: { increment: 1 },
           ...(isTrialUser ? { trialUsed: true } : {}),
         },
       })
@@ -100,12 +101,25 @@ export async function POST(req: NextRequest) {
       if (hoursUntilLesson >= 24) {
         await prisma.user.update({
           where: { id: user.id },
-          data: { allowance: { increment: 1 } },
+          data: { allowance: { increment: 1 }, upcomingLessons: { decrement: 1 } },
         })
         return NextResponse.json({ received: true, action: 'credit refunded' })
       }
 
+      // Within 24h — no credit refund but lesson is no longer upcoming
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { upcomingLessons: { decrement: 1 } },
+      })
       return NextResponse.json({ received: true, action: 'no refund — within 24h' })
+    }
+
+    if (triggerEvent === 'BOOKING_COMPLETED') {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { upcomingLessons: { decrement: 1 } },
+      })
+      return NextResponse.json({ received: true, action: 'lesson completed' })
     }
 
     return NextResponse.json({ received: true })

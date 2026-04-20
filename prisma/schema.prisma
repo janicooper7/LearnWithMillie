@@ -27,6 +27,7 @@ model User {
   stripeCustomerId     String?
   stripeSubscriptionId String?
   addonLessonsEnabled  Boolean   @default(false)
+  upcomingLessons      Int       @default(0)
   createdAt            DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
