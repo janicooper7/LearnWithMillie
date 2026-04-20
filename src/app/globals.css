@@ -4,22 +4,15 @@
 
 @layer base {
   :root {
-    /* Warm cream background */
     --background: 34 42% 93%;
-    /* Dark charcoal text */
     --foreground: 160 10% 15%;
-    /* Forest green primary */
     --primary: 167 30% 17%;
     --primary-foreground: 34 42% 96%;
-    /* Gold accent */
     --accent: 44 42% 59%;
     --accent-foreground: 160 10% 15%;
-    /* Muted tones */
     --muted: 34 20% 88%;
     --muted-foreground: 160 8% 40%;
-    /* Borders */
     --border: 34 20% 85%;
-    /* Card */
     --card: 0 0% 100%;
     --card-foreground: 160 10% 15%;
     --ring: 167 30% 17%;
@@ -66,54 +59,6 @@
   .text-gradient-primary {
     color: hsl(var(--primary));
   }
-
-  .bg-gradient-primary {
-    background-color: hsl(var(--primary));
-  }
-
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 6s ease infinite;
-  }
-
-  @keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  /* Disable animations on mobile devices */
-  @media (max-width: 768px) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      transition-delay: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-
-    .animate-gradient,
-    .animate-float,
-    .animate-pulse,
-    .animate-bounce,
-    .animate-pulse-slow {
-      animation: none !important;
-    }
-  }
-
-  .glass {
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-  }
-
-  .glass-dark {
-    background: rgba(31, 58, 52, 0.25);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-  }
 }
 
 @layer components {
@@ -137,7 +82,6 @@
     @apply text-xl md:text-2xl font-semibold tracking-tight font-serif;
   }
 
-  /* Primary CTA — forest green */
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white rounded-lg hover:brightness-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
     background-color: #1F3A34;
@@ -169,20 +113,10 @@
     border-color: hsl(34, 20%, 88%);
   }
 
-  .card-featured {
-    @apply bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg relative;
-    border: 2px solid #1F3A34;
-  }
-
   .section-padding {
     @apply py-16 md:py-24;
   }
 
-  .grid-auto-fit {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
-
-  /* Warm divider */
   .divider {
     height: 1px;
     background: linear-gradient(to right, transparent, hsl(34, 20%, 78%), transparent);
