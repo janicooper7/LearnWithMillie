@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Users, GraduationCap, MessageCircle, Trash2 } from 'lucide-react'
+import { Users, GraduationCap, MessageCircle, Trash2, Copy, Check } from 'lucide-react'
 import CreditAdjuster from './CreditAdjuster'
 import ChatModal from './ChatModal'
 
@@ -40,6 +40,13 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
   const [selectedUser, setSelectedUser] = useState<{ id: string; name: string } | null>(null)
   const [users, setUsers] = useState(initialUsers)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+
+  const copyEmail = (userId: string, email: string) => {
+    navigator.clipboard.writeText(email)
+    setCopiedId(userId)
+    setTimeout(() => setCopiedId(null), 1500)
+  }
 
   const deleteUser = async (userId: string) => {
     await fetch('/api/admin/delete-user', {
@@ -327,7 +334,19 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
                     </div>
                   </td>
                   <td className='px-6 py-4' style={{ width: '160px', maxWidth: '160px' }}>
-                    <span className='text-sm block truncate' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>{user.email}</span>
+                    <div className='flex items-center gap-1.5 min-w-0'>
+                      <span className='text-sm truncate' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>{user.email}</span>
+                      <button
+                        onClick={() => copyEmail(user.id, user.email)}
+                        className='flex-shrink-0 w-5 h-5 flex items-center justify-center rounded transition-colors duration-150'
+                        style={{ color: copiedId === user.id ? '#4A9068' : 'rgba(31,58,52,0.3)' }}
+                        onMouseEnter={(e) => { if (copiedId !== user.id) (e.currentTarget as HTMLButtonElement).style.color = '#1F3A34' }}
+                        onMouseLeave={(e) => { if (copiedId !== user.id) (e.currentTarget as HTMLButtonElement).style.color = 'rgba(31,58,52,0.3)' }}
+                        title='Copy email'
+                      >
+                        {copiedId === user.id ? <Check className='w-3 h-3' /> : <Copy className='w-3 h-3' />}
+                      </button>
+                    </div>
                   </td>
                   <td className='px-6 py-4'>
                     <span

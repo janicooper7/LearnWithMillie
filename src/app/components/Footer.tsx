@@ -1,6 +1,3 @@
-'use client'
-
-import { usePathname, useRouter } from 'next/navigation'
 import { Instagram } from 'lucide-react'
 
 const TikTokIcon = ({ size = 20 }: { size?: number }) => (
@@ -16,32 +13,6 @@ const TikTokIcon = ({ size = 20 }: { size?: number }) => (
 )
 
 export default function Footer() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const isHomePage = pathname === '/'
-
-  const handleLinkClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    hash: string,
-  ) => {
-    e.preventDefault()
-    if (isHomePage) {
-      const element = document.getElementById(hash.replace('#', ''))
-      if (element) {
-        const headerOffset = 80
-        const padding = 50
-        const elementPosition = element.offsetTop
-        const offsetPosition = elementPosition - headerOffset - padding
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth',
-        })
-      }
-    } else {
-      router.push(`/${hash}`)
-    }
-  }
-
   return (
     <footer
       style={{
@@ -71,7 +42,6 @@ export default function Footer() {
               scheduling.
             </p>
 
-            {/* Social — Content Creator */}
             <div className='space-y-3'>
               <p className='text-lg font-semibold uppercase tracking-widest'>
                 Follow along
@@ -81,24 +51,11 @@ export default function Footer() {
                   href='https://www.instagram.com/milliecooper26'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200'
+                  className='flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-px'
                   style={{
-                    background:
-                      'linear-gradient(135deg, #f9ce34, #ee2a7b, #6228d7)',
+                    background: 'linear-gradient(135deg, #f9ce34, #ee2a7b, #6228d7)',
                     color: '#fff',
                     boxShadow: '0 2px 12px rgba(238,42,123,0.3)',
-                  }}
-                  onMouseEnter={(e) => {
-                    ;(e.currentTarget as HTMLAnchorElement).style.transform =
-                      'translateY(-1px)'
-                    ;(e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                      '0 4px 18px rgba(238,42,123,0.45)'
-                  }}
-                  onMouseLeave={(e) => {
-                    ;(e.currentTarget as HTMLAnchorElement).style.transform =
-                      'translateY(0)'
-                    ;(e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                      '0 2px 12px rgba(238,42,123,0.3)'
                   }}
                 >
                   <Instagram size={16} />
@@ -108,23 +65,11 @@ export default function Footer() {
                   href='https://www.tiktok.com/@milliecooper26'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200'
+                  className='flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-px'
                   style={{
                     background: '#010101',
                     color: '#fff',
                     boxShadow: '0 2px 12px rgba(1,1,1,0.25)',
-                  }}
-                  onMouseEnter={(e) => {
-                    ;(e.currentTarget as HTMLAnchorElement).style.transform =
-                      'translateY(-1px)'
-                    ;(e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                      '0 4px 18px rgba(1,1,1,0.4)'
-                  }}
-                  onMouseLeave={(e) => {
-                    ;(e.currentTarget as HTMLAnchorElement).style.transform =
-                      'translateY(0)'
-                    ;(e.currentTarget as HTMLAnchorElement).style.boxShadow =
-                      '0 2px 12px rgba(1,1,1,0.25)'
                   }}
                 >
                   <TikTokIcon size={16} />
@@ -147,51 +92,25 @@ export default function Footer() {
             </h4>
             <ul className='space-y-3'>
               {[
-                { name: 'Meet your tutor', href: '/about', isPage: true },
-                { name: 'Mentorship', href: '/mentorship', isPage: true },
-                { name: 'Services', hash: '#lesson-options' },
-                { name: 'Testimonials', hash: '#testimonials' },
-                { name: 'Pricing', hash: '#pricing' },
-                { name: 'Contact', href: '/contact', isPage: true },
-                {
-                  name: 'Teacher Materials',
-                  href: '/teacher-materials',
-                  isPage: true,
-                },
-                { name: 'Terms & Conditions', href: '/terms', isPage: true },
-              ].map((link) => {
-                const isPageLink = 'isPage' in link && link.isPage
-                const hash = 'hash' in link ? link.hash : undefined
-                return (
-                  <li key={link.name}>
-                    <a
-                      href={
-                        isPageLink ? link.href : isHomePage ? hash : `/${hash}`
-                      }
-                      onClick={(e) => {
-                        if (isPageLink) {
-                          e.preventDefault()
-                          router.push(link.href)
-                        } else if (hash) {
-                          handleLinkClick(e, hash)
-                        }
-                      }}
-                      className='text-sm transition-colors duration-200'
-                      style={{ color: 'rgba(31,58,52,0.7)' }}
-                      onMouseEnter={(e) => {
-                        ;(e.currentTarget as HTMLAnchorElement).style.color =
-                          '#1F3A34'
-                      }}
-                      onMouseLeave={(e) => {
-                        ;(e.currentTarget as HTMLAnchorElement).style.color =
-                          'rgba(31,58,52,0.7)'
-                      }}
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                )
-              })}
+                { name: 'Meet your tutor', href: '/about' },
+                { name: 'Mentorship', href: '/mentorship' },
+                { name: 'Services', href: '/#lesson-options' },
+                { name: 'Testimonials', href: '/#testimonials' },
+                { name: 'Pricing', href: '/#pricing' },
+                { name: 'Contact', href: '/contact' },
+                { name: 'Teacher Materials', href: '/teacher-materials' },
+                { name: 'Terms & Conditions', href: '/terms' },
+              ].map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    className='text-sm transition-colors duration-200 hover:text-[#1F3A34]'
+                    style={{ color: 'rgba(31,58,52,0.7)' }}
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -214,18 +133,9 @@ export default function Footer() {
               ].map((service) => (
                 <li key={service}>
                   <a
-                    href={isHomePage ? '#lesson-options' : '/#lesson-options'}
-                    onClick={(e) => handleLinkClick(e, '#lesson-options')}
-                    className='text-sm transition-colors duration-200'
+                    href='/#lesson-options'
+                    className='text-sm transition-colors duration-200 hover:text-[#1F3A34]'
                     style={{ color: 'rgba(31,58,52,0.7)' }}
-                    onMouseEnter={(e) => {
-                      ;(e.currentTarget as HTMLAnchorElement).style.color =
-                        '#1F3A34'
-                    }}
-                    onMouseLeave={(e) => {
-                      ;(e.currentTarget as HTMLAnchorElement).style.color =
-                        'rgba(31,58,52,0.7)'
-                    }}
                   >
                     {service}
                   </a>
@@ -246,15 +156,8 @@ export default function Footer() {
             </p>
             <a
               href='/terms'
-              className='text-xs transition-colors duration-200'
+              className='text-xs transition-colors duration-200 hover:text-[#1F3A34]'
               style={{ color: 'rgba(31,58,52,0.5)' }}
-              onMouseEnter={(e) => {
-                ;(e.currentTarget as HTMLAnchorElement).style.color = '#1F3A34'
-              }}
-              onMouseLeave={(e) => {
-                ;(e.currentTarget as HTMLAnchorElement).style.color =
-                  'rgba(31,58,52,0.5)'
-              }}
             >
               Terms & Conditions
             </a>
@@ -264,16 +167,8 @@ export default function Footer() {
                 href='https://aiwebhouse.com/'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='transition-colors duration-200 underline'
+                className='transition-colors duration-200 underline hover:text-[#1F3A34]'
                 style={{ color: 'rgba(31,58,52,0.65)' }}
-                onMouseEnter={(e) => {
-                  ;(e.currentTarget as HTMLAnchorElement).style.color =
-                    '#1F3A34'
-                }}
-                onMouseLeave={(e) => {
-                  ;(e.currentTarget as HTMLAnchorElement).style.color =
-                    'rgba(31,58,52,0.65)'
-                }}
               >
                 aiwebhouse.com
               </a>
