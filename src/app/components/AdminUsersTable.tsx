@@ -78,8 +78,14 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
 
   const studentCount = users.filter((u) => u.role === 'STUDENT').length
   const teacherCount = users.filter((u) => u.role === 'TEACHER').length
-  const activeCount = users.filter((u) => u.role === 'STUDENT' && (!!u.stripeSubscriptionId || u.allowance > 0 || u.upcomingLessons > 0)).length
+  const isActive = (u: User) => u.upcomingLessons > 0 || (u.role === 'STUDENT' && (!!u.stripeSubscriptionId || u.allowance > 0))
+  const activeCount = users.filter(isActive).length
   const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
+
+  const fetchUsers = useCallback(async () => {
+    const res = await fetch('/api/admin/users', { cache: 'no-store' })
+    if (res.ok) setUsers(await res.json())
+  }, [])
 
   const fetchConversations = useCallback(async () => {
     const res = await fetch('/api/admin/messages', { cache: 'no-store' })
@@ -87,15 +93,20 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
   }, [])
 
   useEffect(() => {
+    fetchUsers()
     fetchConversations()
-    const interval = setInterval(fetchConversations, 10000)
-    return () => clearInterval(interval)
-  }, [fetchConversations])
+    const usersInterval = setInterval(fetchUsers, 30000)
+    const convsInterval = setInterval(fetchConversations, 10000)
+    return () => {
+      clearInterval(usersInterval)
+      clearInterval(convsInterval)
+    }
+  }, [fetchUsers, fetchConversations])
 
   const filtered = filter === 'ALL'
     ? users
     : filter === 'ACTIVE'
-      ? users.filter((u) => u.role === 'STUDENT' && (!!u.stripeSubscriptionId || u.allowance > 0 || u.upcomingLessons > 0))
+      ? users.filter(isActive)
       : users.filter((u) => u.role === filter)
 
   const formatTime = (dateStr: string) => {

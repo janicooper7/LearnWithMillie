@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { sendMail } from '@/lib/mailer'
 
 export async function GET(
   _req: NextRequest,
@@ -40,13 +41,37 @@ export async function POST(
   const { content } = await req.json()
   if (!content?.trim()) return NextResponse.json({ error: 'Message required' }, { status: 400 })
 
-  const target = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } })
+  const target = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, name: true } })
   if (!target) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+
+  // Check before inserting — only notify if no existing unread admin messages
+  const existingUnread = await prisma.message.count({
+    where: { userId, fromAdmin: true, readByUser: false },
+  })
 
   const message = await prisma.message.create({
     data: { userId, content: content.trim(), fromAdmin: true },
     select: { id: true, content: true, fromAdmin: true, createdAt: true },
   })
+
+  if (existingUnread === 0) {
+    const recipientName = target.name ?? target.email
+    sendMail({
+      to: target.email,
+      subject: 'Millie replied to your message',
+      html: `
+        <div style="font-family: sans-serif; max-width: 480px;">
+          <h2 style="color: #1F3A34;">You have a new message from Millie</h2>
+          <p>Hi ${recipientName},</p>
+          <p>Millie replied to your message:</p>
+          <blockquote style="border-left: 3px solid #C2AA6A; margin: 16px 0; padding: 10px 16px; background: #F4EDE4; border-radius: 4px;">
+            ${content.trim()}
+          </blockquote>
+          <p style="color: #666; font-size: 13px;">Log in to your dashboard to continue the conversation.</p>
+        </div>
+      `,
+    }).catch(() => {})
+  }
 
   return NextResponse.json(message, { status: 201 })
 }
