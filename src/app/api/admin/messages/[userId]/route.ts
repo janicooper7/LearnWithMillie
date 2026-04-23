@@ -44,9 +44,10 @@ export async function POST(
   const target = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, name: true } })
   if (!target) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-  // Check before inserting — only notify if no existing unread admin messages
-  const existingUnread = await prisma.message.count({
+  const oldestUnread = await prisma.message.findFirst({
     where: { userId, fromAdmin: true, readByUser: false },
+    orderBy: { createdAt: 'asc' },
+    select: { createdAt: true },
   })
 
   const message = await prisma.message.create({
@@ -54,7 +55,8 @@ export async function POST(
     select: { id: true, content: true, fromAdmin: true, createdAt: true },
   })
 
-  if (existingUnread === 0) {
+  const shouldNotify = !oldestUnread || (Date.now() - new Date(oldestUnread.createdAt).getTime() > 10 * 60 * 1000)
+  if (shouldNotify) {
     const recipientName = target.name ?? target.email
     sendMail({
       to: target.email,

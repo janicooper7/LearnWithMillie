@@ -11,6 +11,15 @@ const transporter = nodemailer.createTransport({
 })
 
 export async function sendMail(options: { to: string; subject: string; html: string }) {
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) return
-  await transporter.sendMail({ from: process.env.SMTP_USER, ...options })
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.warn('[mailer] SMTP not configured — email not sent to', options.to)
+    return
+  }
+  try {
+    await transporter.sendMail({ from: process.env.SMTP_USER, ...options })
+    console.log('[mailer] Email sent to', options.to, '|', options.subject)
+  } catch (err) {
+    console.error('[mailer] Failed to send email to', options.to, err)
+    throw err
+  }
 }

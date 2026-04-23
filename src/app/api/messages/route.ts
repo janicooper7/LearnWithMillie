@@ -39,9 +39,11 @@ export async function POST(req: NextRequest) {
   const { content } = await req.json()
   if (!content?.trim()) return NextResponse.json({ error: 'Message required' }, { status: 400 })
 
-  // Check before inserting — if there are already unread messages from this user, admin has already been notified
-  const existingUnread = await prisma.message.count({
+  // Find the oldest unread message from this user (if any)
+  const oldestUnread = await prisma.message.findFirst({
     where: { userId: session.user.id, fromAdmin: false, readByAdmin: false },
+    orderBy: { createdAt: 'asc' },
+    select: { createdAt: true },
   })
 
   const message = await prisma.message.create({
@@ -49,8 +51,9 @@ export async function POST(req: NextRequest) {
     select: { id: true, content: true, fromAdmin: true, createdAt: true },
   })
 
-  // Only notify on the first unread message to avoid spamming
-  if (existingUnread === 0 && process.env.RECIPIENT_EMAIL) {
+  // Notify admin if: no prior unread messages, OR the oldest unread is >1 hour old (reminder)
+  const shouldNotify = !oldestUnread || (Date.now() - new Date(oldestUnread.createdAt).getTime() > 10 * 60 * 1000)
+  if (shouldNotify && process.env.RECIPIENT_EMAIL) {
     const senderName = session.user.name ?? session.user.email ?? 'A student'
     sendMail({
       to: process.env.RECIPIENT_EMAIL,
