@@ -14,6 +14,7 @@ const navigation = [
   { name: 'Pricing', href: '/', hash: '#pricing' },
   { name: 'FAQ', href: '/', hash: '#faq' },
   { name: 'Mentorship', href: '/mentorship', hash: '' },
+  { name: 'Courses', href: '/courses', hash: '' },
 ]
 
 export default function Navigation() {
@@ -121,8 +122,8 @@ export default function Navigation() {
   }, [isHomePage])
 
   const getIsActive = (item: (typeof navigation)[0]) => {
-    if (item.href === '/teacher-materials' || item.href === '/about') {
-      return pathname === item.href
+    if (item.href === '/teacher-materials' || item.href === '/about' || item.href === '/courses') {
+      return pathname === item.href || (item.href === '/courses' && pathname.startsWith('/courses'))
     }
     if (isHomePage) {
       const targetSectionId =

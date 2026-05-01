@@ -28,6 +28,23 @@ export default async function DashboardPage() {
   const isTeacher = user.role === 'TEACHER'
   const now = new Date()
 
+  const myCourses = await prisma.userCourseAccess.findMany({
+    where: { userId: user.id },
+    include: {
+      course: {
+        select: {
+          id: true, title: true, slug: true, thumbnail: true, isBundle: true,
+          _count: { select: { lessons: true } },
+          lessons: {
+            select: {
+              progress: { where: { userId: user.id, completedAt: { not: null } }, select: { id: true } },
+            },
+          },
+        },
+      },
+    },
+  })
+
   // Fetch Stripe + Cal.com in parallel
   const [stripeResult, calResult] = await Promise.allSettled([
     user.stripeSubscriptionId
@@ -278,6 +295,48 @@ export default async function DashboardPage() {
             isTeacher={isTeacher}
           />
         </div>
+
+        {/* My Courses */}
+        {myCourses.length > 0 && (
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[11px] uppercase tracking-[0.15em] font-semibold" style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                My Courses
+              </p>
+              <a href="/courses" className="text-xs font-medium" style={{ color: '#C2AA6A' }}>Browse all →</a>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {myCourses.map(({ course }) => {
+                const totalLessons = course._count.lessons
+                const completedLessons = course.lessons.reduce((acc, l) => acc + (l.progress.length > 0 ? 1 : 0), 0)
+                const pct = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0
+                return (
+                  <a key={course.id} href={`/learn/${course.slug}`} className="block bg-white rounded-2xl overflow-hidden hover:shadow-md transition-shadow" style={{ border: '1px solid #EDE4D8' }}>
+                    {course.thumbnail ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={course.thumbnail} alt={course.title} className="w-full h-32 object-cover" />
+                    ) : (
+                      <div className="w-full h-32 flex items-center justify-center" style={{ backgroundColor: '#1F3A34' }}>
+                        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="#C2AA6A" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                        </svg>
+                      </div>
+                    )}
+                    <div className="p-4">
+                      <p className="text-sm font-semibold mb-2 truncate" style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>{course.title}</p>
+                      <div className="w-full rounded-full h-1.5 mb-1.5" style={{ backgroundColor: 'rgba(31,58,52,0.1)' }}>
+                        <div className="h-1.5 rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: '#C2AA6A' }} />
+                      </div>
+                      <p className="text-[11px]" style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        {completedLessons}/{totalLessons} lessons · {pct}% complete
+                      </p>
+                    </div>
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
       </main>
     </div>

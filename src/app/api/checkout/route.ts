@@ -16,7 +16,13 @@ const ONE_TIME_PRICE_IDS: Record<string, string> = {
   'mentorship-double': process.env.STRIPE_MENTORSHIP_DOUBLE_PRICE_ID!,
   'mentorship-triple': process.env.STRIPE_MENTORSHIP_TRIPLE_PRICE_ID!,
   'additional-lessons': process.env.STRIPE_ADDITIONAL_LESSON_PRICE_ID!,
+  'course-1': process.env.STRIPE_COURSE1_PRICE_ID!,
+  'course-2': process.env.STRIPE_COURSE2_PRICE_ID!,
+  'course-3': process.env.STRIPE_COURSE3_PRICE_ID!,
+  'course-full': process.env.STRIPE_FULLCOURSE_PRICE_ID!,
 }
+
+const COURSE_PLAN_SLUGS = new Set(['course-1', 'course-2', 'course-3', 'course-full'])
 
 export async function POST(req: NextRequest) {
   const session = await auth()
@@ -56,7 +62,12 @@ export async function POST(req: NextRequest) {
         ? { discounts: [discount] }
         : { allow_promotion_codes: true }),
       ...(session?.user?.email && { customer_email: session.user.email }),
-      metadata: { userId: session?.user?.id ?? '', priceId, quantity: String(qty) },
+      metadata: {
+        userId: session?.user?.id ?? '',
+        priceId,
+        quantity: String(qty),
+        ...(COURSE_PLAN_SLUGS.has(plan) && { courseSlug: plan }),
+      },
     })
 
     return NextResponse.json({ url: checkoutSession.url })

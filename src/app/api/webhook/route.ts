@@ -2,6 +2,30 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 
+async function grantCourseAccess(userId: string, courseSlug: string) {
+  const course = await prisma.course.findUnique({
+    where: { slug: courseSlug },
+    select: { id: true, isBundle: true, bundleIncludes: true },
+  })
+  if (!course) return
+
+  const slugsToGrant = [courseSlug, ...(course.isBundle ? course.bundleIncludes : [])]
+  const courses = await prisma.course.findMany({
+    where: { slug: { in: slugsToGrant } },
+    select: { id: true },
+  })
+
+  await Promise.all(
+    courses.map((c) =>
+      prisma.userCourseAccess.upsert({
+        where: { userId_courseId: { userId, courseId: c.id } },
+        create: { userId, courseId: c.id },
+        update: {},
+      })
+    )
+  )
+}
+
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
@@ -93,6 +117,9 @@ export async function POST(req: NextRequest) {
               },
             })
             console.log('Webhook: mentorship allowance incremented', { userId, sessions })
+          } else if (session.metadata?.courseSlug) {
+            await grantCourseAccess(userId, session.metadata.courseSlug)
+            console.log('Webhook: course access granted', { userId, courseSlug: session.metadata.courseSlug })
           } else {
             console.warn('Webhook: unrecognised payment priceId', { priceId, userId })
           }

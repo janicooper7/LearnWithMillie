@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import AdminUsersTable from '@/app/components/AdminUsersTable'
+import Link from 'next/link'
 
 export default async function AdminPage() {
   const session = await auth()
@@ -16,6 +17,11 @@ export default async function AdminPage() {
   return (
     <div className='min-h-screen' style={{ backgroundColor: '#F4EDE4' }}>
       <main className='max-w-6xl mx-auto px-6 py-12'>
+        <div className='flex items-center justify-end mb-6'>
+          <Link href='/admin/courses' className='flex items-center gap-2 bg-[#1F3A34] text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#1F3A34]/90 transition-colors'>
+            Manage Courses
+          </Link>
+        </div>
         <AdminUsersTable users={users} />
       </main>
     </div>

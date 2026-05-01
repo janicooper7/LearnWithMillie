@@ -14,6 +14,12 @@ export default auth((req) => {
     }
   }
 
+  if (pathname.startsWith('/learn') && pathname !== '/learn/demo') {
+    if (!session) {
+      return NextResponse.redirect(new URL('/auth/login', req.url))
+    }
+  }
+
   if (pathname.startsWith('/admin')) {
     if (!session) {
       return NextResponse.redirect(new URL('/auth/login', req.url))
@@ -27,5 +33,5 @@ export default auth((req) => {
 })
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*'],
+  matcher: ['/dashboard/:path*', '/admin/:path*', '/learn/:path*'],
 }

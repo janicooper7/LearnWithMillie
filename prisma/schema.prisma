@@ -33,6 +33,64 @@ model User {
   accounts      Account[]
   sessions      Session[]
   messages      Message[]
+  courseAccess   UserCourseAccess[]
+  lessonProgress UserLessonProgress[]
+}
+
+
+model Course {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  description    String   @db.Text
+  stripePriceId  String?
+  order          Int      @default(0)
+  isBundle       Boolean  @default(false)
+  bundleIncludes String[]
+  published      Boolean  @default(false)
+  thumbnail      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  lessons        CourseLesson[]
+  userAccess     UserCourseAccess[]
+}
+
+model CourseLesson {
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  description String?  @db.Text
+  vimeoId     String
+  vimeoHash   String?
+  duration    Int?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  progress    UserLessonProgress[]
+}
+
+model UserCourseAccess {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  grantedAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model UserLessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      CourseLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, lessonId])
 }
 
 
