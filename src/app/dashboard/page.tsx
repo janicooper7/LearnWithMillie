@@ -9,10 +9,11 @@ import BookLessonCard from '@/app/components/BookLessonCard'
 import CreditsCardActions from '@/app/components/CreditsCardActions'
 import ChatButton from '@/app/components/ChatButton'
 import AddonLessonsBanner from '@/app/components/AddonLessonsBanner'
+import CancelBookingButton from '@/app/components/CancelBookingButton'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-type CalBooking = { uid: string; title: string; startTime: string; endTime: string; status: string }
+type CalBooking = { uid: string; title: string; start: string; end: string; status: string; meetingUrl?: string }
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -71,8 +72,8 @@ export default async function DashboardPage() {
         const calData = await res.json()
         const all: CalBooking[] = calData.data ?? calData.bookings ?? []
         upcomingBookings = all
-          .filter((b) => new Date(b.startTime) > now)
-          .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+          .filter((b) => new Date(b.start) > now)
+          .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
           .slice(0, 5)
       }
     } catch {}
@@ -211,8 +212,8 @@ export default async function DashboardPage() {
             <p className='text-[11px] uppercase tracking-[0.12em] mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
             <div className='space-y-3'>
               {upcomingBookings.map((booking) => {
-                const start = new Date(booking.startTime)
-                const end = new Date(booking.endTime)
+                const start = new Date(booking.start)
+                const end = new Date(booking.end)
                 return (
                   <div key={booking.uid} className='flex items-center justify-between py-3 px-4 rounded-xl' style={{ backgroundColor: '#F4EDE4' }}>
                     <div className='flex items-center gap-4'>
@@ -234,9 +235,23 @@ export default async function DashboardPage() {
                         </p>
                       </div>
                     </div>
-                    <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full' style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      Confirmed
-                    </span>
+                    <div className='flex items-center gap-2'>
+                      {booking.meetingUrl && (
+                        <a
+                          href={booking.meetingUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='text-[11px] font-semibold px-3 py-1.5 rounded-full transition-colors duration-150'
+                          style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+                        >
+                          Join
+                        </a>
+                      )}
+                      <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full' style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        Confirmed
+                      </span>
+                      <CancelBookingButton uid={booking.uid} />
+                    </div>
                   </div>
                 )
               })}
