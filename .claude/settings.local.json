@@ -17,7 +17,10 @@
       "Read(//c/Users/johny/Desktop/LessonPlanner/**)",
       "Bash(git commit:*)",
       "Bash(git config *)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web\" -Recurse -Directory -Filter \"admin\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(dir C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web\\\\src\\\\app\\\\api\\\\admin *)"
     ]
   }
 }
