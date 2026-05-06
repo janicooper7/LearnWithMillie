@@ -13,7 +13,7 @@ import CancelBookingButton from '@/app/components/CancelBookingButton'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-type CalBooking = { uid: string; title: string; start: string; end: string; status: string; meetingUrl?: string }
+type CalBooking = { uid: string; title: string; start: string; end: string; status: string; meetingUrl?: string; eventType?: { slug?: string } }
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -250,7 +250,9 @@ export default async function DashboardPage() {
                       <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full' style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
                         Confirmed
                       </span>
-                      <CancelBookingButton uid={booking.uid} />
+                      {!booking.eventType?.slug?.includes('trial') && (new Date(booking.start).getTime() - now.getTime() > 24 * 60 * 60 * 1000) && (
+                        <CancelBookingButton uid={booking.uid} />
+                      )}
                     </div>
                   </div>
                 )
