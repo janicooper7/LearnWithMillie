@@ -191,8 +191,9 @@ const GoogleIcon = () => (
 export default function SignupPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const isTeacher = searchParams.get('type') === 'teacher'
+  const isTeacherParam = searchParams.get('type') === 'teacher'
   const { data: session, status } = useSession()
+  const [role, setRole] = useState<'STUDENT' | 'TEACHER'>(isTeacherParam ? 'TEACHER' : 'STUDENT')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -200,6 +201,8 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [showTerms, setShowTerms] = useState(false)
+
+  const isTeacher = role === 'TEACHER'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -209,7 +212,7 @@ export default function SignupPage() {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, role: isTeacher ? 'TEACHER' : 'STUDENT' }),
+      body: JSON.stringify({ name, email, password, role }),
     })
 
     const data = await res.json()
@@ -239,6 +242,8 @@ export default function SignupPage() {
   const handleGoogle = () => {
     if (isTeacher) {
       document.cookie = '_pending_role=TEACHER; path=/; max-age=300; SameSite=Lax'
+    } else {
+      document.cookie = '_pending_role=STUDENT; path=/; max-age=300; SameSite=Lax'
     }
     signIn('google', { callbackUrl: '/dashboard' })
   }
@@ -356,13 +361,51 @@ export default function SignupPage() {
           <div className='bg-white rounded-2xl p-8 md:p-10' style={{ border: '1px solid #EDE4D8', boxShadow: '0 1px 3px rgba(31,58,52,0.04), 0 8px 32px rgba(31,58,52,0.05)' }}>
 
             {/* Heading */}
-            <div className='mb-8'>
+            <div className='mb-7'>
               <p className='text-[10px] uppercase tracking-[0.22em] font-semibold mb-2.5' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
                 Get started
               </p>
               <h1 style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: '2rem', fontWeight: 700, lineHeight: 1.2 }}>
                 Create your account
               </h1>
+            </div>
+
+            {/* Role selector */}
+            <div className='mb-7'>
+              <p className='text-[10px] uppercase tracking-[0.18em] font-semibold mb-3' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                I am joining as a
+              </p>
+              <div className='grid grid-cols-2 gap-2.5'>
+                {([
+                  { value: 'STUDENT', label: 'Student', sub: 'I want to learn English' },
+                  { value: 'TEACHER', label: 'Teacher', sub: 'I want mentorship' },
+                ] as const).map((opt) => (
+                  <button
+                    key={opt.value}
+                    type='button'
+                    onClick={() => setRole(opt.value)}
+                    className='relative text-left px-4 py-3.5 rounded-xl border-[1.5px] transition-all duration-200'
+                    style={{
+                      borderColor: role === opt.value ? '#1F3A34' : '#EDE4D8',
+                      backgroundColor: role === opt.value ? '#1F3A34' : 'white',
+                    }}
+                  >
+                    <p className='text-sm font-semibold' style={{ color: role === opt.value ? 'white' : '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      {opt.label}
+                    </p>
+                    <p className='text-xs mt-0.5' style={{ color: role === opt.value ? 'rgba(255,255,255,0.6)' : 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      {opt.sub}
+                    </p>
+                    {role === opt.value && (
+                      <span className='absolute top-2.5 right-2.5 w-4 h-4 rounded-full flex items-center justify-center' style={{ backgroundColor: '#C2AA6A' }}>
+                        <svg width='8' height='6' viewBox='0 0 8 6' fill='none'>
+                          <path d='M1 3l2 2 4-4' stroke='white' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                        </svg>
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Google */}

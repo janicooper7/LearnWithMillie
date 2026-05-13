@@ -78,7 +78,7 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
 
   const studentCount = users.filter((u) => u.role === 'STUDENT').length
   const teacherCount = users.filter((u) => u.role === 'TEACHER').length
-  const isActive = (u: User) => u.upcomingLessons > 0 || (u.role === 'STUDENT' && (!!u.stripeSubscriptionId || u.allowance > 0))
+  const isActive = (u: User) => u.upcomingLessons > 0 || (u.role === 'STUDENT' && (!!u.stripeSubscriptionId || u.allowance > 0)) || (u.role === 'TEACHER' && u.allowance > 0)
   const activeCount = users.filter(isActive).length
   const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
 
@@ -150,7 +150,7 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
             Admin Portal
           </p>
           <h1 className='text-3xl font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            {filter === 'MESSAGES' ? 'Messages' : filter === 'ACTIVE' ? 'Active Students' : 'Users'}
+            {filter === 'MESSAGES' ? 'Messages' : filter === 'ACTIVE' ? 'Active Users' : 'Users'}
           </h1>
         </div>
 
@@ -449,7 +449,7 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={8} className='px-6 py-12 text-center text-sm' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                    No {filter === 'STUDENT' ? 'students' : filter === 'TEACHER' ? 'teachers' : filter === 'ACTIVE' ? 'active students' : 'users'} yet.
+                    No {filter === 'STUDENT' ? 'students' : filter === 'TEACHER' ? 'teachers' : filter === 'ACTIVE' ? 'active users' : 'users'} yet.
                   </td>
                 </tr>
               )}

@@ -1,258 +1,250 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
+import { ChevronDown } from 'lucide-react'
 
-const navigation = [
-  { name: 'Meet your tutor', href: '/about', hash: '' },
-  { name: 'Testimonials', href: '/', hash: '#testimonials' },
-  { name: 'How it works', href: '/', hash: '#how-it-works' },
-  { name: 'Services', href: '/', hash: '#lesson-options' },
-  { name: 'Pricing', href: '/', hash: '#pricing' },
-  { name: 'FAQ', href: '/', hash: '#faq' },
-  { name: 'Mentorship', href: '/mentorship', hash: '' },
-  { name: 'Courses', href: '/courses', hash: '' },
+const studentItems = [
+  { name: 'How it works',   href: '/', hash: '#how-it-works',   description: 'Understand the lesson process' },
+  { name: 'Services',       href: '/', hash: '#lesson-options',  description: 'Explore lesson options' },
+  { name: 'Pricing',        href: '/', hash: '#pricing',         description: 'Simple, transparent plans' },
+  { name: 'Testimonials',   href: '/', hash: '#testimonials',    description: 'Hear from other students' },
+  { name: 'Meet Millie',    href: '/about', hash: '',            description: 'Get to know your tutor' },
+  { name: 'FAQ',            href: '/', hash: '#faq',             description: 'Common questions answered' },
 ]
 
+const teacherItems = [
+  { name: 'Meet Millie',         href: '/mentorship',  hash: '',                        description: 'Get to know your mentor' },
+  { name: 'Testimonials',        href: '/mentorship',  hash: '#mentorship-testimonials', description: 'Hear from other teachers' },
+  { name: 'Mentorship Program',  href: '/mentorship',  hash: '#mentorship-program',      description: "What's included" },
+  { name: 'Pricing',             href: '/mentorship',  hash: '#mentorship-pricing',      description: 'Mentorship session plans' },
+  { name: 'Courses',             href: '/courses',     hash: '',                        description: 'Teacher courses — coming soon' },
+]
+
+type NavItem = { name: string; href: string; hash: string; description: string }
+
 export default function Navigation() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [mobileExpanded, setMobileExpanded] = useState<'students' | 'teachers' | null>(null)
+  const [openDropdown, setOpenDropdown] = useState<'students' | 'teachers' | null>(null)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [scrolled, setScrolled] = useState(false)
-  const [activeSection, setActiveSection] = useState('home')
-  const [isNavigatingByClick, setIsNavigatingByClick] = useState(false)
+
   const pathname = usePathname()
   const router = useRouter()
-  const isHomePage = pathname === '/'
   const { data: session } = useSession()
 
-  const updateActiveSection = () => {
-    if (!isHomePage) return
-    if (isNavigatingByClick) return
+  // Scroll listener — only needs to set scrolled state
+  useState(() => {
+    if (typeof window === 'undefined') return
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  })
 
-    const sections = document.querySelectorAll('section[id]')
-    const scrollPosition = window.scrollY + window.innerHeight * 0.2
-
-    if (scrollPosition < window.innerHeight * 0.5) {
-      setActiveSection('home')
-      return
-    }
-
-    for (const section of sections) {
-      const htmlSection = section as HTMLElement
-      const sectionTop = htmlSection.offsetTop - window.innerHeight * 0.5
-      const sectionHeight = htmlSection.offsetHeight
-
-      if (
-        scrollPosition >= sectionTop &&
-        scrollPosition < sectionTop + sectionHeight
-      ) {
-        setActiveSection(htmlSection.id)
-        return
-      }
-    }
+  function openMenu(which: 'students' | 'teachers') {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setOpenDropdown(which)
   }
 
-  const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    item: { href: string; hash: string },
-  ) => {
-    e.preventDefault()
+  function scheduleClose() {
+    closeTimer.current = setTimeout(() => setOpenDropdown(null), 120)
+  }
 
-    if (mobileMenuOpen) setMobileMenuOpen(false)
-
-    if (item.href !== pathname) {
-      router.push(item.hash ? item.href + item.hash : item.href)
-      return
-    }
-
+  function navigate(item: NavItem) {
+    setMobileOpen(false)
+    setOpenDropdown(null)
     if (item.hash) {
-      const targetId = item.hash.replace('#', '')
-      setIsNavigatingByClick(true)
-
-      setTimeout(() => {
-        const element = document.getElementById(targetId)
-        if (element) {
-          const offsetPosition = element.offsetTop - 80 - 50
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
-          setActiveSection(targetId)
-        }
-        setTimeout(() => setIsNavigatingByClick(false), 1000)
-      }, 100)
+      if (pathname !== item.href) {
+        router.push(item.href + item.hash)
+      } else {
+        const el = document.getElementById(item.hash.replace('#', ''))
+        if (el) window.scrollTo({ top: el.offsetTop - 130, behavior: 'smooth' })
+      }
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      setActiveSection('home')
+      router.push(item.href)
     }
   }
 
-  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    if (pathname !== '/') {
-      router.push('/')
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      setActiveSection('home')
-    }
-    if (mobileMenuOpen) setMobileMenuOpen(false)
-  }
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-      updateActiveSection()
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    handleScroll()
-
-    if (isHomePage && window.location.hash) {
-      const hash = window.location.hash.replace('#', '')
-      setTimeout(() => {
-        const element = document.getElementById(hash)
-        if (element) {
-          const offsetPosition = element.offsetTop - 80 - 50
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
-          setActiveSection(hash)
-        }
-      }, 100)
-    }
-
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [isHomePage])
-
-  const getIsActive = (item: (typeof navigation)[0]) => {
-    if (item.href === '/teacher-materials' || item.href === '/about' || item.href === '/courses') {
-      return pathname === item.href || (item.href === '/courses' && pathname.startsWith('/courses'))
-    }
-    if (isHomePage) {
-      const targetSectionId =
-        item.hash === '' ? 'home' : item.hash.replace('#', '')
-      return activeSection === targetSectionId
-    }
-    return false
-  }
+  const isTeacherSection = pathname === '/mentorship' || pathname.startsWith('/mentorship') || pathname === '/courses'
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'shadow-sm border-b border-[#1F3A34]/8' : ''
       }`}
-      style={{ padding: '0', backgroundColor: '#F4EDE4' }}
+      style={{ backgroundColor: '#F4EDE4' }}
     >
-      <div className='container'>
-        <div className='flex items-center justify-between h-[72px]'>
-          {/* Logo */}
-          <a href='/' onClick={handleLogoClick} className='flex items-center'>
-            <span
-              className='text-2xl font-bold tracking-tight'
-              style={{
-                color: '#1F3A34',
-                fontFamily: 'var(--font-playfair), Georgia, serif',
-              }}
-            >
-              LearnWithMillie
-            </span>
-          </a>
+      <div className="container">
+        <div className="flex items-center justify-between h-[72px]">
 
-          {/* Desktop Navigation */}
-          <div className='hidden md:flex items-center gap-1'>
-            <nav className='flex items-center gap-1'>
-              {navigation.map((item) => {
-                const isActive = getIsActive(item)
-                return (
-                  <a
-                    key={item.name}
-                    href={item.href + item.hash}
-                    onClick={(e) => handleNavClick(e, item)}
-                    className='relative px-3.5 py-2 text-[13px] font-medium transition-colors duration-200'
-                  >
-                    {item.name}
-                  </a>
-                )
-              })}
-            </nav>
+          {/* Logo */}
+          <Link href="/" className="text-2xl font-bold tracking-tight flex-shrink-0"
+            style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+            LearnWithMillie
+          </Link>
+
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-1">
+
+            {/* For Students */}
+            <div
+              className="relative"
+              onMouseEnter={() => openMenu('students')}
+              onMouseLeave={scheduleClose}
+            >
+              <button
+                className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200"
+                style={{ color: openDropdown === 'students' || !isTeacherSection ? '#1F3A34' : 'rgba(31,58,52,0.55)' }}
+              >
+                For Students
+                <ChevronDown
+                  className="w-3.5 h-3.5 transition-transform duration-200"
+                  style={{ transform: openDropdown === 'students' ? 'rotate(180deg)' : 'none', color: '#C2AA6A' }}
+                />
+              </button>
+
+              {/* Dropdown */}
+              <div
+                className="absolute top-full left-1/2 pt-2"
+                style={{
+                  transform: 'translateX(-50%)',
+                  pointerEvents: openDropdown === 'students' ? 'auto' : 'none',
+                  opacity: openDropdown === 'students' ? 1 : 0,
+                  transition: 'opacity 0.15s ease',
+                  width: '420px',
+                }}
+                onMouseEnter={() => openMenu('students')}
+                onMouseLeave={scheduleClose}
+              >
+                <div className="rounded-2xl shadow-xl overflow-hidden"
+                  style={{ backgroundColor: 'white', border: '1px solid #EDE4D8' }}>
+                  <div className="p-2 grid grid-cols-2 gap-1">
+                    {studentItems.map((item) => (
+                      <button
+                        key={item.name}
+                        onClick={() => navigate(item)}
+                        className="text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4] group"
+                      >
+                        <p className="text-sm font-semibold" style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          {item.name}
+                        </p>
+                        <p className="text-xs mt-0.5" style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          {item.description}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* For Teachers */}
+            <div
+              className="relative"
+              onMouseEnter={() => openMenu('teachers')}
+              onMouseLeave={scheduleClose}
+            >
+              <button
+                className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200"
+                style={{ color: openDropdown === 'teachers' || isTeacherSection ? '#1F3A34' : 'rgba(31,58,52,0.55)' }}
+              >
+                For Teachers
+                <ChevronDown
+                  className="w-3.5 h-3.5 transition-transform duration-200"
+                  style={{ transform: openDropdown === 'teachers' ? 'rotate(180deg)' : 'none', color: '#C2AA6A' }}
+                />
+              </button>
+
+              {/* Dropdown */}
+              <div
+                className="absolute top-full left-1/2 pt-2"
+                style={{
+                  transform: 'translateX(-50%)',
+                  pointerEvents: openDropdown === 'teachers' ? 'auto' : 'none',
+                  opacity: openDropdown === 'teachers' ? 1 : 0,
+                  transition: 'opacity 0.15s ease',
+                  width: '340px',
+                }}
+                onMouseEnter={() => openMenu('teachers')}
+                onMouseLeave={scheduleClose}
+              >
+                <div className="rounded-2xl shadow-xl overflow-hidden"
+                  style={{ backgroundColor: 'white', border: '1px solid #EDE4D8' }}>
+                  <div className="p-2 grid grid-cols-2 gap-1">
+                    {teacherItems.map((item) => (
+                      <button
+                        key={item.name}
+                        onClick={() => navigate(item)}
+                        className="text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4]"
+                      >
+                        <p className="text-sm font-semibold" style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          {item.name}
+                        </p>
+                        <p className="text-xs mt-0.5" style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          {item.description}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Divider */}
-            <div
-              className='mx-3 h-5 w-px'
-              style={{ backgroundColor: 'rgba(31,58,52,0.15)' }}
-            />
+            <div className="mx-2 h-5 w-px" style={{ backgroundColor: 'rgba(31,58,52,0.15)' }} />
 
+            {/* Auth */}
             {session ? (
-              <div className='flex items-center gap-3'>
-                <a
-                  href={
-                    session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'
-                  }
-                  className='flex items-center gap-2 text-[13px] font-medium px-3.5 py-2 rounded-lg transition-colors duration-200'
-                  style={{
-                    color: '#1F3A34',
-                    backgroundColor: 'rgba(31,58,52,0.07)',
-                  }}
+              <div className="flex items-center gap-3">
+                <Link
+                  href={session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'}
+                  className="flex items-center gap-2 text-[13px] font-medium px-3.5 py-2 rounded-lg transition-colors duration-200"
+                  style={{ color: '#1F3A34', backgroundColor: 'rgba(31,58,52,0.07)' }}
                 >
-                  <div
-                    className='w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0'
-                    style={{ backgroundColor: '#1F3A34' }}
-                  >
-                    {session.user?.name?.[0]?.toUpperCase() ??
-                      session.user?.email?.[0]?.toUpperCase()}
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+                    style={{ backgroundColor: '#1F3A34' }}>
+                    {session.user?.name?.[0]?.toUpperCase() ?? session.user?.email?.[0]?.toUpperCase()}
                   </div>
                   {session.user?.role === 'ADMIN' ? 'Admin' : 'My Account'}
-                </a>
+                </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className='text-[13px] font-medium transition-colors duration-200'
+                  className="text-[13px] font-medium transition-colors duration-200"
                   style={{ color: 'rgba(31,58,52,0.55)' }}
-                  onMouseEnter={(e) => {
-                    ;(e.currentTarget as HTMLButtonElement).style.color =
-                      '#1F3A34'
-                  }}
-                  onMouseLeave={(e) => {
-                    ;(e.currentTarget as HTMLButtonElement).style.color =
-                      'rgba(31,58,52,0.55)'
-                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#1F3A34' }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(31,58,52,0.55)' }}
                 >
                   Sign out
                 </button>
               </div>
             ) : (
-              <div className='flex items-center gap-3'>
-                <Link
-                  href='/auth/login'
-                  className='text-[13px] font-medium transition-colors duration-200'
+              <div className="flex items-center gap-3">
+                <Link href="/auth/login"
+                  className="text-[13px] font-medium transition-colors duration-200"
                   style={{ color: 'rgba(31,58,52,0.55)' }}
-                  onMouseEnter={(e) => {
-                    ;(e.currentTarget as HTMLAnchorElement).style.color =
-                      '#1F3A34'
-                  }}
-                  onMouseLeave={(e) => {
-                    ;(e.currentTarget as HTMLAnchorElement).style.color =
-                      'rgba(31,58,52,0.55)'
-                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#1F3A34' }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(31,58,52,0.55)' }}
                 >
                   Log in
                 </Link>
-                <Link href='/auth/signup' className='btn-primary'>
-                  Sign up
-                </Link>
+                <Link href="/auth/signup" className="btn-primary">Sign up</Link>
               </div>
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile burger */}
           <button
-            type='button'
-            className='md:hidden inline-flex items-center justify-center rounded-lg p-2 transition-colors duration-200'
+            className="md:hidden inline-flex items-center justify-center rounded-lg p-2"
             style={{ color: '#1F3A34' }}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => setMobileOpen((o) => !o)}
           >
-            <span className='sr-only'>Open main menu</span>
-            {mobileMenuOpen ? (
-              <XMarkIcon className='h-5 w-5' aria-hidden='true' />
-            ) : (
-              <Bars3Icon className='h-5 w-5' aria-hidden='true' />
-            )}
+            <span className="sr-only">Toggle menu</span>
+            {mobileOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
           </button>
         </div>
       </div>
@@ -260,87 +252,96 @@ export default function Navigation() {
       {/* Mobile menu */}
       <div
         className={`md:hidden fixed left-4 right-4 top-[80px] transition-all duration-300 ease-in-out ${
-          mobileMenuOpen
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 -translate-y-3 pointer-events-none'
+          mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-3 pointer-events-none'
         }`}
       >
-        <div
-          className='rounded-2xl overflow-hidden shadow-xl'
-          style={{
-            backgroundColor: '#F4EDE4',
-            border: '1px solid rgba(31,58,52,0.1)',
-            backdropFilter: 'blur(20px)',
-          }}
-        >
-          <div className='p-2'>
-            {navigation.map((item) => {
-              const isActive = getIsActive(item)
-              return (
-                <a
-                  key={item.name}
-                  href={item.href + item.hash}
-                  className='flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200'
-                  style={{
-                    color: isActive ? '#1F3A34' : 'rgba(31,58,52,0.65)',
-                  }}
-                  onClick={(e) => handleNavClick(e, item)}
-                >
-                  {isActive && (
-                    <span
-                      className='mr-2.5 text-[8px]'
-                      style={{ color: '#C2AA6A' }}
-                    >
-                      ✦
-                    </span>
-                  )}
-                  {item.name}
-                </a>
-              )
-            })}
+        <div className="rounded-2xl overflow-hidden shadow-xl" style={{ backgroundColor: '#F4EDE4', border: '1px solid rgba(31,58,52,0.1)' }}>
+          <div className="p-2">
+
+            {/* For Students accordion */}
+            <button
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors"
+              style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+              onClick={() => setMobileExpanded((e) => e === 'students' ? null : 'students')}
+            >
+              For Students
+              <ChevronDown
+                className="w-4 h-4 transition-transform duration-200"
+                style={{ color: '#C2AA6A', transform: mobileExpanded === 'students' ? 'rotate(180deg)' : 'none' }}
+              />
+            </button>
+            {mobileExpanded === 'students' && (
+              <div className="pl-3 pb-1 space-y-0.5">
+                {studentItems.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => navigate(item)}
+                    className="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60"
+                    style={{ color: 'rgba(31,58,52,0.75)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* For Teachers accordion */}
+            <button
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors"
+              style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+              onClick={() => setMobileExpanded((e) => e === 'teachers' ? null : 'teachers')}
+            >
+              For Teachers
+              <ChevronDown
+                className="w-4 h-4 transition-transform duration-200"
+                style={{ color: '#C2AA6A', transform: mobileExpanded === 'teachers' ? 'rotate(180deg)' : 'none' }}
+              />
+            </button>
+            {mobileExpanded === 'teachers' && (
+              <div className="pl-3 pb-1 space-y-0.5">
+                {teacherItems.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => navigate(item)}
+                    className="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60"
+                    style={{ color: 'rgba(31,58,52,0.75)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-          <div
-            className='px-4 pb-4 pt-3'
-            style={{ borderTop: '1px solid rgba(31,58,52,0.08)' }}
-          >
+
+          {/* Mobile auth */}
+          <div className="px-4 pb-4 pt-3" style={{ borderTop: '1px solid rgba(31,58,52,0.08)' }}>
             {session ? (
-              <div className='space-y-2'>
-                <a
-                  href={
-                    session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'
-                  }
-                  className='btn-primary w-full text-center block'
+              <div className="space-y-2">
+                <Link
+                  href={session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'}
+                  className="btn-primary w-full text-center block"
+                  onClick={() => setMobileOpen(false)}
                 >
-                  {session.user?.role === 'ADMIN'
-                    ? 'Admin Portal'
-                    : 'My Account'}
-                </a>
+                  {session.user?.role === 'ADMIN' ? 'Admin Portal' : 'My Account'}
+                </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className='w-full text-center text-sm font-medium py-2'
-                  style={{
-                    color: 'rgba(31,58,52,0.55)',
-                    fontFamily: 'var(--font-inter), sans-serif',
-                  }}
+                  className="w-full text-center text-sm font-medium py-2"
+                  style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
                 >
                   Sign out
                 </button>
               </div>
             ) : (
-              <div className='space-y-2'>
-                <Link
-                  href='/auth/signup'
-                  className='btn-primary w-full text-center block'
-                >
+              <div className="space-y-2">
+                <Link href="/auth/signup" className="btn-primary w-full text-center block" onClick={() => setMobileOpen(false)}>
                   Sign up
                 </Link>
                 <Link
-                  href='/auth/login'
-                  className='w-full text-center text-sm font-medium py-2 block'
-                  style={{
-                    color: 'rgba(31,58,52,0.55)',
-                    fontFamily: 'var(--font-inter), sans-serif',
-                  }}
+                  href="/auth/login"
+                  className="w-full text-center text-sm font-medium py-2 block"
+                  style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  onClick={() => setMobileOpen(false)}
                 >
                   Log in
                 </Link>
