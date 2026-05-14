@@ -69,7 +69,7 @@ const courses = [
   },
 ]
 
-export default function CoursePricingCards({ userAccess }: { userAccess: string[] }) {
+export default function CoursePricingCards({ userAccess, startedSlugs = [] }: { userAccess: string[], startedSlugs?: string[] }) {
   const { data: session } = useSession()
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
@@ -95,8 +95,8 @@ export default function CoursePricingCards({ userAccess }: { userAccess: string[
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
       {courses.map((course) => {
-        const hasAccess = userAccess.includes(course.planKey.replace('course-', 'course-'))
-        const slug = course.planKey.replace('course-', '')
+        const hasAccess = userAccess.includes(course.planKey)
+        const hasStarted = startedSlugs.includes(course.planKey)
 
         return (
           <div
@@ -187,7 +187,7 @@ export default function CoursePricingCards({ userAccess }: { userAccess: string[
                   style={{ backgroundColor: '#C2AA6A', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
                 >
                   <PlayCircle className="w-4 h-4" />
-                  Start Learning
+                  {hasStarted ? 'Continue Learning' : 'Start Learning'}
                 </a>
               ) : (
                 <button

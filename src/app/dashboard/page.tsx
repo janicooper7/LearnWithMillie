@@ -1,15 +1,15 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { User, Mail, Calendar } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import Stripe from 'stripe'
-import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
 import CalEmbed from '@/app/components/CalEmbed'
 import BookLessonCard from '@/app/components/BookLessonCard'
 import CreditsCardActions from '@/app/components/CreditsCardActions'
 import ChatButton from '@/app/components/ChatButton'
 import AddonLessonsBanner from '@/app/components/AddonLessonsBanner'
 import CancelBookingButton from '@/app/components/CancelBookingButton'
+import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -38,13 +38,15 @@ export default async function DashboardPage() {
           _count: { select: { lessons: true } },
           lessons: {
             select: {
-              progress: { where: { userId: user.id, completedAt: { not: null } }, select: { id: true } },
+              progress: { where: { userId: user.id }, select: { id: true, completedAt: true } },
             },
           },
         },
       },
     },
   })
+
+  const displayCourses = myCourses.filter(({ course }) => !course.isBundle)
 
   // Fetch Stripe + Cal.com in parallel
   const [stripeResult, calResult] = await Promise.allSettled([
@@ -115,42 +117,77 @@ export default async function DashboardPage() {
 
         <div className='grid md:grid-cols-2 gap-5'>
 
-          {/* Profile card */}
-          <div className='bg-white rounded-2xl p-7' style={{ border: '1px solid #EDE4D8' }}>
-            <h2 className='text-sm font-semibold uppercase tracking-[0.15em] mb-6' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-              My Account
-            </h2>
-            <div className='space-y-5'>
-              <div className='flex items-center gap-3'>
-                <div className='w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0' style={{ backgroundColor: 'rgba(31,58,52,0.07)' }}>
-                  <User className='w-4 h-4' style={{ color: '#1F3A34' }} />
+          {/* My Courses card */}
+          <div className='rounded-2xl p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
+            <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
+
+            {displayCourses.length === 0 ? (
+              <>
+                <h2 className='text-xl font-bold text-white mb-3' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                  Ready to start learning?
+                </h2>
+                <p className='text-sm leading-relaxed' style={{ color: 'rgba(255,255,255,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  Browse Millie's video courses and learn at your own pace with lifetime access.
+                </p>
+                <div className='mt-auto pt-6'>
+                  <a
+                    href='/courses'
+                    className='w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 hover:brightness-110'
+                    style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    Browse Courses <ArrowRight className='w-4 h-4' />
+                  </a>
                 </div>
-                <div>
-                  <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Name</p>
-                  <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>{user.name ?? '—'}</p>
+              </>
+            ) : (
+              <>
+                <h2 className='text-xl font-bold text-white mb-4' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                  My Courses
+                </h2>
+                <div className='flex flex-col gap-2.5 flex-1'>
+                  {displayCourses.slice(0, 3).map(({ course }) => {
+                    const total = course._count.lessons
+                    const hasStarted = course.lessons.some((l) => l.progress.length > 0)
+                    const completed = course.lessons.reduce(
+                      (acc, l) => acc + (l.progress.some((p) => p.completedAt) ? 1 : 0),
+                      0
+                    )
+                    const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+                    return (
+                      <a
+                        key={course.id}
+                        href={`/learn/${course.slug}`}
+                        className='flex items-center justify-between gap-3 rounded-xl p-3.5 transition-all duration-150 hover:bg-white/[0.13]'
+                        style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}
+                      >
+                        <div className='flex-1 min-w-0'>
+                          <p className='text-sm font-medium text-white truncate mb-1.5' style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
+                            {course.title}
+                          </p>
+                          <div className='w-full rounded-full h-1' style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}>
+                            <div className='h-1 rounded-full transition-all' style={{ width: `${pct}%`, backgroundColor: '#C2AA6A' }} />
+                          </div>
+                        </div>
+                        <span className='text-xs font-semibold flex-shrink-0' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+                          {hasStarted ? 'Continue →' : 'Start →'}
+                        </span>
+                      </a>
+                    )
+                  })}
                 </div>
-              </div>
-              <div className='flex items-center gap-3'>
-                <div className='w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0' style={{ backgroundColor: 'rgba(31,58,52,0.07)' }}>
-                  <Mail className='w-4 h-4' style={{ color: '#1F3A34' }} />
+                <div className='mt-5'>
+                  <a
+                    href='/courses'
+                    className='w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 hover:brightness-110'
+                    style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    {displayCourses.some(({ course }) => course.lessons.some((l) => l.progress.length > 0))
+                      ? 'Continue Learning'
+                      : 'Start Learning'} <ArrowRight className='w-4 h-4' />
+                  </a>
                 </div>
-                <div>
-                  <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Email</p>
-                  <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>{user.email}</p>
-                </div>
-              </div>
-              <div className='flex items-center gap-3'>
-                <div className='w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0' style={{ backgroundColor: 'rgba(31,58,52,0.07)' }}>
-                  <Calendar className='w-4 h-4' style={{ color: '#1F3A34' }} />
-                </div>
-                <div>
-                  <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Member since</p>
-                  <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                    {user.createdAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  </p>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
 
           {/* Book a lesson / session */}
@@ -158,70 +195,25 @@ export default async function DashboardPage() {
 
         </div>
 
-
-        {/* Credits row — lessons card + addon banner side by side */}
-        <div className={`mt-5 grid gap-5 ${!isTeacher && user.addonLessonsEnabled ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-
-          {/* Lessons / sessions card */}
-          <div className='bg-white rounded-2xl p-7 flex flex-col justify-between' style={{ border: '1px solid #EDE4D8' }}>
-            <div className='flex items-start justify-between gap-6'>
-              <div>
-                {(() => {
-                  const showTrialReady = user.trialPurchased && !user.trialUsed && !user.stripeSubscriptionId && user.allowance > 0
-                  return (
-                    <>
-                      <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        {showTrialReady ? 'Trial Lesson' : isTeacher ? 'Sessions' : 'Lessons this month'}
-                      </p>
-                      <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        {showTrialReady ? '1 trial lesson ready to book' : `${user.allowance} ${user.allowance === 1 ? (isTeacher ? 'session' : 'lesson') : (isTeacher ? 'sessions' : 'lessons')} remaining`}
-                      </p>
-                      {showTrialReady ? (
-                        <p className='text-xs mt-1' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-                          Use the calendar below to book your 20-min session
-                        </p>
-                      ) : user.stripeSubscriptionId && !cancelAtPeriodEnd && periodEnd ? (
-                        <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                          Resets {periodEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
-                        </p>
-                      ) : null}
-                    </>
-                  )
-                })()}
-                <CreditsCardActions trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />
+        {/* Subscription management — only if active */}
+        {user.stripeSubscriptionId && (
+          <div className='mt-5 bg-white rounded-2xl p-5 flex items-center justify-between' style={{ border: '1px solid #EDE4D8' }}>
+            <div>
+              <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Subscription</p>
+              <div className='flex items-center gap-1.5 mt-1'>
+                <div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: cancelAtPeriodEnd ? '#c0392b' : '#2ecc71' }} />
+                <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  {cancelAtPeriodEnd && periodEnd
+                    ? `Cancels ${periodEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}`
+                    : 'Active'}
+                </p>
               </div>
-
-              {user.stripeSubscriptionId && (
-                <div className='text-right flex-shrink-0'>
-                  {cancelAtPeriodEnd && periodEnd ? (
-                    <>
-                      <p className='text-xs font-medium' style={{ color: '#c0392b', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        Cancels {periodEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
-                      </p>
-                      <p className='text-xs mt-1' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        You'll keep access until then.
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p className='text-[11px] uppercase tracking-[0.12em] mb-2' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Subscription</p>
-                      <div className='flex items-center gap-1.5 justify-end mb-2'>
-                        <div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: '#2ecc71' }} />
-                        <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>Active</p>
-                      </div>
-                      <CancelSubscriptionButton />
-                    </>
-                  )}
-                </div>
-              )}
             </div>
+            {!cancelAtPeriodEnd && <CancelSubscriptionButton />}
           </div>
+        )}
 
-          {/* Add-on lessons banner — admin-enabled students only */}
-          {!isTeacher && user.addonLessonsEnabled && (
-            <AddonLessonsBanner />
-          )}
-        </div>
+
 
         {/* Upcoming bookings — only shown if there are any */}
         {upcomingBookings.length > 0 && (
@@ -313,47 +305,6 @@ export default async function DashboardPage() {
           />
         </div>
 
-        {/* My Courses */}
-        {myCourses.length > 0 && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-[11px] uppercase tracking-[0.15em] font-semibold" style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                My Courses
-              </p>
-              <a href="/courses" className="text-xs font-medium" style={{ color: '#C2AA6A' }}>Browse all →</a>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {myCourses.map(({ course }) => {
-                const totalLessons = course._count.lessons
-                const completedLessons = course.lessons.reduce((acc, l) => acc + (l.progress.length > 0 ? 1 : 0), 0)
-                const pct = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0
-                return (
-                  <a key={course.id} href={`/learn/${course.slug}`} className="block bg-white rounded-2xl overflow-hidden hover:shadow-md transition-shadow" style={{ border: '1px solid #EDE4D8' }}>
-                    {course.thumbnail ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={course.thumbnail} alt={course.title} className="w-full h-32 object-cover" />
-                    ) : (
-                      <div className="w-full h-32 flex items-center justify-center" style={{ backgroundColor: '#1F3A34' }}>
-                        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="#C2AA6A" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-                        </svg>
-                      </div>
-                    )}
-                    <div className="p-4">
-                      <p className="text-sm font-semibold mb-2 truncate" style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>{course.title}</p>
-                      <div className="w-full rounded-full h-1.5 mb-1.5" style={{ backgroundColor: 'rgba(31,58,52,0.1)' }}>
-                        <div className="h-1.5 rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: '#C2AA6A' }} />
-                      </div>
-                      <p className="text-[11px]" style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        {completedLessons}/{totalLessons} lessons · {pct}% complete
-                      </p>
-                    </div>
-                  </a>
-                )
-              })}
-            </div>
-          </div>
-        )}
 
       </main>
     </div>
