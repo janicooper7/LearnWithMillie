@@ -17,11 +17,13 @@ const studentItems = [
 ]
 
 const teacherItems = [
-  { name: 'Meet Millie',         href: '/mentorship',  hash: '',                        description: 'Get to know your mentor' },
-  { name: 'Testimonials',        href: '/mentorship',  hash: '#mentorship-testimonials', description: 'Hear from other teachers' },
-  { name: 'Mentorship Program',  href: '/mentorship',  hash: '#mentorship-program',      description: "What's included" },
-  { name: 'Pricing',             href: '/mentorship',  hash: '#mentorship-pricing',      description: 'Mentorship session plans' },
-  { name: 'Courses',             href: '/courses',     hash: '',                        description: 'Teacher courses — coming soon' },
+  { name: 'Meet Millie',                href: '/mentorship',         hash: '',                        description: 'Get to know your mentor' },
+  { name: 'Testimonials',               href: '/mentorship',         hash: '#mentorship-testimonials', description: 'Hear from other teachers' },
+  { name: 'Mentorship Program',         href: '/mentorship',         hash: '#mentorship-program',      description: "What's included" },
+  { name: 'Pricing',                    href: '/mentorship',         hash: '#mentorship-pricing',      description: 'Mentorship session plans' },
+  { name: 'Courses',                    href: '/courses',            hash: '',                        description: 'Teacher courses — coming soon' },
+  { name: 'Random Question Generator',  href: '/teacher-materials',  hash: '#random-questions',        description: 'ESL debate prompts on demand' },
+  { name: 'Platform Finder',            href: '/platform-finder',    hash: '',                        description: 'Match yourself to 33 ESL platforms' },
 ]
 
 type NavItem = { name: string; href: string; hash: string; description: string }
@@ -70,7 +72,7 @@ export default function Navigation() {
     }
   }
 
-  const isTeacherSection = pathname === '/mentorship' || pathname.startsWith('/mentorship') || pathname === '/courses'
+  const isTeacherSection = pathname === '/mentorship' || pathname.startsWith('/mentorship') || pathname === '/courses' || pathname === '/platform-finder' || pathname === '/teacher-materials'
 
   return (
     <header

@@ -8,7 +8,7 @@ const faqs = [
   {
     question: 'How can I pay for my subscription?',
     answer:
-      "You can pay for your subscription via Paypal. If you set up an Automatic Payment on PayPal, your payments will automatically be taken at the same time every month — it's hassle free for you!",
+      "You can pay for your subscription via Stripe. If you set up an automatic payment on Stripe, your payments will automatically be taken at the same time every month — it's hassle free for you!",
   },
   {
     question:

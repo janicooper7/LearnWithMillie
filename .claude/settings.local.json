@@ -20,7 +20,9 @@
       "Bash(grep -v \"^$\")",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web\" -Recurse -Directory -Filter \"admin\")",
       "Bash(Select-Object -ExpandProperty FullName)",
-      "Bash(dir C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web\\\\src\\\\app\\\\api\\\\admin *)"
+      "Bash(dir C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web\\\\src\\\\app\\\\api\\\\admin *)",
+      "Bash(npx tsc *)",
+      "Bash(curl *)"
     ]
   }
 }

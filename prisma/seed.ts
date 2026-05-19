@@ -58,6 +58,45 @@ async function main() {
   }
 
   console.log('Courses seeded.')
+
+  // Course 1 — 10 placeholder modules (lorem ipsum + placeholder Vimeo).
+  // Idempotent: re-running updates the existing lessons in place by order.
+  const course1 = await prisma.course.findUnique({ where: { slug: 'course-1' } })
+  if (!course1) throw new Error('course-1 not found — course upsert above must have failed')
+
+  const PLACEHOLDER_VIMEO_ID = '76979871'
+
+  const LOREM_SHORT =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  const LOREM_LONG =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
+
+  const course1Lessons = Array.from({ length: 10 }, (_, i) => {
+    const order = i + 1
+    return {
+      order,
+      title: `Module ${order}`,
+      description: order % 2 === 0 ? LOREM_LONG : LOREM_SHORT,
+      vimeoId: PLACEHOLDER_VIMEO_ID,
+      vimeoHash: null as string | null,
+      duration: 300 + order * 30, // 5:30, 6:00, 6:30, … placeholder durations
+    }
+  })
+
+  for (const lesson of course1Lessons) {
+    const existing = await prisma.courseLesson.findFirst({
+      where: { courseId: course1.id, order: lesson.order },
+      select: { id: true },
+    })
+    if (existing) {
+      await prisma.courseLesson.update({ where: { id: existing.id }, data: lesson })
+    } else {
+      await prisma.courseLesson.create({ data: { ...lesson, courseId: course1.id } })
+    }
+    console.log(`  ✓ course-1 / module ${lesson.order}`)
+  }
+
+  console.log('Course 1 modules seeded.')
 }
 
 main()

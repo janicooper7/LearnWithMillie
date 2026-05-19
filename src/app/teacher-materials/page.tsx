@@ -27,7 +27,9 @@ export const metadata: Metadata = {
 export default function TeacherMaterialsPage() {
   return (
     <>
-      <DebateGenerator />
+      <div id="random-questions">
+        <DebateGenerator />
+      </div>
       <FreeLessonPlans />
     </>
   )
