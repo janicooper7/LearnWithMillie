@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useSession, signOut } from 'next-auth/react'
@@ -37,14 +37,13 @@ export default function Navigation() {
   const router = useRouter()
   const { data: session } = useSession()
 
-  // Scroll listener — only needs to set scrolled state
-  useState(() => {
-    if (typeof window === 'undefined') return
+  // Scroll listener — runs after hydration so initial render matches server
+  useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
-  })
+  }, [])
 
   function openMenu(which: 'students' | 'teachers') {
     if (closeTimer.current) clearTimeout(closeTimer.current)
