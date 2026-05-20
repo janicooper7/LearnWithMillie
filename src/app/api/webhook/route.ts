@@ -121,28 +121,10 @@ export async function POST(req: NextRequest) {
     case 'invoice.paid': {
       const invoice = event.data.object as Stripe.Invoice
       const inv = invoice as any
-      const line0 = inv.lines?.data?.[0]
-
-      // Diagnostic dump — remove once renewals are confirmed working
-      console.log('Webhook invoice.paid DIAG', {
-        invoiceId: invoice.id,
-        billing_reason: inv.billing_reason,
-        customer: inv.customer,
-        top_subscription: inv.subscription,
-        parent_subscription: inv.parent?.subscription_details?.subscription,
-        line0_price_id: line0?.price?.id,
-        line0_pricing_price: line0?.pricing?.price_details?.price,
-        line0_keys: line0 ? Object.keys(line0) : null,
-        line0_pricing_keys: line0?.pricing ? Object.keys(line0.pricing) : null,
-        PRICE_MAP_KEYS: Object.keys(PRICE_TO_LESSONS),
-      })
 
       // Skip the first invoice — already handled by checkout.session.completed
       // Only reset allowance on renewals (subscription_cycle)
-      if (inv.billing_reason !== 'subscription_cycle') {
-        console.warn('Webhook invoice.paid: skipped — billing_reason not subscription_cycle', { billing_reason: inv.billing_reason })
-        break
-      }
+      if (inv.billing_reason !== 'subscription_cycle') break
 
       // Newer Stripe API moved subscription off the top-level Invoice
       const subId =
@@ -154,6 +136,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Newer Stripe API moved price off InvoiceLineItem into pricing.price_details
+      const line0 = inv.lines?.data?.[0]
       const priceId = line0?.pricing?.price_details?.price ?? line0?.price?.id
       const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0
       if (!lessons) {
@@ -166,9 +149,8 @@ export async function POST(req: NextRequest) {
         where: { stripeCustomerId: customerId },
         data: { allowance: lessons },
       })
-      console.log('Webhook invoice.paid: allowance reset on renewal', { customerId, subId, lessons, rowsUpdated: result.count })
       if (result.count === 0) {
-        console.warn('Webhook invoice.paid: NO USER MATCHED stripeCustomerId — check user.stripeCustomerId in DB', { customerId })
+        console.warn('Webhook invoice.paid: no user matched stripeCustomerId', { customerId, subId })
       }
       break
     }
