@@ -17,11 +17,12 @@ const studentItems = [
 ]
 
 const teacherItems = [
-  { name: 'Meet Millie',         href: '/mentorship',  hash: '',                        description: 'Get to know your mentor' },
-  { name: 'Testimonials',        href: '/mentorship',  hash: '#mentorship-testimonials', description: 'Hear from other teachers' },
-  { name: 'Mentorship Program',  href: '/mentorship',  hash: '#mentorship-program',      description: "What's included" },
-  { name: 'Pricing',             href: '/mentorship',  hash: '#mentorship-pricing',      description: 'Mentorship session plans' },
-  { name: 'Courses',             href: '/courses',     hash: '',                        description: 'Teacher courses — coming soon' },
+  { name: 'Meet Millie',         href: '/mentorship',         hash: '',                        description: 'Get to know your mentor' },
+  { name: 'Testimonials',        href: '/mentorship',         hash: '#mentorship-testimonials', description: 'Hear from other teachers' },
+  { name: 'Mentorship Program',  href: '/mentorship',         hash: '#mentorship-program',      description: "What's included" },
+  { name: 'Pricing',             href: '/mentorship',         hash: '#mentorship-pricing',      description: 'Mentorship session plans' },
+  { name: 'Courses',             href: '/courses',            hash: '',                        description: 'Teacher courses — coming soon' },
+  { name: 'Debate Generator',    href: '/debategenerator',    hash: '',                        description: 'Free ESL debate topics & vocab' },
 ]
 
 type NavItem = { name: string; href: string; hash: string; description: string }
