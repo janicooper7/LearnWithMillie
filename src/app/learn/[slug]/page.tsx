@@ -15,6 +15,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
       id: true,
       title: true,
       slug: true,
+      isBundle: true,
       userAccess: { where: { userId: session.user.id }, select: { id: true } },
       lessons: {
         orderBy: { order: 'asc' },
@@ -36,6 +37,9 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
   })
 
   if (!course) notFound()
+
+  // Bundles have no lessons — send users to /courses to pick an individual course
+  if (course.isBundle) redirect('/courses')
 
   if (course.userAccess.length === 0) {
     return (

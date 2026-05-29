@@ -4,25 +4,7 @@ import { auth } from '@/auth'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-const SUBSCRIPTION_PRICE_IDS: Record<string, string> = {
-  four: process.env.STRIPE_FOURLESSONS_PRICE_ID!,
-  eight: process.env.STRIPE_EIGHTLESSONS_PRICE_ID!,
-  twelve: process.env.STRIPE_TWELVELESSONS_PRICE_ID!,
-}
-
-const ONE_TIME_PRICE_IDS: Record<string, string> = {
-  trial: process.env.STRIPE_TRIAL_PRICE_ID!,
-  'mentorship-single': process.env.STRIPE_MENTORSHIP_SINGLE_PRICE_ID!,
-  'mentorship-double': process.env.STRIPE_MENTORSHIP_DOUBLE_PRICE_ID!,
-  'mentorship-triple': process.env.STRIPE_MENTORSHIP_TRIPLE_PRICE_ID!,
-  'additional-lessons': process.env.STRIPE_ADDITIONAL_LESSON_PRICE_ID!,
-  'course-1': process.env.STRIPE_COURSE1_PRICE_ID!,
-  'course-2': process.env.STRIPE_COURSE2_PRICE_ID!,
-  'course-3': process.env.STRIPE_COURSE3_PRICE_ID!,
-  'course-full': process.env.STRIPE_FULLCOURSE_PRICE_ID!,
-}
-
-const COURSE_PLAN_SLUGS = new Set(['course-1', 'course-2', 'course-3', 'course-full'])
+const COURSE_PLAN_SLUGS = new Set(['get-ready', 'get-booked', 'stay-booked', 'course-full'])
 
 export async function POST(req: NextRequest) {
   const session = await auth()
@@ -31,6 +13,25 @@ export async function POST(req: NextRequest) {
   }
 
   const { plan, quantity = 1, promoCode } = await req.json()
+
+  // Read at request time so env vars added after server start are always picked up
+  const SUBSCRIPTION_PRICE_IDS: Record<string, string> = {
+    four:   process.env.STRIPE_FOURLESSONS_PRICE_ID!,
+    eight:  process.env.STRIPE_EIGHTLESSONS_PRICE_ID!,
+    twelve: process.env.STRIPE_TWELVELESSONS_PRICE_ID!,
+  }
+
+  const ONE_TIME_PRICE_IDS: Record<string, string> = {
+    trial:                process.env.STRIPE_TRIAL_PRICE_ID!,
+    'mentorship-single':  process.env.STRIPE_MENTORSHIP_SINGLE_PRICE_ID!,
+    'mentorship-double':  process.env.STRIPE_MENTORSHIP_DOUBLE_PRICE_ID!,
+    'mentorship-triple':  process.env.STRIPE_MENTORSHIP_TRIPLE_PRICE_ID!,
+    'additional-lessons': process.env.STRIPE_ADDITIONAL_LESSON_PRICE_ID!,
+    'get-ready':          process.env.STRIPE_COURSE_ONE!,
+    'get-booked':         process.env.STRIPE_COURSE_TWO!,
+    'stay-booked':        process.env.STRIPE_COURSE_THREE!,
+    'course-full':        process.env.STRIPE_COURSE_BUNDLE!,
+  }
 
   const isOneTime = plan in ONE_TIME_PRICE_IDS
   const priceId = isOneTime ? ONE_TIME_PRICE_IDS[plan] : SUBSCRIPTION_PRICE_IDS[plan]

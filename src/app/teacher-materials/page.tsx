@@ -1,36 +1,26 @@
 import type { Metadata } from 'next'
-import DebateGenerator from '../sections/DebateGenerator'
 import FreeLessonPlans from '../sections/FreeLessonPlans'
 
 export const metadata: Metadata = {
-  title: 'Teacher Materials - Free Debate Topics & Vocabulary',
+  title: 'Teacher Materials - Free ESL Lesson Plans',
   description:
-    'Get inspired with thought-provoking ESL debate topics and key vocabulary. Perfect for classroom discussions, speaking practice, and sparking great conversations! Free tool for English teachers and students.',
+    'Download free ESL lesson plans for English teachers. Ready-to-use classroom materials to save you prep time and engage your students.',
   keywords: [
-    'ESL debate topics',
-    'English debate generator',
-    'debate topics for ESL',
-    'speaking practice',
-    'conversation topics',
-    'English discussion topics',
+    'free ESL lesson plans',
+    'ESL teaching resources',
+    'English lesson plans',
     'teacher resources',
     'ESL activities',
+    'classroom materials',
   ],
   openGraph: {
-    title: 'Teacher Materials - Free Debate Topics & Vocabulary | LearnWithMillie',
+    title: 'Teacher Materials - Free ESL Lesson Plans | LearnWithMillie',
     description:
-      'Get inspired with thought-provoking ESL debate topics and key vocabulary. Perfect for classroom discussions and speaking practice.',
+      'Download free ESL lesson plans for English teachers. Ready-to-use classroom materials to save you prep time.',
     url: '/teacher-materials',
   },
 }
 
 export default function TeacherMaterialsPage() {
-  return (
-    <>
-      <div id="random-questions">
-        <DebateGenerator />
-      </div>
-      <FreeLessonPlans />
-    </>
-  )
+  return <FreeLessonPlans />
 }

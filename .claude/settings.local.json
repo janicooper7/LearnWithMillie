@@ -21,8 +21,9 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web\" -Recurse -Directory -Filter \"admin\")",
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(dir C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web\\\\src\\\\app\\\\api\\\\admin *)",
-      "Bash(npx tsc *)",
-      "Bash(curl *)"
+      "mcp__claude_ai_Context7__resolve-library-id",
+      "Bash(npx tsx *)",
+      "Bash(Remove-Item scripts/rename-courses.ts, scripts/list-courses.mjs, scripts/list-courses.sql)"
     ]
   }
 }

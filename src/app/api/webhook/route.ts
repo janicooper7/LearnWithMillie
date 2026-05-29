@@ -147,21 +147,38 @@ export async function POST(req: NextRequest) {
 
     case 'invoice.paid': {
       const invoice = event.data.object as Stripe.Invoice
-      const subId = (invoice as any).subscription as string
-      if (!subId) break
+      const inv = invoice as any
 
       // Skip the first invoice — already handled by checkout.session.completed
       // Only reset allowance on renewals (subscription_cycle)
-      if ((invoice as any).billing_reason !== 'subscription_cycle') break
+      if (inv.billing_reason !== 'subscription_cycle') break
 
-      const priceId = (invoice.lines.data[0] as any)?.price?.id
+      // Newer Stripe API moved subscription off the top-level Invoice
+      const subId =
+        inv.subscription ??
+        inv.parent?.subscription_details?.subscription
+      if (!subId) {
+        console.warn('Webhook invoice.paid: could not resolve subscription id', { invoiceId: invoice.id })
+        break
+      }
+
+      // Newer Stripe API moved price off InvoiceLineItem into pricing.price_details
+      const line0 = inv.lines?.data?.[0]
+      const priceId = line0?.pricing?.price_details?.price ?? line0?.price?.id
       const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0
-      const customerId = invoice.customer as string
+      if (!lessons) {
+        console.warn('Webhook invoice.paid: unrecognised priceId, skipping to avoid wiping allowance', { priceId, subId })
+        break
+      }
 
-      await prisma.user.updateMany({
+      const customerId = invoice.customer as string
+      const result = await prisma.user.updateMany({
         where: { stripeCustomerId: customerId },
         data: { allowance: lessons },
       })
+      if (result.count === 0) {
+        console.warn('Webhook invoice.paid: no user matched stripeCustomerId', { customerId, subId })
+      }
       break
     }
 

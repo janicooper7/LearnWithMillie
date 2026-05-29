@@ -2,70 +2,49 @@
 
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { CheckIcon } from '@heroicons/react/24/solid'
-import { ArrowRight, PlayCircle } from 'lucide-react'
+import { ArrowRight, PlayCircle, Video, ListChecks, BarChart2, Infinity, RefreshCw } from 'lucide-react'
 
 const courses = [
   {
-    name: 'Course 1',
-    planKey: 'course-1',
-    price: 39,
-    description: 'Start your English journey',
+    name: 'GET READY',
+    subtitle: 'How to Set Up Your Online English Tutoring Business',
+    planKey: 'get-ready',
+    price: 49,
+    originalPrice: null,
+    description: 'Everything you need to launch your tutoring business from scratch',
     featured: false,
     badge: null,
-    features: [
-      'Full video course access',
-      'Structured lesson path',
-      'Progress tracking',
-      'Lifetime access',
-      'All future updates included',
-    ],
   },
   {
-    name: 'Course 2',
-    planKey: 'course-2',
-    price: 39,
-    description: 'Build on your foundations',
+    name: 'GET BOOKED',
+    subtitle: 'How to Get Students Teaching English Online',
+    planKey: 'get-booked',
+    price: 79,
+    originalPrice: null,
+    description: 'Proven strategies to attract and convert your first students',
     featured: false,
     badge: null,
-    features: [
-      'Full video course access',
-      'Structured lesson path',
-      'Progress tracking',
-      'Lifetime access',
-      'All future updates included',
-    ],
   },
   {
-    name: 'Course 3',
-    planKey: 'course-3',
-    price: 39,
-    description: 'Master advanced skills',
+    name: 'STAY BOOKED',
+    subtitle: 'How to Build a Calendar That Stays Full',
+    planKey: 'stay-booked',
+    price: 59,
+    originalPrice: null,
+    description: 'Keep your schedule consistently full with long-term students',
     featured: false,
     badge: null,
-    features: [
-      'Full video course access',
-      'Structured lesson path',
-      'Progress tracking',
-      'Lifetime access',
-      'All future updates included',
-    ],
   },
   {
-    name: 'Full Course',
+    name: 'BOOKED Trilogy',
+    subtitle: 'The Complete Collection',
     planKey: 'course-full',
-    price: 69,
-    description: 'Complete English mastery bundle',
+    price: 149,
+    originalPrice: 187,
+    description: '— launch, fill, and keep your tutoring business thriving',
+    descriptionBold: 'All 3 courses',
     featured: true,
-    badge: 'Best Value',
-    features: [
-      'All 3 courses included',
-      'Full video course access',
-      'Structured lesson path',
-      'Progress tracking',
-      'Lifetime access',
-      'All future updates included',
-    ],
+    badge: 'Best Value · Save $38',
   },
 ]
 
@@ -86,14 +65,29 @@ export default function CoursePricingCards({ userAccess, startedSlugs = [] }: { 
         body: JSON.stringify({ plan: planKey }),
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
-    } catch {
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        console.error('Checkout error:', data.error)
+        setLoadingPlan(null)
+      }
+    } catch (err) {
+      console.error('Checkout fetch error:', err)
       setLoadingPlan(null)
     }
   }
 
+  const included = [
+    { icon: Video,      label: 'Full video course access' },
+    { icon: ListChecks, label: 'Structured lesson path' },
+    { icon: BarChart2,  label: 'Progress tracking' },
+    { icon: Infinity,   label: 'Lifetime access' },
+    { icon: RefreshCw,  label: 'All future updates included' },
+  ]
+
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+    <>
+    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
       {courses.map((course) => {
         const hasAccess = userAccess.includes(course.planKey)
         const hasStarted = startedSlugs.includes(course.planKey)
@@ -104,7 +98,6 @@ export default function CoursePricingCards({ userAccess, startedSlugs = [] }: { 
             className="relative rounded-2xl bg-white flex flex-col"
             style={{
               border: course.featured ? '2px solid #1F3A34' : '1px solid #EDE4D8',
-              transform: course.featured ? 'translateY(-6px)' : 'none',
               boxShadow: course.featured
                 ? '0 20px 50px rgba(31,58,52,0.13)'
                 : '0 2px 12px rgba(31,58,52,0.05)',
@@ -122,65 +115,83 @@ export default function CoursePricingCards({ userAccess, startedSlugs = [] }: { 
             )}
 
             <div className="p-7 flex flex-col flex-1">
-              {/* Name + description */}
+              {/* Name + subtitle + description */}
               <div className="mb-6">
-                <h3
-                  className="text-2xl font-bold mb-1.5"
-                  style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
+                <p
+                  className="text-[10px] uppercase tracking-[0.2em] font-semibold mb-1"
+                  style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
                 >
                   {course.name}
+                </p>
+                <h3
+                  className="text-lg font-bold mb-2 leading-snug min-h-[3.25rem]"
+                  style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
+                >
+                  {course.subtitle}
                 </h3>
-                <p className="text-sm" style={{ color: 'rgba(31,58,52,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                <p className="text-xs leading-relaxed" style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  {'descriptionBold' in course && <strong style={{ color: '#1F3A34' }}>{course.descriptionBold} </strong>}
                   {course.description}
                 </p>
               </div>
 
-              {/* Price */}
-              <div className="mb-7 pb-7" style={{ borderBottom: '1px solid #EDE4D8' }}>
-                <div className="flex items-end gap-2 mb-1">
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-playfair), Georgia, serif',
-                      fontSize: '3.2rem',
-                      fontWeight: 700,
-                      lineHeight: 1,
-                      color: '#1F3A34',
-                    }}
-                  >
-                    ${course.price}
-                  </span>
-                </div>
-                <p className="text-sm" style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  one-time payment
-                </p>
-              </div>
+              {/* spacer — absorbs varying description heights, keeps price pinned */}
+              <div className="flex-1" />
 
-              {/* Features */}
-              <ul className="space-y-3.5 mb-8 flex-1">
-                {course.features.map((feature, i) => (
-                  <li key={feature} className="flex items-center gap-3">
-                    <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: 'rgba(31,58,52,0.08)' }}
-                    >
-                      <CheckIcon className="w-3 h-3" style={{ color: '#1F3A34' }} />
-                    </div>
+              {/* Price */}
+              {!hasAccess && (
+                <div className="mb-7 pb-7" style={{ borderBottom: '1px solid #EDE4D8' }}>
+                  <div className="flex items-end gap-2 mb-1">
                     <span
-                      className="text-sm leading-relaxed"
                       style={{
-                        color: 'rgba(31,58,52,0.75)',
-                        fontFamily: 'var(--font-inter), sans-serif',
-                        fontWeight: i === 0 ? 600 : 400,
+                        fontFamily: 'var(--font-playfair), Georgia, serif',
+                        fontSize: '3.2rem',
+                        fontWeight: 700,
+                        lineHeight: 1,
+                        color: '#1F3A34',
                       }}
                     >
-                      {feature}
+                      ${course.price}
                     </span>
-                  </li>
-                ))}
-              </ul>
+                    {course.originalPrice && (
+                      <span
+                        className="text-base line-through pb-1"
+                        style={{ color: 'rgba(31,58,52,0.35)', fontFamily: 'var(--font-inter), sans-serif' }}
+                      >
+                        ${course.originalPrice}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm" style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    one-time payment
+                    {course.originalPrice && (
+                      <span className="ml-2 font-semibold" style={{ color: '#C2AA6A' }}>· 21% off</span>
+                    )}
+                  </p>
+                </div>
+              )}
 
               {/* CTA */}
-              {hasAccess ? (
+              {hasAccess && course.planKey === 'course-full' ? (
+                <div className="space-y-2">
+                  <p className="text-[10px] uppercase tracking-[0.15em] font-semibold text-center mb-3" style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    Start a course
+                  </p>
+                  {(['get-ready', 'get-booked', 'stay-booked'] as const).map((slug, i) => (
+                    <a
+                      key={slug}
+                      href={`/learn/${slug}`}
+                      className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
+                      style={{ backgroundColor: 'rgba(31,58,52,0.06)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'rgba(31,58,52,0.12)' }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'rgba(31,58,52,0.06)' }}
+                    >
+                      <span>{['GET READY', 'GET BOOKED', 'STAY BOOKED'][i]}</span>
+                      <ArrowRight className="w-3.5 h-3.5" style={{ color: '#C2AA6A' }} />
+                    </a>
+                  ))}
+                </div>
+              ) : hasAccess ? (
                 <a
                   href={`/learn/${course.planKey}`}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200"
@@ -207,5 +218,29 @@ export default function CoursePricingCards({ userAccess, startedSlugs = [] }: { 
         )
       })}
     </div>
+
+    {/* What's included strip */}
+    <div className="mt-10 rounded-2xl px-8 py-6" style={{ backgroundColor: 'white', border: '1px solid #EDE4D8' }}>
+      <p
+        className="text-[10px] uppercase tracking-[0.2em] font-semibold text-center mb-5"
+        style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}
+      >
+        Every course includes
+      </p>
+      <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
+        {included.map(({ icon: Icon, label }) => (
+          <div key={label} className="flex items-center gap-2.5">
+            <Icon className="w-4 h-4 flex-shrink-0" style={{ color: '#C2AA6A' }} />
+            <span
+              className="text-sm"
+              style={{ color: 'rgba(31,58,52,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}
+            >
+              {label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+    </>
   )
 }
