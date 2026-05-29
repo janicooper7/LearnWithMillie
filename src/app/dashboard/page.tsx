@@ -10,6 +10,7 @@ import CreditsCardActions from '@/app/components/CreditsCardActions'
 import ChatButton from '@/app/components/ChatButton'
 import AddonLessonsBanner from '@/app/components/AddonLessonsBanner'
 import CancelBookingButton from '@/app/components/CancelBookingButton'
+import BookingTime from '@/app/components/BookingTime'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -212,28 +213,10 @@ export default async function DashboardPage() {
             <p className='text-[11px] uppercase tracking-[0.12em] mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
             <div className='space-y-3'>
               {upcomingBookings.map((booking) => {
-                const start = new Date(booking.start)
-                const end = new Date(booking.end)
                 return (
                   <div key={booking.uid} className='flex items-center justify-between py-3 px-4 rounded-xl' style={{ backgroundColor: '#F4EDE4' }}>
                     <div className='flex items-center gap-4'>
-                      <div className='text-center'>
-                        <p className='text-xs font-semibold uppercase' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-                          {start.toLocaleDateString('en-GB', { month: 'short' })}
-                        </p>
-                        <p className='text-xl font-bold leading-none' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                          {start.toLocaleDateString('en-GB', { day: 'numeric' })}
-                        </p>
-                      </div>
-                      <div className='w-px h-8' style={{ backgroundColor: '#EDE4D8' }} />
-                      <div>
-                        <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                          {start.toLocaleDateString('en-GB', { weekday: 'long' })}
-                        </p>
-                        <p className='text-xs' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                          {start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} – {end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-                        </p>
-                      </div>
+                      <BookingTime start={booking.start} end={booking.end} />
                     </div>
                     <div className='flex items-center gap-2'>
                       {booking.meetingUrl && (
