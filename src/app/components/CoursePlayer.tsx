@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { CheckCircle, Circle, ChevronRight, PlayCircle, Clock } from 'lucide-react'
+import { CheckCircle, Circle, ChevronRight, PlayCircle, Clock, PartyPopper, X } from 'lucide-react'
+import Link from 'next/link'
+import confetti from 'canvas-confetti'
 
 type Lesson = {
   id: string
@@ -35,6 +37,38 @@ export default function CoursePlayer({ courseSlug, courseTitle, lessons: initial
   const activeLesson = lessons.find((l) => l.id === activeId)
   const completedCount = lessons.filter((l) => l.completedAt).length
   const progressPct = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0
+  const allComplete = lessons.length > 0 && completedCount === lessons.length
+
+  // Track whether the course was already finished on load, so we only celebrate
+  // when the learner crosses the finish line during this session — not on revisit.
+  const wasCompleteRef = useRef(
+    initialLessons.length > 0 && initialLessons.every((l) => l.completedAt)
+  )
+
+  const fireCelebration = useCallback(() => {
+    const duration = 3 * 1000
+    const animationEnd = Date.now() + duration
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 }
+    const colors = ['#1F3A34', '#C2AA6A', '#2A4D45', '#D4C08A', '#F4EDE4']
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min
+    const interval: any = setInterval(() => {
+      const timeLeft = animationEnd - Date.now()
+      if (timeLeft <= 0) return clearInterval(interval)
+      const particleCount = 50 * (timeLeft / duration)
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors })
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors })
+    }, 250)
+  }, [])
+
+  const [showCompletionModal, setShowCompletionModal] = useState(false)
+
+  useEffect(() => {
+    if (allComplete && !wasCompleteRef.current) {
+      fireCelebration()
+      setShowCompletionModal(true)
+    }
+    wasCompleteRef.current = allComplete
+  }, [allComplete, fireCelebration])
 
   const markComplete = useCallback(async (lessonId: string, completed: boolean) => {
     try {
@@ -137,7 +171,7 @@ export default function CoursePlayer({ courseSlug, courseTitle, lessons: initial
                   )}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium leading-snug truncate ${isActive ? 'text-white' : 'text-white/70'}`}>
+                  <p className={`text-sm font-medium leading-snug ${isActive ? 'text-white' : 'text-white/70'}`}>
                     <span className="text-white/40 mr-1">{idx + 1}.</span>
                     {lesson.title}
                   </p>
@@ -171,13 +205,11 @@ export default function CoursePlayer({ courseSlug, courseTitle, lessons: initial
         {/* Lesson info */}
         <div className="p-6 lg:p-8 flex-1">
           <div className="max-w-3xl">
-            <div className="flex items-start justify-between gap-4 flex-wrap">
-              <div>
-                <p className="text-sm text-[#1F3A34]/50 mb-1">
-                  Lesson {lessons.findIndex((l) => l.id === activeId) + 1} of {lessons.length}
-                </p>
-                <h1 className="text-2xl font-bold text-[#1F3A34]">{activeLesson.title}</h1>
-              </div>
+            <p className="text-sm text-[#1F3A34]/50 mb-1">
+              Lesson {lessons.findIndex((l) => l.id === activeId) + 1} of {lessons.length}
+            </p>
+            <div className="flex items-baseline justify-between gap-4">
+              <h1 className="text-2xl font-bold text-[#1F3A34] min-w-0">{activeLesson.title}</h1>
               <div className="flex items-center gap-3 flex-shrink-0">
                 {activeLesson.completedAt ? (
                   <button
@@ -207,13 +239,84 @@ export default function CoursePlayer({ courseSlug, courseTitle, lessons: initial
               </div>
             </div>
             {activeLesson.description && (
-              <p className="mt-4 text-[#1F3A34]/70 leading-relaxed">{activeLesson.description}</p>
+              <p className="mt-4 text-[#1F3A34]/70 leading-relaxed whitespace-pre-line">{activeLesson.description}</p>
+            )}
+
+            {/* Celebration callout once every module is complete */}
+            {allComplete && (
+              <div className="mt-8 rounded-2xl p-6 flex items-center gap-4 bg-[#1F3A34] text-white">
+                <PartyPopper className="w-8 h-8 flex-shrink-0 text-[#C2AA6A]" />
+                <div className="min-w-0">
+                  <p className="font-bold text-lg mb-0.5">Congratulations — course complete! 🎉</p>
+                  <p className="text-sm text-white/65">
+                    You&apos;ve finished all {lessons.length} modules of {courseTitle}. Amazing work.
+                  </p>
+                </div>
+                <button
+                  onClick={fireCelebration}
+                  className="ml-auto flex-shrink-0 hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-white/20 text-white hover:bg-white/10 transition-colors"
+                >
+                  Celebrate again
+                </button>
+                <Link
+                  href="/courses"
+                  className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[#C2AA6A] text-[#1F3A34] hover:opacity-85 transition-opacity"
+                >
+                  Next course <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
             )}
           </div>
         </div>
       </main>
     </div>
     </div>
+
+    {/* Course-complete celebration modal */}
+    {showCompletionModal && (
+      <div
+        className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        onClick={() => setShowCompletionModal(false)}
+      >
+        <div
+          className="relative w-full max-w-md rounded-3xl bg-white p-8 text-center shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => setShowCompletionModal(false)}
+            aria-label="Close"
+            className="absolute right-4 top-4 text-[#1F3A34]/40 hover:text-[#1F3A34] transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#1F3A34]">
+            <PartyPopper className="h-8 w-8 text-[#C2AA6A]" />
+          </div>
+
+          <h2 className="text-2xl font-bold text-[#1F3A34] mb-2">Congratulations! 🎉</h2>
+          <p className="text-[#1F3A34]/70 leading-relaxed">
+            You&apos;ve completed <span className="font-semibold text-[#1F3A34]">{courseTitle}</span> —
+            all {lessons.length} modules done. That&apos;s a huge step. Time to put it into practice!
+          </p>
+
+          <div className="mt-7 flex flex-col gap-3">
+            <Link
+              href="/courses"
+              className="flex items-center justify-center gap-2 rounded-xl bg-[#1F3A34] px-5 py-3 text-sm font-bold text-white hover:bg-[#1F3A34]/90 transition-colors"
+            >
+              Continue to your next course <ChevronRight className="w-4 h-4" />
+            </Link>
+            <button
+              onClick={() => setShowCompletionModal(false)}
+              className="text-sm font-medium text-[#1F3A34]/50 hover:text-[#1F3A34] transition-colors"
+            >
+              Keep reviewing this course
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   )
 }

@@ -1,19 +1,14 @@
 import type { Metadata } from 'next'
-import Testimonials from './sections/Testimonials'
-import Pricing from './sections/Pricing'
-import FAQ from './sections/FAQ'
-import LessonOptions from './sections/LessonOptions'
-import MeetTutor from './sections/MeetTutor'
-import HowItWorks from './sections/HowItWorks'
+import HomeHybrid from './sections/HomeHybrid'
 
 export const metadata: Metadata = {
-  title: 'Professional English Tutoring | Business English & Interview Prep',
+  title: 'English Tutoring & Teacher Mentorship with Millie Cooper',
   description:
-    'Transform your English skills with personalized tutoring. Learn Business English, improve conversational fluency, and prepare for job interviews with a certified TEFL teacher from London. Flexible scheduling and tailored lessons.',
+    'Learn English with confidence or grow as a teacher. Personalized one-on-one English lessons for students and one-on-one mentorship, courses, and free tools for teachers — all with certified TEFL teacher Millie Cooper from London.',
   openGraph: {
-    title: 'Professional English Tutoring | Business English & Interview Prep',
+    title: 'English Tutoring & Teacher Mentorship with Millie Cooper',
     description:
-      'Transform your English skills with personalized tutoring. Learn Business English, improve conversational fluency, and prepare for job interviews.',
+      'Learn English with confidence or grow as a teacher — lessons for students and mentorship for teachers, with certified TEFL teacher Millie Cooper.',
     url: '/',
   },
 }
@@ -21,12 +16,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <MeetTutor />
-      <Testimonials />
-      <HowItWorks />
-      <LessonOptions />
-      <Pricing />
-      <FAQ />
+      <HomeHybrid />
     </>
   )
 }

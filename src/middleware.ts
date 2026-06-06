@@ -14,7 +14,7 @@ export default auth((req) => {
     }
   }
 
-  if (pathname.startsWith('/learn') && pathname !== '/learn/demo') {
+  if (pathname.startsWith('/learn')) {
     if (!session) {
       return NextResponse.redirect(new URL('/auth/login', req.url))
     }

@@ -8,12 +8,12 @@ import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
 
 const studentItems = [
-  { name: 'How it works',   href: '/', hash: '#how-it-works',   description: 'Understand the lesson process' },
-  { name: 'Services',       href: '/', hash: '#lesson-options',  description: 'Explore lesson options' },
-  { name: 'Pricing',        href: '/', hash: '#pricing',         description: 'Simple, transparent plans' },
-  { name: 'Testimonials',   href: '/', hash: '#testimonials',    description: 'Hear from other students' },
-  { name: 'Meet Millie',    href: '/about', hash: '',            description: 'Get to know your tutor' },
-  { name: 'FAQ',            href: '/', hash: '#faq',             description: 'Common questions answered' },
+  { name: 'How it works',   href: '/students', hash: '#how-it-works',   description: 'Understand the lesson process' },
+  { name: 'Services',       href: '/students', hash: '#lesson-options',  description: 'Explore lesson options' },
+  { name: 'Pricing',        href: '/students', hash: '#pricing',         description: 'Simple, transparent plans' },
+  { name: 'Testimonials',   href: '/students', hash: '#testimonials',    description: 'Hear from other students' },
+  { name: 'Meet Millie',    href: '/about',    hash: '',                 description: 'Get to know your tutor' },
+  { name: 'FAQ',            href: '/students', hash: '#faq',             description: 'Common questions answered' },
 ]
 
 const teacherItems = [
@@ -22,6 +22,7 @@ const teacherItems = [
   { name: 'Mentorship Program',  href: '/mentorship',         hash: '#mentorship-program',      description: "What's included" },
   { name: 'Pricing',             href: '/mentorship',         hash: '#mentorship-pricing',      description: 'Mentorship session plans' },
   { name: 'Courses',             href: '/courses',            hash: '',                        description: 'Teacher courses — coming soon' },
+  { name: 'Platform Finder',     href: '/platform-finder',    hash: '',                        description: 'Find your ideal teaching platform' },
   { name: 'Debate Generator',    href: '/debategenerator',    hash: '',                        description: 'Free ESL debate topics & vocab' },
 ]
 
@@ -70,7 +71,8 @@ export default function Navigation() {
     }
   }
 
-  const isTeacherSection = pathname === '/mentorship' || pathname.startsWith('/mentorship') || pathname === '/courses' || pathname === '/debategenerator' || pathname === '/teacher-materials'
+  const isTeacherSection = pathname === '/mentorship' || pathname.startsWith('/mentorship') || pathname === '/courses' || pathname === '/debategenerator' || pathname === '/platform-finder' || pathname === '/teacher-materials'
+  const isStudentSection = pathname === '/students' || pathname.startsWith('/students') || pathname === '/about'
 
   return (
     <header
@@ -99,7 +101,7 @@ export default function Navigation() {
             >
               <button
                 className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200"
-                style={{ color: openDropdown === 'students' || !isTeacherSection ? '#1F3A34' : 'rgba(31,58,52,0.55)' }}
+                style={{ color: openDropdown === 'students' || isStudentSection ? '#1F3A34' : 'rgba(31,58,52,0.55)' }}
               >
                 For Students
                 <ChevronDown

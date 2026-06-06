@@ -94,9 +94,9 @@ export default function Footer() {
               {[
                 { name: 'Meet your tutor', href: '/about' },
                 { name: 'Mentorship', href: '/mentorship' },
-                { name: 'Services', href: '/#lesson-options' },
-                { name: 'Testimonials', href: '/#testimonials' },
-                { name: 'Pricing', href: '/#pricing' },
+                { name: 'Services', href: '/students#lesson-options' },
+                { name: 'Testimonials', href: '/students#testimonials' },
+                { name: 'Pricing', href: '/students#pricing' },
                 { name: 'Contact', href: '/contact' },
                 { name: 'Teacher Materials', href: '/teacher-materials' },
                 { name: 'Terms & Conditions', href: '/terms' },
@@ -133,7 +133,7 @@ export default function Footer() {
               ].map((service) => (
                 <li key={service}>
                   <a
-                    href='/#lesson-options'
+                    href='/students#lesson-options'
                     className='text-sm transition-colors duration-200 hover:text-[#1F3A34]'
                     style={{ color: 'rgba(31,58,52,0.7)' }}
                   >
