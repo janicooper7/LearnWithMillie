@@ -49,6 +49,9 @@ export default async function DashboardPage() {
 
   const displayCourses = myCourses.filter(({ course }) => !course.isBundle)
 
+  // Students with no courses shouldn't see the "Browse Courses" empty state
+  const showCoursesCard = isTeacher || displayCourses.length > 0
+
   // Fetch Stripe + Cal.com in parallel
   const [stripeResult, calResult] = await Promise.allSettled([
     user.stripeSubscriptionId
@@ -119,6 +122,7 @@ export default async function DashboardPage() {
         <div className='grid md:grid-cols-2 gap-5'>
 
           {/* My Courses card */}
+          {showCoursesCard && (
           <div className='rounded-2xl p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
             <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
 
@@ -132,7 +136,7 @@ export default async function DashboardPage() {
                 </p>
                 <div className='mt-auto pt-6'>
                   <a
-                    href='/courses'
+                    href='/teachers/courses'
                     className='w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 hover:brightness-110'
                     style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
                   >
@@ -178,7 +182,7 @@ export default async function DashboardPage() {
                 </div>
                 <div className='mt-5'>
                   <a
-                    href='/courses'
+                    href='/teachers/courses'
                     className='w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 hover:brightness-110'
                     style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
                   >
@@ -190,6 +194,7 @@ export default async function DashboardPage() {
               </>
             )}
           </div>
+          )}
 
           {/* Book a lesson / session */}
           <BookLessonCard trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />

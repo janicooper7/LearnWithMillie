@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import DebateGenerator from '../sections/DebateGenerator'
+import DebateGenerator from '../../sections/DebateGenerator'
 
 export const metadata: Metadata = {
   title: 'Debate Generator - Free ESL Debate Topics & Vocabulary',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: 'Debate Generator - Free ESL Debate Topics & Vocabulary | LearnWithMillie',
     description:
       'Get inspired with thought-provoking ESL debate topics and key vocabulary. Perfect for classroom discussions and speaking practice.',
-    url: '/debategenerator',
+    url: '/teachers/debategenerator',
   },
 }
 

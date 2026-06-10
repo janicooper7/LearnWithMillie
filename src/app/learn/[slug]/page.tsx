@@ -38,8 +38,8 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
 
   if (!course) notFound()
 
-  // Bundles have no lessons — send users to /courses to pick an individual course
-  if (course.isBundle) redirect('/courses')
+  // Bundles have no lessons — send users to /teachers/courses to pick an individual course
+  if (course.isBundle) redirect('/teachers/courses')
 
   if (course.userAccess.length === 0) {
     return (
@@ -52,7 +52,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
           </div>
           <h1 className="text-2xl font-bold text-[#1F3A34] mb-2">Access Required</h1>
           <p className="text-[#1F3A34]/60 mb-6">You haven&apos;t purchased this course yet.</p>
-          <Link href={`/courses/${slug}`} className="bg-[#1F3A34] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1F3A34]/90 transition-colors">
+          <Link href={`/teachers/courses/${slug}`} className="bg-[#1F3A34] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1F3A34]/90 transition-colors">
             View Course
           </Link>
         </div>

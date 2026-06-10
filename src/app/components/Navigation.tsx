@@ -8,30 +8,93 @@ import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
 
 const studentItems = [
-  { name: 'How it works',   href: '/students', hash: '#how-it-works',   description: 'Understand the lesson process' },
-  { name: 'Services',       href: '/students', hash: '#lesson-options',  description: 'Explore lesson options' },
-  { name: 'Pricing',        href: '/students', hash: '#pricing',         description: 'Simple, transparent plans' },
-  { name: 'Testimonials',   href: '/students', hash: '#testimonials',    description: 'Hear from other students' },
-  { name: 'Meet Millie',    href: '/about',    hash: '',                 description: 'Get to know your tutor' },
-  { name: 'FAQ',            href: '/students', hash: '#faq',             description: 'Common questions answered' },
+  {
+    name: 'Meet Millie',
+    href: '/about',
+    hash: '',
+    description: 'Get to know your tutor',
+  },
+  {
+    name: 'How it works',
+    href: '/students',
+    hash: '#how-it-works',
+    description: 'Understand the lesson process',
+  },
+  {
+    name: 'Services',
+    href: '/students',
+    hash: '#lesson-options',
+    description: 'Explore lesson options',
+  },
+  {
+    name: 'Pricing',
+    href: '/students',
+    hash: '#pricing',
+    description: 'Simple, transparent plans',
+  },
+  {
+    name: 'Testimonials',
+    href: '/students',
+    hash: '#testimonials',
+    description: 'Hear from other students',
+  },
+  {
+    name: 'FAQ',
+    href: '/students',
+    hash: '#faq',
+    description: 'Common questions answered',
+  },
 ]
 
 const teacherItems = [
-  { name: 'Meet Millie',         href: '/mentorship',         hash: '',                        description: 'Get to know your mentor' },
-  { name: 'Testimonials',        href: '/mentorship',         hash: '#mentorship-testimonials', description: 'Hear from other teachers' },
-  { name: 'Mentorship Program',  href: '/mentorship',         hash: '#mentorship-program',      description: "What's included" },
-  { name: 'Pricing',             href: '/mentorship',         hash: '#mentorship-pricing',      description: 'Mentorship session plans' },
-  { name: 'Courses',             href: '/courses',            hash: '',                        description: 'Teacher courses — coming soon' },
-  { name: 'Platform Finder',     href: '/platform-finder',    hash: '',                        description: 'Find your ideal teaching platform' },
-  { name: 'Debate Generator',    href: '/debategenerator',    hash: '',                        description: 'Free ESL debate topics & vocab' },
+  {
+    name: 'Meet Millie',
+    href: '/teachers',
+    hash: '',
+    description: 'Get to know your mentor',
+  },
+  {
+    name: 'Testimonials',
+    href: '/teachers',
+    hash: '#mentorship-testimonials',
+    description: 'Hear from other teachers',
+  },
+  {
+    name: 'Mentorship',
+    href: '/teachers/mentorship',
+    hash: '',
+    description: "What's included",
+  },
+  {
+    name: 'Courses',
+    href: '/teachers/courses',
+    hash: '',
+    description: 'Learn at your own pace',
+  },
+  {
+    name: 'Platform Finder',
+    href: '/teachers/platform-finder',
+    hash: '',
+    description: 'Find your ideal teaching platform',
+  },
+  {
+    name: 'Debate Generator',
+    href: '/teachers/debategenerator',
+    hash: '',
+    description: 'Free ESL debate topics & vocab',
+  },
 ]
 
 type NavItem = { name: string; href: string; hash: string; description: string }
 
 export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [mobileExpanded, setMobileExpanded] = useState<'students' | 'teachers' | null>(null)
-  const [openDropdown, setOpenDropdown] = useState<'students' | 'teachers' | null>(null)
+  const [mobileExpanded, setMobileExpanded] = useState<
+    'students' | 'teachers' | null
+  >(null)
+  const [openDropdown, setOpenDropdown] = useState<
+    'students' | 'teachers' | null
+  >(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [scrolled, setScrolled] = useState(false)
 
@@ -71,8 +134,14 @@ export default function Navigation() {
     }
   }
 
-  const isTeacherSection = pathname === '/mentorship' || pathname.startsWith('/mentorship') || pathname === '/courses' || pathname === '/debategenerator' || pathname === '/platform-finder' || pathname === '/teacher-materials'
-  const isStudentSection = pathname === '/students' || pathname.startsWith('/students') || pathname === '/about'
+  const isTeacherSection =
+    pathname === '/teachers' ||
+    pathname.startsWith('/teachers') ||
+    pathname === '/teacher-materials'
+  const isStudentSection =
+    pathname === '/students' ||
+    pathname.startsWith('/students') ||
+    pathname === '/about'
 
   return (
     <header
@@ -81,38 +150,51 @@ export default function Navigation() {
       }`}
       style={{ backgroundColor: '#F4EDE4' }}
     >
-      <div className="container">
-        <div className="flex items-center justify-between h-[72px]">
-
+      <div className='container'>
+        <div className='flex items-center justify-between h-[72px]'>
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold tracking-tight flex-shrink-0"
-            style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+          <Link
+            href='/'
+            className='text-2xl font-bold tracking-tight flex-shrink-0'
+            style={{
+              color: '#1F3A34',
+              fontFamily: 'var(--font-playfair), Georgia, serif',
+            }}
+          >
             LearnWithMillie
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-1">
-
+          <div className='hidden md:flex items-center gap-1'>
             {/* For Students */}
             <div
-              className="relative"
+              className='relative'
               onMouseEnter={() => openMenu('students')}
               onMouseLeave={scheduleClose}
             >
               <button
-                className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200"
-                style={{ color: openDropdown === 'students' || isStudentSection ? '#1F3A34' : 'rgba(31,58,52,0.55)' }}
+                className='flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200'
+                style={{
+                  color:
+                    openDropdown === 'students' || isStudentSection
+                      ? '#1F3A34'
+                      : 'rgba(31,58,52,0.55)',
+                }}
               >
                 For Students
                 <ChevronDown
-                  className="w-3.5 h-3.5 transition-transform duration-200"
-                  style={{ transform: openDropdown === 'students' ? 'rotate(180deg)' : 'none', color: '#C2AA6A' }}
+                  className='w-3.5 h-3.5 transition-transform duration-200'
+                  style={{
+                    transform:
+                      openDropdown === 'students' ? 'rotate(180deg)' : 'none',
+                    color: '#C2AA6A',
+                  }}
                 />
               </button>
 
               {/* Dropdown */}
               <div
-                className="absolute top-full left-1/2 pt-2"
+                className='absolute top-full left-1/2 pt-2'
                 style={{
                   transform: 'translateX(-50%)',
                   pointerEvents: openDropdown === 'students' ? 'auto' : 'none',
@@ -123,19 +205,36 @@ export default function Navigation() {
                 onMouseEnter={() => openMenu('students')}
                 onMouseLeave={scheduleClose}
               >
-                <div className="rounded-2xl shadow-xl overflow-hidden"
-                  style={{ backgroundColor: 'white', border: '1px solid #EDE4D8' }}>
-                  <div className="p-2 grid grid-cols-2 gap-1">
+                <div
+                  className='rounded-2xl shadow-xl overflow-hidden'
+                  style={{
+                    backgroundColor: 'white',
+                    border: '1px solid #EDE4D8',
+                  }}
+                >
+                  <div className='p-2 grid grid-cols-2 gap-1'>
                     {studentItems.map((item) => (
                       <button
                         key={item.name}
                         onClick={() => navigate(item)}
-                        className="text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4] group"
+                        className='text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4] group'
                       >
-                        <p className="text-sm font-semibold" style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        <p
+                          className='text-sm font-semibold'
+                          style={{
+                            color: '#1F3A34',
+                            fontFamily: 'var(--font-inter), sans-serif',
+                          }}
+                        >
                           {item.name}
                         </p>
-                        <p className="text-xs mt-0.5" style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        <p
+                          className='text-xs mt-0.5'
+                          style={{
+                            color: 'rgba(31,58,52,0.5)',
+                            fontFamily: 'var(--font-inter), sans-serif',
+                          }}
+                        >
                           {item.description}
                         </p>
                       </button>
@@ -147,24 +246,33 @@ export default function Navigation() {
 
             {/* For Teachers */}
             <div
-              className="relative"
+              className='relative'
               onMouseEnter={() => openMenu('teachers')}
               onMouseLeave={scheduleClose}
             >
               <button
-                className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200"
-                style={{ color: openDropdown === 'teachers' || isTeacherSection ? '#1F3A34' : 'rgba(31,58,52,0.55)' }}
+                className='flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200'
+                style={{
+                  color:
+                    openDropdown === 'teachers' || isTeacherSection
+                      ? '#1F3A34'
+                      : 'rgba(31,58,52,0.55)',
+                }}
               >
                 For Teachers
                 <ChevronDown
-                  className="w-3.5 h-3.5 transition-transform duration-200"
-                  style={{ transform: openDropdown === 'teachers' ? 'rotate(180deg)' : 'none', color: '#C2AA6A' }}
+                  className='w-3.5 h-3.5 transition-transform duration-200'
+                  style={{
+                    transform:
+                      openDropdown === 'teachers' ? 'rotate(180deg)' : 'none',
+                    color: '#C2AA6A',
+                  }}
                 />
               </button>
 
               {/* Dropdown */}
               <div
-                className="absolute top-full left-1/2 pt-2"
+                className='absolute top-full left-1/2 pt-2'
                 style={{
                   transform: 'translateX(-50%)',
                   pointerEvents: openDropdown === 'teachers' ? 'auto' : 'none',
@@ -175,19 +283,36 @@ export default function Navigation() {
                 onMouseEnter={() => openMenu('teachers')}
                 onMouseLeave={scheduleClose}
               >
-                <div className="rounded-2xl shadow-xl overflow-hidden"
-                  style={{ backgroundColor: 'white', border: '1px solid #EDE4D8' }}>
-                  <div className="p-2 grid grid-cols-2 gap-1">
+                <div
+                  className='rounded-2xl shadow-xl overflow-hidden'
+                  style={{
+                    backgroundColor: 'white',
+                    border: '1px solid #EDE4D8',
+                  }}
+                >
+                  <div className='p-2 grid grid-cols-2 gap-1'>
                     {teacherItems.map((item) => (
                       <button
                         key={item.name}
                         onClick={() => navigate(item)}
-                        className="text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4]"
+                        className='text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4]'
                       >
-                        <p className="text-sm font-semibold" style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        <p
+                          className='text-sm font-semibold'
+                          style={{
+                            color: '#1F3A34',
+                            fontFamily: 'var(--font-inter), sans-serif',
+                          }}
+                        >
                           {item.name}
                         </p>
-                        <p className="text-xs mt-0.5" style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        <p
+                          className='text-xs mt-0.5'
+                          style={{
+                            color: 'rgba(31,58,52,0.5)',
+                            fontFamily: 'var(--font-inter), sans-serif',
+                          }}
+                        >
                           {item.description}
                         </p>
                       </button>
@@ -198,55 +323,85 @@ export default function Navigation() {
             </div>
 
             {/* Divider */}
-            <div className="mx-2 h-5 w-px" style={{ backgroundColor: 'rgba(31,58,52,0.15)' }} />
+            <div
+              className='mx-2 h-5 w-px'
+              style={{ backgroundColor: 'rgba(31,58,52,0.15)' }}
+            />
 
             {/* Auth */}
             {session ? (
-              <div className="flex items-center gap-3">
+              <div className='flex items-center gap-3'>
                 <Link
-                  href={session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'}
-                  className="flex items-center gap-2 text-[13px] font-medium px-3.5 py-2 rounded-lg transition-colors duration-200"
-                  style={{ color: '#1F3A34', backgroundColor: 'rgba(31,58,52,0.07)' }}
+                  href={
+                    session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'
+                  }
+                  className='flex items-center gap-2 text-[13px] font-medium px-3.5 py-2 rounded-lg transition-colors duration-200'
+                  style={{
+                    color: '#1F3A34',
+                    backgroundColor: 'rgba(31,58,52,0.07)',
+                  }}
                 >
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                    style={{ backgroundColor: '#1F3A34' }}>
-                    {session.user?.name?.[0]?.toUpperCase() ?? session.user?.email?.[0]?.toUpperCase()}
+                  <div
+                    className='w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0'
+                    style={{ backgroundColor: '#1F3A34' }}
+                  >
+                    {session.user?.name?.[0]?.toUpperCase() ??
+                      session.user?.email?.[0]?.toUpperCase()}
                   </div>
                   {session.user?.role === 'ADMIN' ? 'Admin' : 'My Account'}
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className="text-[13px] font-medium transition-colors duration-200"
+                  className='text-[13px] font-medium transition-colors duration-200'
                   style={{ color: 'rgba(31,58,52,0.55)' }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#1F3A34' }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(31,58,52,0.55)' }}
+                  onMouseEnter={(e) => {
+                    ;(e.currentTarget as HTMLButtonElement).style.color =
+                      '#1F3A34'
+                  }}
+                  onMouseLeave={(e) => {
+                    ;(e.currentTarget as HTMLButtonElement).style.color =
+                      'rgba(31,58,52,0.55)'
+                  }}
                 >
                   Sign out
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link href="/auth/login"
-                  className="text-[13px] font-medium transition-colors duration-200"
+              <div className='flex items-center gap-3'>
+                <Link
+                  href='/auth/login'
+                  className='text-[13px] font-medium transition-colors duration-200'
                   style={{ color: 'rgba(31,58,52,0.55)' }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#1F3A34' }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(31,58,52,0.55)' }}
+                  onMouseEnter={(e) => {
+                    ;(e.currentTarget as HTMLAnchorElement).style.color =
+                      '#1F3A34'
+                  }}
+                  onMouseLeave={(e) => {
+                    ;(e.currentTarget as HTMLAnchorElement).style.color =
+                      'rgba(31,58,52,0.55)'
+                  }}
                 >
                   Log in
                 </Link>
-                <Link href="/auth/signup" className="btn-primary">Sign up</Link>
+                <Link href='/auth/signup' className='btn-primary'>
+                  Sign up
+                </Link>
               </div>
             )}
           </div>
 
           {/* Mobile burger */}
           <button
-            className="md:hidden inline-flex items-center justify-center rounded-lg p-2"
+            className='md:hidden inline-flex items-center justify-center rounded-lg p-2'
             style={{ color: '#1F3A34' }}
             onClick={() => setMobileOpen((o) => !o)}
           >
-            <span className="sr-only">Toggle menu</span>
-            {mobileOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
+            <span className='sr-only'>Toggle menu</span>
+            {mobileOpen ? (
+              <XMarkIcon className='h-5 w-5' />
+            ) : (
+              <Bars3Icon className='h-5 w-5' />
+            )}
           </button>
         </div>
       </div>
@@ -254,32 +409,51 @@ export default function Navigation() {
       {/* Mobile menu */}
       <div
         className={`md:hidden fixed left-4 right-4 top-[80px] transition-all duration-300 ease-in-out ${
-          mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-3 pointer-events-none'
+          mobileOpen
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 -translate-y-3 pointer-events-none'
         }`}
       >
-        <div className="rounded-2xl overflow-hidden shadow-xl" style={{ backgroundColor: '#F4EDE4', border: '1px solid rgba(31,58,52,0.1)' }}>
-          <div className="p-2">
-
+        <div
+          className='rounded-2xl overflow-hidden shadow-xl'
+          style={{
+            backgroundColor: '#F4EDE4',
+            border: '1px solid rgba(31,58,52,0.1)',
+          }}
+        >
+          <div className='p-2'>
             {/* For Students accordion */}
             <button
-              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors"
-              style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
-              onClick={() => setMobileExpanded((e) => e === 'students' ? null : 'students')}
+              className='w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors'
+              style={{
+                color: '#1F3A34',
+                fontFamily: 'var(--font-inter), sans-serif',
+              }}
+              onClick={() =>
+                setMobileExpanded((e) => (e === 'students' ? null : 'students'))
+              }
             >
               For Students
               <ChevronDown
-                className="w-4 h-4 transition-transform duration-200"
-                style={{ color: '#C2AA6A', transform: mobileExpanded === 'students' ? 'rotate(180deg)' : 'none' }}
+                className='w-4 h-4 transition-transform duration-200'
+                style={{
+                  color: '#C2AA6A',
+                  transform:
+                    mobileExpanded === 'students' ? 'rotate(180deg)' : 'none',
+                }}
               />
             </button>
             {mobileExpanded === 'students' && (
-              <div className="pl-3 pb-1 space-y-0.5">
+              <div className='pl-3 pb-1 space-y-0.5'>
                 {studentItems.map((item) => (
                   <button
                     key={item.name}
                     onClick={() => navigate(item)}
-                    className="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60"
-                    style={{ color: 'rgba(31,58,52,0.75)', fontFamily: 'var(--font-inter), sans-serif' }}
+                    className='w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60'
+                    style={{
+                      color: 'rgba(31,58,52,0.75)',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                    }}
                   >
                     {item.name}
                   </button>
@@ -289,24 +463,36 @@ export default function Navigation() {
 
             {/* For Teachers accordion */}
             <button
-              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors"
-              style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
-              onClick={() => setMobileExpanded((e) => e === 'teachers' ? null : 'teachers')}
+              className='w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors'
+              style={{
+                color: '#1F3A34',
+                fontFamily: 'var(--font-inter), sans-serif',
+              }}
+              onClick={() =>
+                setMobileExpanded((e) => (e === 'teachers' ? null : 'teachers'))
+              }
             >
               For Teachers
               <ChevronDown
-                className="w-4 h-4 transition-transform duration-200"
-                style={{ color: '#C2AA6A', transform: mobileExpanded === 'teachers' ? 'rotate(180deg)' : 'none' }}
+                className='w-4 h-4 transition-transform duration-200'
+                style={{
+                  color: '#C2AA6A',
+                  transform:
+                    mobileExpanded === 'teachers' ? 'rotate(180deg)' : 'none',
+                }}
               />
             </button>
             {mobileExpanded === 'teachers' && (
-              <div className="pl-3 pb-1 space-y-0.5">
+              <div className='pl-3 pb-1 space-y-0.5'>
                 {teacherItems.map((item) => (
                   <button
                     key={item.name}
                     onClick={() => navigate(item)}
-                    className="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60"
-                    style={{ color: 'rgba(31,58,52,0.75)', fontFamily: 'var(--font-inter), sans-serif' }}
+                    className='w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60'
+                    style={{
+                      color: 'rgba(31,58,52,0.75)',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                    }}
                   >
                     {item.name}
                   </button>
@@ -316,33 +502,50 @@ export default function Navigation() {
           </div>
 
           {/* Mobile auth */}
-          <div className="px-4 pb-4 pt-3" style={{ borderTop: '1px solid rgba(31,58,52,0.08)' }}>
+          <div
+            className='px-4 pb-4 pt-3'
+            style={{ borderTop: '1px solid rgba(31,58,52,0.08)' }}
+          >
             {session ? (
-              <div className="space-y-2">
+              <div className='space-y-2'>
                 <Link
-                  href={session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'}
-                  className="btn-primary w-full text-center block"
+                  href={
+                    session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'
+                  }
+                  className='btn-primary w-full text-center block'
                   onClick={() => setMobileOpen(false)}
                 >
-                  {session.user?.role === 'ADMIN' ? 'Admin Portal' : 'My Account'}
+                  {session.user?.role === 'ADMIN'
+                    ? 'Admin Portal'
+                    : 'My Account'}
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className="w-full text-center text-sm font-medium py-2"
-                  style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  className='w-full text-center text-sm font-medium py-2'
+                  style={{
+                    color: 'rgba(31,58,52,0.55)',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                  }}
                 >
                   Sign out
                 </button>
               </div>
             ) : (
-              <div className="space-y-2">
-                <Link href="/auth/signup" className="btn-primary w-full text-center block" onClick={() => setMobileOpen(false)}>
+              <div className='space-y-2'>
+                <Link
+                  href='/auth/signup'
+                  className='btn-primary w-full text-center block'
+                  onClick={() => setMobileOpen(false)}
+                >
                   Sign up
                 </Link>
                 <Link
-                  href="/auth/login"
-                  className="w-full text-center text-sm font-medium py-2 block"
-                  style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  href='/auth/login'
+                  className='w-full text-center text-sm font-medium py-2 block'
+                  style={{
+                    color: 'rgba(31,58,52,0.55)',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                  }}
                   onClick={() => setMobileOpen(false)}
                 >
                   Log in

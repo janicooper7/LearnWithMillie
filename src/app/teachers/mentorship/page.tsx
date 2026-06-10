@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import MentorshipHero from '../sections/MentorshipHero'
-import MentorshipProgram from '../sections/MentorshipProgram'
-import MentorshipTestimonials from '../sections/MentorshipTestimonials'
-import MentorshipPricing from '../sections/MentorshipPricing'
+import MentorshipHero from '../../sections/MentorshipHero'
+import MentorshipProgram from '../../sections/MentorshipProgram'
+import MentorshipTestimonials from '../../sections/MentorshipTestimonials'
+import MentorshipPricing from '../../sections/MentorshipPricing'
 
 export const metadata: Metadata = {
   title: 'Teacher Mentorship',
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: 'Teacher Mentorship | LearnWithMillie',
     description:
       'Personalised mentorship for English teachers at every stage — from lesson design to building your brand.',
-    url: '/mentorship',
+    url: '/teachers/mentorship',
   },
 }
 

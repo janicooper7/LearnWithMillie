@@ -7,13 +7,13 @@ import Image from 'next/image'
 import gsap from 'gsap'
 
 const stats = [
-  { value: '2000+', label: 'Lessons taught' },
+  { value: '4k+', label: 'Lessons taught' },
   { value: '5★', label: 'Average rating' },
-  { value: '200+', label: 'Students taught' },
+  { value: '300+', label: 'Students taught' },
   { value: '4+', label: 'Years teaching' },
 ]
 
-export default function MentorshipHero() {
+export default function MentorshipHero({ programHref = '#mentorship-program' }: { programHref?: string }) {
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function MentorshipHero() {
                 Apply for mentorship <ArrowRight className='w-4 h-4' />
               </Link>
               <a
-                href='#mentorship-program'
+                href={programHref}
                 className='inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200'
                 style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#C2AA6A' }}

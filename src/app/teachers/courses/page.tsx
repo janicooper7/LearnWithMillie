@@ -64,17 +64,11 @@ export default async function CoursesPage() {
       {/* Hero */}
       <div className="bg-[#1F3A34] text-white py-20 px-4">
         <div className="max-w-5xl mx-auto text-center">
-          <p
-            className="text-xs uppercase tracking-[0.25em] font-semibold mb-4"
-            style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
-          >
-            Online Courses
-          </p>
           <h1
             className="text-4xl md:text-5xl font-bold mb-4"
             style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
           >
-            Learn at Your Own Pace
+            Courses - Learn at Your Own Pace
           </h1>
           <p
             className="text-lg max-w-xl mx-auto"

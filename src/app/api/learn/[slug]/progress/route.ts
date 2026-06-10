@@ -38,3 +38,22 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
 
   return NextResponse.json({ completedAt: progress.completedAt })
 }
+
+// Reset all progress for this course so the learner can redo it from scratch.
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const session = await auth()
+  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const course = await prisma.course.findFirst({
+    where: { slug, userAccess: { some: { userId: session.user.id } } },
+    select: { id: true },
+  })
+  if (!course) return NextResponse.json({ error: 'No access' }, { status: 403 })
+
+  await prisma.userLessonProgress.deleteMany({
+    where: { userId: session.user.id, lesson: { courseId: course.id } },
+  })
+
+  return NextResponse.json({ ok: true })
+}

@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, GraduationCap, Sparkles, CalendarCheck, BookOpen, Users, Star, BadgeCheck } from 'lucide-react'
 import gsap from 'gsap'
 
@@ -10,10 +11,10 @@ type PathKey = 'students' | 'teachers'
 const paths = [
   {
     key: 'students' as PathKey,
-    eyebrow: 'For Students',
+    eyebrow: 'Learn English with confidence',
     icon: GraduationCap,
-    title: 'Learn English',
-    accent: 'with confidence',
+    title: 'Students',
+    accent: '',
     body: 'Personalised one-on-one lessons built around your goals — from Business English and interview prep to everyday conversation.',
     points: ['Business English', 'Interview prep', 'Conversational fluency'],
     href: '/students',
@@ -21,13 +22,13 @@ const paths = [
   },
   {
     key: 'teachers' as PathKey,
-    eyebrow: 'For Teachers',
+    eyebrow: 'Teach English & grow your career',
     icon: Sparkles,
-    title: 'Teach English',
-    accent: 'and grow your career',
+    title: 'Teachers',
+    accent: '',
     body: 'Mentorship, courses, and free classroom tools to help English teachers build confidence, structure, and a thriving online presence.',
     points: ['1-on-1 mentorship', 'Teacher courses', 'Debate Generator', 'Free Platform Finder'],
-    href: '/mentorship',
+    href: '/teachers',
     cta: 'Explore teaching',
   },
 ]
@@ -52,63 +53,99 @@ export default function HomeHybrid() {
       style={{ backgroundColor: '#F4EDE4', minHeight: 'calc(100vh - 72px)' }}
     >
       {/* ── Intro ── */}
-      <div ref={introRef} className='container text-center pt-12 pb-8 md:pt-16 md:pb-10'>
-        <div className='flex items-center justify-center gap-3 mb-5'>
-          <div className='h-px w-10' style={{ backgroundColor: '#C2AA6A' }} />
-          <span
-            className='text-xs uppercase tracking-[0.25em] font-medium'
-            style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
-          >
-            English Tutoring &amp; Teacher Mentorship
-          </span>
-          <div className='h-px w-10' style={{ backgroundColor: '#C2AA6A' }} />
-        </div>
+      <div ref={introRef} className='container pt-12 pb-16 md:pt-16 md:pb-24'>
+        <div className='grid lg:grid-cols-[420px_1fr] gap-8 lg:gap-24 items-center'>
 
-        <h1
-          className='mb-4'
-          style={{
-            fontFamily: 'var(--font-playfair), Georgia, serif',
-            fontSize: 'clamp(2rem, 4.5vw, 3.4rem)',
-            fontWeight: 700,
-            color: '#1F3A34',
-            lineHeight: 1.1,
-          }}
-        >
-          Learn English. Teach English.
-          <br />
-          <span style={{ fontStyle: 'italic' }}>Master both with Millie.</span>
-        </h1>
-        <p
-          className='text-base md:text-lg max-w-2xl mx-auto'
-          style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          Whether you want to speak English with confidence or grow a thriving teaching career,
-          you&apos;ll learn directly from Millie Cooper — a certified TEFL tutor in London. Personalised
-          one-to-one English lessons for students, plus mentorship, courses, and free ESL teaching
-          tools for teachers.
-        </p>
-
-        {/* Trust signals */}
-        <div className='flex flex-wrap items-center justify-center gap-x-5 gap-y-3 mt-8'>
-          {[
-            { icon: CalendarCheck, label: '4+ years teaching' },
-            { icon: BookOpen,      label: '2,000+ lessons' },
-            { icon: Users,         label: '200+ students' },
-            { icon: Star,          label: '5★ rated' },
-            { icon: BadgeCheck,    label: 'TEFL certified' },
-          ].map(({ icon: Icon, label }, i) => (
-            <span key={label} className='inline-flex items-center gap-x-5'>
-              {i > 0 && (
-                <span aria-hidden className='h-5 w-px' style={{ backgroundColor: 'rgba(31,58,52,0.18)' }} />
-              )}
-              <span className='inline-flex items-center gap-2' style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
-                <Icon className='w-4 h-4 flex-shrink-0' style={{ color: '#C2AA6A' }} strokeWidth={2.2} />
-                <span className='text-sm md:text-base font-semibold' style={{ color: '#1F3A34' }}>
-                  {label}
-                </span>
+          {/* Right — copy */}
+          <div className='text-center lg:text-left order-last'>
+            <div className='flex items-center justify-center lg:justify-start gap-3 mb-5'>
+              <div className='h-px w-10' style={{ backgroundColor: '#C2AA6A' }} />
+              <span
+                className='text-xs uppercase tracking-[0.25em] font-medium'
+                style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
+              >
+                English Tutoring &amp; Teacher Mentorship
               </span>
-            </span>
-          ))}
+            </div>
+
+            <h1
+              className='mb-4'
+              style={{
+                fontFamily: 'var(--font-playfair), Georgia, serif',
+                fontSize: 'clamp(2rem, 4.5vw, 3.4rem)',
+                fontWeight: 700,
+                color: '#1F3A34',
+                lineHeight: 1.1,
+              }}
+            >
+              Speak English with confidence.
+              <br />
+              Teach it with purpose.
+            </h1>
+            <p
+              className='text-base md:text-lg max-w-2xl mx-auto lg:mx-0'
+              style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
+            >
+              Whether you want to speak English with confidence or grow a thriving teaching career,
+              you&apos;ll learn directly from Millie Cooper — a certified TEFL tutor in London. Personalised
+              one-to-one English lessons for students, plus mentorship, courses, and free ESL teaching
+              tools for teachers.
+            </p>
+
+            {/* Trust signals */}
+            <div className='flex flex-wrap items-center justify-center lg:justify-start gap-2.5 mt-8'>
+              {[
+                { icon: CalendarCheck, label: '4+ years teaching' },
+                { icon: BookOpen,      label: '4,000+ lessons' },
+                { icon: Users,         label: '300+ students' },
+                { icon: Star,          label: '5★ rated' },
+                { icon: BadgeCheck,    label: 'TEFL certified' },
+              ].map(({ icon: Icon, label }) => (
+                <span
+                  key={label}
+                  className='inline-flex items-center gap-2 px-3.5 py-2 rounded-full'
+                  style={{
+                    fontFamily: 'var(--font-inter), sans-serif',
+                    backgroundColor: 'white',
+                    border: '1px solid #EDE4D8',
+                  }}
+                >
+                  <Icon className='w-4 h-4 flex-shrink-0' style={{ color: '#C2AA6A' }} strokeWidth={2.2} />
+                  <span className='text-sm font-semibold' style={{ color: '#1F3A34' }}>
+                    {label}
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Left — photo composition */}
+          <div className='relative order-first'>
+            <div className='relative mx-auto lg:mx-0' style={{ maxWidth: '420px' }}>
+              {/* Offset green block */}
+              <div
+                className='absolute rounded-2xl hidden sm:block'
+                style={{ top: '22px', left: '22px', right: '-22px', bottom: '-22px', backgroundColor: '#1F3A34', zIndex: 1 }}
+              />
+              {/* Photo */}
+              <div className='relative rounded-2xl overflow-hidden' style={{ aspectRatio: '3/4', zIndex: 2 }}>
+                <Image
+                  src='/images/aboutme.png'
+                  alt='Millie Cooper — certified TEFL English tutor in London'
+                  fill
+                  priority
+                  className='object-cover object-top'
+                  sizes='(max-width: 1024px) 90vw, 420px'
+                  quality={92}
+                />
+                <div
+                  className='absolute inset-0 pointer-events-none'
+                  style={{ background: 'linear-gradient(to top, rgba(31,58,52,0.2) 0%, transparent 50%)' }}
+                />
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -169,10 +206,14 @@ export default function HomeHybrid() {
                 }}
               >
                 {p.title}
-                <br />
-                <span style={{ fontStyle: 'italic', color: isDark ? '#C2AA6A' : 'rgba(31,58,52,0.55)' }}>
-                  {p.accent}
-                </span>
+                {p.accent && (
+                  <>
+                    <br />
+                    <span style={{ fontStyle: 'italic', color: isDark ? '#C2AA6A' : 'rgba(31,58,52,0.55)' }}>
+                      {p.accent}
+                    </span>
+                  </>
+                )}
               </h2>
 
               {/* Body */}

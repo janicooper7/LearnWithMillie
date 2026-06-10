@@ -93,7 +93,7 @@ export default function Footer() {
             <ul className='space-y-3'>
               {[
                 { name: 'Meet your tutor', href: '/about' },
-                { name: 'Mentorship', href: '/mentorship' },
+                { name: 'Mentorship', href: '/teachers/mentorship' },
                 { name: 'Services', href: '/students#lesson-options' },
                 { name: 'Testimonials', href: '/students#testimonials' },
                 { name: 'Pricing', href: '/students#pricing' },

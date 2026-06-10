@@ -59,9 +59,16 @@ async function main() {
 
   const PLACEHOLDER_VIMEO_ID = '76979871'
 
-  const GET_READY_MODULES = [
+  const GET_READY_MODULES: {
+    title: string
+    description: string
+    topics: string[]
+    vimeoId?: string
+    vimeoHash?: string
+  }[] = [
     {
       title: `Module 1 — Welcome + the kind of tutor you want to be`,
+      vimeoId: '1200062966', // real recording uploaded
       description: `Sets up the whole course and the mindset that makes everything else work. The three non-negotiable traits of every successful online tutor — emotional intelligence, adaptability, and consistency — plus the imposter syndrome research that gives you permission to start before you feel ready.`,
       topics: [
         `The three traits of every successful online tutor`,
@@ -72,6 +79,7 @@ async function main() {
     },
     {
       title: `Module 2 — Do you actually need a TEFL? (And if so, which one to get)`,
+      vimeoId: '1200063065', // real recording uploaded
       description: `The honest answer to the question every new tutor asks, and a comparison of which TEFL course is actually worth your money. Also covers the "do I need previous experience?" question — what your existing career background, whatever it is, actually brings to your tutoring.`,
       topics: [
         `The technical answer vs the honest answer`,
@@ -82,6 +90,7 @@ async function main() {
     },
     {
       title: `Module 3 — Choosing your route: platform, private, or hybrid?`,
+      vimeoId: '1200063091', // real recording uploaded
       description: `The single biggest decision you'll make in your first month. The full pros and cons of teaching on existing platforms (Preply, italki, Cambly, Lingoda) versus going private versus running both. Includes the Platform-Match tool that tells you exactly which platforms you can apply to today.`,
       topics: [
         `Platform vs private vs hybrid: pros and cons of each`,
@@ -92,6 +101,7 @@ async function main() {
     },
     {
       title: `Module 4 — Tech setup that doesn't cost a fortune`,
+      vimeoId: '1200063108', // real recording uploaded
       description: `Exactly what you need to teach professionally from home — webcam, microphone, lighting, audio, screen setup — and what you absolutely don't need to spend money on. Plus what to fix first when things go wrong mid-lesson.`,
       topics: [
         `Webcam, microphone, and lighting essentials`,
@@ -102,6 +112,7 @@ async function main() {
     },
     {
       title: `Module 5 — Your essential software stack`,
+      vimeoId: '1200065439', // real recording uploaded
       description: `The free and paid tools every online tutor actually uses — from video editing to lesson materials to scheduling. Built around the modern AI-enabled workflow that saves you hours every week.`,
       topics: [
         `Video editing tools (CapCut, InShot)`,
@@ -112,6 +123,7 @@ async function main() {
     },
     {
       title: `Module 6 — Setting your rates with confidence`,
+      vimeoId: '1200065583', // real recording uploaded
       description: `Why undercharging hurts you more than you think — grounded in Tversky and Kahneman's anchoring bias research. The realistic rate ranges for each niche, the career-stage progression to plan around, and a practical word on time zones that nobody warns you about.`,
       topics: [
         `Pricing in the market — the realistic rate ranges by niche`,
@@ -181,8 +193,8 @@ async function main() {
       order,
       title: m.title,
       description: `${m.description}\n\nWhat's inside:\n${topicLines}`,
-      vimeoId: PLACEHOLDER_VIMEO_ID,
-      vimeoHash: null as string | null,
+      vimeoId: m.vimeoId ?? PLACEHOLDER_VIMEO_ID,
+      vimeoHash: m.vimeoHash ?? null,
       duration: 300 + order * 30, // placeholder durations until real videos are uploaded
     }
   })

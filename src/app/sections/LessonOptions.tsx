@@ -91,7 +91,7 @@ export default function LessonOptions() {
             return (
               <div
                 key={option.id}
-                className='relative rounded-2xl overflow-hidden cursor-pointer'
+                className='relative rounded-2xl overflow-hidden'
                 style={{ aspectRatio: '3/4' }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}

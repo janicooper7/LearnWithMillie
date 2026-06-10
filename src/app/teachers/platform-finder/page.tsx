@@ -21,10 +21,10 @@ export const metadata: Metadata = {
     title: 'Platform Finder — Find the right online English teaching platform | LearnWithMillie',
     description:
       'Match your profile to 33 online English teaching platforms in under 2 minutes. Ranked by pay and fit.',
-    url: '/platform-finder',
+    url: '/teachers/platform-finder',
   },
   alternates: {
-    canonical: '/platform-finder',
+    canonical: '/teachers/platform-finder',
   },
 }
 

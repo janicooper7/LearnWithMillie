@@ -64,7 +64,7 @@ export default function CourseDetailPage() {
       <div className="min-h-screen bg-[#F4EDE4] flex items-center justify-center">
         <div className="text-center">
           <p className="text-[#1F3A34]/60 mb-4">Course not found.</p>
-          <Link href="/courses" className="text-[#1F3A34] font-semibold underline">Browse all courses</Link>
+          <Link href="/teachers/courses" className="text-[#1F3A34] font-semibold underline">Browse all courses</Link>
         </div>
       </div>
     )
@@ -75,7 +75,7 @@ export default function CourseDetailPage() {
       {/* Hero */}
       <div className="bg-[#1F3A34] text-white py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <Link href="/courses" className="text-white/50 hover:text-white text-sm mb-6 inline-block transition-colors">
+          <Link href="/teachers/courses" className="text-white/50 hover:text-white text-sm mb-6 inline-block transition-colors">
             ← All Courses
           </Link>
           {course.isBundle && (
