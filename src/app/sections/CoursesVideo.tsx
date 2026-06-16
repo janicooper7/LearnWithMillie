@@ -3,7 +3,7 @@
 import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 
-const VIDEO_URL = 'https://www.youtube.com/embed/oAR4aK8bgkg?si=E4czYntQtsfwbwwe'
+const VIDEO_URL = 'https://www.youtube.com/embed/KawzKRqQV3A?si=Nu95B2S9ouSqLpDi'
 
 const courses = [
   {
