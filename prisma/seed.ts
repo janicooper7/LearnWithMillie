@@ -135,6 +135,7 @@ async function main() {
     },
     {
       title: `Module 7 — Building a tutor profile that gets clicked`,
+      vimeoId: '1200388322', // real recording uploaded
       description: `The six-step structure that turns a generic profile into one students actually choose. Why specificity beats credentials, and how to write a description that makes the right student feel like you wrote it about them.`,
       topics: [
         `The six-step profile description structure`,
@@ -145,6 +146,7 @@ async function main() {
     },
     {
       title: `Module 8 — The intro video that makes them book`,
+      vimeoId: '1200388324', // real recording uploaded
       description: `The single most important asset on your tutor profile — and the Harvard research from Ambady & Rosenthal that explains why six seconds of silent footage decides whether a student books you. The six-step script framework, the production checklist, and a special version for tutors who have no teaching experience yet.`,
       topics: [
         `Why thin-slicing means the first six seconds matter (Ambady & Rosenthal, 1992)`,
@@ -156,6 +158,7 @@ async function main() {
     },
     {
       title: `Module 9 — Pricing structures: trial pricing, packages, and when to raise`,
+      vimeoId: '1200388323', // real recording uploaded
       description: `How to price your trial lesson, when to bundle into packages, and the exact signals that tell you it's time to raise your rates. Plus the conversation with existing students that costs you fewer of them than you'd think.`,
       topics: [
         `Trial pricing strategies that don't undersell you`,
@@ -166,6 +169,7 @@ async function main() {
     },
     {
       title: `Module 10 — Invoicing, taxes & freelance admin (the unsexy essentials)`,
+      vimeoId: '1200388321', // real recording uploaded
       description: `The bit nobody covers — invoicing private students, choosing a payment processor, setting aside tax money every month, and the financial basics that turn online tutoring from a hobby into a real income.`,
       topics: [
         `Payment processors compared (Wise, Stripe, PayPal)`,
@@ -176,6 +180,7 @@ async function main() {
     },
     {
       title: `Module 11 — Where your first five students come from`,
+      vimeoId: '1200391577', // real recording uploaded
       description: `The honest answer to "how do I get my first students?" — five distinct sources, none of which are "go viral on TikTok." Plus the mental prep for first-lesson nerves, what the first 90 days actually look like in terms of income, and an honest look at the wall every new tutor hits at five students.`,
       topics: [
         `The five sources of your first five students`,

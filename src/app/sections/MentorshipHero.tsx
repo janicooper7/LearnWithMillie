@@ -1,8 +1,6 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-import { ArrowRight } from 'lucide-react'
-import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
 
@@ -59,26 +57,6 @@ export default function MentorshipHero({ programHref = '#mentorship-program' }: 
               Whether you&apos;re just starting out or refining your craft, Millie helps
               you build confidence, structure, and real results — in and out of the classroom.
             </p>
-
-            {/* CTAs */}
-            <div className='flex flex-wrap items-center gap-4'>
-              <Link
-                href='/auth/signup?type=teacher'
-                className='inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:brightness-110'
-                style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
-              >
-                Apply for mentorship <ArrowRight className='w-4 h-4' />
-              </Link>
-              <a
-                href={programHref}
-                className='inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200'
-                style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#C2AA6A' }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#1F3A34' }}
-              >
-                See what&apos;s included <ArrowRight className='w-4 h-4' />
-              </a>
-            </div>
 
             {/* Stats */}
             <div

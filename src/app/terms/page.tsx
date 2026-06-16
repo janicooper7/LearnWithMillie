@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Terms & Conditions | LearnWithMillie',
   description:
-    'Terms and conditions for LearnWithMillie, including our cancellation policy, refund policy, and trial lesson terms.',
+    'Terms and conditions for LearnWithMillie, including our cancellation policy, refund policy, trial lesson terms, and online course terms.',
 }
 
 const sections = [
@@ -49,6 +49,7 @@ const sections = [
     id: 'trial',
     title: 'Trial Lessons',
     highlight: true,
+    highlightText: 'Please read this section carefully. Trial lesson payments are final and non-refundable, and bookings cannot be changed once confirmed.',
     items: [
       'Trial lessons are available to new students only and may only be purchased once per account.',
       'Trial lessons are strictly non-refundable under any circumstances once payment has been completed.',
@@ -87,6 +88,22 @@ const sections = [
     id: 'changes',
     title: 'Changes to These Terms',
     content: `We reserve the right to update these Terms and Conditions at any time. Changes will be posted on this page with an updated effective date. Continued use of our services following any changes constitutes acceptance of the revised terms.`,
+  },
+  {
+    id: 'courses',
+    title: 'Online Courses',
+    highlight: true,
+    highlightText: 'Please read this section carefully. Course purchases are strictly non-refundable, and unauthorised sharing of course content may result in legal action.',
+    content: `The following terms apply to all online courses sold through LearnWithMillie. By purchasing a course, you agree to be bound by these terms in addition to all other sections of these Terms and Conditions.`,
+    items: [
+      'All course purchases are final and strictly non-refundable. Once payment has been completed and access has been granted, no refunds will be issued under any circumstances.',
+      'Course access is granted to the purchasing individual only and is non-transferable.',
+      'You may not record, screenshot, screen-capture, or otherwise reproduce any part of the course content in any format.',
+      'Sharing, distributing, re-uploading, or making available any course content — in whole or in part — outside of your own personal, private use is strictly prohibited.',
+      'Unauthorised reproduction or distribution of course materials may constitute copyright infringement and/or breach of contract, and LearnWithMillie reserves the right to pursue legal action in such cases.',
+      'Access to course content is provided for personal educational use only. You may not use course content for commercial purposes, resale, or to create derivative works.',
+      'LearnWithMillie reserves the right to revoke access without refund if these terms are breached.',
+    ],
   },
   {
     id: 'tutors',
@@ -240,9 +257,7 @@ export default function TermsPage() {
                       fontFamily: 'var(--font-inter), sans-serif',
                     }}
                   >
-                    Please read this section carefully. Trial lesson payments
-                    are final and non-refundable, and bookings cannot be changed
-                    once confirmed.
+                    {'highlightText' in section ? section.highlightText : 'Please read this section carefully.'}
                   </p>
                 </div>
               )}

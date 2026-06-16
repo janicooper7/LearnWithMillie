@@ -30,9 +30,9 @@ export default function BookLessonCard({ trialPurchased, isTeacher }: BookLesson
   return (
     <>
       {showModal && <UpgradePlanModal onClose={() => setShowModal(false)} trialPurchased={trialPurchased} isTeacher={isTeacher} />}
-      <div className='rounded-2xl p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
+      <div className='rounded-2xl p-5 sm:p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
         <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
-        <h2 className='text-xl font-bold text-white mb-3' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+        <h2 className='text-lg sm:text-xl font-bold text-white mb-3' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
           {isTeacher ? 'Ready for your mentorship session?' : 'Ready for your next lesson?'}
         </h2>
         <p className='text-sm leading-relaxed' style={{ color: 'rgba(255,255,255,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>

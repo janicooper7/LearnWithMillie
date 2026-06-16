@@ -24,7 +24,8 @@
       "mcp__claude_ai_Context7__resolve-library-id",
       "Bash(npx tsx *)",
       "Bash(Remove-Item scripts/rename-courses.ts, scripts/list-courses.mjs, scripts/list-courses.sql)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(npx ts-node *)"
     ]
   }
 }

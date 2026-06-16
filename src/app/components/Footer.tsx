@@ -12,6 +12,65 @@ const TikTokIcon = ({ size = 20 }: { size?: number }) => (
   </svg>
 )
 
+const studentLinks = [
+  { name: 'Meet Millie', href: '/about' },
+  { name: 'How it works', href: '/students#how-it-works' },
+  { name: 'Services', href: '/students#lesson-options' },
+  { name: 'Pricing', href: '/students#pricing' },
+  { name: 'Testimonials', href: '/students#testimonials' },
+  { name: 'FAQ', href: '/students#faq' },
+]
+
+const teacherLinks = [
+  { name: 'Meet Millie', href: '/teachers' },
+  { name: 'Mentorship', href: '/teachers/mentorship' },
+  { name: 'Courses', href: '/teachers/courses' },
+  { name: 'Testimonials', href: '/teachers#mentorship-testimonials' },
+  { name: 'Platform Finder', href: '/teachers/platform-finder' },
+  { name: 'Debate Generator', href: '/teachers/debategenerator' },
+  { name: 'Teacher Materials', href: '/teacher-materials' },
+]
+
+const generalLinks = [
+  { name: 'Contact', href: '/contact' },
+  { name: 'Terms & Conditions', href: '/terms' },
+]
+
+function FooterColumn({
+  title,
+  links,
+}: {
+  title: string
+  links: { name: string; href: string }[]
+}) {
+  return (
+    <div className='space-y-6'>
+      <h4
+        className='text-base font-semibold uppercase tracking-widest'
+        style={{
+          color: 'rgba(31,58,52,0.65)',
+          fontFamily: 'var(--font-inter), sans-serif',
+        }}
+      >
+        {title}
+      </h4>
+      <ul className='space-y-3'>
+        {links.map((link) => (
+          <li key={link.name}>
+            <a
+              href={link.href}
+              className='text-sm transition-colors duration-200 hover:text-[#1F3A34]'
+              style={{ color: 'rgba(31,58,52,0.7)' }}
+            >
+              {link.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 export default function Footer() {
   return (
     <footer
@@ -21,11 +80,11 @@ export default function Footer() {
       }}
     >
       <div className='container py-16 md:py-20'>
-        <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-12'>
+        <div className='grid md:grid-cols-2 lg:grid-cols-5 gap-12'>
           {/* Brand */}
           <div className='lg:col-span-2 space-y-6'>
             <span
-              className='text-3xl font-bold'
+              className='text-2xl font-bold tracking-tight'
               style={{
                 color: '#1F3A34',
                 fontFamily: 'var(--font-playfair), Georgia, serif',
@@ -79,70 +138,14 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className='space-y-6'>
-            <h4
-              className='text-base font-semibold uppercase tracking-widest'
-              style={{
-                color: 'rgba(31,58,52,0.65)',
-                fontFamily: 'var(--font-inter), sans-serif',
-              }}
-            >
-              Quick Links
-            </h4>
-            <ul className='space-y-3'>
-              {[
-                { name: 'Meet your tutor', href: '/about' },
-                { name: 'Mentorship', href: '/teachers/mentorship' },
-                { name: 'Services', href: '/students#lesson-options' },
-                { name: 'Testimonials', href: '/students#testimonials' },
-                { name: 'Pricing', href: '/students#pricing' },
-                { name: 'Contact', href: '/contact' },
-                { name: 'Teacher Materials', href: '/teacher-materials' },
-                { name: 'Terms & Conditions', href: '/terms' },
-              ].map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className='text-sm transition-colors duration-200 hover:text-[#1F3A34]'
-                    style={{ color: 'rgba(31,58,52,0.7)' }}
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* For Students */}
+          <FooterColumn title='For Students' links={studentLinks} />
 
-          {/* Services */}
-          <div className='space-y-6'>
-            <h4
-              className='text-base font-semibold uppercase tracking-widest'
-              style={{
-                color: 'rgba(31,58,52,0.65)',
-                fontFamily: 'var(--font-inter), sans-serif',
-              }}
-            >
-              Services
-            </h4>
-            <ul className='space-y-3'>
-              {[
-                'Business English',
-                'Conversational English',
-                'Interview Preparation',
-              ].map((service) => (
-                <li key={service}>
-                  <a
-                    href='/students#lesson-options'
-                    className='text-sm transition-colors duration-200 hover:text-[#1F3A34]'
-                    style={{ color: 'rgba(31,58,52,0.7)' }}
-                  >
-                    {service}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* For Teachers */}
+          <FooterColumn title='For Teachers' links={teacherLinks} />
+
+          {/* More */}
+          <FooterColumn title='More' links={generalLinks} />
         </div>
 
         {/* Divider */}

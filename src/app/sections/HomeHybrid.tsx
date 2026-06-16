@@ -3,7 +3,16 @@
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, GraduationCap, Sparkles, CalendarCheck, BookOpen, Users, Star, BadgeCheck } from 'lucide-react'
+import {
+  ArrowRight,
+  GraduationCap,
+  Sparkles,
+  CalendarCheck,
+  BookOpen,
+  Users,
+  Star,
+  BadgeCheck,
+} from 'lucide-react'
 import gsap from 'gsap'
 
 type PathKey = 'students' | 'teachers'
@@ -27,7 +36,12 @@ const paths = [
     title: 'Teachers',
     accent: '',
     body: 'Mentorship, courses, and free classroom tools to help English teachers build confidence, structure, and a thriving online presence.',
-    points: ['1-on-1 mentorship', 'Teacher courses', 'Debate Generator', 'Free Platform Finder'],
+    points: [
+      '1-on-1 mentorship',
+      'Teacher courses',
+      'Debate Generator',
+      'Free Platform Finder',
+    ],
     href: '/teachers',
     cta: 'Explore teaching',
   },
@@ -42,9 +56,11 @@ export default function HomeHybrid() {
     tl.fromTo(
       introRef.current.children,
       { opacity: 0, y: 18 },
-      { opacity: 1, y: 0, duration: 0.55, stagger: 0.08, delay: 0.1 }
+      { opacity: 1, y: 0, duration: 0.55, stagger: 0.08, delay: 0.1 },
     )
-    return () => { tl.kill() }
+    return () => {
+      tl.kill()
+    }
   }, [])
 
   return (
@@ -55,14 +71,19 @@ export default function HomeHybrid() {
       {/* ── Intro ── */}
       <div ref={introRef} className='container pt-12 pb-16 md:pt-16 md:pb-24'>
         <div className='grid lg:grid-cols-[420px_1fr] gap-8 lg:gap-24 items-center'>
-
           {/* Right — copy */}
-          <div className='text-center lg:text-left order-last'>
-            <div className='flex items-center justify-center lg:justify-start gap-3 mb-5'>
-              <div className='h-px w-10' style={{ backgroundColor: '#C2AA6A' }} />
+          <div className='text-center lg:text-left order-first lg:order-last'>
+            <div className='flex items-start justify-center lg:justify-start gap-3 mb-5'>
+              <div
+                className='h-px w-10 mt-[0.5em]'
+                style={{ backgroundColor: '#C2AA6A' }}
+              />
               <span
                 className='text-xs uppercase tracking-[0.25em] font-medium'
-                style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
+                style={{
+                  color: 'rgba(31,58,52,0.6)',
+                  fontFamily: 'var(--font-inter), sans-serif',
+                }}
               >
                 English Tutoring &amp; Teacher Mentorship
               </span>
@@ -84,22 +105,26 @@ export default function HomeHybrid() {
             </h1>
             <p
               className='text-base md:text-lg max-w-2xl mx-auto lg:mx-0'
-              style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
+              style={{
+                color: 'rgba(31,58,52,0.65)',
+                fontFamily: 'var(--font-inter), sans-serif',
+              }}
             >
-              Whether you want to speak English with confidence or grow a thriving teaching career,
-              you&apos;ll learn directly from Millie Cooper — a certified TEFL tutor in London. Personalised
-              one-to-one English lessons for students, plus mentorship, courses, and free ESL teaching
-              tools for teachers.
+              Whether you want to speak English with confidence or grow a
+              thriving teaching career, you&apos;ll learn directly from Millie
+              Cooper — a certified TEFL tutor in London. Personalised one-to-one
+              English lessons for students, plus mentorship, courses, and free
+              ESL teaching tools for teachers.
             </p>
 
             {/* Trust signals */}
             <div className='flex flex-wrap items-center justify-center lg:justify-start gap-2.5 mt-8'>
               {[
                 { icon: CalendarCheck, label: '4+ years teaching' },
-                { icon: BookOpen,      label: '4,000+ lessons' },
-                { icon: Users,         label: '300+ students' },
-                { icon: Star,          label: '5★ rated' },
-                { icon: BadgeCheck,    label: 'TEFL certified' },
+                { icon: BookOpen, label: '4,000+ lessons' },
+                { icon: Users, label: '300+ students' },
+                { icon: Star, label: '5★ rated' },
+                { icon: BadgeCheck, label: 'TEFL certified' },
               ].map(({ icon: Icon, label }) => (
                 <span
                   key={label}
@@ -110,8 +135,15 @@ export default function HomeHybrid() {
                     border: '1px solid #EDE4D8',
                   }}
                 >
-                  <Icon className='w-4 h-4 flex-shrink-0' style={{ color: '#C2AA6A' }} strokeWidth={2.2} />
-                  <span className='text-sm font-semibold' style={{ color: '#1F3A34' }}>
+                  <Icon
+                    className='w-4 h-4 flex-shrink-0'
+                    style={{ color: '#C2AA6A' }}
+                    strokeWidth={2.2}
+                  />
+                  <span
+                    className='text-sm font-semibold'
+                    style={{ color: '#1F3A34' }}
+                  >
                     {label}
                   </span>
                 </span>
@@ -120,15 +152,28 @@ export default function HomeHybrid() {
           </div>
 
           {/* Left — photo composition */}
-          <div className='relative order-first'>
-            <div className='relative mx-auto lg:mx-0' style={{ maxWidth: '420px' }}>
+          <div className='relative order-last lg:order-first'>
+            <div
+              className='relative mx-auto lg:mx-0'
+              style={{ maxWidth: '420px' }}
+            >
               {/* Offset green block */}
               <div
                 className='absolute rounded-2xl hidden sm:block'
-                style={{ top: '22px', left: '22px', right: '-22px', bottom: '-22px', backgroundColor: '#1F3A34', zIndex: 1 }}
+                style={{
+                  top: '22px',
+                  left: '22px',
+                  right: '-22px',
+                  bottom: '-22px',
+                  backgroundColor: '#1F3A34',
+                  zIndex: 1,
+                }}
               />
               {/* Photo */}
-              <div className='relative rounded-2xl overflow-hidden' style={{ aspectRatio: '3/4', zIndex: 2 }}>
+              <div
+                className='relative rounded-2xl overflow-hidden'
+                style={{ aspectRatio: '3/4', zIndex: 2 }}
+              >
                 <Image
                   src='/images/aboutme.png'
                   alt='Millie Cooper — certified TEFL English tutor in London'
@@ -140,12 +185,14 @@ export default function HomeHybrid() {
                 />
                 <div
                   className='absolute inset-0 pointer-events-none'
-                  style={{ background: 'linear-gradient(to top, rgba(31,58,52,0.2) 0%, transparent 50%)' }}
+                  style={{
+                    background:
+                      'linear-gradient(to top, rgba(31,58,52,0.2) 0%, transparent 50%)',
+                  }}
                 />
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -159,11 +206,11 @@ export default function HomeHybrid() {
             <Link
               key={p.key}
               href={p.href}
-              className='relative flex flex-col overflow-hidden rounded-3xl p-8 lg:p-12'
+              className='relative flex flex-col overflow-hidden rounded-3xl px-8 pt-8 pb-6 lg:p-12'
               style={{
                 flexGrow: 1,
                 flexBasis: 0,
-                minHeight: '420px',
+                minHeight: 'fit-content',
                 backgroundColor: isDark ? '#1F3A34' : '#FFFFFF',
                 border: isDark ? '1px solid #1F3A34' : '1px solid #EDE4D8',
                 boxShadow: '0 2px 10px -6px rgba(31,58,52,0.15)',
@@ -175,14 +222,19 @@ export default function HomeHybrid() {
                 style={{
                   width: '180px',
                   height: '180px',
-                  color: isDark ? 'rgba(194,170,106,0.14)' : 'rgba(31,58,52,0.05)',
+                  color: isDark
+                    ? 'rgba(194,170,106,0.14)'
+                    : 'rgba(31,58,52,0.05)',
                   strokeWidth: 1,
                 }}
               />
 
               {/* Eyebrow */}
-              <div className='flex items-center gap-3 mb-6 relative z-10'>
-                <div className='h-px w-8' style={{ backgroundColor: '#C2AA6A' }} />
+              <div className='flex items-start gap-3 mb-6 relative z-10'>
+                <div
+                  className='h-px w-8 mt-[0.5em]'
+                  style={{ backgroundColor: '#C2AA6A' }}
+                />
                 <span
                   className='text-xs uppercase tracking-[0.22em] font-semibold'
                   style={{
@@ -209,7 +261,12 @@ export default function HomeHybrid() {
                 {p.accent && (
                   <>
                     <br />
-                    <span style={{ fontStyle: 'italic', color: isDark ? '#C2AA6A' : 'rgba(31,58,52,0.55)' }}>
+                    <span
+                      style={{
+                        fontStyle: 'italic',
+                        color: isDark ? '#C2AA6A' : 'rgba(31,58,52,0.55)',
+                      }}
+                    >
                       {p.accent}
                     </span>
                   </>
@@ -220,7 +277,9 @@ export default function HomeHybrid() {
               <p
                 className='relative z-10 text-base leading-relaxed mb-7 max-w-md'
                 style={{
-                  color: isDark ? 'rgba(244,237,228,0.78)' : 'rgba(31,58,52,0.7)',
+                  color: isDark
+                    ? 'rgba(244,237,228,0.78)'
+                    : 'rgba(31,58,52,0.7)',
                   fontFamily: 'var(--font-inter), sans-serif',
                 }}
               >
@@ -236,8 +295,12 @@ export default function HomeHybrid() {
                     style={{
                       fontFamily: 'var(--font-inter), sans-serif',
                       color: isDark ? '#F4EDE4' : '#1F3A34',
-                      backgroundColor: isDark ? 'rgba(244,237,228,0.1)' : 'rgba(31,58,52,0.06)',
-                      border: isDark ? '1px solid rgba(244,237,228,0.18)' : '1px solid rgba(31,58,52,0.1)',
+                      backgroundColor: isDark
+                        ? 'rgba(244,237,228,0.1)'
+                        : 'rgba(31,58,52,0.06)',
+                      border: isDark
+                        ? '1px solid rgba(244,237,228,0.18)'
+                        : '1px solid rgba(31,58,52,0.1)',
                     }}
                   >
                     {point}

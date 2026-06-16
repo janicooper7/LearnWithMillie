@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, X } from 'lucide-react'
+import { ArrowRight, X, Loader2 } from 'lucide-react'
 
 const termsSections = [
   {
@@ -199,6 +199,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [showTerms, setShowTerms] = useState(false)
 
@@ -240,6 +241,7 @@ export default function SignupPage() {
   }, [status, session, router])
 
   const handleGoogle = () => {
+    setGoogleLoading(true)
     if (isTeacher) {
       document.cookie = '_pending_role=TEACHER; path=/; max-age=300; SameSite=Lax'
     } else {
@@ -289,7 +291,7 @@ export default function SignupPage() {
           <div className='flex items-center gap-3 mb-10'>
             <div className='h-px w-8' style={{ backgroundColor: '#C2AA6A' }} />
             <span className='text-[10px] uppercase tracking-[0.25em]' style={{ color: 'rgba(194,170,106,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}>
-              {isTeacher ? 'Mentorship Program' : 'Get Started'}
+              {isTeacher ? 'For Teachers' : 'Get Started'}
             </span>
           </div>
           <h2 style={{
@@ -300,21 +302,21 @@ export default function SignupPage() {
             fontWeight: 400,
           }}>
             {isTeacher
-              ? 'Develop your teaching. Grow with purpose.'
+              ? 'Teach with confidence. Build your business.'
               : 'Start your journey to confident, fluent English.'}
           </h2>
           <p className='mt-5 text-sm leading-relaxed' style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
             {isTeacher
-              ? 'Join Millie\'s mentorship programme and build the skills, structure, and confidence to teach at your best.'
+              ? 'From self-paced video courses to personalised 1-on-1 mentorship — everything you need to launch, grow, and thrive as an online English teacher.'
               : 'Join students who have transformed their English with personalised one-to-one lessons.'}
           </p>
 
           <ul className='mt-9 space-y-4'>
             {(isTeacher ? [
-              'Personalised teaching feedback',
-              'Structured 1-on-1 sessions',
+              'Self-paced BOOKED video courses',
+              'Personalised 1-on-1 mentorship',
               'Expert guidance from Millie',
-              'Flexible scheduling',
+              'Lifetime course access included',
             ] : [
               'Personalised lesson plans',
               'Flexible scheduling',
@@ -411,9 +413,11 @@ export default function SignupPage() {
             {/* Google */}
             <button
               onClick={handleGoogle}
-              className='w-full flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-6'
+              disabled={googleLoading}
+              className='w-full flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-6 disabled:cursor-not-allowed'
               style={{ border: '1.5px solid #EDE4D8', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif', backgroundColor: '#FAFAF8' }}
               onMouseEnter={(e) => {
+                if (googleLoading) return
                 ;(e.currentTarget as HTMLButtonElement).style.borderColor = '#C2AA6A'
                 ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = 'white'
               }}
@@ -422,8 +426,17 @@ export default function SignupPage() {
                 ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = '#FAFAF8'
               }}
             >
-              <GoogleIcon />
-              Continue with Google
+              {googleLoading ? (
+                <>
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                  Connecting to Google…
+                </>
+              ) : (
+                <>
+                  <GoogleIcon />
+                  Continue with Google
+                </>
+              )}
             </button>
 
             {/* Divider */}

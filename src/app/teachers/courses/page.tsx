@@ -3,6 +3,8 @@ import { auth } from '@/auth'
 import Link from 'next/link'
 import { PlayCircle } from 'lucide-react'
 import CoursePricingCards from '@/app/components/CoursePricingCards'
+import CoursesVideo from '@/app/sections/CoursesVideo'
+import CoursePromoStrip from '@/app/components/CoursePromoStrip'
 
 export const dynamic = 'force-dynamic'
 
@@ -59,8 +61,21 @@ export default async function CoursesPage() {
 
   const displayCourses = myCourses.filter(({ course }) => !course.isBundle)
 
+  // Owned courses where every lesson is marked complete
+  const completedSlugs = myCourses
+    .filter(
+      ({ course }) =>
+        !course.isBundle &&
+        course._count.lessons > 0 &&
+        course.lessons.every((l) => l.progress.some((p) => p.completedAt))
+    )
+    .map(({ course }) => course.slug)
+
   return (
     <div className="min-h-screen bg-[#F4EDE4]">
+      {/* Launch promo strip */}
+      <CoursePromoStrip />
+
       {/* Hero */}
       <div className="bg-[#1F3A34] text-white py-20 px-4">
         <div className="max-w-5xl mx-auto text-center">
@@ -78,6 +93,9 @@ export default async function CoursesPage() {
           </p>
         </div>
       </div>
+
+      {/* Intro video */}
+      <CoursesVideo />
 
       {/* Pricing cards */}
       <section className="section-padding" style={{ backgroundColor: '#F4EDE4' }}>
@@ -105,7 +123,7 @@ export default async function CoursesPage() {
             </p>
           </div>
 
-          <CoursePricingCards userAccess={accessedSlugs} startedSlugs={startedSlugs} />
+          <CoursePricingCards userAccess={accessedSlugs} startedSlugs={startedSlugs} completedSlugs={completedSlugs} />
         </div>
       </section>
 
@@ -147,7 +165,7 @@ export default async function CoursesPage() {
                       </div>
                     )}
                     <div className="p-5">
-                      <p className="font-semibold mb-3 truncate" style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      <p className="font-semibold mb-3" style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
                         {course.title}
                       </p>
                       <div className="w-full rounded-full h-1.5 mb-1.5" style={{ backgroundColor: 'rgba(31,58,52,0.1)' }}>

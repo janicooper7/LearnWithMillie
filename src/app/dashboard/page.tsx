@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, CheckCircle2 } from 'lucide-react'
 import Stripe from 'stripe'
 import CalEmbed from '@/app/components/CalEmbed'
 import BookLessonCard from '@/app/components/BookLessonCard'
@@ -119,16 +119,16 @@ export default async function DashboardPage() {
           </h1>
         </div>
 
-        <div className='grid md:grid-cols-2 gap-5'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
 
           {/* My Courses card */}
           {showCoursesCard && (
-          <div className='rounded-2xl p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
+          <div className='rounded-2xl p-5 sm:p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
             <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
 
             {displayCourses.length === 0 ? (
               <>
-                <h2 className='text-xl font-bold text-white mb-3' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                <h2 className='text-lg sm:text-xl font-bold text-white mb-3' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
                   Ready to start learning?
                 </h2>
                 <p className='text-sm leading-relaxed' style={{ color: 'rgba(255,255,255,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
               </>
             ) : (
               <>
-                <h2 className='text-xl font-bold text-white mb-4' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                <h2 className='text-lg sm:text-xl font-bold text-white mb-4' style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
                   My Courses
                 </h2>
                 <div className='flex flex-col gap-2.5 flex-1'>
@@ -158,6 +158,7 @@ export default async function DashboardPage() {
                       0
                     )
                     const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+                    const isCompleted = total > 0 && completed === total
                     return (
                       <a
                         key={course.id}
@@ -166,16 +167,22 @@ export default async function DashboardPage() {
                         style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}
                       >
                         <div className='flex-1 min-w-0'>
-                          <p className='text-sm font-medium text-white truncate mb-1.5' style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
+                          <p className='text-sm font-medium text-white mb-1.5' style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
                             {course.title}
                           </p>
                           <div className='w-full rounded-full h-1' style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}>
                             <div className='h-1 rounded-full transition-all' style={{ width: `${pct}%`, backgroundColor: '#C2AA6A' }} />
                           </div>
                         </div>
-                        <span className='text-xs font-semibold flex-shrink-0' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
-                          {hasStarted ? 'Continue →' : 'Start →'}
-                        </span>
+                        {isCompleted ? (
+                          <span className='flex items-center gap-1 text-xs font-semibold flex-shrink-0' style={{ color: '#7FD49A', fontFamily: 'var(--font-inter), sans-serif' }}>
+                            <CheckCircle2 className='w-3.5 h-3.5' /> Completed
+                          </span>
+                        ) : (
+                          <span className='text-xs font-semibold flex-shrink-0' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
+                            {hasStarted ? 'Continue →' : 'Start →'}
+                          </span>
+                        )}
                       </a>
                     )
                   })}
@@ -260,19 +267,19 @@ export default async function DashboardPage() {
 
         {/* Booking calendar */}
         <div className='mt-5 bg-white rounded-2xl overflow-hidden' style={{ border: '1px solid #EDE4D8' }}>
-          <div className='px-7 pt-7 pb-5 flex items-center justify-between' style={{ borderBottom: '1px solid #EDE4D8' }}>
+          <div className='px-7 pt-7 pb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between' style={{ borderBottom: '1px solid #EDE4D8' }}>
             <div>
-              <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Book a Session' : 'Book a Lesson'}</p>
-              <p className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+              <p className='text-[13px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Book a Session' : 'Book a Lesson'}</p>
+              <p className='text-[16px] font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
                 {user.allowance > 0 ? 'Use the calendar below to pick a time that works for you.' : isTeacher ? 'No sessions remaining' : 'No lessons remaining'}
               </p>
-              <p className='text-xs mt-1.5' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+              <p className='text-[14px] mt-1.5' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
                 Not seeing a time that works for you? Drop me a message and I'll make sure we find a time that works best for both of us.
               </p>
             </div>
-            <div className='flex items-center gap-2 px-4 py-2 rounded-xl' style={{ backgroundColor: 'rgba(31,58,52,0.06)' }}>
+            <div className='self-start sm:self-auto flex items-center gap-2 px-6 py-2 rounded-xl' style={{ backgroundColor: 'rgba(31,58,52,0.06)' }}>
               <span className='text-lg font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{user.allowance}</span>
-              <span className='text-xs' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+              <span className='text-[14px] whitespace-nowrap' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
                 {isTeacher ? (user.allowance === 1 ? 'session left' : 'sessions left') : (user.allowance === 1 ? 'lesson left' : 'lessons left')}
               </span>
             </div>

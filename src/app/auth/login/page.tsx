@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 
 const GoogleIcon = () => (
   <svg width='18' height='18' viewBox='0 0 18 18'>
@@ -22,6 +22,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,7 +47,10 @@ export default function LoginPage() {
     }
   }, [status, session, router])
 
-  const handleGoogle = () => signIn('google', { callbackUrl: '/dashboard' })
+  const handleGoogle = () => {
+    setGoogleLoading(true)
+    signIn('google', { callbackUrl: '/dashboard' })
+  }
 
   return (
     <div className='min-h-screen flex' style={{ backgroundColor: '#F4EDE4' }}>
@@ -156,10 +160,12 @@ export default function LoginPage() {
             {/* Google */}
             <button
               onClick={handleGoogle}
-              className='w-full flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-6'
+              disabled={googleLoading}
+              className='w-full flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-6 disabled:cursor-not-allowed'
               style={{ border: '1.5px solid #EDE4D8', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif', backgroundColor: '#FAFAF8' }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = '#C2AA6A'
+                if (googleLoading) return
+                ;(e.currentTarget as HTMLButtonElement).style.borderColor = '#C2AA6A'
                 ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = 'white'
               }}
               onMouseLeave={(e) => {
@@ -167,8 +173,17 @@ export default function LoginPage() {
                 ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = '#FAFAF8'
               }}
             >
-              <GoogleIcon />
-              Continue with Google
+              {googleLoading ? (
+                <>
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                  Connecting to Google…
+                </>
+              ) : (
+                <>
+                  <GoogleIcon />
+                  Continue with Google
+                </>
+              )}
             </button>
 
             {/* Divider */}
