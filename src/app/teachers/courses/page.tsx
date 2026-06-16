@@ -83,7 +83,7 @@ export default async function CoursesPage() {
             className="text-4xl md:text-5xl font-bold mb-4"
             style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
           >
-            Courses - Learn at Your Own Pace
+            BOOKED — The Online Tutor Trilogy Course
           </h1>
           <p
             className="text-lg max-w-xl mx-auto"

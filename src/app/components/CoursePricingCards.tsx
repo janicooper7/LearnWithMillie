@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import {
   ArrowRight,
@@ -12,6 +13,14 @@ import {
   Infinity,
   RefreshCw,
 } from 'lucide-react'
+
+// Cards that have a dedicated detail page with the full module breakdown.
+const detailSlugs = new Set([
+  'course-full',
+  'get-ready',
+  'get-booked',
+  'stay-booked',
+])
 
 const courses = [
   {
@@ -337,6 +346,21 @@ export default function CoursePricingCards({
                       <ArrowRight className='w-4 h-4' />
                     )}
                   </button>
+                )}
+
+                {/* See what's inside */}
+                {detailSlugs.has(course.planKey) && (
+                  <Link
+                    href={`/teachers/courses/${course.planKey}`}
+                    className='mt-3 w-full flex items-center justify-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] transition-opacity duration-200 hover:opacity-70'
+                    style={{
+                      color: 'rgba(31,58,52,0.65)',
+                      fontFamily: 'var(--font-inter), sans-serif',
+                    }}
+                  >
+                    <ListChecks className='w-3.5 h-3.5' style={{ color: '#C2AA6A' }} />
+                    See what&apos;s inside
+                  </Link>
                 )}
               </div>
             </div>

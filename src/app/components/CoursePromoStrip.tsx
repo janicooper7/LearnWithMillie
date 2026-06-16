@@ -37,8 +37,8 @@ export default function CoursePromoStrip() {
   if (remaining === 0) return null
 
   const content = (
-    <p className="text-sm font-medium">
-      Launch day offer — <span className="font-bold">10% off</span> with code{' '}
+    <p className="text-base md:text-lg font-medium">
+      <span className="font-bold">10% off</span> with code{' '}
       <span className="font-bold tracking-wide bg-white/20 rounded px-1.5 py-0.5">COURSE10</span>
       {remaining !== null && (
         <span className="block sm:inline">
