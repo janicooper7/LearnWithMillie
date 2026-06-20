@@ -72,6 +72,7 @@ export default function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const router = useRouter()
   const [course, setCourse] = useState<Course | null>(null)
+  const [ownsAnyCourse, setOwnsAnyCourse] = useState(false)
   const [loading, setLoading] = useState(true)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [openCourses, setOpenCourses] = useState<Set<string>>(new Set())
@@ -93,6 +94,16 @@ export default function CourseDetailPage() {
       })
       .catch(() => setLoading(false))
   }, [slug])
+
+  // Hide the weekend-sale strip from anyone who already owns any course
+  useEffect(() => {
+    fetch('/api/courses')
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setOwnsAnyCourse(data.some((c) => c.hasAccess))
+      })
+      .catch(() => {})
+  }, [])
 
   async function handlePurchase() {
     setCheckoutLoading(true)
@@ -140,8 +151,8 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F4EDE4]">
-      {/* Launch promo strip */}
-      <CoursePromoStrip />
+      {/* Weekend sale strip — hidden from anyone who already owns a course */}
+      {!ownsAnyCourse && <CoursePromoStrip />}
 
       {/* Hero */}
       <div className="bg-[#1F3A34] px-4 py-16 text-white">
