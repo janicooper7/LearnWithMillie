@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react'
 
-// Offer ends 18:00 UK time (BST, UTC+1) on 17 June 2026 = 17:00 UTC.
-const OFFER_DEADLINE = new Date('2026-06-17T17:00:00Z').getTime()
+// Weekend sale ends Monday 00:00:00 UK time (BST, UTC+1) on 22 June 2026
+// = 23:00 UTC on 21 June 2026.
+const OFFER_DEADLINE = new Date('2026-06-21T23:00:00Z').getTime()
 
 function getRemaining() {
   return Math.max(0, OFFER_DEADLINE - Date.now())
@@ -38,8 +39,8 @@ export default function CoursePromoStrip() {
 
   const content = (
     <p className="text-base md:text-lg font-medium">
-      <span className="font-bold">10% off</span> with code{' '}
-      <span className="font-bold tracking-wide bg-white/20 rounded px-1.5 py-0.5">COURSE10</span>
+      <span className="font-bold">Weekend sale — 50% off</span> with code{' '}
+      <span className="font-bold tracking-wide bg-white/20 rounded px-1.5 py-0.5">WEEKEND50</span>
       {remaining !== null && (
         <span className="block sm:inline">
           <span className="hidden sm:inline">{' · '}</span>Ends in{' '}
