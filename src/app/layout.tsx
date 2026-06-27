@@ -64,9 +64,9 @@ export const metadata: Metadata = {
     description: defaultDescription,
     images: [
       {
-        url: '/images/HeaderImage.png',
-        width: 1200,
-        height: 630,
+        url: '/images/webphoto.png',
+        width: 1886,
+        height: 834,
         alt: 'Professional English tutoring with LearnWithMillie',
       },
     ],
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: defaultTitle,
     description: defaultDescription,
-    images: ['/images/HeaderImage.png'],
+    images: ['/images/webphoto.png'],
   },
   robots: {
     index: true,

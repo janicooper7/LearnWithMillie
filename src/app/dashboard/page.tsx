@@ -49,8 +49,7 @@ export default async function DashboardPage() {
 
   const displayCourses = myCourses.filter(({ course }) => !course.isBundle)
 
-  // Students with no courses shouldn't see the "Browse Courses" empty state
-  const showCoursesCard = isTeacher || displayCourses.length > 0
+  const showCoursesCard = isTeacher
 
   // Fetch Stripe + Cal.com in parallel
   const [stripeResult, calResult] = await Promise.allSettled([
@@ -121,7 +120,12 @@ export default async function DashboardPage() {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
 
-          {/* My Courses card */}
+          {/* Add-on lessons — students only, when enabled */}
+          {!isTeacher && user.addonLessonsEnabled && (
+            <AddonLessonsBanner />
+          )}
+
+          {/* My Courses card — teachers only */}
           {showCoursesCard && (
           <div className='rounded-2xl p-5 sm:p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
             <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
