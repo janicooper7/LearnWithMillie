@@ -65,8 +65,8 @@ export default function HomeHybrid() {
 
   return (
     <section
-      className='relative flex flex-col'
-      style={{ backgroundColor: '#F4EDE4', minHeight: 'calc(100vh - 72px)' }}
+      className='relative md:flex md:flex-col'
+      style={{ backgroundColor: '#F4EDE4', minHeight: 'calc(100dvh - 72px)' }}
     >
       {/* ── Intro ── */}
       <div ref={introRef} className='container pt-12 pb-16 md:pt-16 md:pb-24'>
@@ -206,11 +206,8 @@ export default function HomeHybrid() {
             <Link
               key={p.key}
               href={p.href}
-              className='relative flex flex-col overflow-hidden rounded-3xl px-8 pt-8 pb-6 lg:p-12'
+              className='relative flex flex-col overflow-hidden rounded-3xl px-8 pt-8 pb-6 lg:p-12 md:flex-1'
               style={{
-                flexGrow: 1,
-                flexBasis: 0,
-                minHeight: 'fit-content',
                 backgroundColor: isDark ? '#1F3A34' : '#FFFFFF',
                 border: isDark ? '1px solid #1F3A34' : '1px solid #EDE4D8',
                 boxShadow: '0 2px 10px -6px rgba(31,58,52,0.15)',
