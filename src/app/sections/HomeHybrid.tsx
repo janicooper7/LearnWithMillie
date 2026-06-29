@@ -197,7 +197,7 @@ export default function HomeHybrid() {
       </div>
 
       {/* ── Split panels ── */}
-      <div className='flex-1 flex flex-col md:flex-row gap-4 lg:gap-5 container pb-12 md:pb-16'>
+      <div className='md:flex-1 flex flex-col md:flex-row gap-4 lg:gap-5 container pb-12 md:pb-16'>
         {paths.map((p) => {
           const Icon = p.icon
           const isDark = p.key === 'teachers'
