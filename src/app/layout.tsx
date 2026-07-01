@@ -6,6 +6,8 @@ import Navigation from './components/Navigation'
 import Footer from './components/Footer'
 import SessionProvider from './components/SessionProvider'
 import GoogleAnalytics from './components/GoogleAnalytics'
+import FacebookPixel from './components/FacebookPixel'
+import TikTokPixel from './components/TikTokPixel'
 import StructuredData from './components/StructuredData'
 
 const inter = Inter({
@@ -108,6 +110,12 @@ export default function RootLayout({
       <head>
         <Suspense fallback={null}>
           <GoogleAnalytics />
+        </Suspense>
+        <Suspense fallback={null}>
+          <FacebookPixel />
+        </Suspense>
+        <Suspense fallback={null}>
+          <TikTokPixel />
         </Suspense>
         <StructuredData />
       </head>
