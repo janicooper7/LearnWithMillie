@@ -106,7 +106,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang='en' className={`scroll-smooth overflow-x-hidden ${inter.variable} ${playfair.variable}`}>
+    <html lang='en' className={`scroll-smooth overflow-x-clip ${inter.variable} ${playfair.variable}`}>
       <head>
         <Suspense fallback={null}>
           <GoogleAnalytics />

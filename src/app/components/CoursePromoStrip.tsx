@@ -1,52 +1,12 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-
-// Weekend sale ends Monday 00:00:00 UK time (BST, UTC+1) on 22 June 2026
-// = 23:00 UTC on 21 June 2026.
-const OFFER_DEADLINE = new Date('2026-06-21T23:00:00Z').getTime()
-
-function getRemaining() {
-  return Math.max(0, OFFER_DEADLINE - Date.now())
-}
-
-function format(ms: number) {
-  const totalSeconds = Math.floor(ms / 1000)
-  const days = Math.floor(totalSeconds / 86400)
-  const hours = Math.floor((totalSeconds % 86400) / 3600)
-  const minutes = Math.floor((totalSeconds % 3600) / 60)
-  const seconds = totalSeconds % 60
-
-  const parts: string[] = []
-  if (days > 0) parts.push(`${days}d`)
-  if (days > 0 || hours > 0) parts.push(`${hours}h`)
-  parts.push(`${minutes}m`)
-  if (days === 0) parts.push(`${seconds}s`)
-  return parts.join(' ')
-}
+// Sale strip shown beneath the nav on the course pages.
+// Advertises the current discount code; apply it at Stripe checkout.
 
 export default function CoursePromoStrip() {
-  const [remaining, setRemaining] = useState<number | null>(null)
-
-  useEffect(() => {
-    setRemaining(getRemaining())
-    const id = setInterval(() => setRemaining(getRemaining()), 1000)
-    return () => clearInterval(id)
-  }, [])
-
-  // Hide the strip once the offer has expired
-  if (remaining === 0) return null
-
   const content = (
     <p className="text-base md:text-lg font-medium">
-      <span className="font-bold">Weekend sale — 50% off</span> with code{' '}
-      <span className="font-bold tracking-wide bg-white/20 rounded px-1.5 py-0.5">WEEKEND50</span>
-      {remaining !== null && (
-        <span className="block sm:inline">
-          <span className="hidden sm:inline">{' · '}</span>Ends in{' '}
-          <span className="font-bold tabular-nums">{format(remaining)}</span>
-        </span>
-      )}
+      <span className="font-bold">10% OFF</span> every course with code{' '}
+      <span className="font-bold tracking-wide bg-white/20 rounded px-1.5 py-0.5">DEAL10</span>
+      {' '}— apply at checkout
     </p>
   )
 

@@ -25,7 +25,8 @@
       "Bash(npx tsx *)",
       "Bash(Remove-Item scripts/rename-courses.ts, scripts/list-courses.mjs, scripts/list-courses.sql)",
       "Bash(npx tsc *)",
-      "Bash(npx ts-node *)"
+      "Bash(npx ts-node *)",
+      "Bash(curl -s -o /dev/null \"http://localhost:3000/teachers/courses\" --max-time 30)"
     ]
   }
 }
