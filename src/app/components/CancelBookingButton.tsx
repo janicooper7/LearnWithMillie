@@ -26,7 +26,7 @@ export default function CancelBookingButton({ uid }: { uid: string }) {
 
   if (confirming) {
     return (
-      <div className='flex items-center gap-1.5'>
+      <div className='flex flex-wrap items-center gap-1.5'>
         <span className='text-[11px]' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
           Sure?
         </span>

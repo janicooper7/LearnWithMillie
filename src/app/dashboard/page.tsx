@@ -11,10 +11,9 @@ import AddonLessonsBanner from '@/app/components/AddonLessonsBanner'
 import CancelBookingButton from '@/app/components/CancelBookingButton'
 import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
 import BookingTime from '@/app/components/BookingTime'
+import { getMockBookings, mockBookingsEnabled, type CalBooking } from '@/lib/mockBookings'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
-type CalBooking = { uid: string; title: string; start: string; end: string; status: string; meetingUrl?: string; eventType?: { slug?: string } }
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -51,21 +50,25 @@ export default async function DashboardPage() {
 
   const showCoursesCard = isTeacher
 
+  const useMockBookings = mockBookingsEnabled()
+
   // Fetch Stripe + Cal.com in parallel
   const [stripeResult, calResult] = await Promise.allSettled([
     user.stripeSubscriptionId
       ? stripe.subscriptions.retrieve(user.stripeSubscriptionId)
       : Promise.resolve(null),
-    fetch(
-      `https://api.cal.com/v2/bookings?attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming`,
-      {
-        headers: {
-          'Authorization': `Bearer ${process.env.CAL_API_KEY}`,
-          'cal-api-version': '2024-08-13',
-        },
-        cache: 'no-store',
-      }
-    ),
+    useMockBookings
+      ? Promise.resolve(null)
+      : fetch(
+        `https://api.cal.com/v2/bookings?attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming`,
+        {
+          headers: {
+            'Authorization': `Bearer ${process.env.CAL_API_KEY}`,
+            'cal-api-version': '2024-08-13',
+          },
+          cache: 'no-store',
+        }
+      ),
   ])
 
   let cancelAtPeriodEnd = false
@@ -87,7 +90,9 @@ export default async function DashboardPage() {
   })()
 
   let upcomingBookings: CalBooking[] = []
-  if (calResult.status === 'fulfilled') {
+  if (useMockBookings) {
+    upcomingBookings = getMockBookings(now)
+  } else if (calResult.status === 'fulfilled') {
     try {
       const res = calResult.value as Response
       if (res.ok) {
@@ -234,28 +239,28 @@ export default async function DashboardPage() {
 
         {/* Upcoming bookings — only shown if there are any */}
         {upcomingBookings.length > 0 && (
-          <div className='mt-5 bg-white rounded-2xl p-7' style={{ border: '1px solid #EDE4D8' }}>
+          <div className='mt-5 bg-white rounded-2xl p-5 sm:p-7' style={{ border: '1px solid #EDE4D8' }}>
             <p className='text-[11px] uppercase tracking-[0.12em] mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
             <div className='space-y-3'>
               {upcomingBookings.map((booking) => {
                 return (
-                  <div key={booking.uid} className='flex items-center justify-between py-3 px-4 rounded-xl' style={{ backgroundColor: '#F4EDE4' }}>
-                    <div className='flex items-center gap-4'>
+                  <div key={booking.uid} className='flex flex-col gap-3 p-4 rounded-xl sm:flex-row sm:items-center sm:justify-between sm:gap-4' style={{ backgroundColor: '#F4EDE4' }}>
+                    <div className='flex items-center gap-4 min-w-0'>
                       <BookingTime start={booking.start} end={booking.end} />
                     </div>
-                    <div className='flex items-center gap-2'>
+                    <div className='flex flex-wrap items-center gap-2 sm:flex-nowrap sm:justify-end'>
                       {booking.meetingUrl && (
                         <a
                           href={booking.meetingUrl}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='text-[11px] font-semibold px-3 py-1.5 rounded-full transition-colors duration-150'
+                          className='text-xs font-semibold px-4 py-2 rounded-full transition-colors duration-150 sm:text-[11px] sm:px-3 sm:py-1.5'
                           style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
                         >
                           Join
                         </a>
                       )}
-                      <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full' style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap' style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
                         Confirmed
                       </span>
                       {!booking.eventType?.slug?.includes('trial') && (new Date(booking.start).getTime() - now.getTime() > 24 * 60 * 60 * 1000) && (

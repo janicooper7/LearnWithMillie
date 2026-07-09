@@ -11,7 +11,7 @@ export default function BookingTime({ start, end }: BookingTimeProps) {
 
   return (
     <>
-      <div className='text-center'>
+      <div className='text-center flex-shrink-0'>
         <p className='text-xs font-semibold uppercase' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>
           {s.toLocaleDateString('en-GB', { month: 'short' })}
         </p>
@@ -19,8 +19,8 @@ export default function BookingTime({ start, end }: BookingTimeProps) {
           {s.toLocaleDateString('en-GB', { day: 'numeric' })}
         </p>
       </div>
-      <div className='w-px h-8' style={{ backgroundColor: '#EDE4D8' }} />
-      <div>
+      <div className='w-px h-8 flex-shrink-0' style={{ backgroundColor: '#EDE4D8' }} />
+      <div className='min-w-0'>
         <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
           {s.toLocaleDateString('en-GB', { weekday: 'long' })}
         </p>
