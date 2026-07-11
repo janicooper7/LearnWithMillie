@@ -122,3 +122,30 @@
     background: linear-gradient(to right, transparent, hsl(34, 20%, 78%), transparent);
   }
 }
+
+/* --- Platform Finder --- */
+.pf-option {
+  background-color: transparent;
+  border: 1.5px solid #EDE4D8;
+  cursor: pointer;
+}
+.pf-option:hover {
+  border-color: rgba(31, 58, 52, 0.4);
+  background-color: rgba(31, 58, 52, 0.035);
+}
+.pf-option[data-selected='true'] {
+  border-color: #1F3A34;
+  background-color: rgba(31, 58, 52, 0.06);
+}
+.pf-option[data-selected='true']:hover {
+  background-color: rgba(31, 58, 52, 0.08);
+}
+
+.pf-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.pf-card-matched:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -20px rgba(31, 58, 52, 0.35);
+  border-color: rgba(31, 58, 52, 0.25);
+}

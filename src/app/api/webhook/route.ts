@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
+import { finalizePlatformFinderResult } from '@/lib/platformFinderResult'
 
 async function grantCourseAccess(userId: string, courseSlug: string) {
   const course = await prisma.course.findUnique({
@@ -62,6 +63,20 @@ export async function POST(req: NextRequest) {
     case 'checkout.session.completed': {
       try {
         const session = event.data.object as Stripe.Checkout.Session
+
+        // Guest Platform Finder purchases have no user account. Mark the result
+        // paid and email the customer their matches + shareable access link.
+        if (session.metadata?.kind === 'platform-finder') {
+          const resultId = session.metadata?.resultId
+          const email = session.customer_details?.email ?? session.customer_email ?? null
+          if (resultId) {
+            await finalizePlatformFinderResult(resultId, email)
+          } else {
+            console.warn('Platform Finder webhook: missing resultId', { sessionId: session.id })
+          }
+          break
+        }
+
         let userId = session.metadata?.userId
 
         // Fall back to email lookup (e.g. manual Stripe payment links)
@@ -78,6 +93,19 @@ export async function POST(req: NextRequest) {
 
         if (!userId) {
           console.error('Webhook checkout.session.completed: could not resolve userId', { sessionId: session.id })
+          break
+        }
+
+        // Debate Generator — one-time $7 lifetime access
+        if (session.metadata?.kind === 'debate-generator') {
+          await prisma.user.update({
+            where: { id: userId },
+            data: {
+              debateAccess: true,
+              stripeCustomerId: session.customer as string ?? undefined,
+            },
+          })
+          console.log('Webhook: debate generator access granted', { userId })
           break
         }
 

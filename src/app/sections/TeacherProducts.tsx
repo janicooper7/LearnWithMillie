@@ -43,22 +43,24 @@ const products: Product[] = [
 
 const tools: Product[] = [
   {
-    eyebrow: 'Free tool',
+    eyebrow: 'Teaching tool',
     title: 'Platform Finder',
     description:
       'Answer 7 quick questions and see which of 33 online teaching platforms actually hire teachers like you — ranked by pay and fit.',
     points: ['33 platforms', '2-minute quiz', 'Ranked by fit'],
     href: '/teachers/platform-finder',
     cta: 'Find your platform',
+    featured: true,
   },
   {
-    eyebrow: 'Free tool',
+    eyebrow: 'Teaching tool',
     title: 'Debate Generator',
     description:
       'Generate thought-provoking ESL debate topics and key vocabulary in seconds — instant speaking practice for any lesson.',
     points: ['Endless topics', 'Key vocabulary', 'Classroom-ready'],
     href: '/teachers/debategenerator',
-    cta: 'Try it free',
+    cta: 'Try it now',
+    featured: true,
   },
 ]
 
@@ -252,7 +254,7 @@ export default function TeacherProducts() {
               fontFamily: 'var(--font-playfair), Georgia, serif',
             }}
           >
-            Free tools to make teaching easier
+            Tools to make teaching easier
           </h2>
         </div>
 

@@ -547,6 +547,43 @@ export type Profile = {
   hours: HoursBucket
 }
 
+// Raw answers as collected by the questionnaire (before mapping to a Profile).
+export type FinderAnswers = Partial<{
+  nativeSpeaker: 'yes' | 'no'
+  country: Country
+  tefl: 'yes' | 'no'
+  degree: 'yes' | 'no'
+  audience: AudienceChoice[]
+  experience: ExperienceLevel
+  hours: HoursBucket
+}>
+
+// Shared by the client (to render results) and the server (to email them),
+// so both derive the exact same profile from a set of answers.
+export function profileFromAnswers(answers: FinderAnswers): Profile | null {
+  if (
+    !answers.nativeSpeaker ||
+    !answers.country ||
+    !answers.tefl ||
+    !answers.degree ||
+    !answers.audience ||
+    answers.audience.length === 0 ||
+    !answers.experience ||
+    !answers.hours
+  ) {
+    return null
+  }
+  return {
+    nativeSpeaker: answers.nativeSpeaker === 'yes',
+    country: answers.country,
+    tefl: answers.tefl === 'yes',
+    degree: answers.degree === 'yes',
+    audience: answers.audience,
+    experience: answers.experience,
+    hours: answers.hours,
+  }
+}
+
 const COUNTRY_GROUPS: Record<LocationGroup, Country[] | 'all'> = {
   worldwide: 'all',
   native_5: ['usa', 'uk', 'canada', 'australia', 'new_zealand'],

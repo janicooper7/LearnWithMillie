@@ -1,4 +1,5 @@
 import { Instagram } from 'lucide-react'
+import ClimateBadge from './ClimateBadge'
 
 const TikTokIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -136,6 +137,9 @@ export default function Footer() {
                 </a>
               </div>
             </div>
+
+            {/* Climate initiative */}
+            <ClimateBadge variant='inline' />
           </div>
 
           {/* For Students */}

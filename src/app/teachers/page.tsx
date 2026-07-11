@@ -6,7 +6,7 @@ import TeacherProducts from '../sections/TeacherProducts'
 export const metadata: Metadata = {
   title: 'For Teachers — Mentorship, Courses & Free Tools',
   description:
-    'Everything English teachers need to grow — personalised one-on-one mentorship with Millie Cooper, self-paced teacher courses, the free Platform Finder, and the free Debate Generator.',
+    'Everything English teachers need to grow — personalised one-on-one mentorship with Millie Cooper, self-paced teacher courses, the Platform Finder, and the Debate Generator.',
   openGraph: {
     title: 'For Teachers | LearnWithMillie',
     description:

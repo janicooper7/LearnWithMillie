@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, ArrowPathIcon, LockClosedIcon } from '@heroicons/react/24/outline'
 import {
   matchAll,
   COUNTRY_LABELS,
@@ -129,8 +129,13 @@ type Answers = Partial<{
 export default function PlatformFinder() {
   const [stepIdx, setStepIdx] = useState(0)
   const [answers, setAnswers] = useState<Answers>({})
-  const [showResults, setShowResults] = useState(false)
+  const [finished, setFinished] = useState(false)
   const [showAllExcluded, setShowAllExcluded] = useState(false)
+  const [unlocked, setUnlocked] = useState(false)
+  const [verifying, setVerifying] = useState(false)
+  const [idError, setIdError] = useState<string | null>(null)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
   const totalSteps = STEPS.length
   const isLastStep = stepIdx === totalSteps - 1
@@ -170,8 +175,91 @@ export default function PlatformFinder() {
   const matched = results.filter((r) => r.matches)
   const excluded = results.filter((r) => !r.matches)
 
+  // On mount: if the URL carries a result id (from the Stripe redirect or a
+  // shared/bookmarked link), load that paid report. The record is created at
+  // checkout, so we poll briefly to cover the gap before payment settles.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('id')
+    if (!id) return
+
+    let cancelled = false
+    let attempts = 0
+    setVerifying(true)
+
+    const poll = async () => {
+      attempts++
+      try {
+        const res = await fetch(`/api/platform-finder/result?id=${encodeURIComponent(id)}`)
+        const d = await res.json()
+        if (cancelled) return
+
+        if (d.paid && d.answers) {
+          setAnswers(d.answers)
+          setUnlocked(true)
+          setFinished(true)
+          setVerifying(false)
+          return
+        }
+        if (d.found === false) {
+          setIdError("We couldn't find those results. Please double-check your link.")
+          setVerifying(false)
+          return
+        }
+        if (attempts < 8) {
+          window.setTimeout(poll, 1500)
+        } else {
+          setIdError('Your payment is still processing. Please refresh this page in a moment.')
+          setVerifying(false)
+        }
+      } catch {
+        if (cancelled) return
+        if (attempts < 8) {
+          window.setTimeout(poll, 1500)
+        } else {
+          setIdError('Something went wrong loading your results. Please refresh to try again.')
+          setVerifying(false)
+        }
+      }
+    }
+
+    poll()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  async function handleUnlock() {
+    setCheckoutError(null)
+    setCheckoutLoading(true)
+    try {
+      const res = await fetch('/api/platform-finder/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers }),
+      })
+      const data = await res.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error(data.error || 'Could not start checkout')
+      }
+    } catch (err: any) {
+      setCheckoutError(err.message || 'Something went wrong. Please try again.')
+      setCheckoutLoading(false)
+    }
+  }
+
   function setAnswer(step: Step, value: string) {
     setAnswers((a) => ({ ...a, [step]: value }))
+    // Auto-advance on single-select for a snappier feel. On the final step,
+    // selecting an answer takes the visitor straight to their results.
+    window.setTimeout(() => {
+      if (isLastStep) {
+        setFinished(true)
+      } else {
+        setStepIdx((i) => (i < totalSteps - 1 ? i + 1 : i))
+      }
+    }, 280)
   }
 
   function toggleMultiAnswer(step: Step, value: string) {
@@ -192,7 +280,7 @@ export default function PlatformFinder() {
   function handleNext() {
     if (!hasAnswer) return
     if (isLastStep) {
-      setShowResults(true)
+      setFinished(true)
     } else {
       setStepIdx((i) => i + 1)
     }
@@ -203,13 +291,40 @@ export default function PlatformFinder() {
   }
 
   function handleRestart() {
+    // A fresh set of answers is a new report — clear the paid entitlement and
+    // drop the id from the URL so the visitor starts clean.
     setAnswers({})
     setStepIdx(0)
-    setShowResults(false)
+    setFinished(false)
+    setUnlocked(false)
     setShowAllExcluded(false)
+    if (typeof window !== 'undefined' && window.location.search) {
+      window.history.replaceState(null, '', '/teachers/platform-finder')
+    }
   }
 
-  if (showResults && profile) {
+  if (verifying) {
+    return <VerifyingView />
+  }
+
+  if (idError) {
+    return <ResultErrorView message={idError} onRestart={handleRestart} />
+  }
+
+  if (finished && profile) {
+    // Nothing to sell when there are no matches — show the free "adjust your
+    // answers" screen instead of charging for an empty report.
+    if (!unlocked && matched.length > 0) {
+      return (
+        <Paywall
+          matchCount={matched.length}
+          onUnlock={handleUnlock}
+          loading={checkoutLoading}
+          error={checkoutError}
+          onRestart={handleRestart}
+        />
+      )
+    }
     return (
       <ResultsView
         matched={matched}
@@ -230,12 +345,38 @@ export default function PlatformFinder() {
         {/* Hero */}
         <div className="text-center mb-10 md:mb-14 max-w-3xl mx-auto">
           <h1 className="heading-lg mb-4" style={{ color: '#1F3A34' }}>
-            Find your <span style={{ color: '#C2AA6A' }}>perfect platform</span> to teach
+            Stop guessing where to <span style={{ color: '#C2AA6A' }}>teach English online</span>
           </h1>
-          <p className="text-base md:text-lg leading-relaxed" style={{ color: 'rgba(31,58,52,0.7)' }}>
-            Answer seven quick questions and we'll match you to the online teaching platforms that actually
-            hire teachers like you — ranked by pay and fit.
+          <p className="text-base md:text-lg leading-relaxed mb-8" style={{ color: 'rgba(31,58,52,0.72)' }}>
+            There are dozens of platforms and most will waste your time. Answer seven quick questions and
+            we'll instantly show you exactly which ones will hire you — ranked by pay, so you apply where
+            it actually counts.
           </p>
+
+          {/* Slim banner */}
+          <div
+            className="rounded-lg px-5 py-3.5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5 max-w-2xl mx-auto"
+            style={{ backgroundColor: '#1F3A34' }}
+          >
+            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: '#C2AA6A' }}>
+              The #1 tool for online English teachers
+            </span>
+            <span className="hidden sm:block h-4 w-px" style={{ backgroundColor: 'rgba(255,255,255,0.18)' }} />
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-xs font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircleIcon className="w-3.5 h-3.5" style={{ color: '#C2AA6A' }} />
+                33 platforms compared
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircleIcon className="w-3.5 h-3.5" style={{ color: '#C2AA6A' }} />
+                Under a minute
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircleIcon className="w-3.5 h-3.5" style={{ color: '#C2AA6A' }} />
+                Free — no sign-up
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Wizard card */}
@@ -299,16 +440,13 @@ export default function PlatformFinder() {
                       return (
                         <button
                           key={opt.value}
+                          data-selected={selected}
                           onClick={() =>
                             isMulti
                               ? toggleMultiAnswer(currentQuestion.step, opt.value)
                               : setAnswer(currentQuestion.step, opt.value)
                           }
-                          className="w-full text-left px-5 py-4 rounded-xl transition-all duration-150 flex items-center gap-3"
-                          style={{
-                            backgroundColor: selected ? 'rgba(31,58,52,0.06)' : 'transparent',
-                            border: `1.5px solid ${selected ? '#1F3A34' : '#EDE4D8'}`,
-                          }}
+                          className="pf-option w-full text-left px-5 py-4 rounded-xl transition-all duration-150 flex items-center gap-3"
                         >
                           <div
                             className="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-all"
@@ -450,10 +588,20 @@ function ResultsView({ matched, excluded, showAllExcluded, onToggleExcluded, onR
             </button>
           </div>
         ) : (
-          <div className="max-w-4xl mx-auto space-y-3">
-            {matched.map((r, idx) => (
-              <PlatformCard key={r.platform.name} result={r} rank={idx + 1} matched />
-            ))}
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-baseline gap-2 mb-4">
+              <h2 className="text-xl md:text-2xl font-serif font-bold" style={{ color: '#1F3A34' }}>
+                Your best matches
+              </h2>
+              <span className="text-sm" style={{ color: 'rgba(31,58,52,0.5)' }}>
+                highest pay first
+              </span>
+            </div>
+            <div className="space-y-4">
+              {matched.map((r, idx) => (
+                <MatchedCard key={r.platform.name} result={r} rank={idx + 1} />
+              ))}
+            </div>
           </div>
         )}
 
@@ -474,9 +622,9 @@ function ResultsView({ matched, excluded, showAllExcluded, onToggleExcluded, onR
                 </button>
               )}
             </div>
-            <div className="space-y-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               {excludedToShow.map((r) => (
-                <PlatformCard key={r.platform.name} result={r} matched={false} />
+                <ExcludedCard key={r.platform.name} result={r} />
               ))}
             </div>
           </div>
@@ -494,6 +642,222 @@ function ResultsView({ matched, excluded, showAllExcluded, onToggleExcluded, onR
   )
 }
 
+// --- Payment gate ---
+
+function VerifyingView() {
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F4EDE4' }}>
+      <div className="text-center">
+        <div
+          className="mx-auto mb-4 w-10 h-10 rounded-full border-2 animate-spin"
+          style={{ borderColor: 'rgba(31,58,52,0.15)', borderTopColor: '#1F3A34' }}
+        />
+        <p className="text-sm font-medium" style={{ color: 'rgba(31,58,52,0.7)' }}>
+          Confirming your payment…
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function ResultErrorView({ message, onRestart }: { message: string; onRestart: () => void }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#F4EDE4' }}>
+      <div
+        className="max-w-md w-full text-center bg-white rounded-3xl p-8 md:p-10 shadow-sm"
+        style={{ border: '1px solid #EDE4D8' }}
+      >
+        <h2 className="text-xl md:text-2xl font-serif font-bold mb-3" style={{ color: '#1F3A34' }}>
+          Hang tight
+        </h2>
+        <p className="text-sm mb-6" style={{ color: 'rgba(31,58,52,0.7)' }}>
+          {message}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button onClick={() => window.location.reload()} className="btn-primary gap-2 justify-center">
+            <ArrowPathIcon className="w-4 h-4" />
+            Refresh
+          </button>
+          <button onClick={onRestart} className="btn-secondary gap-2 inline-flex items-center justify-center">
+            Start a new search
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+type PaywallProps = {
+  matchCount: number
+  onUnlock: () => void
+  loading: boolean
+  error: string | null
+  onRestart: () => void
+}
+
+function Paywall({ matchCount, onUnlock, loading, error, onRestart }: PaywallProps) {
+  const benefits = [
+    'Every platform you qualify for, ranked by pay',
+    'Direct sign-up links so you can apply today',
+    'The exact TEFL, degree & experience requirements for each',
+    'The full list of platforms that ruled you out — and why',
+    'A copy emailed to you — so you never lose your results',
+  ]
+  const skeletonRows = Math.min(3, Math.max(1, matchCount))
+
+  return (
+    <div className="min-h-screen py-12 md:py-20" style={{ backgroundColor: '#F4EDE4' }}>
+      <div className="container">
+        <div className="max-w-2xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-5 text-xs font-medium tracking-wide uppercase"
+              style={{ backgroundColor: '#1F3A34', color: 'white' }}
+            >
+              <CheckCircleIcon className="w-3.5 h-3.5" style={{ color: '#C2AA6A' }} />
+              Your results are ready
+            </div>
+            <h1 className="heading-lg mb-4" style={{ color: '#1F3A34' }}>
+              You match <span style={{ color: '#C2AA6A' }}>{matchCount}</span> platform
+              {matchCount === 1 ? '' : 's'}
+            </h1>
+            <p className="text-base md:text-lg leading-relaxed" style={{ color: 'rgba(31,58,52,0.7)' }}>
+              Unlock your personalised report to see every platform you qualify for — ranked by pay,
+              with sign-up links and the exact requirements for each.
+            </p>
+          </div>
+
+          {/* Locked preview */}
+          <div
+            className="relative rounded-3xl overflow-hidden shadow-xl"
+            style={{ border: '1px solid #EDE4D8', backgroundColor: 'white' }}
+          >
+            <div
+              className="p-5 md:p-6 space-y-3"
+              style={{ filter: 'blur(6px)', pointerEvents: 'none', userSelect: 'none' }}
+              aria-hidden="true"
+            >
+              {Array.from({ length: skeletonRows }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-4 rounded-2xl p-4"
+                  style={{ backgroundColor: '#FBF7F1', border: '1px solid #EDE4D8' }}
+                >
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center font-bold flex-shrink-0"
+                    style={{ backgroundColor: '#1F3A34', color: '#C2AA6A' }}
+                  >
+                    {i + 1}
+                  </div>
+                  <div className="flex-1">
+                    <div className="h-4 rounded" style={{ backgroundColor: 'rgba(31,58,52,0.18)', width: '55%' }} />
+                    <div className="h-3 rounded mt-2" style={{ backgroundColor: 'rgba(31,58,52,0.1)', width: '35%' }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{ background: 'linear-gradient(180deg, rgba(244,237,228,0.15), rgba(244,237,228,0.85))' }}
+            >
+              <div
+                className="w-11 h-11 rounded-full flex items-center justify-center shadow-md"
+                style={{ backgroundColor: '#1F3A34' }}
+              >
+                <LockClosedIcon className="w-5 h-5" style={{ color: '#C2AA6A' }} />
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div
+            className="rounded-3xl mt-6 p-7 md:p-10 text-center shadow-lg"
+            style={{ backgroundColor: 'white', border: '1px solid #EDE4D8' }}
+          >
+            <h2 className="text-2xl md:text-3xl font-serif font-bold mb-7" style={{ color: '#1F3A34' }}>
+              Here's everything you'll unlock
+            </h2>
+            <ul className="text-left space-y-4 mb-9 max-w-md mx-auto">
+              {benefits.map((b) => (
+                <li key={b} className="flex items-start gap-3.5">
+                  <span
+                    className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5"
+                    style={{ backgroundColor: 'rgba(194,170,106,0.18)' }}
+                  >
+                    <CheckCircleIcon className="w-5 h-5" style={{ color: '#C2AA6A' }} />
+                  </span>
+                  <span className="text-base md:text-lg font-medium leading-snug" style={{ color: '#1F3A34' }}>
+                    {b}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            {/* Price */}
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="font-serif font-bold leading-none" style={{ color: '#1F3A34', fontSize: '4rem' }}>
+                $5
+              </span>
+              <div className="text-left">
+                <div
+                  className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full inline-block"
+                  style={{ backgroundColor: '#C2AA6A', color: '#1F3A34' }}
+                >
+                  One-time
+                </div>
+                <div className="text-sm mt-1.5" style={{ color: 'rgba(31,58,52,0.6)' }}>
+                  Yours to keep — forever
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={onUnlock}
+              disabled={loading}
+              className="btn-primary gap-2.5 w-full justify-center text-base md:text-lg font-semibold"
+              style={{
+                opacity: loading ? 0.7 : 1,
+                cursor: loading ? 'wait' : 'pointer',
+                paddingTop: '1rem',
+                paddingBottom: '1rem',
+              }}
+            >
+              {loading ? (
+                'Redirecting to checkout…'
+              ) : (
+                <>
+                  <LockClosedIcon className="w-5 h-5" />
+                  Unlock my results — $5
+                </>
+              )}
+            </button>
+            {error && (
+              <p className="text-sm mt-3" style={{ color: '#9a4a38' }}>
+                {error}
+              </p>
+            )}
+            <p className="text-xs mt-4" style={{ color: 'rgba(31,58,52,0.5)' }}>
+              One-time payment · Secure checkout via Stripe · Results emailed to you
+            </p>
+          </div>
+
+          <div className="text-center mt-6">
+            <button
+              onClick={onRestart}
+              className="inline-flex items-center gap-1.5 text-sm font-medium"
+              style={{ color: 'rgba(31,58,52,0.6)' }}
+            >
+              <ArrowLeftIcon className="w-4 h-4" />
+              Change my answers
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ProfileChip({ label }: { label: string }) {
   return (
     <span
@@ -505,121 +869,133 @@ function ProfileChip({ label }: { label: string }) {
   )
 }
 
-function PlatformCard({
-  result,
-  rank,
-  matched,
-}: {
-  result: ReturnType<typeof matchAll>[number]
-  rank?: number
-  matched: boolean
-}) {
-  const { platform: p, reasons } = result
+function MatchedCard({ result, rank }: { result: ReturnType<typeof matchAll>[number]; rank: number }) {
+  const { platform: p } = result
+  const isTop = rank <= 3
 
   return (
     <div
-      className="rounded-2xl p-5 md:p-6 transition-all"
-      style={{
-        backgroundColor: matched ? 'white' : 'rgba(255,255,255,0.5)',
-        border: `1px solid ${matched ? '#EDE4D8' : 'rgba(31,58,52,0.08)'}`,
-        opacity: matched ? 1 : 0.75,
-      }}
+      className="pf-card pf-card-matched rounded-2xl bg-white overflow-hidden"
+      style={{ border: `1px solid ${rank === 1 ? 'rgba(194,170,106,0.55)' : '#EDE4D8'}` }}
     >
-      <div className="flex items-start justify-between gap-4 mb-3">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          {matched && rank !== undefined && (
-            <div
-              className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold mt-0.5"
-              style={{
-                backgroundColor: rank <= 3 ? '#1F3A34' : 'rgba(31,58,52,0.08)',
-                color: rank <= 3 ? '#C2AA6A' : '#1F3A34',
-              }}
-            >
-              {rank}
-            </div>
-          )}
+      <div className="p-5 md:p-6">
+        {/* Header row */}
+        <div className="flex items-start gap-4">
+          <div
+            className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-base font-bold"
+            style={{
+              backgroundColor: isTop ? '#1F3A34' : 'rgba(31,58,52,0.06)',
+              color: isTop ? '#C2AA6A' : '#1F3A34',
+            }}
+          >
+            {rank}
+          </div>
+
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-lg md:text-xl font-serif font-bold" style={{ color: '#1F3A34' }}>
+              <h3 className="text-xl md:text-2xl font-serif font-bold leading-tight" style={{ color: '#1F3A34' }}>
                 {p.name}
               </h3>
-              {matched && (
+              {rank === 1 && (
                 <span
-                  className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: 'rgba(194,170,106,0.18)', color: '#8a7434' }}
+                  className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
+                  style={{ backgroundColor: '#C2AA6A', color: '#1F3A34' }}
                 >
-                  Match
+                  Best match
                 </span>
               )}
             </div>
-            <p className="text-sm font-semibold mt-0.5" style={{ color: '#1F3A34' }}>
+            <p className="text-lg md:text-xl font-bold mt-1" style={{ color: '#1F3A34' }}>
               {p.hourlyRate}
             </p>
           </div>
+
+          {p.signupUrl && (
+            <a
+              href={p.signupUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary text-sm px-5 py-2.5 flex-shrink-0 hidden sm:inline-flex"
+            >
+              Visit site
+            </a>
+          )}
         </div>
-        {matched && p.signupUrl && (
+
+        {/* Stat grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-5">
+          <Stat label="TEFL" value={teflLabel(p.tefl)} />
+          <Stat label="Students" value={studentAgeLabel(p.students)} />
+          <Stat label="Min hrs / week" value={p.minHoursPerWeek === 0 ? 'None' : `${p.minHoursPerWeek} hrs`} />
+          <Stat label="Experience" value={p.minYearsExperience === 0 ? 'None' : `${p.minYearsExperience}+ yrs`} />
+        </div>
+
+        {p.notes && (
+          <p className="text-sm mt-4 leading-relaxed" style={{ color: 'rgba(31,58,52,0.7)' }}>
+            {p.notes}
+          </p>
+        )}
+
+        {p.signupUrl && (
           <a
             href={p.signupUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary text-xs px-4 py-2 flex-shrink-0 hidden sm:inline-flex"
+            className="btn-primary text-sm py-2.5 mt-5 w-full justify-center sm:hidden"
           >
             Visit site
           </a>
         )}
       </div>
+    </div>
+  )
+}
 
-      {/* Detail grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs mt-3">
-        <Detail label="TEFL" value={teflLabel(p.tefl)} />
-        <Detail label="Students" value={studentAgeLabel(p.students)} />
-        <Detail
-          label="Min hrs/wk"
-          value={p.minHoursPerWeek === 0 ? 'None' : `${p.minHoursPerWeek} hrs`}
-        />
-        <Detail
-          label="Experience"
-          value={p.minYearsExperience === 0 ? 'None' : `${p.minYearsExperience}+ yrs`}
-        />
+function ExcludedCard({ result }: { result: ReturnType<typeof matchAll>[number] }) {
+  const { platform: p, reasons } = result
+
+  return (
+    <div
+      className="rounded-2xl p-5 md:p-6"
+      style={{ backgroundColor: '#FBF7F1', border: '1px solid rgba(31,58,52,0.1)' }}
+    >
+      <div className="flex items-baseline justify-between gap-3 flex-wrap">
+        <h3 className="text-base md:text-lg font-serif font-bold" style={{ color: 'rgba(31,58,52,0.85)' }}>
+          {p.name}
+        </h3>
+        <p className="text-sm font-semibold" style={{ color: 'rgba(31,58,52,0.55)' }}>
+          {p.hourlyRate}
+        </p>
       </div>
 
-      {p.notes && (
-        <p className="text-xs mt-4 leading-relaxed" style={{ color: 'rgba(31,58,52,0.65)' }}>
-          {p.notes}
-        </p>
-      )}
-
-      {!matched && reasons.length > 0 && (
-        <div
-          className="mt-4 pt-4 text-xs"
-          style={{ borderTop: '1px solid rgba(31,58,52,0.08)', color: 'rgba(31,58,52,0.6)' }}
-        >
-          <span className="font-semibold" style={{ color: 'rgba(31,58,52,0.75)' }}>Why excluded:</span>{' '}
-          {reasons.join(' · ')}
+      {reasons.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {reasons.map((reason) => (
+            <span
+              key={reason}
+              className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg"
+              style={{ backgroundColor: 'rgba(180,80,60,0.08)', color: '#9a4a38' }}
+            >
+              <svg className="w-3 h-3 flex-shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="3" y1="3" x2="9" y2="9" />
+                <line x1="9" y1="3" x2="3" y2="9" />
+              </svg>
+              {reason}
+            </span>
+          ))}
         </div>
-      )}
-
-      {matched && p.signupUrl && (
-        <a
-          href={p.signupUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-secondary text-xs px-4 py-2 mt-4 w-full justify-center sm:hidden"
-        >
-          Visit site
-        </a>
       )}
     </div>
   )
 }
 
-function Detail({ label, value }: { label: string; value: string }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-[10px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'rgba(31,58,52,0.45)' }}>
+    <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: '#FBF7F1', border: '1px solid #EDE4D8' }}>
+      <p className="text-[11px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'rgba(31,58,52,0.5)' }}>
         {label}
       </p>
-      <p className="font-medium" style={{ color: '#1F3A34' }}>
+      <p className="text-sm font-semibold leading-snug" style={{ color: '#1F3A34' }}>
         {value}
       </p>
     </div>

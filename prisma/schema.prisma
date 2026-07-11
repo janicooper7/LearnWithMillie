@@ -24,6 +24,7 @@ model User {
   allowance            Int       @default(0)
   trialPurchased       Boolean   @default(false)
   trialUsed            Boolean   @default(false)
+  debateAccess         Boolean   @default(false)
   stripeCustomerId     String?
   stripeSubscriptionId String?
   addonLessonsEnabled  Boolean   @default(false)
@@ -138,5 +139,22 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model ProcessedWebhook {
+  id          String   @id
+  processedAt DateTime @default(now())
+}
+
+// Paid Platform Finder reports. The `id` is the shareable access token
+// (/teachers/platform-finder?id=<id>) sent to the customer by email.
+model PlatformFinderResult {
+  id              String    @id
+  answers         Json
+  email           String?
+  paid            Boolean   @default(false)
+  emailedAt       DateTime?
+  stripeSessionId String?   @unique
+  createdAt       DateTime  @default(now())
 }
 

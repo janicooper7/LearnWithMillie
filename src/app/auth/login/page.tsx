@@ -2,9 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { signIn, useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Loader2 } from 'lucide-react'
+
+// Only allow same-origin, relative paths so `?next=` can't be an open redirect.
+function safeNext(next: string | null): string | null {
+  if (!next) return null
+  if (!next.startsWith('/') || next.startsWith('//')) return null
+  return next
+}
 
 const GoogleIcon = () => (
   <svg width='18' height='18' viewBox='0 0 18 18'>
@@ -17,6 +24,8 @@ const GoogleIcon = () => (
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const nextPath = safeNext(searchParams.get('next'))
   const { data: session, status } = useSession()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -38,18 +47,18 @@ export default function LoginPage() {
     }
 
     const session = await fetch('/api/auth/session').then((r) => r.json())
-    router.push(session?.user?.role === 'ADMIN' ? '/admin' : '/dashboard')
+    router.push(nextPath ?? (session?.user?.role === 'ADMIN' ? '/admin' : '/dashboard'))
   }
 
   useEffect(() => {
     if (status === 'authenticated') {
-      router.replace(session?.user?.role === 'ADMIN' ? '/admin' : '/dashboard')
+      router.replace(nextPath ?? (session?.user?.role === 'ADMIN' ? '/admin' : '/dashboard'))
     }
-  }, [status, session, router])
+  }, [status, session, router, nextPath])
 
   const handleGoogle = () => {
     setGoogleLoading(true)
-    signIn('google', { callbackUrl: '/dashboard' })
+    signIn('google', { callbackUrl: nextPath ?? '/dashboard' })
   }
 
   return (
@@ -261,7 +270,7 @@ export default function LoginPage() {
 
           <p className='text-center text-sm mt-6' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
             Don&apos;t have an account?{' '}
-            <Link href='/auth/signup' className='font-semibold' style={{ color: '#1F3A34' }}>
+            <Link href={nextPath ? `/auth/signup?next=${encodeURIComponent(nextPath)}` : '/auth/signup'} className='font-semibold' style={{ color: '#1F3A34' }}>
               Sign up
             </Link>
           </p>

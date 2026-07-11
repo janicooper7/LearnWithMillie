@@ -54,6 +54,12 @@ const teacherItems = [
     description: 'Get to know your mentor',
   },
   {
+    name: 'All Products',
+    href: '/teachers/products',
+    hash: '',
+    description: 'Courses, mentorship & tools',
+  },
+  {
     name: 'Testimonials',
     href: '/teachers',
     hash: '#mentorship-testimonials',

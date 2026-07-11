@@ -14,6 +14,7 @@ import {
   BadgeCheck,
 } from 'lucide-react'
 import gsap from 'gsap'
+import ClimateBadge from '../components/ClimateBadge'
 
 type PathKey = 'students' | 'teachers'
 
@@ -148,6 +149,11 @@ export default function HomeHybrid() {
                   </span>
                 </span>
               ))}
+            </div>
+
+            {/* Climate initiative */}
+            <div className='mt-6 flex justify-center lg:justify-start'>
+              <ClimateBadge variant='card' />
             </div>
           </div>
 
