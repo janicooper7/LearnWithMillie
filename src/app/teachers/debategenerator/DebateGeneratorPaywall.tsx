@@ -79,7 +79,7 @@ const TOPIC_WALL = [
 export default function DebateGeneratorPaywall({ loggedIn }: { loggedIn: boolean }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const pricingRef = useRef<HTMLDivElement | null>(null)
+  const pricingRef = useRef<HTMLElement>(null)
 
   const NEXT = '/teachers/debategenerator'
   // The debate topic is fixed (one taste of the library, no reset), but the five
@@ -498,7 +498,7 @@ function PricingSection({
   onPurchase,
   next,
 }: {
-  innerRef: React.RefObject<HTMLDivElement | null>
+  innerRef: React.RefObject<HTMLElement>
   loggedIn: boolean
   loading: boolean
   error: string | null
