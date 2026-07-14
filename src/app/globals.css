@@ -149,3 +149,35 @@
   box-shadow: 0 18px 40px -20px rgba(31, 58, 52, 0.35);
   border-color: rgba(31, 58, 52, 0.25);
 }
+
+/* Platform Finder — scrolling platform wall */
+.pf-marquee {
+  overflow: hidden;
+  width: 100%;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.pf-marquee-track {
+  display: inline-flex;
+  width: max-content;
+  animation: pf-marquee-scroll 46s linear infinite;
+}
+.pf-marquee-reverse {
+  animation-direction: reverse;
+}
+.pf-marquee:hover .pf-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes pf-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pf-marquee-track {
+    animation: none;
+  }
+}
