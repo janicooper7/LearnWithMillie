@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
@@ -105,7 +105,6 @@ export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
 
   const pathname = usePathname()
-  const router = useRouter()
   const { data: session } = useSession()
 
   // Scroll listener — runs after hydration so initial render matches server
@@ -125,19 +124,18 @@ export default function Navigation() {
     closeTimer.current = setTimeout(() => setOpenDropdown(null), 120)
   }
 
-  function navigate(item: NavItem) {
+  // Rendered as <Link> so Next.js prefetches the target route (instant nav).
+  // We only intercept the click when it's a same-page hash jump, to keep the
+  // custom smooth-scroll offset for the fixed header.
+  function handleNav(e: React.MouseEvent, item: NavItem) {
     setMobileOpen(false)
     setOpenDropdown(null)
-    if (item.hash) {
-      if (pathname !== item.href) {
-        router.push(item.href + item.hash)
-      } else {
-        const el = document.getElementById(item.hash.replace('#', ''))
-        if (el) window.scrollTo({ top: el.offsetTop - 130, behavior: 'smooth' })
-      }
-    } else {
-      router.push(item.href)
+    if (item.hash && pathname === item.href) {
+      e.preventDefault()
+      const el = document.getElementById(item.hash.replace('#', ''))
+      if (el) window.scrollTo({ top: el.offsetTop - 130, behavior: 'smooth' })
     }
+    // Otherwise let <Link> handle the (prefetched) navigation.
   }
 
   const isTeacherSection =
@@ -220,10 +218,11 @@ export default function Navigation() {
                 >
                   <div className='p-2 grid grid-cols-2 gap-1'>
                     {studentItems.map((item) => (
-                      <button
+                      <Link
                         key={item.name}
-                        onClick={() => navigate(item)}
-                        className='text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4] group'
+                        href={item.href + item.hash}
+                        onClick={(e) => handleNav(e, item)}
+                        className='block text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4] group'
                       >
                         <p
                           className='text-sm font-semibold'
@@ -243,7 +242,7 @@ export default function Navigation() {
                         >
                           {item.description}
                         </p>
-                      </button>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -298,10 +297,11 @@ export default function Navigation() {
                 >
                   <div className='p-2 grid grid-cols-2 gap-1'>
                     {teacherItems.map((item) => (
-                      <button
+                      <Link
                         key={item.name}
-                        onClick={() => navigate(item)}
-                        className='text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4]'
+                        href={item.href + item.hash}
+                        onClick={(e) => handleNav(e, item)}
+                        className='block text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4]'
                       >
                         <p
                           className='text-sm font-semibold'
@@ -321,7 +321,7 @@ export default function Navigation() {
                         >
                           {item.description}
                         </p>
-                      </button>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -452,17 +452,18 @@ export default function Navigation() {
             {mobileExpanded === 'students' && (
               <div className='pl-3 pb-1 space-y-0.5'>
                 {studentItems.map((item) => (
-                  <button
+                  <Link
                     key={item.name}
-                    onClick={() => navigate(item)}
-                    className='w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60'
+                    href={item.href + item.hash}
+                    onClick={(e) => handleNav(e, item)}
+                    className='block w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60'
                     style={{
                       color: 'rgba(31,58,52,0.75)',
                       fontFamily: 'var(--font-inter), sans-serif',
                     }}
                   >
                     {item.name}
-                  </button>
+                  </Link>
                 ))}
               </div>
             )}
@@ -491,17 +492,18 @@ export default function Navigation() {
             {mobileExpanded === 'teachers' && (
               <div className='pl-3 pb-1 space-y-0.5'>
                 {teacherItems.map((item) => (
-                  <button
+                  <Link
                     key={item.name}
-                    onClick={() => navigate(item)}
-                    className='w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60'
+                    href={item.href + item.hash}
+                    onClick={(e) => handleNav(e, item)}
+                    className='block w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60'
                     style={{
                       color: 'rgba(31,58,52,0.75)',
                       fontFamily: 'var(--font-inter), sans-serif',
                     }}
                   >
                     {item.name}
-                  </button>
+                  </Link>
                 ))}
               </div>
             )}
