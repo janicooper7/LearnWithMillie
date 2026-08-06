@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSession } from 'next-auth/react'
+import { trackEvent } from '@/lib/analytics'
 import {
   Play,
   Video,
@@ -50,6 +51,17 @@ export default function TrilogyPurchaseCard({
   }, [playing])
 
   async function handleEnrol() {
+    // Fired for every click, signed in or not — a signed-out click never
+    // reaches Stripe, so the two need telling apart in reporting.
+    trackEvent('enrol_click', {
+      plan: 'course-full',
+      plan_name: 'BOOKED Trilogy',
+      cta_location: 'trilogy_card',
+      signed_in: Boolean(session),
+      value: 149,
+      currency: 'USD',
+    })
+
     if (!session) {
       window.location.href =
         '/auth/signup?type=teacher&next=%2Fteachers%2Fcourses'
@@ -63,8 +75,14 @@ export default function TrilogyPurchaseCard({
         body: JSON.stringify({ plan: 'course-full' }),
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
-      else setLoading(false)
+      if (data.url) {
+        trackEvent('begin_checkout', {
+          currency: 'USD',
+          value: 149,
+          items: [{ item_id: 'course-full', item_name: 'BOOKED Trilogy', price: 149 }],
+        })
+        window.location.href = data.url
+      } else setLoading(false)
     } catch {
       setLoading(false)
     }

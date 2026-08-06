@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import { trackEvent } from '@/lib/analytics'
 import {
   ArrowRight,
   PlayCircle,
@@ -80,6 +81,19 @@ export default function CoursePricingCards({
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
   async function handleCheckout(planKey: string, planName: string) {
+    const price = courses.find((c) => c.planKey === planKey)?.price
+
+    // Fired for every click, signed in or not — a signed-out click never
+    // reaches Stripe, so the two need telling apart in reporting.
+    trackEvent('enrol_click', {
+      plan: planKey,
+      plan_name: planName,
+      cta_location: 'pricing_cards',
+      signed_in: Boolean(session),
+      value: price,
+      currency: 'USD',
+    })
+
     if (!session) {
       window.location.href = `/auth/signup?type=teacher&next=%2Fteachers%2Fcourses`
       return
@@ -93,6 +107,11 @@ export default function CoursePricingCards({
       })
       const data = await res.json()
       if (data.url) {
+        trackEvent('begin_checkout', {
+          currency: 'USD',
+          value: price,
+          items: [{ item_id: planKey, item_name: planName, price }],
+        })
         window.location.href = data.url
       } else {
         console.error('Checkout error:', data.error)
