@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import PlatformFinder from './PlatformFinder'
 
 export const metadata: Metadata = {
-  title: 'Platform Finder — Which Online English Teaching Platform Is Right for You?',
+  title: 'Online English Teaching Platform Finder',
   description:
     'Answer 7 quick questions and discover which of 33 online English teaching platforms — VIPKid, Cambly, Preply, iTalki, Lingoda and more — actually hire teachers like you. Ranked by pay and fit.',
   keywords: [

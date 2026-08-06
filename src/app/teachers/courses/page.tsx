@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import Link from 'next/link'
@@ -6,6 +7,18 @@ import CoursePricingCards from '@/app/components/CoursePricingCards'
 import CoursePromoStrip from '@/app/components/CoursePromoStrip'
 import TrilogyPurchaseCard from '@/app/components/TrilogyPurchaseCard'
 import CourseContentAccordion from '@/app/components/CourseContentAccordion'
+
+export const metadata: Metadata = {
+  title: 'Courses for English Teachers',
+  description:
+    'Online courses for English teachers — set up your tutoring business, market it across five channels, and convert trial lessons with a proven 5-phase framework.',
+  openGraph: {
+    title: 'Courses for English Teachers',
+    description:
+      'Online courses for English teachers — build your tutoring business, find students, and convert more trial lessons.',
+    url: '/teachers/courses',
+  },
+}
 
 export const dynamic = 'force-dynamic'
 

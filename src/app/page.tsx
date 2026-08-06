@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import HomeHybrid from './sections/HomeHybrid'
 
 export const metadata: Metadata = {
-  title: 'English Tutoring & Teacher Mentorship with Millie Cooper',
+  title: 'English Tutoring & Teacher Mentorship with Millie Cooper | LearnWithMillie',
   description:
     'Learn English with confidence or grow as a teacher. Personalized one-on-one English lessons for students and one-on-one mentorship, courses, and free tools for teachers — all with certified TEFL teacher Millie Cooper from London.',
   openGraph: {

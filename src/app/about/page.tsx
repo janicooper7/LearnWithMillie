@@ -3,7 +3,7 @@ import About from '../sections/About'
 import LessonOptions from '../sections/LessonOptions'
 
 export const metadata: Metadata = {
-  title: 'About - Meet Your English Tutor | Millie Cooper',
+  title: 'About Millie Cooper',
   description:
     'Meet Millie, a certified TEFL teacher from London with four years of experience teaching English online. Specialising in Business English, interview preparation, and helping learners improve fluency, pronunciation, and confidence. Master\'s in Public Policy from UCL, Bachelor\'s in International Politics from King\'s College London.',
   openGraph: {
