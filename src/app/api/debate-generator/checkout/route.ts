@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { trackingMetadata } from '@/lib/trackingServer'
 
 export const runtime = 'nodejs'
 
@@ -14,6 +15,8 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const { tracking } = await req.json().catch(() => ({ tracking: null }))
 
   // Don't let someone who already owns it pay twice.
   const user = await prisma.user.findUnique({
@@ -50,6 +53,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         kind: 'debate-generator',
         userId: session.user.id,
+        ...trackingMetadata(tracking, 'debate'),
       },
     })
 

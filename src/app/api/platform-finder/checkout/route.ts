@@ -3,6 +3,7 @@ import { randomBytes } from 'crypto'
 import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 import { profileFromAnswers } from '@/app/teachers/platform-finder/platforms'
+import { trackingMetadata } from '@/lib/trackingServer'
 
 export const runtime = 'nodejs'
 
@@ -17,7 +18,7 @@ function newResultId(): string {
 // then Stripe redirects back to /teachers/platform-finder?id=<id>, which is the
 // customer's permanent access link (also emailed to them after payment).
 export async function POST(req: NextRequest) {
-  const { answers } = await req.json().catch(() => ({ answers: null }))
+  const { answers, tracking } = await req.json().catch(() => ({ answers: null, tracking: null }))
 
   if (!answers || typeof answers !== 'object') {
     return NextResponse.json({ error: 'Missing answers' }, { status: 400 })
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         kind: 'platform-finder',
         resultId: id,
+        ...trackingMetadata(tracking, 'platform-finder'),
       },
     })
 

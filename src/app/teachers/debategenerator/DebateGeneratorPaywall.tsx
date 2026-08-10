@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { track, trackingContext } from '@/lib/trackClient'
 import {
   ArrowRightIcon,
   LockClosedIcon,
@@ -103,9 +104,11 @@ export default function DebateGeneratorPaywall({ loggedIn }: { loggedIn: boolean
       const res = await fetch('/api/debate-generator/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tracking: trackingContext() }),
       })
       const data = await res.json()
       if (data.url) {
+        track('debate', 'checkout_start', { value: 7 })
         window.location.href = data.url
       } else {
         setError(data.error || 'Something went wrong. Please try again.')

@@ -8,6 +8,7 @@ import SessionProvider from './components/SessionProvider'
 import GoogleAnalytics from './components/GoogleAnalytics'
 import FacebookPixel from './components/FacebookPixel'
 import TikTokPixel from './components/TikTokPixel'
+import SiteTracking from './components/SiteTracking'
 import StructuredData from './components/StructuredData'
 
 const inter = Inter({
@@ -120,6 +121,7 @@ export default function RootLayout({
         <StructuredData />
       </head>
       <body>
+        <SiteTracking />
         <SessionProvider>
           <Navigation />
           <main className='relative pt-[72px] overflow-x-hidden'>

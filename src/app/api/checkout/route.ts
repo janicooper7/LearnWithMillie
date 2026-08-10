@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth } from '@/auth'
+import { trackingMetadata } from '@/lib/trackingServer'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { plan, quantity = 1, promoCode } = await req.json()
+  const { plan, quantity = 1, promoCode, tracking } = await req.json()
 
   // Read at request time so env vars added after server start are always picked up
   const SUBSCRIPTION_PRICE_IDS: Record<string, string> = {
@@ -68,6 +69,9 @@ export async function POST(req: NextRequest) {
         priceId,
         quantity: String(qty),
         ...(COURSE_PLAN_SLUGS.has(plan) && { courseSlug: plan }),
+        // Carried through so the webhook can attribute the purchase back to the
+        // visit that started it — Stripe is the only thread between the two.
+        ...trackingMetadata(tracking, COURSE_PLAN_SLUGS.has(plan) ? 'courses' : 'lessons'),
       },
     })
 

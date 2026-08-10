@@ -6,6 +6,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { ArrowRight } from 'lucide-react'
+import { track, trackingContext } from '@/lib/trackClient'
 
 const plans = [
   {
@@ -73,11 +74,13 @@ export default function Pricing() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planKey }),
+        body: JSON.stringify({ plan: planKey, tracking: trackingContext() }),
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
-      else console.error('Checkout error:', data.error)
+      if (data.url) {
+        track('lessons', 'checkout_start')
+        window.location.href = data.url
+      } else console.error('Checkout error:', data.error)
     } catch (err) {
       console.error('Checkout failed:', err)
     } finally {

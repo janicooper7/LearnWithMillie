@@ -146,6 +146,34 @@ model ProcessedWebhook {
   processedAt DateTime @default(now())
 }
 
+// First-party analytics. One row per tracked step; attribution is denormalised
+// onto every row so the admin report can group without a join. `sessionId` is
+// the unit of counting — "how many people reached checkout" means distinct
+// sessions, not raw hits.
+model TrackedEvent {
+  id        String   @id @default(cuid())
+  visitorId String
+  sessionId String
+  // Funnel this step belongs to ('courses', 'platform-finder', 'lessons',
+  // 'debate'). Null for plain page views outside any funnel.
+  funnel    String?
+  step      String?
+  path      String
+  // Derived bucket: direct | organic | paid_social | paid_search | referral | email | other
+  channel   String   @default("direct")
+  source    String?
+  medium    String?
+  campaign  String?
+  // Purchase amount in USD, set only on 'purchased' steps.
+  value     Float?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([funnel, step, createdAt])
+  @@index([sessionId])
+  @@index([channel, createdAt])
+}
+
 // Paid Platform Finder reports. The `id` is the shareable access token
 // (/teachers/platform-finder?id=<id>) sent to the customer by email.
 model PlatformFinderResult {

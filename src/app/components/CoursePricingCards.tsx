@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
+import { track, trackingContext } from '@/lib/trackClient'
 import {
   ArrowRight,
   PlayCircle,
@@ -93,6 +94,7 @@ export default function CoursePricingCards({
       value: price,
       currency: 'USD',
     })
+    track('courses', 'enrol_click')
 
     if (!session) {
       window.location.href = `/auth/signup?type=teacher&next=%2Fteachers%2Fcourses`
@@ -103,7 +105,7 @@ export default function CoursePricingCards({
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planKey }),
+        body: JSON.stringify({ plan: planKey, tracking: trackingContext() }),
       })
       const data = await res.json()
       if (data.url) {
@@ -112,6 +114,7 @@ export default function CoursePricingCards({
           value: price,
           items: [{ item_id: planKey, item_name: planName, price }],
         })
+        track('courses', 'checkout_start', { value: price })
         window.location.href = data.url
       } else {
         console.error('Checkout error:', data.error)

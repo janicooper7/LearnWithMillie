@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
+import { track, trackingContext } from '@/lib/trackClient'
 import {
   Play,
   Video,
@@ -61,6 +62,7 @@ export default function TrilogyPurchaseCard({
       value: 149,
       currency: 'USD',
     })
+    track('courses', 'enrol_click')
 
     if (!session) {
       window.location.href =
@@ -72,7 +74,7 @@ export default function TrilogyPurchaseCard({
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: 'course-full' }),
+        body: JSON.stringify({ plan: 'course-full', tracking: trackingContext() }),
       })
       const data = await res.json()
       if (data.url) {
@@ -81,6 +83,7 @@ export default function TrilogyPurchaseCard({
           value: 149,
           items: [{ item_id: 'course-full', item_name: 'BOOKED Trilogy', price: 149 }],
         })
+        track('courses', 'checkout_start', { value: 149 })
         window.location.href = data.url
       } else setLoading(false)
     } catch {

@@ -22,6 +22,7 @@ import {
 } from '@/lib/courseSalesContent'
 import CoursePromoStrip from '@/app/components/CoursePromoStrip'
 import CoursePromoPopup from '@/app/components/CoursePromoPopup'
+import { track, trackingContext } from '@/lib/trackClient'
 
 type Course = {
   id: string
@@ -113,10 +114,11 @@ export default function CourseDetailPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planKey }),
+        body: JSON.stringify({ plan: planKey, tracking: trackingContext() }),
       })
       const data = await res.json()
       if (data.url) {
+        track('courses', 'checkout_start')
         window.location.href = data.url
       } else if (data.error === 'Unauthorized') {
         router.push('/auth/login')

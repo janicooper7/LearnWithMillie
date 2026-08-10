@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { track, trackingContext } from '@/lib/trackClient'
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -161,6 +162,15 @@ export default function PlatformFinder() {
   const [idError, setIdError] = useState<string | null>(null)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
+  const quizStarted = useRef(false)
+  const quizCompleted = useRef(false)
+
+  // Reaching the results screen is the 'finished the questions' step.
+  useEffect(() => {
+    if (!finished || quizCompleted.current) return
+    quizCompleted.current = true
+    track('platform-finder', 'quiz_complete')
+  }, [finished])
   const quizRef = useRef<HTMLDivElement | null>(null)
 
   function scrollToQuiz() {
@@ -265,10 +275,11 @@ export default function PlatformFinder() {
       const res = await fetch('/api/platform-finder/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify({ answers, tracking: trackingContext() }),
       })
       const data = await res.json()
       if (data.url) {
+        track('platform-finder', 'checkout_start', { value: 5 })
         window.location.href = data.url
       } else {
         throw new Error(data.error || 'Could not start checkout')
@@ -279,7 +290,16 @@ export default function PlatformFinder() {
     }
   }
 
+  // The first answer is what counts as starting — landing on the page and
+  // scrolling to the quiz without picking anything isn't an intent signal.
+  function markQuizStart() {
+    if (quizStarted.current) return
+    quizStarted.current = true
+    track('platform-finder', 'quiz_start')
+  }
+
   function setAnswer(step: Step, value: string) {
+    markQuizStart()
     setAnswers((a) => ({ ...a, [step]: value }))
     // Auto-advance on single-select for a snappier feel. On the final step,
     // selecting an answer takes the visitor straight to their results.
@@ -293,6 +313,7 @@ export default function PlatformFinder() {
   }
 
   function toggleMultiAnswer(step: Step, value: string) {
+    markQuizStart()
     setAnswers((a) => {
       const current = (a[step as keyof Answers] as string[] | undefined) ?? []
       // "any" is exclusive: selecting it clears others; selecting any other clears "any"
