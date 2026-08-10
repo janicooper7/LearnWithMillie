@@ -21,6 +21,7 @@ import {
   type SalesModule,
 } from '@/lib/courseSalesContent'
 import CoursePromoStrip from '@/app/components/CoursePromoStrip'
+import CoursePromoPopup from '@/app/components/CoursePromoPopup'
 
 type Course = {
   id: string
@@ -151,8 +152,13 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F4EDE4]">
-      {/* Weekend sale strip — hidden from anyone who already owns a course */}
-      {!ownsAnyCourse && <CoursePromoStrip />}
+      {/* Sale strip + landing popup — hidden from anyone who already owns a course */}
+      {!ownsAnyCourse && (
+        <>
+          <CoursePromoStrip />
+          <CoursePromoPopup />
+        </>
+      )}
 
       {/* Hero */}
       <div className="bg-[#1F3A34] px-4 py-16 text-white">

@@ -1,11 +1,13 @@
 // Sale strip shown beneath the nav on the course pages.
 // Advertises the current discount code; apply it at Stripe checkout.
 
+import { PROMO } from '@/lib/promo'
+
 export default function CoursePromoStrip() {
   const content = (
     <p className="text-base md:text-lg font-medium">
-      <span className="font-bold">10% OFF</span> every course with code{' '}
-      <span className="font-bold tracking-wide bg-white/20 rounded px-1.5 py-0.5">DEAL10</span>
+      <span className="font-bold">{PROMO.percentOff}% OFF</span> every course with code{' '}
+      <span className="font-bold tracking-wide bg-white/20 rounded px-1.5 py-0.5">{PROMO.code}</span>
       {' '}— apply at checkout
     </p>
   )

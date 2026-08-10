@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { PlayCircle, Check, ChevronRight } from 'lucide-react'
 import CoursePricingCards from '@/app/components/CoursePricingCards'
 import CoursePromoStrip from '@/app/components/CoursePromoStrip'
+import CoursePromoPopup from '@/app/components/CoursePromoPopup'
 import TrilogyPurchaseCard from '@/app/components/TrilogyPurchaseCard'
 import CourseContentAccordion from '@/app/components/CourseContentAccordion'
 
@@ -119,8 +120,13 @@ export default async function CoursesPage() {
 
   return (
     <div className="min-h-screen bg-[#F4EDE4]">
-      {/* Weekend sale strip — hidden from anyone who already owns a course */}
-      {accessedSlugs.length === 0 && <CoursePromoStrip />}
+      {/* Sale strip + landing popup — hidden from anyone who already owns a course */}
+      {accessedSlugs.length === 0 && (
+        <>
+          <CoursePromoStrip />
+          <CoursePromoPopup />
+        </>
+      )}
 
       {/* ===== Udemy-style hero band ===== */}
       <div className="bg-[#1F3A34] text-white">
