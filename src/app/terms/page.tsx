@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Terms & Conditions | LearnWithMillie',
   description:
-    'Terms and conditions for LearnWithMillie, including our cancellation policy, refund policy, trial lesson terms, and online course terms.',
+    'Terms and conditions for LearnWithMillie, including our cancellation policy, lateness and attendance policy, refund policy, trial lesson terms, and online course terms.',
 }
 
 const sections = [
@@ -30,8 +30,25 @@ const sections = [
       'You may cancel or reschedule a lesson up to 24 hours before the scheduled start time to receive a lesson refund.',
       'Cancellations made within 24 hours of the lesson start time are non-refundable and the lesson will not be returned.',
       'To cancel a lesson, use the link provided in your booking confirmation email or contact Millie directly.',
-      'No-shows (failing to attend without prior notice) are treated as late cancellations and are non-refundable.',
+      'No-shows (failing to attend without prior notice) are treated as late cancellations and are non-refundable. Please see the Lateness & Attendance section below.',
       'If Millie is unable to attend a scheduled lesson, you will receive a full lesson refund regardless of notice period.',
+    ],
+  },
+  {
+    id: 'lateness',
+    title: 'Lateness & Attendance',
+    highlight: true,
+    highlightText:
+      'If you have not joined within 10 minutes of the scheduled start time, the tutor will leave the session and the lesson is forfeited — unless you have let the tutor know in advance that you will be late.',
+    content: `This section applies to all sessions booked through LearnWithMillie, including student lessons and tutor mentorship sessions.`,
+    items: [
+      'Please join the session at the scheduled start time. The tutor will wait in the online classroom for 10 minutes from the scheduled start.',
+      'If you have not joined within those 10 minutes and no prior notice has been given, the tutor will leave the classroom. The session is treated as a no-show: it is forfeited, non-refundable, and the lesson will not be returned to your account.',
+      'If you know you are going to be late, let the tutor know before the scheduled start time — by message or email — and state the time you expect to join.',
+      'Where the tutor agrees to a later join time, the tutor will join the call at that agreed time and the 10-minute rule is measured from the agreed time instead of the original start time.',
+      'A late start does not extend the session. Sessions still end at their originally scheduled finish time, so any time lost through lateness is lost from the session.',
+      'Agreements to accommodate lateness are made at the tutor’s discretion and depend on availability. A late arrival that has not been agreed in advance cannot be guaranteed.',
+      'If the tutor has not joined within 10 minutes of the scheduled start time and has given you no prior notice, you may leave the session and you will receive a full lesson refund.',
     ],
   },
   {
@@ -160,7 +177,7 @@ export default function TermsPage() {
               fontFamily: 'var(--font-inter), sans-serif',
             }}
           >
-            Effective date: 11 April 2026
+            Effective date: 10 August 2026
           </p>
           <div className='mt-6 h-px' style={{ backgroundColor: '#EDE4D8' }} />
         </div>
