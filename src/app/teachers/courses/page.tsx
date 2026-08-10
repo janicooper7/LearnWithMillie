@@ -182,7 +182,8 @@ export default async function CoursesPage() {
         <div className="lg:grid lg:grid-cols-[1fr_360px] lg:gap-14">
           {/* Purchase card — DOM-first so mobile shows it near the top; pulled up
               into the dark hero and sticky on desktop */}
-          <aside className="lg:col-start-2 lg:row-start-1">
+          {/* pt on mobile only — on desktop the card is pulled up into the hero */}
+          <aside className="pt-8 lg:col-start-2 lg:row-start-1 lg:pt-0">
             <div
               className={`lg:sticky lg:-mt-[340px] ${
                 accessedSlugs.length === 0 ? 'lg:top-32' : 'lg:top-24'

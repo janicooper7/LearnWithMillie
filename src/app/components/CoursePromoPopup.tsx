@@ -119,13 +119,11 @@ export default function CoursePromoPopup() {
     window.setTimeout(() => setCopied(false), 2500)
   }
 
+  // Copies and closes, leaving the visitor exactly where they were on the page.
   async function handleEnrol() {
     await handleCopy()
     trackEvent('promo_popup_cta', { promo_code: PROMO.code })
     close('cta')
-    // The course index has a pricing section; the detail pages don't, and there
-    // closing is the right outcome — the purchase card is already in view.
-    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   if (!open) return null
@@ -251,7 +249,7 @@ export default function CoursePromoPopup() {
               fontFamily: 'var(--font-inter), sans-serif',
             }}
           >
-            Copy code &amp; see courses
+            Copy code &amp; continue
           </button>
 
           <button
