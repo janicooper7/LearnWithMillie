@@ -70,6 +70,16 @@ export type FunnelKey = keyof typeof FUNNELS
 
 export const FUNNEL_KEYS = Object.keys(FUNNELS) as FunnelKey[]
 
+// Areas that aren't marketing traffic: Millie's own admin tooling, the auth
+// screens, and the two signed-in customer areas. Counting those as "visitors"
+// would mean her own working sessions showed up as demand.
+const UNTRACKED_PREFIXES = ['/admin', '/auth', '/dashboard', '/learn', '/api']
+
+/** Whether a path counts towards site traffic at all. */
+export function isTrackablePath(path: string): boolean {
+  return !UNTRACKED_PREFIXES.some((prefix) => path.startsWith(prefix))
+}
+
 /** Which funnel (if any) a path belongs to, for automatic 'landed' events. */
 export function funnelForPath(path: string): FunnelKey | null {
   if (path.startsWith('/teachers/platform-finder')) return 'platform-finder'
@@ -92,6 +102,59 @@ const SOCIAL_HOSTS = [
   'x.com',
   'reddit.',
 ]
+
+// What ad platforms actually put in utm_source. Meta's own URL builder writes
+// `ig` and `fb`, which match none of the hostnames above — without these, a
+// Meta ad tagged `utm_medium=paid` lands in paid search instead of paid social.
+const SOCIAL_SOURCE_ALIASES = [
+  'ig',
+  'fb',
+  'meta',
+  'insta',
+  'instagram',
+  'facebook',
+  'messenger',
+  'tiktok',
+  'tt',
+  'yt',
+  'youtube',
+  'linkedin',
+  'li',
+  'pinterest',
+  'reddit',
+  'twitter',
+  'x',
+]
+
+/**
+ * Whether a utm_source names a social platform. Aliases match exactly (`ig` must
+ * not match `bigcommerce`); hostnames match by containment so `facebook.com` and
+ * `m.facebook.com` both count.
+ */
+function isSocialSource(source: string): boolean {
+  if (!source) return false
+  if (SOCIAL_SOURCE_ALIASES.includes(source)) return true
+  return SOCIAL_HOSTS.some((host) => source.includes(host.replace(/\.$/, '')))
+}
+
+/**
+ * Hosts that are part of our own checkout, not somewhere a visitor came from.
+ * A person bouncing back from Stripe is the same visit continuing, so treating
+ * that referrer as a traffic source would invent a "referral" channel that
+ * earned nothing and quietly steal credit from whatever really brought them.
+ */
+const SELF_REFERRAL_HOSTS = [
+  'checkout.stripe.com',
+  'pay.stripe.com',
+  'js.stripe.com',
+  'billing.stripe.com',
+]
+
+/** Whether a referring host is really our own payment flow. */
+export function isSelfReferralHost(host: string): boolean {
+  const clean = host.toLowerCase().trim()
+  return SELF_REFERRAL_HOSTS.includes(clean)
+}
 
 /**
  * Bucket a visit into a channel from its UTM tags and referrer.
@@ -118,8 +181,7 @@ export function deriveChannel(opts: {
     medium === 'retargeting'
 
   if (isPaidMedium || opts.hasClickId) {
-    const socialSource = SOCIAL_HOSTS.some((h) => source.includes(h.replace('.', '')))
-    if (medium.includes('social') || socialSource) return 'paid_social'
+    if (medium.includes('social') || isSocialSource(source)) return 'paid_social'
     return 'paid_search'
   }
 

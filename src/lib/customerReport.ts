@@ -39,8 +39,19 @@ export type FunnelReport = {
   revenue: number
 }
 
-export type CampaignRow = {
-  campaign: string
+/**
+ * One row of "where did this traffic come from". Tagged ad traffic groups by
+ * campaign; everything else groups by channel + source, so organic, direct and
+ * referral sit in the same table as the paid campaigns and can be compared
+ * against them directly.
+ */
+export type SourceRow = {
+  /** Stable react key — group identity, not for display. */
+  key: string
+  channel: Channel
+  /** utm_campaign, or null for untagged traffic. */
+  campaign: string | null
+  /** utm_source, or the referring host for untagged traffic. */
   source: string | null
   sessions: number
   purchases: number
@@ -53,7 +64,7 @@ export type CustomerReport = {
   totalVisitors: number
   channels: ChannelRow[]
   funnels: FunnelReport[]
-  campaigns: CampaignRow[]
+  sources: SourceRow[]
   revenue: number
   purchases: number
   hasData: boolean
@@ -69,6 +80,9 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
   // the rows once and fold them in memory than to run a dozen grouped queries.
   const events = await prisma.trackedEvent.findMany({
     where: { createdAt: { gte: range.start, lt: range.end } },
+    // Oldest first: a session's attribution is read off its FIRST event, so the
+    // order here is load-bearing, not cosmetic.
+    orderBy: { createdAt: 'asc' },
     select: {
       visitorId: true,
       sessionId: true,
@@ -81,21 +95,31 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
     },
   })
 
+  type SessionAttribution = { channel: Channel; campaign: string | null; source: string | null }
+
   const visitors = new Set<string>()
-  const sessions = new Set<string>()
-  // channel -> sessions, taken from each session's first event
-  const sessionChannel = new Map<string, string>()
+  // Attribution per session, taken from that session's first event. The browser
+  // freezes attribution for the life of a session, so the first event carries
+  // the landing's channel even when later steps happened deep in the site.
+  const sessionAttr = new Map<string, SessionAttribution>()
   // "funnel|step" -> distinct sessions
   const stepSessions = new Map<string, Set<string>>()
-  const campaigns = new Map<string, { source: string | null; sessions: Set<string>; purchases: number; revenue: number }>()
+  // Sales are folded per session so they can be attributed with the session,
+  // whichever group it ends up in.
+  const sessionSales = new Map<string, { purchases: number; revenue: number }>()
 
   let revenue = 0
   let purchases = 0
 
   for (const e of events) {
     visitors.add(e.visitorId)
-    sessions.add(e.sessionId)
-    if (!sessionChannel.has(e.sessionId)) sessionChannel.set(e.sessionId, e.channel)
+    if (!sessionAttr.has(e.sessionId)) {
+      sessionAttr.set(e.sessionId, {
+        channel: (CHANNELS as readonly string[]).includes(e.channel) ? (e.channel as Channel) : 'other',
+        campaign: e.campaign,
+        source: e.source,
+      })
+    }
 
     if (e.funnel && e.step) {
       const key = `${e.funnel}|${e.step}`
@@ -103,30 +127,22 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
       stepSessions.get(key)!.add(e.sessionId)
     }
 
-    if (e.campaign) {
-      if (!campaigns.has(e.campaign)) {
-        campaigns.set(e.campaign, { source: e.source, sessions: new Set(), purchases: 0, revenue: 0 })
-      }
-      const row = campaigns.get(e.campaign)!
-      row.sessions.add(e.sessionId)
-      if (e.step === 'purchased') {
-        row.purchases += 1
-        row.revenue += e.value ?? 0
-      }
-    }
-
     if (e.step === 'purchased') {
       purchases += 1
       revenue += e.value ?? 0
+      const sale = sessionSales.get(e.sessionId) ?? { purchases: 0, revenue: 0 }
+      sale.purchases += 1
+      sale.revenue += e.value ?? 0
+      sessionSales.set(e.sessionId, sale)
     }
   }
 
   const channelCounts = new Map<string, number>()
-  for (const channel of sessionChannel.values()) {
-    channelCounts.set(channel, (channelCounts.get(channel) ?? 0) + 1)
+  for (const attr of sessionAttr.values()) {
+    channelCounts.set(attr.channel, (channelCounts.get(attr.channel) ?? 0) + 1)
   }
 
-  const totalSessions = sessions.size
+  const totalSessions = sessionAttr.size
 
   const channels: ChannelRow[] = CHANNELS.map((channel) => ({
     channel,
@@ -169,16 +185,45 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
     return { key, label: def.label, steps, revenue: funnelRevenue }
   })
 
-  const campaignRows: CampaignRow[] = [...campaigns.entries()]
-    .map(([campaign, row]) => ({
-      campaign,
-      source: row.source,
-      sessions: row.sessions.size,
-      purchases: row.purchases,
-      revenue: row.revenue,
-    }))
-    .sort((a, b) => b.sessions - a.sessions)
-    .slice(0, 10)
+  // Group every session by where it came from. Tagged traffic groups by
+  // campaign + source, so one Meta campaign running on both Instagram and
+  // Facebook shows as two comparable rows instead of silently taking whichever
+  // source happened to be seen first. Untagged traffic groups by channel +
+  // source: one row per search engine or referring site, one row for direct.
+  const groups = new Map<string, SourceRow>()
+  for (const [sessionId, attr] of sessionAttr) {
+    const key = attr.campaign
+      ? `campaign:${attr.campaign}|${attr.source ?? ''}`
+      : `channel:${attr.channel}|${attr.source ?? ''}`
+
+    let row = groups.get(key)
+    if (!row) {
+      row = {
+        key,
+        channel: attr.channel,
+        campaign: attr.campaign,
+        source: attr.source,
+        sessions: 0,
+        purchases: 0,
+        revenue: 0,
+      }
+      groups.set(key, row)
+    }
+
+    row.sessions += 1
+    const sale = sessionSales.get(sessionId)
+    if (sale) {
+      row.purchases += sale.purchases
+      row.revenue += sale.revenue
+    }
+  }
+
+  // Anything that made a sale sorts first — a source with one sale matters more
+  // than a source with a hundred sessions and nothing to show for them.
+  const sourceRows: SourceRow[] = [...groups.values()]
+    .map((row) => ({ ...row, revenue: Math.round(row.revenue * 100) / 100 }))
+    .sort((a, b) => b.revenue - a.revenue || b.sessions - a.sessions)
+    .slice(0, 15)
 
   return {
     range,
@@ -186,7 +231,7 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
     totalVisitors: visitors.size,
     channels,
     funnels,
-    campaigns: campaignRows,
+    sources: sourceRows,
     revenue: Math.round(revenue * 100) / 100,
     purchases,
     hasData: events.length > 0,

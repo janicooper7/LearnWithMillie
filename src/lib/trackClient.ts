@@ -7,7 +7,7 @@
 // cross-site identifiers — everything here is first-party and scoped to this
 // domain, which is also why it needs no cookie banner.
 
-import { deriveChannel, type FunnelKey } from '@/lib/tracking'
+import { deriveChannel, isSelfReferralHost, type FunnelKey } from '@/lib/tracking'
 
 const VISITOR_KEY = 'lwm:vid'
 const SESSION_KEY = 'lwm:sid'
@@ -98,10 +98,15 @@ function getAttribution(isNewSession: boolean): Attribution {
   const campaign = params.get('utm_campaign')
   const hasClickId = CLICK_IDS.some((id) => params.has(id))
 
-  // An internal referrer means this isn't really the session's entry point.
+  // An internal referrer means this isn't really the session's entry point, and
+  // neither is a bounce back from Stripe — both get dropped so the visit falls
+  // through to direct rather than inventing a referral that earned nothing.
   let referrer = document.referrer || ''
   try {
-    if (referrer && new URL(referrer).host === window.location.host) referrer = ''
+    if (referrer) {
+      const host = new URL(referrer).host
+      if (host === window.location.host || isSelfReferralHost(host)) referrer = ''
+    }
   } catch {
     referrer = ''
   }

@@ -265,42 +265,72 @@ export default async function AdminReportPage({
           </div>
         </section>
 
-        {/* Campaigns */}
+        {/* Sources & campaigns */}
         <section>
-          <Eyebrow>Top campaigns</Eyebrow>
+          <Eyebrow>Every source, side by side</Eyebrow>
           <Card>
-            {report.campaigns.length === 0 ? (
+            {report.sources.length === 0 ? (
               <p className="text-sm leading-relaxed" style={{ color: 'rgba(31,58,52,0.5)', ...font }}>
-                Nothing tagged yet. Campaigns appear here once visitors arrive on a URL
-                carrying <code>utm_campaign</code>.
+                No sessions in this window.
               </p>
             ) : (
-              <div className="-mx-2 overflow-x-auto">
-                <table className="w-full min-w-[480px] text-sm" style={font}>
-                  <thead>
-                    <tr style={{ color: 'rgba(31,58,52,0.45)' }}>
-                      <th className="px-2 pb-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em]">Campaign</th>
-                      <th className="px-2 pb-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em]">Source</th>
-                      <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Sessions</th>
-                      <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Sales</th>
-                      <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {report.campaigns.map((c) => (
-                      <tr key={c.campaign} style={{ borderTop: '1px solid #EDE4D8' }}>
-                        <td className="px-2 py-3 font-semibold" style={{ color: '#1F3A34' }}>{c.campaign}</td>
-                        <td className="px-2 py-3" style={{ color: 'rgba(31,58,52,0.6)' }}>{c.source ?? '—'}</td>
-                        <td className="px-2 py-3 text-right tabular-nums" style={{ color: 'rgba(31,58,52,0.8)' }}>{c.sessions}</td>
-                        <td className="px-2 py-3 text-right tabular-nums" style={{ color: 'rgba(31,58,52,0.8)' }}>{c.purchases}</td>
-                        <td className="px-2 py-3 text-right font-semibold tabular-nums" style={{ color: c.revenue > 0 ? '#C0392B' : 'rgba(31,58,52,0.4)' }}>
-                          ${c.revenue.toFixed(2)}
-                        </td>
+              <>
+                <div className="-mx-2 overflow-x-auto">
+                  <table className="w-full min-w-[560px] text-sm" style={font}>
+                    <thead>
+                      <tr style={{ color: 'rgba(31,58,52,0.45)' }}>
+                        <th className="px-2 pb-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em]">Source</th>
+                        <th className="px-2 pb-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em]">Campaign</th>
+                        <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Sessions</th>
+                        <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Sales</th>
+                        <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Conv.</th>
+                        <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Revenue</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {report.sources.map((s) => {
+                        const conv = s.sessions ? (s.purchases / s.sessions) * 100 : 0
+                        return (
+                          <tr key={s.key} style={{ borderTop: '1px solid #EDE4D8' }}>
+                            <td className="px-2 py-3">
+                              <span className="flex items-center gap-2">
+                                <span
+                                  className="h-2 w-2 shrink-0 rounded-full"
+                                  style={{ backgroundColor: CHANNEL_COLOR[s.channel] }}
+                                />
+                                <span className="font-semibold" style={{ color: '#1F3A34' }}>
+                                  {CHANNEL_LABELS[s.channel]}
+                                </span>
+                                {s.source && (
+                                  <span style={{ color: 'rgba(31,58,52,0.5)' }}>· {s.source}</span>
+                                )}
+                              </span>
+                            </td>
+                            <td className="px-2 py-3" style={{ color: 'rgba(31,58,52,0.6)' }}>
+                              {s.campaign ?? '—'}
+                            </td>
+                            <td className="px-2 py-3 text-right tabular-nums" style={{ color: 'rgba(31,58,52,0.8)' }}>{s.sessions}</td>
+                            <td className="px-2 py-3 text-right tabular-nums" style={{ color: 'rgba(31,58,52,0.8)' }}>{s.purchases}</td>
+                            <td className="px-2 py-3 text-right tabular-nums" style={{ color: conv > 0 ? '#1F3A34' : 'rgba(31,58,52,0.35)' }}>
+                              {conv > 0 ? `${conv.toFixed(1)}%` : '—'}
+                            </td>
+                            <td className="px-2 py-3 text-right font-semibold tabular-nums" style={{ color: s.revenue > 0 ? '#C0392B' : 'rgba(31,58,52,0.4)' }}>
+                              ${s.revenue.toFixed(2)}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="mt-4 text-xs leading-relaxed" style={{ color: 'rgba(31,58,52,0.45)', ...font }}>
+                  One row per source. Ad traffic splits by campaign and placement;
+                  untagged traffic splits by where it came from — a search engine
+                  (organic), a link on another site (referral), or nothing at all
+                  (direct: typed the address, a bookmark, or an app that strips the
+                  referrer).
+                </p>
+              </>
             )}
           </Card>
         </section>
