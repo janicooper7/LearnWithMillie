@@ -4,11 +4,39 @@ import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import confetti from 'canvas-confetti'
 import Link from 'next/link'
+import { fbTrackOnce } from '@/lib/fbPixel'
 
 export default function ThankYou() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const isContact = searchParams.get('from') === 'contact'
+  const stripeSessionId = searchParams.get('session_id')
+
+  // Report the sale to Meta. Contact-form visitors reach this same page without
+  // paying, so they're excluded — only a Stripe redirect carries a session id.
+  useEffect(() => {
+    if (isContact || !stripeSessionId) return
+
+    let cancelled = false
+    fetch(`/api/checkout/session?id=${encodeURIComponent(stripeSessionId)}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return
+        fbTrackOnce(
+          `purchase:${stripeSessionId}`,
+          'Purchase',
+          { value: data.value, currency: data.currency },
+          stripeSessionId,
+        )
+      })
+      .catch(() => {
+        // Never let a blocked or failed pixel lookup disturb the confirmation.
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [isContact, stripeSessionId])
 
   useEffect(() => {
     const duration = 3 * 1000

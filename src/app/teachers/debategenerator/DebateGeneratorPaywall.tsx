@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { track, trackingContext } from '@/lib/trackClient'
+import { fbTrack } from '@/lib/fbPixel'
 import {
   ArrowRightIcon,
   LockClosedIcon,
@@ -109,6 +110,13 @@ export default function DebateGeneratorPaywall({ loggedIn }: { loggedIn: boolean
       const data = await res.json()
       if (data.url) {
         track('debate', 'checkout_start', { value: 7 })
+        fbTrack('InitiateCheckout', {
+          value: 7,
+          currency: 'USD',
+          content_name: 'Debate Generator — lifetime access',
+          content_ids: ['debate-generator'],
+          content_type: 'product',
+        })
         window.location.href = data.url
       } else {
         setError(data.error || 'Something went wrong. Please try again.')

@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
 import { track, trackingContext } from '@/lib/trackClient'
+import { fbTrack } from '@/lib/fbPixel'
 import {
   Play,
   Video,
@@ -84,6 +85,13 @@ export default function TrilogyPurchaseCard({
           items: [{ item_id: 'course-full', item_name: 'BOOKED Trilogy', price: 149 }],
         })
         track('courses', 'checkout_start', { value: 149 })
+        fbTrack('InitiateCheckout', {
+          value: 149,
+          currency: 'USD',
+          content_name: 'BOOKED Trilogy',
+          content_ids: ['course-full'],
+          content_type: 'product',
+        })
         window.location.href = data.url
       } else setLoading(false)
     } catch {

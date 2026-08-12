@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import DebateGenerator from '../../sections/DebateGenerator'
 import DebateGeneratorPaywall from './DebateGeneratorPaywall'
+import FbPurchaseEvent from '@/app/components/FbPurchaseEvent'
 
 export const metadata: Metadata = {
   title: 'Debate Generator - ESL Debate Topics & Vocabulary',
@@ -28,8 +29,13 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
-export default async function DebateGeneratorPage() {
+export default async function DebateGeneratorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ purchased?: string }>
+}) {
   const session = await auth()
+  const { purchased } = await searchParams
 
   let hasAccess = false
   if (session?.user?.id) {
@@ -41,7 +47,20 @@ export default async function DebateGeneratorPage() {
   }
 
   if (hasAccess) {
-    return <DebateGenerator />
+    // Access is lifetime and the checkout route blocks a second purchase, so the
+    // user id is a safe once-ever dedupe key for the Meta Purchase event.
+    return (
+      <>
+        {purchased === '1' && (
+          <FbPurchaseEvent
+            dedupeKey={`debate:${session!.user!.id}`}
+            value={7}
+            contentName='Debate Generator — lifetime access'
+          />
+        )}
+        <DebateGenerator />
+      </>
+    )
   }
 
   return <DebateGeneratorPaywall loggedIn={!!session?.user?.id} />

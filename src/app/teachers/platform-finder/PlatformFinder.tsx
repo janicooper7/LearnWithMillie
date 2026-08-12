@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { track, trackingContext } from '@/lib/trackClient'
+import { fbTrack, fbTrackOnce } from '@/lib/fbPixel'
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -238,6 +239,14 @@ export default function PlatformFinder() {
           setUnlocked(true)
           setFinished(true)
           setVerifying(false)
+          // The result id is issued once per checkout, so it doubles as the
+          // dedupe key — this link is permanent and gets revisited.
+          fbTrackOnce(
+            `platform-finder:${id}`,
+            'Purchase',
+            { value: 5, currency: 'USD', content_name: 'Platform Finder report' },
+            id,
+          )
           return
         }
         if (d.found === false) {
@@ -280,6 +289,13 @@ export default function PlatformFinder() {
       const data = await res.json()
       if (data.url) {
         track('platform-finder', 'checkout_start', { value: 5 })
+        fbTrack('InitiateCheckout', {
+          value: 5,
+          currency: 'USD',
+          content_name: 'Platform Finder report',
+          content_ids: ['platform-finder'],
+          content_type: 'product',
+        })
         window.location.href = data.url
       } else {
         throw new Error(data.error || 'Could not start checkout')

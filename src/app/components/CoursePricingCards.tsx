@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
 import { track, trackingContext } from '@/lib/trackClient'
+import { fbTrack } from '@/lib/fbPixel'
 import {
   ArrowRight,
   PlayCircle,
@@ -115,6 +116,13 @@ export default function CoursePricingCards({
           items: [{ item_id: planKey, item_name: planName, price }],
         })
         track('courses', 'checkout_start', { value: price })
+        fbTrack('InitiateCheckout', {
+          value: price,
+          currency: 'USD',
+          content_name: planName,
+          content_ids: [planKey],
+          content_type: 'product',
+        })
         window.location.href = data.url
       } else {
         console.error('Checkout error:', data.error)

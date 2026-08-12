@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { fbTrack } from '@/lib/fbPixel'
 import {
   PlayCircle,
   BookOpen,
@@ -119,6 +120,14 @@ export default function CourseDetailPage() {
       const data = await res.json()
       if (data.url) {
         track('courses', 'checkout_start')
+        // No value: this page loads the course from the API, which doesn't carry
+        // a price. The Purchase event on /thank-you still reports the real amount.
+        fbTrack('InitiateCheckout', {
+          currency: 'USD',
+          content_name: course?.title,
+          content_ids: [planKey],
+          content_type: 'product',
+        })
         window.location.href = data.url
       } else if (data.error === 'Unauthorized') {
         router.push('/auth/login')

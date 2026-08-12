@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { ArrowRight } from 'lucide-react'
 import { track, trackingContext } from '@/lib/trackClient'
+import { fbTrack } from '@/lib/fbPixel'
 
 const plans = [
   {
@@ -79,6 +80,16 @@ export default function Pricing() {
       const data = await res.json()
       if (data.url) {
         track('lessons', 'checkout_start')
+        // These plans are subscriptions priced per lesson, so the value Meta
+        // should learn from is the monthly charge, not the per-lesson figure.
+        const plan = plans.find((p) => p.planKey === planKey)
+        fbTrack('InitiateCheckout', {
+          value: plan ? plan.price * plan.lessons : undefined,
+          currency: 'USD',
+          content_name: planName,
+          content_ids: [planKey],
+          content_type: 'product',
+        })
         window.location.href = data.url
       } else console.error('Checkout error:', data.error)
     } catch (err) {

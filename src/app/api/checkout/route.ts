@@ -58,7 +58,9 @@ export async function POST(req: NextRequest) {
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: isOneTime ? 'payment' : 'subscription',
       line_items: [{ price: priceId, quantity: qty }],
-      success_url: `${process.env.NEXTAUTH_URL}/thank-you`,
+      // The session id lets /thank-you report the real charged amount to the Meta
+      // pixel, and doubles as the key that stops a refresh counting a second sale.
+      success_url: `${process.env.NEXTAUTH_URL}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
       ...(discount
         ? { discounts: [discount] }
