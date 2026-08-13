@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { PROMO, discountedPrice } from '@/lib/promo'
 
 export const metadata: Metadata = {
   title: 'All Teacher Products — Courses, Mentorship & Free Tools',
@@ -25,10 +26,14 @@ type Product = {
   href: string
   cta: string
   price?: string
+  /** Pre-sale price, struck through beside `price`. Courses only. */
+  listPrice?: string
   badge?: string
   featured?: boolean
 }
 
+// Course prices carry the site-wide sale — /api/checkout applies the code to
+// the Stripe session, so what's shown here is what's actually charged.
 const courses: Product[] = [
   {
     eyebrow: 'Course · Trilogy',
@@ -38,7 +43,8 @@ const courses: Product[] = [
     points: ['3 courses', '35 modules', 'Lifetime access'],
     href: '/teachers/courses',
     cta: 'See what’s inside',
-    price: '$149',
+    price: discountedPrice(149),
+    listPrice: '$149',
     badge: 'Best value',
     featured: true,
   },
@@ -50,7 +56,8 @@ const courses: Product[] = [
     points: ['Beginner-friendly', 'Setup system', 'Watch anytime'],
     href: '/teachers/courses/get-ready',
     cta: 'See what’s inside',
-    price: '$49',
+    price: discountedPrice(49),
+    listPrice: '$49',
   },
   {
     eyebrow: 'Course 2',
@@ -60,7 +67,8 @@ const courses: Product[] = [
     points: ['Marketing', 'Trial lessons', 'Watch anytime'],
     href: '/teachers/courses/get-booked',
     cta: 'See what’s inside',
-    price: '$79',
+    price: discountedPrice(79),
+    listPrice: '$79',
   },
   {
     eyebrow: 'Course 3',
@@ -70,7 +78,8 @@ const courses: Product[] = [
     points: ['Lesson craft', 'Retention', 'Watch anytime'],
     href: '/teachers/courses/stay-booked',
     cta: 'See what’s inside',
-    price: '$59',
+    price: discountedPrice(59),
+    listPrice: '$59',
   },
 ]
 
@@ -250,16 +259,29 @@ function ProductCard({ p }: { p: Product }) {
           <ArrowRight className='w-4 h-4' />
         </span>
         {p.price && (
-          <span
-            style={{
-              fontFamily: 'var(--font-playfair), Georgia, serif',
-              fontSize: '1.6rem',
-              fontWeight: 700,
-              lineHeight: 1,
-              color: isDark ? '#F4EDE4' : '#1F3A34',
-            }}
-          >
-            {p.price}
+          <span className='flex items-baseline gap-2'>
+            {p.listPrice && (
+              <span
+                className='text-base line-through'
+                style={{
+                  fontFamily: 'var(--font-inter), sans-serif',
+                  color: isDark ? 'rgba(244,237,228,0.5)' : '#C0392B',
+                }}
+              >
+                {p.listPrice}
+              </span>
+            )}
+            <span
+              style={{
+                fontFamily: 'var(--font-playfair), Georgia, serif',
+                fontSize: '1.6rem',
+                fontWeight: 700,
+                lineHeight: 1,
+                color: isDark ? '#F4EDE4' : '#1F3A34',
+              }}
+            >
+              {p.price}
+            </span>
           </span>
         )}
       </div>
@@ -337,6 +359,12 @@ export default function TeacherProductsPage() {
 
         {/* Courses */}
         <GroupHeading label='Self-paced' title='Courses' />
+        <p
+          className='-mt-4 mb-8 text-sm font-semibold'
+          style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
+        >
+          {PROMO.percentOff}% off every course — discount applied automatically at checkout
+        </p>
         <div className='grid md:grid-cols-2 gap-5'>
           {courses.map((p) => (
             <ProductCard key={p.title} p={p} />

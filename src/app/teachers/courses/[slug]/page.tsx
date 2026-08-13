@@ -22,7 +22,7 @@ import {
   type SalesModule,
 } from '@/lib/courseSalesContent'
 import CoursePromoStrip from '@/app/components/CoursePromoStrip'
-import CoursePromoPopup from '@/app/components/CoursePromoPopup'
+import { PROMO, discountedPrice } from '@/lib/promo'
 import { track, trackingContext } from '@/lib/trackClient'
 
 type Course = {
@@ -163,13 +163,8 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F4EDE4]">
-      {/* Sale strip + landing popup — hidden from anyone who already owns a course */}
-      {!ownsAnyCourse && (
-        <>
-          <CoursePromoStrip />
-          <CoursePromoPopup />
-        </>
-      )}
+      {/* Sale strip — hidden from anyone who already owns a course */}
+      {!ownsAnyCourse && <CoursePromoStrip />}
 
       {/* Hero */}
       <div className="bg-[#1F3A34] px-4 py-16 text-white">
@@ -381,10 +376,13 @@ export default function CourseDetailPage() {
                   : 'Ready to get started?'}
             </h2>
 
-            {/* Bundle price */}
+            {/* Bundle price — sale price first, list price struck through */}
             {!course.hasAccess && isBundle && (
               <div className="mb-3 flex items-baseline justify-center gap-2">
                 <span className="font-serif text-5xl font-bold text-[#C2AA6A]">
+                  {discountedPrice(149)}
+                </span>
+                <span className="text-lg text-white/45 line-through">
                   {bundleSales.pricing.bundlePrice}
                 </span>
                 <span className="text-lg text-white/55">for all three</span>
@@ -394,9 +392,18 @@ export default function CourseDetailPage() {
             {/* Single-course price */}
             {!course.hasAccess && !isBundle && sales && (
               <div className="mb-3 flex items-baseline justify-center gap-2">
-                <span className="font-serif text-5xl font-bold text-[#C2AA6A]">${sales.price}</span>
+                <span className="font-serif text-5xl font-bold text-[#C2AA6A]">
+                  {discountedPrice(sales.price)}
+                </span>
+                <span className="text-lg text-white/45 line-through">${sales.price}</span>
                 <span className="text-sm text-white/55">one-time</span>
               </div>
+            )}
+
+            {!course.hasAccess && (
+              <p className="mb-3 text-sm font-semibold text-[#C2AA6A]">
+                {PROMO.percentOff}% off applied automatically at checkout
+              </p>
             )}
 
             <p className="mx-auto mb-8 max-w-md leading-relaxed text-white/65">

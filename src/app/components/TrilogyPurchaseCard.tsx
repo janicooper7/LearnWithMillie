@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
 import { track, trackingContext } from '@/lib/trackClient'
 import { fbTrack } from '@/lib/fbPixel'
+import { PROMO, discountedAmount, discountedPrice } from '@/lib/promo'
 import {
   Play,
   Video,
@@ -20,6 +21,11 @@ import {
 
 const VIDEO_URL =
   'https://www.youtube.com/embed/KawzKRqQV3A?si=Nu95B2S9ouSqLpDi&autoplay=1'
+
+const LIST_PRICE = 149
+// What the customer actually pays — /api/checkout puts the sale code on the
+// Stripe session, so every tracked value has to be the discounted one.
+const SALE_PRICE = discountedAmount(LIST_PRICE)
 
 const includes = [
   { icon: Video, label: '~350 minutes of on-demand video' },
@@ -60,7 +66,7 @@ export default function TrilogyPurchaseCard({
       plan_name: 'BOOKED Trilogy',
       cta_location: 'trilogy_card',
       signed_in: Boolean(session),
-      value: 149,
+      value: SALE_PRICE,
       currency: 'USD',
     })
     track('courses', 'enrol_click')
@@ -81,12 +87,12 @@ export default function TrilogyPurchaseCard({
       if (data.url) {
         trackEvent('begin_checkout', {
           currency: 'USD',
-          value: 149,
-          items: [{ item_id: 'course-full', item_name: 'BOOKED Trilogy', price: 149 }],
+          value: SALE_PRICE,
+          items: [{ item_id: 'course-full', item_name: 'BOOKED Trilogy', price: SALE_PRICE }],
         })
-        track('courses', 'checkout_start', { value: 149 })
+        track('courses', 'checkout_start', { value: SALE_PRICE })
         fbTrack('InitiateCheckout', {
-          value: 149,
+          value: SALE_PRICE,
           currency: 'USD',
           content_name: 'BOOKED Trilogy',
           content_ids: ['course-full'],
@@ -175,7 +181,7 @@ export default function TrilogyPurchaseCard({
           </>
         ) : (
           <>
-            {/* Price */}
+            {/* Price — the sale price is what Stripe charges, so it leads */}
             <div className="mb-1 flex items-end gap-2.5">
               <span
                 style={{
@@ -186,19 +192,19 @@ export default function TrilogyPurchaseCard({
                   color: '#1F3A34',
                 }}
               >
-                $149
+                {discountedPrice(LIST_PRICE)}
               </span>
               <span
                 className="pb-1 text-lg line-through"
                 style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
               >
-                $187
+                ${LIST_PRICE}
               </span>
               <span
                 className="ml-auto pb-1 text-sm font-bold"
                 style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
               >
-                Save $38
+                {PROMO.percentOff}% off
               </span>
             </div>
             <p
@@ -206,6 +212,8 @@ export default function TrilogyPurchaseCard({
               style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
               All 3 courses · one-time payment
+              <br />
+              <span style={{ color: '#C0392B', fontWeight: 600 }}>discount applied at checkout</span>
             </p>
 
             {/* CTAs */}

@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
 import { track, trackingContext } from '@/lib/trackClient'
 import { fbTrack } from '@/lib/fbPixel'
+import { PROMO, discountedAmount, discountedPrice } from '@/lib/promo'
 import {
   ArrowRight,
   PlayCircle,
@@ -31,18 +32,17 @@ const courses = [
     subtitle: 'The Complete Collection',
     planKey: 'course-full',
     price: 149,
-    originalPrice: 187,
     description: '— launch, fill, and keep your tutoring business thriving',
     descriptionBold: 'All 3 courses',
     featured: true,
-    badge: 'Best Value · Save $38',
+    // 149 against 49+79+59 — the same saving whether or not the sale is on.
+    badge: 'Best Value · Save 20%',
   },
   {
     name: 'GET READY',
     subtitle: 'How to Set Up Your Online English Tutoring Business',
     planKey: 'get-ready',
     price: 49,
-    originalPrice: null,
     description:
       'Everything you need to launch your tutoring business from scratch',
     featured: false,
@@ -53,7 +53,6 @@ const courses = [
     subtitle: 'How to Get Students Teaching English Online',
     planKey: 'get-booked',
     price: 79,
-    originalPrice: null,
     description: 'Proven strategies to attract and convert your first students',
     featured: false,
     badge: null,
@@ -63,7 +62,6 @@ const courses = [
     subtitle: 'How to Build a Calendar That Stays Full',
     planKey: 'stay-booked',
     price: 59,
-    originalPrice: null,
     description: 'Keep your schedule consistently full with long-term students',
     featured: false,
     badge: null,
@@ -83,7 +81,10 @@ export default function CoursePricingCards({
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
   async function handleCheckout(planKey: string, planName: string) {
-    const price = courses.find((c) => c.planKey === planKey)?.price
+    const listPrice = courses.find((c) => c.planKey === planKey)?.price
+    // /api/checkout puts the sale code on the Stripe session, so the amount
+    // reported here has to be what the customer is actually charged.
+    const price = listPrice ? discountedAmount(listPrice) : undefined
 
     // Fired for every click, signed in or not — a signed-out click never
     // reaches Stripe, so the two need telling apart in reporting.
@@ -234,19 +235,17 @@ export default function CoursePricingCards({
                           color: '#1F3A34',
                         }}
                       >
+                        {discountedPrice(course.price)}
+                      </span>
+                      <span
+                        className='text-base line-through pb-1'
+                        style={{
+                          color: '#C0392B',
+                          fontFamily: 'var(--font-inter), sans-serif',
+                        }}
+                      >
                         ${course.price}
                       </span>
-                      {course.originalPrice && (
-                        <span
-                          className='text-base line-through pb-1'
-                          style={{
-                            color: '#C0392B',
-                            fontFamily: 'var(--font-inter), sans-serif',
-                          }}
-                        >
-                          ${course.originalPrice}
-                        </span>
-                      )}
                     </div>
                     <p
                       className='text-sm'
@@ -256,14 +255,12 @@ export default function CoursePricingCards({
                       }}
                     >
                       one-time payment
-                      {course.originalPrice && (
-                        <span
-                          className='ml-2 font-semibold'
-                          style={{ color: '#C0392B' }}
-                        >
-                          · 21% off
-                        </span>
-                      )}
+                      <span
+                        className='ml-2 font-semibold'
+                        style={{ color: '#C0392B' }}
+                      >
+                        · {PROMO.percentOff}% off applied at checkout
+                      </span>
                     </p>
                   </div>
                 )}
