@@ -41,7 +41,10 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3411/teachers/debategenerator\")",
       "Bash(taskkill //F //IM node.exe //FI \"WINDOWTITLE eq *\")",
       "Bash(pkill -f \"next dev -p 3411\")",
-      "WebFetch(domain:learnwithmillie.com)"
+      "WebFetch(domain:learnwithmillie.com)",
+      "PowerShell(npm run *)",
+      "PowerShell(npx tsc src/lib/reportRange.ts --outDir _out --module esnext --target es2022 --moduleResolution bundler; node _rangecheck.mjs)",
+      "Bash(cd C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web *)"
     ]
   }
 }

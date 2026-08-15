@@ -7,8 +7,8 @@
 // type it and the Stripe page shows the same price the site advertised.
 
 export const PROMO = {
-  code: 'SAVE25',
-  percentOff: 25,
+  code: 'SEPTEMBER',
+  percentOff: 30,
 } as const
 
 /** Price after the promo, as a number (e.g. 149 -> 111.75). */
