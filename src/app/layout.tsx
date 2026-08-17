@@ -94,6 +94,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
+  other: {
+    // Trustpilot domain ownership check - safe to remove once verified
+    'trustpilot-one-time-domain-verification-id':
+      '7d6d2d62-a062-42b1-9fdf-575528ca6f28',
+  },
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.svg',

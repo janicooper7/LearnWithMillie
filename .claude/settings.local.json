@@ -44,7 +44,8 @@
       "WebFetch(domain:learnwithmillie.com)",
       "PowerShell(npm run *)",
       "PowerShell(npx tsc src/lib/reportRange.ts --outDir _out --module esnext --target es2022 --moduleResolution bundler; node _rangecheck.mjs)",
-      "Bash(cd C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web *)"
+      "Bash(cd C:\\\\Users\\\\johny\\\\Desktop\\\\millie-web *)",
+      "Bash(curl -s http://localhost:3000/)"
     ]
   }
 }
