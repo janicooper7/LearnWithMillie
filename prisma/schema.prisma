@@ -36,6 +36,7 @@ model User {
   messages      Message[]
   courseAccess   UserCourseAccess[]
   lessonProgress UserLessonProgress[]
+  emailJourney   EmailJourney?
 }
 
 
@@ -186,3 +187,27 @@ model PlatformFinderResult {
   createdAt       DateTime  @default(now())
 }
 
+// Onboarding email journeys. One row per user *is* the enrolment: `step` counts
+// the emails already sent and `nextSendAt` is when the following one is due
+// (null once the journey has run out of steps). Keeping both on a single row
+// lets the cron claim a send with one compare-and-swap update, so two
+// overlapping runs can never post the same email twice.
+model EmailJourney {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Which sequence this user is on — 'student' or 'teacher'.
+  journey        String
+  step           Int       @default(0)
+  nextSendAt     DateTime?
+  lastSentAt     DateTime?
+  // Consecutive send failures for the current step. The cron gives up on a row
+  // once this passes its retry limit, so one dead address can't be retried
+  // forever.
+  attempts       Int       @default(0)
+  unsubscribedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([nextSendAt])
+}

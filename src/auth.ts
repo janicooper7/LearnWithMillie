@@ -4,6 +4,7 @@ import Google from 'next-auth/providers/google'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { authConfig } from '@/auth.config'
+import { enrolInJourney } from '@/lib/email/runner'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -61,6 +62,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             // cookies() unavailable in this context — default to STUDENT
           }
 
+          // Whether this is a first sign-in is what decides if they get the
+          // welcome email, and an upsert can't tell us which branch it took —
+          // hence the read first. enrolInJourney is idempotent, so losing the
+          // race against a concurrent sign-in still can't send two welcomes.
+          const existing = await prisma.user.findUnique({
+            where: { email: user.email },
+            select: { id: true },
+          })
+
           const dbUser = await prisma.user.upsert({
             where: { email: user.email },
             update: {},
@@ -74,6 +84,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           })
           ;(user as any).id = dbUser.id
           ;(user as any).role = dbUser.role
+
+          if (!existing) {
+            try {
+              await enrolInJourney(dbUser.id, dbUser.role)
+            } catch (err) {
+              // Signing in must never fail because an email didn't go out.
+              console.error('[auth] welcome email failed for', user.email, err)
+            }
+          }
         } catch {
           return false
         }

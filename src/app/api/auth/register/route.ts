@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
+import { enrolInJourney } from '@/lib/email/runner'
 
 export async function POST(req: Request) {
   try {
@@ -26,6 +27,16 @@ export async function POST(req: Request) {
     const user = await prisma.user.create({
       data: { name, email, password: hashed, role: assignedRole },
     })
+
+    // Puts them on the onboarding sequence for their role and sends the welcome
+    // email. Awaited rather than fired and forgotten because the request is
+    // killed the moment we respond, but never allowed to fail the signup — an
+    // SMTP hiccup must not cost us the account.
+    try {
+      await enrolInJourney(user.id, assignedRole)
+    } catch (err) {
+      console.error('[register] welcome email failed for', user.email, err)
+    }
 
     return NextResponse.json({ id: user.id, email: user.email }, { status: 201 })
   } catch (err) {
