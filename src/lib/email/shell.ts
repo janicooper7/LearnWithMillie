@@ -235,3 +235,40 @@ export function emailImage(opts: { src: string; alt: string; width?: number }): 
   return `<img src="${esc(opts.src)}" alt="${esc(opts.alt)}" width="${width}"
     style="display:block;width:100%;max-width:${width}px;height:auto;border:0;outline:none;text-decoration:none;border-radius:14px;margin:0 auto 20px auto;" />`
 }
+
+/**
+ * Social accounts, one row per platform.
+ *
+ * Split rather than combined on a single line: a reader is usually on one
+ * platform or the other, and one row per account gives each its own tappable
+ * link instead of making them share a sentence. Icons are emoji rather than
+ * image files so nothing here depends on remote images loading.
+ */
+export function socialLinks(
+  accounts: { icon: string; platform: string; handle: string; url: string; blurb: string }[]
+): string {
+  const rows = accounts
+    .map(
+      (account, i) => `
+      <tr>
+        <td style="padding:14px 16px;${i > 0 ? `border-top:1px solid ${BORDER};` : ''}">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="30" valign="top" style="font-size:18px;line-height:1.3;padding-right:10px;">${account.icon}</td>
+              <td valign="top">
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;color:${GOLD};">${esc(account.platform)}</div>
+                <a href="${esc(account.url)}" style="display:inline-block;margin-top:3px;font-size:16px;font-weight:700;color:${GREEN};text-decoration:underline;">${esc(account.handle)}</a>
+                <div style="font-size:13px;color:rgba(31,58,52,0.65);margin-top:4px;line-height:1.55;">${esc(account.blurb)}</div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>`
+    )
+    .join('')
+
+  return `
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CREAM};border:1px solid ${BORDER};border-radius:12px;margin:0 0 18px 0;">
+    ${rows}
+  </table>`
+}

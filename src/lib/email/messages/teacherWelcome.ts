@@ -1,4 +1,10 @@
-import { emailImage, firstName, note, p, renderEmail, signOff, siteUrl } from '@/lib/email/shell'
+import { emailImage, firstName, p, renderEmail, signOff, siteUrl, socialLinks } from '@/lib/email/shell'
+import {
+  INSTAGRAM_URL,
+  NEWSLETTER_MONTH,
+  SOCIAL_HANDLE,
+  TIKTOK_URL,
+} from '@/lib/email/copy'
 import type { BuiltEmail, JourneyContext } from '@/lib/email/types'
 
 /**
@@ -7,20 +13,6 @@ import type { BuiltEmail, JourneyContext } from '@/lib/email/types'
  * It sells nothing: the whole job is the origin story and the newsletter
  * promise. The products come a day later in teacherProducts.ts.
  */
-
-/**
- * The month the newsletter launches, quoted in the copy below.
- *
- * This sequence has no end date — someone signing up next spring still reads
- * this email — so the month has to be reviewed rather than left to rot. When
- * the newsletter has launched, change the sentence to the present tense; until
- * then, keep this current.
- */
-const NEWSLETTER_MONTH = 'September'
-
-const SOCIAL_HANDLE = '@learnwithmillie_'
-const INSTAGRAM_URL = 'https://www.instagram.com/learnwithmillie_/'
-const TIKTOK_URL = 'https://www.tiktok.com/@learnwithmillie_'
 
 export function buildTeacherWelcome(ctx: JourneyContext): BuiltEmail {
   const site = siteUrl()
@@ -50,12 +42,22 @@ export function buildTeacherWelcome(ctx: JourneyContext): BuiltEmail {
     ${p(`I made every mistake possible on the way. Wrong platforms. Wrong rates. Wrong intro video. Wrong niche. Wrong everything, at some point.`)}
     ${p(`But slowly, all of that trial and error became something that actually worked. A career that fits around the school run instead of the other way around.`)}
     ${p(`By the way &mdash; come and find me on the socials, I'd love to see you there:`)}
-    ${note(
-      `&#128241; <strong style="color:#1F3A34;">TikTok &amp; Instagram:</strong> ` +
-        `<a href="${TIKTOK_URL}" style="color:#1F3A34;font-weight:700;">${SOCIAL_HANDLE}</a> ` +
-        `(<a href="${INSTAGRAM_URL}" style="color:#1F3A34;font-weight:700;">Instagram</a>) ` +
-        `&mdash; honest thoughts, teaching moments, and behind-the-scenes`
-    )}
+    ${socialLinks([
+      {
+        icon: '&#127925;',
+        platform: 'TikTok',
+        handle: SOCIAL_HANDLE,
+        url: TIKTOK_URL,
+        blurb: 'Teaching moments, quick tips, and behind-the-scenes.',
+      },
+      {
+        icon: '&#128247;',
+        platform: 'Instagram',
+        handle: SOCIAL_HANDLE,
+        url: INSTAGRAM_URL,
+        blurb: "Honest thoughts, day-to-day, and what I'm building.",
+      },
+    ])}
     ${p(`DM me any time. Tell me your wins, tell me your struggles, tell me what you'd want more of. I read every single message. &#129293;`)}
     ${p(`That's all for now. I'll be back in your inbox soon.`)}
     ${signOff()}`
