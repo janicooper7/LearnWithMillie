@@ -226,9 +226,14 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className='block text-[10px] font-semibold uppercase tracking-[0.18em] mb-2' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  Password
-                </label>
+                <div className='flex items-center justify-between mb-2'>
+                  <label className='block text-[10px] font-semibold uppercase tracking-[0.18em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    Password
+                  </label>
+                  <Link href='/auth/forgot-password' className='text-[11px] font-medium' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    Forgot password?
+                  </Link>
+                </div>
                 <input
                   type='password'
                   value={password}

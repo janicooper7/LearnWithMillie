@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-export async function sendMail(options: { to: string; subject: string; html: string }) {
+export async function sendMail(options: { to: string; subject: string; html: string; from?: string }) {
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
     console.warn('[mailer] SMTP not configured — email not sent to', options.to)
     return
