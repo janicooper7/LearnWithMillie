@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { sendMail } from '@/lib/mailer'
+import { sendBrandedMail } from '@/lib/email/send'
 import { JOURNEYS, isJourneyName, journeyForRole } from '@/lib/email/journeys'
 import { unsubscribeUrl } from '@/lib/email/unsubscribe'
 import type { JourneyContext } from '@/lib/email/types'
@@ -11,13 +11,6 @@ const RETRY_DELAY_MS = 30 * 60 * 1000
 const MAX_ATTEMPTS = 3
 
 export type DeliveryResult = 'sent' | 'skipped' | 'finished' | 'failed'
-
-function fromAddress(): string | undefined {
-  const address = process.env.SMTP_USER
-  // A bare Gmail address as the sender looks like spam. Everything in these
-  // sequences is written in Millie's voice, so it should arrive from her.
-  return address ? `Millie at LearnWithMillie <${address}>` : undefined
-}
 
 /**
  * When the step at `index` is due, measured from the signup date rather than
@@ -88,19 +81,11 @@ export async function deliverNextStep(journeyId: string): Promise<DeliveryResult
   try {
     const { subject, html } = step.build(context)
 
-    await sendMail({
+    await sendBrandedMail({
       to: row.user.email,
       subject,
       html,
-      from: fromAddress(),
-      headers: context.unsubscribeUrl
-        ? {
-            // Puts the unsubscribe control in the mail client's own chrome,
-            // which is what keeps a sequence like this out of the spam folder.
-            'List-Unsubscribe': `<${context.unsubscribeUrl}>`,
-            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-          }
-        : undefined,
+      unsubscribeUrl: context.unsubscribeUrl,
     })
 
     if (row.attempts > 0) {

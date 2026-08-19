@@ -37,6 +37,7 @@ model User {
   courseAccess   UserCourseAccess[]
   lessonProgress UserLessonProgress[]
   emailJourney   EmailJourney?
+  campaignSends  EmailCampaignSend[]
 }
 
 
@@ -210,4 +211,24 @@ model EmailJourney {
   updatedAt      DateTime  @updatedAt
 
   @@index([nextSendAt])
+}
+
+// One row per (person, campaign) that has actually been mailed.
+//
+// Campaigns are one-off broadcasts to a segment rather than a dated sequence,
+// so there is nothing like EmailJourney.step to say where someone is up to —
+// the only thing that matters is whether they have had it. The row is written
+// *before* the send and deleted again if the send throws, so the unique
+// constraint is what stops a re-run, an overlapping run, or a segment someone
+// re-enters from mailing the same person twice.
+model EmailCampaignSend {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Key from CAMPAIGNS in src/lib/email/campaigns.ts.
+  campaign String
+  sentAt   DateTime @default(now())
+
+  @@unique([userId, campaign])
+  @@index([campaign])
 }
