@@ -1,9 +1,9 @@
-import type { Prisma } from '@prisma/client'
-import { prisma } from '@/lib/prisma'
-import { sendBrandedMail } from '@/lib/email/send'
-import { buildTeacherSeptember } from '@/lib/email/messages/teacherSeptember'
-import { unsubscribeUrl } from '@/lib/email/unsubscribe'
-import type { BuiltEmail, JourneyContext } from '@/lib/email/types'
+import type { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { createBulkTransport } from "@/lib/email/send";
+import { buildTeacherSeptember } from "@/lib/email/messages/teacherSeptember";
+import { unsubscribeUrl } from "@/lib/email/unsubscribe";
+import type { BuiltEmail, JourneyContext } from "@/lib/email/types";
 
 /**
  * One-off broadcasts to a segment, as opposed to the drip sequences in
@@ -24,31 +24,35 @@ import type { BuiltEmail, JourneyContext } from '@/lib/email/types'
  */
 export type Campaign = {
   /** What it is, for the admin dry-run output. */
-  description: string
+  description: string;
   /** Who it goes to. The runner adds "not unsubscribed" and "not already
    *  sent this campaign" on top, so segments never repeat that themselves. */
-  audience: Prisma.UserWhereInput
-  build: (ctx: JourneyContext) => BuiltEmail
-}
+  audience: Prisma.UserWhereInput;
+  build: (ctx: JourneyContext) => BuiltEmail;
+};
 
 export const CAMPAIGNS = {
-  'teacher-september-2026': {
+  "teacher-september-2026": {
     description:
-      'September 30% off — teachers who signed up and own no course. One send, August 2026.',
+      "September 30% off — teachers who signed up and own no course. One send, August 2026.",
     audience: {
-      role: 'TEACHER',
+      role: "TEACHER",
       // No UserCourseAccess row at all: a purchase grants one per course (and
       // the bundle grants three), so "owns nothing" is exactly "never bought".
       courseAccess: { none: {} },
     },
     build: buildTeacherSeptember,
   },
-} satisfies Record<string, Campaign>
+} satisfies Record<string, Campaign>;
 
-export type CampaignKey = keyof typeof CAMPAIGNS
+/** Stop a batch once this many sends fail back to back — a throttling mail
+ *  server rejects everything, and hammering it just deepens the throttle. */
+const MAX_CONSECUTIVE_FAILURES = 5;
+
+export type CampaignKey = keyof typeof CAMPAIGNS;
 
 export function isCampaignKey(value: string): value is CampaignKey {
-  return value in CAMPAIGNS
+  return value in CAMPAIGNS;
 }
 
 /**
@@ -66,26 +70,31 @@ function recipientWhere(key: CampaignKey): Prisma.UserWhereInput {
   return {
     AND: [
       CAMPAIGNS[key].audience,
-      { OR: [{ emailJourney: { is: null } }, { emailJourney: { is: { unsubscribedAt: null } } }] },
+      {
+        OR: [
+          { emailJourney: { is: null } },
+          { emailJourney: { is: { unsubscribedAt: null } } },
+        ],
+      },
       { campaignSends: { none: { campaign: key } } },
     ],
-  }
+  };
 }
 
 /** How many people the campaign would still go to. */
 export function countRemaining(key: CampaignKey): Promise<number> {
-  return prisma.user.count({ where: recipientWhere(key) })
+  return prisma.user.count({ where: recipientWhere(key) });
 }
 
 export type CampaignRun = {
-  key: CampaignKey
+  key: CampaignKey;
   /** Recipients outstanding before this batch ran. */
-  matched: number
-  sent: number
-  failed: number
+  matched: number;
+  sent: number;
+  failed: number;
   /** Still to go after this batch — call again while this is above zero. */
-  remaining: number
-}
+  remaining: number;
+};
 
 /**
  * Sends one batch of a campaign.
@@ -103,62 +112,85 @@ export type CampaignRun = {
  */
 export async function sendCampaign(
   key: CampaignKey,
-  opts: { limit?: number } = {}
+  opts: { limit?: number } = {},
 ): Promise<CampaignRun> {
-  const limit = opts.limit ?? 40
-  const campaign = CAMPAIGNS[key]
+  const limit = opts.limit ?? 40;
+  const campaign = CAMPAIGNS[key];
+  // One authenticated connection for the whole batch. Opening a fresh one per
+  // message is what made an earlier run stall on Gmail's login throttle.
+  const mail = createBulkTransport();
 
-  const matched = await countRemaining(key)
+  const matched = await countRemaining(key);
   const batch = await prisma.user.findMany({
     where: recipientWhere(key),
     // Oldest signups first, so a run split across several calls works through
     // the list in a stable order rather than reshuffling between batches.
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: "asc" },
     take: limit,
     select: { id: true, email: true, name: true },
-  })
+  });
 
-  let sent = 0
-  let failed = 0
+  let sent = 0;
+  let failed = 0;
+  // Consecutive failures. A campaign stops dead rather than working through
+  // the whole list against a throttling or misconfigured server — every attempt
+  // past the first few is just noise, and the recipients stay unclaimed for the
+  // next run.
+  let consecutiveFailures = 0;
 
-  for (const user of batch) {
-    let claim
-    try {
-      claim = await prisma.emailCampaignSend.create({
-        data: { userId: user.id, campaign: key },
-        select: { id: true },
-      })
-    } catch {
-      // Unique violation — another run already has this one.
-      continue
+  try {
+    for (const user of batch) {
+      let claim;
+      try {
+        claim = await prisma.emailCampaignSend.create({
+          data: { userId: user.id, campaign: key },
+          select: { id: true },
+        });
+      } catch {
+        // Unique violation — another run already has this one.
+        continue;
+      }
+
+      const context: JourneyContext = {
+        name: user.name,
+        email: user.email,
+        unsubscribeUrl: unsubscribeUrl(user.id),
+      };
+
+      try {
+        const { subject, html } = campaign.build(context);
+        await mail.send({
+          to: user.email,
+          subject,
+          html,
+          unsubscribeUrl: context.unsubscribeUrl,
+        });
+        sent += 1;
+        consecutiveFailures = 0;
+      } catch (err) {
+        failed += 1;
+        consecutiveFailures += 1;
+        // Hand the recipient back so a later batch can try again.
+        await prisma.emailCampaignSend
+          .delete({ where: { id: claim.id } })
+          .catch(() => {});
+        console.error(
+          `[email-campaign] ${key} failed for ${user.email}`,
+          err instanceof Error ? err.message : err,
+        );
+        if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+          console.error(
+            `[email-campaign] ${key} halted after ${consecutiveFailures} consecutive failures`,
+          );
+          break;
+        }
+      }
     }
-
-    const context: JourneyContext = {
-      name: user.name,
-      email: user.email,
-      unsubscribeUrl: unsubscribeUrl(user.id),
-    }
-
-    try {
-      const { subject, html } = campaign.build(context)
-      await sendBrandedMail({
-        to: user.email,
-        subject,
-        html,
-        unsubscribeUrl: context.unsubscribeUrl,
-      })
-      sent += 1
-    } catch (err) {
-      failed += 1
-      // Hand the recipient back so a later batch can try again.
-      await prisma.emailCampaignSend
-        .delete({ where: { id: claim.id } })
-        .catch(() => {})
-      console.error(`[email-campaign] ${key} failed for ${user.email}`, err)
-    }
+  } finally {
+    mail.close();
   }
 
-  const remaining = await countRemaining(key)
-  console.log('[email-campaign]', key, { matched, sent, failed, remaining })
-  return { key, matched, sent, failed, remaining }
+  const remaining = await countRemaining(key);
+  console.log("[email-campaign]", key, { matched, sent, failed, remaining });
+  return { key, matched, sent, failed, remaining };
 }

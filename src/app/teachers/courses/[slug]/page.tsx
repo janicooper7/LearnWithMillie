@@ -22,7 +22,7 @@ import {
   type SalesModule,
 } from '@/lib/courseSalesContent'
 import CoursePromoStrip from '@/app/components/CoursePromoStrip'
-import { PROMO, discountedPrice } from '@/lib/promo'
+import { PROMO, discountedPrice, isPromoActive } from '@/lib/promo'
 import { track, trackingContext } from '@/lib/trackClient'
 
 type Course = {
@@ -382,9 +382,11 @@ export default function CourseDetailPage() {
                 <span className="font-serif text-5xl font-bold text-[#C2AA6A]">
                   {discountedPrice(149)}
                 </span>
-                <span className="text-lg text-white/45 line-through">
-                  {bundleSales.pricing.bundlePrice}
-                </span>
+                {isPromoActive() && (
+                  <span className="text-lg text-white/45 line-through">
+                    {bundleSales.pricing.bundlePrice}
+                  </span>
+                )}
                 <span className="text-lg text-white/55">for all three</span>
               </div>
             )}
@@ -395,12 +397,14 @@ export default function CourseDetailPage() {
                 <span className="font-serif text-5xl font-bold text-[#C2AA6A]">
                   {discountedPrice(sales.price)}
                 </span>
-                <span className="text-lg text-white/45 line-through">${sales.price}</span>
+                {isPromoActive() && (
+                  <span className="text-lg text-white/45 line-through">${sales.price}</span>
+                )}
                 <span className="text-sm text-white/55">one-time</span>
               </div>
             )}
 
-            {!course.hasAccess && (
+            {!course.hasAccess && isPromoActive() && (
               <p className="mb-3 text-sm font-semibold text-[#C2AA6A]">
                 {PROMO.percentOff}% off applied automatically at checkout
               </p>

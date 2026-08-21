@@ -1,4 +1,5 @@
 import { Instagram } from 'lucide-react'
+import { INSTAGRAM_URL, TIKTOK_URL } from '@/lib/social'
 import ClimateBadge from './ClimateBadge'
 
 const TikTokIcon = ({ size = 20 }: { size?: number }) => (
@@ -108,7 +109,7 @@ export default function Footer() {
               </p>
               <div className='flex items-center gap-3'>
                 <a
-                  href='https://www.instagram.com/milliecooper26'
+                  href={INSTAGRAM_URL}
                   target='_blank'
                   rel='noopener noreferrer'
                   className='flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-px'
@@ -122,7 +123,7 @@ export default function Footer() {
                   Instagram
                 </a>
                 <a
-                  href='https://www.tiktok.com/@milliecooper26'
+                  href={TIKTOK_URL}
                   target='_blank'
                   rel='noopener noreferrer'
                   className='flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-px'

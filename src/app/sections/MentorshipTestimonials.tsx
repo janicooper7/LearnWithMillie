@@ -4,58 +4,7 @@ import { useEffect, useState } from 'react'
 import { StarIcon } from '@heroicons/react/24/solid'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
-
-const testimonials = [
-  {
-    name: 'Tinkerbell_xd',
-    role: 'Online English Teacher',
-    content:
-      'Your videos have helped me so much. My growth has been insane — I got 5 subscriptions in 36 hours! Thanks for all of these videos xx',
-    rating: 5,
-  },
-  {
-    name: 'Carminaria',
-    role: 'Preply Teacher',
-    content:
-      'Millie!! I updated my Preply profile after binging your content and got loads of new students! Thank you ❤️',
-    rating: 5,
-  },
-  {
-    name: 'Bridgette Nkosi',
-    role: 'New Teacher',
-    content:
-      'Hi Millie, thank you very much for all your lessons. I got accepted on Preply just by using your tips.',
-    rating: 5,
-  },
-  {
-    name: 'Sarah',
-    role: 'English Teacher',
-    content:
-      'Hope everything is going well — after your advice my page is now growing. I am having more students and trial lessons, which I was once scared of, are now very fun.',
-    rating: 5,
-  },
-  {
-    name: 'Jessica',
-    role: 'Aspiring Online Teacher',
-    content:
-      'I just got my first trial on Preply thanks to your videos! You\'re such an inspiration! 🥰',
-    rating: 5,
-  },
-  {
-    name: 'Emma',
-    role: 'New Preply Teacher',
-    content:
-      'Thanks to your videos I have my 1st student 😊 I cannot believe how quickly things moved once I followed your advice.',
-    rating: 5,
-  },
-  {
-    name: 'Laura',
-    role: 'Online English Teacher',
-    content:
-      'Thank you so much for your response — it was so detailed and helpful. I created my account yesterday, it got approved this morning, and I already have a trial lesson booked!',
-    rating: 5,
-  },
-]
+import { teacherTestimonials as testimonials } from '@/lib/teacherTestimonials'
 
 export default function MentorshipTestimonials() {
   const [currentIndex, setCurrentIndex] = useState(0)

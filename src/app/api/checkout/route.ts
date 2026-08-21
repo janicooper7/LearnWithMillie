@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth } from '@/auth'
 import { trackingMetadata } from '@/lib/trackingServer'
-import { PROMO } from '@/lib/promo'
+import { PROMO, isPromoActive } from '@/lib/promo'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -52,7 +52,10 @@ export async function POST(req: NextRequest) {
     // The course pages advertise the sale price rather than handing out a code,
     // so course checkouts carry the promo themselves unless the caller sent one.
     const typedCode = promoCode?.trim()
-    const wantedCode = typedCode || (isCourse ? PROMO.code : '')
+    // Once the sale's deadline passes the site shows list price, so the code
+    // must stop being attached too — otherwise Stripe would quietly charge
+    // less than the page advertised.
+    const wantedCode = typedCode || (isCourse && isPromoActive() ? PROMO.code : '')
 
     if (wantedCode) {
       const codes = await stripe.promotionCodes.list({ code: wantedCode, active: true, limit: 1 })

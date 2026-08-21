@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
 import { track, trackingContext } from '@/lib/trackClient'
 import { fbTrack } from '@/lib/fbPixel'
-import { PROMO, discountedAmount, discountedPrice } from '@/lib/promo'
+import { PROMO, discountedAmount, discountedPrice, isPromoActive } from '@/lib/promo'
 import {
   ArrowRight,
   PlayCircle,
@@ -79,6 +79,7 @@ export default function CoursePricingCards({
 }) {
   const { data: session } = useSession()
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+  const onSale = isPromoActive()
 
   async function handleCheckout(planKey: string, planName: string) {
     const listPrice = courses.find((c) => c.planKey === planKey)?.price
@@ -237,15 +238,17 @@ export default function CoursePricingCards({
                       >
                         {discountedPrice(course.price)}
                       </span>
-                      <span
-                        className='text-base line-through pb-1'
-                        style={{
-                          color: '#C0392B',
-                          fontFamily: 'var(--font-inter), sans-serif',
-                        }}
-                      >
-                        ${course.price}
-                      </span>
+                      {onSale && (
+                        <span
+                          className='text-base line-through pb-1'
+                          style={{
+                            color: '#C0392B',
+                            fontFamily: 'var(--font-inter), sans-serif',
+                          }}
+                        >
+                          ${course.price}
+                        </span>
+                      )}
                     </div>
                     <p
                       className='text-sm'
@@ -255,12 +258,14 @@ export default function CoursePricingCards({
                       }}
                     >
                       one-time payment
-                      <span
-                        className='ml-2 font-semibold'
-                        style={{ color: '#C0392B' }}
-                      >
-                        · {PROMO.percentOff}% off applied at checkout
-                      </span>
+                      {onSale && (
+                        <span
+                          className='ml-2 font-semibold'
+                          style={{ color: '#C0392B' }}
+                        >
+                          · {PROMO.percentOff}% off applied at checkout
+                        </span>
+                      )}
                     </p>
                   </div>
                 )}

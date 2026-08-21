@@ -11,7 +11,7 @@ import {
   softLink,
 } from '@/lib/email/shell'
 import { courseSales } from '@/lib/courseSalesContent'
-import { PROMO, discountedPrice } from '@/lib/promo'
+import { PROMO, discountedPrice, isPromoActive } from '@/lib/promo'
 import type { BuiltEmail, JourneyContext } from '@/lib/email/types'
 
 /**
@@ -40,7 +40,7 @@ const TRILOGY_PRICE = 149
 export function buildTeacherSeptember(ctx: JourneyContext): BuiltEmail {
   const site = siteUrl()
   const coursesUrl = `${site}/teachers/courses`
-  const onSale = PROMO.percentOff > 0
+  const onSale = isPromoActive()
 
   const price = (amount: number) => (onSale ? discountedPrice(amount) : `$${amount}`)
   const was = (amount: number) => (onSale ? `was $${amount}` : undefined)

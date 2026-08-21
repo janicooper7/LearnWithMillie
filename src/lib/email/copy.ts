@@ -14,6 +14,6 @@
  */
 export const NEWSLETTER_MONTH = 'September'
 
-export const SOCIAL_HANDLE = '@learnwithmillie_'
-export const INSTAGRAM_URL = 'https://www.instagram.com/learnwithmillie_/'
-export const TIKTOK_URL = 'https://www.tiktok.com/@learnwithmillie_'
+// Re-exported so the emails and the site footer can never disagree about a
+// handle again — see src/lib/social.ts.
+export { SOCIAL_HANDLE, INSTAGRAM_URL, TIKTOK_URL } from '@/lib/social'

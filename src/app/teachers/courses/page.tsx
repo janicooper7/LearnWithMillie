@@ -7,6 +7,11 @@ import CoursePricingCards from '@/app/components/CoursePricingCards'
 import CoursePromoStrip from '@/app/components/CoursePromoStrip'
 import TrilogyPurchaseCard from '@/app/components/TrilogyPurchaseCard'
 import CourseContentAccordion from '@/app/components/CourseContentAccordion'
+import CourseTestimonials from '@/app/components/CourseTestimonials'
+import CourseGuarantee from '@/app/components/CourseGuarantee'
+import CourseFaq from '@/app/components/CourseFaq'
+import CourseFaqSchema from '@/app/components/CourseFaqSchema'
+import CourseStickyCta from '@/app/components/CourseStickyCta'
 
 export const metadata: Metadata = {
   title: 'Courses for English Teachers',
@@ -118,7 +123,9 @@ export default async function CoursesPage() {
     .map(({ course }) => course.slug)
 
   return (
-    <div className="min-h-screen bg-[#F4EDE4]">
+    <div className={`min-h-screen bg-[#F4EDE4] ${hasFullAccess ? '' : 'pb-24 lg:pb-0'}`}>
+      <CourseFaqSchema />
+
       {/* Sale strip — hidden from anyone who already owns a course */}
       {accessedSlugs.length === 0 && <CoursePromoStrip />}
 
@@ -151,17 +158,51 @@ export default async function CoursesPage() {
             English tutors learning to teach online, built across four years and 4,000+ lessons.
           </p>
 
-          <p
-            className="mb-3 text-sm"
-            style={{ color: 'rgba(255,255,255,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
-          >
-            Created by{' '}
-            <a href="#instructor" className="font-semibold underline decoration-[#C2AA6A] underline-offset-2">
-              Millie Cooper
-            </a>
-          </p>
+          {/* Credibility row — a cold visitor should meet a person before a
+              syllabus, so Millie's face and markers sit in the hero rather than
+              waiting for the instructor section at the foot of the page. */}
+          <div className="mb-5 flex items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/aboutme.png"
+              alt="Millie Cooper"
+              className="h-14 w-14 flex-shrink-0 rounded-full object-cover sm:h-16 sm:w-16"
+              style={{ objectPosition: 'center top', border: '2px solid #C2AA6A' }}
+            />
+            <div style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
+              <p className="text-sm md:text-base" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                Created by{' '}
+                <a
+                  href="#instructor"
+                  className="font-semibold underline decoration-[#C2AA6A] underline-offset-2"
+                >
+                  Millie Cooper
+                </a>
+              </p>
+              <p className="mt-1 text-xs leading-relaxed md:text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                TEFL-certified · UCL Master&rsquo;s · teaching English online since 2022
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-5 flex flex-wrap gap-2">
+            {instructorStats.map((s) => (
+              <span
+                key={s.label}
+                className="rounded-full px-3.5 py-1.5 text-xs md:text-sm"
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(194,170,106,0.35)',
+                  fontFamily: 'var(--font-inter), sans-serif',
+                }}
+              >
+                <span className="font-bold" style={{ color: '#C2AA6A' }}>{s.value}</span>{' '}
+                <span style={{ color: 'rgba(255,255,255,0.7)' }}>{s.label.toLowerCase()}</span>
+              </span>
+            ))}
+          </div>
           <div
-            className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs"
+            className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs md:text-sm"
             style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
           >
             <span>Last updated 7/2026</span>
@@ -214,6 +255,10 @@ export default async function CoursesPage() {
                 ))}
               </div>
             </section>
+
+            {/* Proof sits above the curriculum — a reader needs a reason to
+                believe before a module list means anything. */}
+            <CourseTestimonials />
 
             {/* Course content */}
             <section className="mt-12">
@@ -431,6 +476,35 @@ export default async function CoursesPage() {
         </div>
       </section>
 
+      {/* The guarantee is the last objection standing at the decision point, so
+          it gets a full-width band of its own rather than a line of small print
+          inside the card. Full-bleed, so it lives outside the container above. */}
+      <CourseGuarantee />
+
+      {/* ===== FAQ ===== */}
+      <section className="section-padding" style={{ backgroundColor: '#F4EDE4' }}>
+        <div className="container">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-8 text-center">
+              <div className="mb-4 flex items-center justify-center gap-3">
+                <div className="h-px w-8" style={{ backgroundColor: '#C2AA6A' }} />
+                <span
+                  className="text-xs font-medium uppercase tracking-[0.25em]"
+                  style={{ color: 'rgba(31,58,52,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  Before you enrol
+                </span>
+                <div className="h-px w-8" style={{ backgroundColor: '#C2AA6A' }} />
+              </div>
+              <h2 className="heading-lg" style={{ color: '#1F3A34' }}>
+                Questions teachers ask
+              </h2>
+            </div>
+            <CourseFaq />
+          </div>
+        </div>
+      </section>
+
       {/* My Courses — only if user has purchased individual (non-bundle) courses */}
       {displayCourses.length > 0 && (
         <section className="px-4 pb-20">
@@ -491,6 +565,8 @@ export default async function CoursesPage() {
           </div>
         </section>
       )}
+
+      <CourseStickyCta hasFullAccess={hasFullAccess} />
     </div>
   )
 }

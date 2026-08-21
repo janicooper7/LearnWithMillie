@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { PROMO, discountedPrice } from '@/lib/promo'
+import { PROMO, discountedPrice, isPromoActive } from '@/lib/promo'
 
 export const metadata: Metadata = {
   title: 'All Teacher Products — Courses, Mentorship & Free Tools',
@@ -359,12 +359,14 @@ export default function TeacherProductsPage() {
 
         {/* Courses */}
         <GroupHeading label='Self-paced' title='Courses' />
-        <p
-          className='-mt-4 mb-8 text-sm font-semibold'
-          style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          {PROMO.percentOff}% off every course — discount applied automatically at checkout
-        </p>
+        {isPromoActive() && (
+          <p
+            className='-mt-4 mb-8 text-sm font-semibold'
+            style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
+          >
+            {PROMO.percentOff}% off every course — discount applied automatically at checkout
+          </p>
+        )}
         <div className='grid md:grid-cols-2 gap-5'>
           {courses.map((p) => (
             <ProductCard key={p.title} p={p} />

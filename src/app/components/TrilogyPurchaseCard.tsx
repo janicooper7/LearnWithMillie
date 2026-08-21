@@ -2,18 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { useSession } from 'next-auth/react'
-import { trackEvent } from '@/lib/analytics'
-import { track, trackingContext } from '@/lib/trackClient'
-import { fbTrack } from '@/lib/fbPixel'
-import { PROMO, discountedAmount, discountedPrice } from '@/lib/promo'
+import { useCourseCheckout } from '@/lib/useCourseCheckout'
+import { PROMO, discountedAmount, discountedPrice, isPromoActive } from '@/lib/promo'
+import CourseGuarantee from '@/app/components/CourseGuarantee'
 import {
   Play,
   Video,
   FileDown,
   Smartphone,
   Infinity as InfinityIcon,
-  ShieldCheck,
   ArrowRight,
   PlayCircle,
   X,
@@ -23,9 +20,6 @@ const VIDEO_URL =
   'https://www.youtube.com/embed/KawzKRqQV3A?si=Nu95B2S9ouSqLpDi&autoplay=1'
 
 const LIST_PRICE = 149
-// What the customer actually pays — /api/checkout puts the sale code on the
-// Stripe session, so every tracked value has to be the discounted one.
-const SALE_PRICE = discountedAmount(LIST_PRICE)
 
 const includes = [
   { icon: Video, label: '~350 minutes of on-demand video' },
@@ -39,9 +33,14 @@ export default function TrilogyPurchaseCard({
 }: {
   hasFullAccess: boolean
 }) {
-  const { data: session } = useSession()
+  const { enrol, loading } = useCourseCheckout()
+  // What the customer actually pays — /api/checkout puts the sale code on the
+  // Stripe session, so every tracked value has to be the discounted one.
+  // Computed per render rather than at module scope, so it follows the sale
+  // over its deadline instead of freezing at whatever it was on first load.
+  const onSale = isPromoActive()
+  const salePrice = discountedAmount(LIST_PRICE)
   const [playing, setPlaying] = useState(false)
-  const [loading, setLoading] = useState(false)
 
   // Close the video modal on Escape, and lock body scroll while it's open
   useEffect(() => {
@@ -58,51 +57,13 @@ export default function TrilogyPurchaseCard({
     }
   }, [playing])
 
-  async function handleEnrol() {
-    // Fired for every click, signed in or not — a signed-out click never
-    // reaches Stripe, so the two need telling apart in reporting.
-    trackEvent('enrol_click', {
+  function handleEnrol() {
+    return enrol({
       plan: 'course-full',
-      plan_name: 'BOOKED Trilogy',
-      cta_location: 'trilogy_card',
-      signed_in: Boolean(session),
-      value: SALE_PRICE,
-      currency: 'USD',
+      planName: 'BOOKED Trilogy',
+      ctaLocation: 'trilogy_card',
+      price: salePrice,
     })
-    track('courses', 'enrol_click')
-
-    if (!session) {
-      window.location.href =
-        '/auth/signup?type=teacher&next=%2Fteachers%2Fcourses'
-      return
-    }
-    setLoading(true)
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: 'course-full', tracking: trackingContext() }),
-      })
-      const data = await res.json()
-      if (data.url) {
-        trackEvent('begin_checkout', {
-          currency: 'USD',
-          value: SALE_PRICE,
-          items: [{ item_id: 'course-full', item_name: 'BOOKED Trilogy', price: SALE_PRICE }],
-        })
-        track('courses', 'checkout_start', { value: SALE_PRICE })
-        fbTrack('InitiateCheckout', {
-          value: SALE_PRICE,
-          currency: 'USD',
-          content_name: 'BOOKED Trilogy',
-          content_ids: ['course-full'],
-          content_type: 'product',
-        })
-        window.location.href = data.url
-      } else setLoading(false)
-    } catch {
-      setLoading(false)
-    }
   }
 
   function scrollToPricing() {
@@ -194,26 +155,34 @@ export default function TrilogyPurchaseCard({
               >
                 {discountedPrice(LIST_PRICE)}
               </span>
-              <span
-                className="pb-1 text-lg line-through"
-                style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
-              >
-                ${LIST_PRICE}
-              </span>
-              <span
-                className="ml-auto pb-1 text-sm font-bold"
-                style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
-              >
-                {PROMO.percentOff}% off
-              </span>
+              {onSale && (
+                <>
+                  <span
+                    className="pb-1 text-lg line-through"
+                    style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    ${LIST_PRICE}
+                  </span>
+                  <span
+                    className="ml-auto pb-1 text-sm font-bold"
+                    style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    {PROMO.percentOff}% off
+                  </span>
+                </>
+              )}
             </div>
             <p
               className="mb-5 text-sm"
               style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
               All 3 courses · one-time payment
-              <br />
-              <span style={{ color: '#C0392B', fontWeight: 600 }}>discount applied at checkout</span>
+              {onSale && (
+                <>
+                  <br />
+                  <span style={{ color: '#C0392B', fontWeight: 600 }}>discount applied at checkout</span>
+                </>
+              )}
             </p>
 
             {/* CTAs */}
@@ -233,13 +202,7 @@ export default function TrilogyPurchaseCard({
               Buy a single course
             </button>
 
-            <p
-              className="mt-4 flex items-center justify-center gap-1.5 text-xs"
-              style={{ color: 'rgba(31,58,52,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
-            >
-              <ShieldCheck className="h-3.5 w-3.5" style={{ color: '#C2AA6A' }} />
-              7-day money-back guarantee
-            </p>
+            <CourseGuarantee variant="inline" />
           </>
         )}
 

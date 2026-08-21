@@ -1,3 +1,4 @@
+import nodemailer from 'nodemailer'
 import { sendMail } from '@/lib/mailer'
 
 /**
@@ -33,4 +34,71 @@ export async function sendBrandedMail(opts: {
         }
       : undefined,
   })
+}
+
+/**
+ * A pooled transport for bulk sends.
+ *
+ * The shared transporter in mailer.ts is unpooled: every sendMail opens a
+ * fresh SMTP connection and authenticates again. That is right for the one-off
+ * transactional mail it was written for, and wrong for a campaign — Gmail caps
+ * *login attempts*, not just messages, and starts answering
+ * "454 4.7.0 Too many login attempts" after roughly a hundred of them in quick
+ * succession. That is a rejection at authentication, before any message body is
+ * transmitted, so nothing is delivered and nothing is duplicated; the send
+ * simply stops part-way through the list.
+ *
+ * Pooling authenticates once and reuses the connection for every message, and
+ * the rate limit spaces them out so a long run never looks like a burst.
+ *
+ * Call `close()` when the run finishes — an open pool keeps the process alive.
+ * Deliberately not module-level state: a pooled connection held open across a
+ * serverless invocation is its own kind of trouble, so a run creates one, uses
+ * it, and disposes of it.
+ */
+export function createBulkTransport() {
+  const transport = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD },
+    pool: true,
+    // One connection, one message at a time. Bulk mail has no reason to be
+    // fast, and concurrency here is what trips Gmail's per-connection limits.
+    maxConnections: 1,
+    maxMessages: Infinity,
+    // At most one message per second.
+    rateDelta: 1000,
+    rateLimit: 1,
+  })
+
+  return {
+    async send(opts: {
+      to: string
+      subject: string
+      html: string
+      unsubscribeUrl: string | null
+    }): Promise<void> {
+      if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+        throw new Error('SMTP is not configured')
+      }
+      await transport.sendMail({
+        from: fromAddress() || process.env.SMTP_USER,
+        to: opts.to,
+        subject: opts.subject,
+        html: opts.html,
+        ...(opts.unsubscribeUrl
+          ? {
+              headers: {
+                'List-Unsubscribe': `<${opts.unsubscribeUrl}>`,
+                'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+              },
+            }
+          : {}),
+      })
+    },
+    close() {
+      transport.close()
+    },
+  }
 }
