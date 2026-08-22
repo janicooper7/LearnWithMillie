@@ -4,3 +4,9 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Scheduled functions live here (netlify/functions/email-journey.mts drives the
+# onboarding drip). Declared explicitly so the Next.js plugin's own generated
+# functions can't be mistaken for the whole set.
+[functions]
+  directory = "netlify/functions"
