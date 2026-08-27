@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import UpgradePlanModal from './UpgradePlanModal'
+import { track, trackingContext } from '@/lib/trackClient'
 
 interface CreditsCardActionsProps {
   trialPurchased: boolean
@@ -19,10 +20,16 @@ export default function CreditsCardActions({ trialPurchased, isTeacher }: Credit
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: 'trial' }),
+        // The trial is bought from the dashboard, but the visit that earned it
+        // started on a marketing page. Sending the ids lets the Stripe webhook
+        // attribute the sale back to that visit instead of dropping it.
+        body: JSON.stringify({ plan: 'trial', tracking: trackingContext() }),
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
+      if (data.url) {
+        track('lessons', 'checkout_start')
+        window.location.href = data.url
+      }
     } catch {}
     setLoadingTrial(false)
   }

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Minus, Plus, ArrowRight, Tag } from 'lucide-react'
+import { trackingContext } from '@/lib/trackClient'
 
 export default function AddonLessonsBanner() {
   const [qty, setQty] = useState(1)
@@ -23,6 +24,8 @@ export default function AddonLessonsBanner() {
           plan: 'additional-lessons',
           quantity: qty,
           ...(promoCode.trim() && { promoCode: promoCode.trim() }),
+          // Carries the visit so the Stripe webhook can attribute the sale.
+          tracking: trackingContext(),
         }),
       })
       const data = await res.json()

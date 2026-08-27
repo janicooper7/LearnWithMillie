@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { X, ArrowRight } from 'lucide-react'
 import { CheckIcon } from '@heroicons/react/24/solid'
+import { trackingContext } from '@/lib/trackClient'
 
 const studentPlans = [
   {
@@ -73,7 +74,8 @@ export default function UpgradePlanModal({ onClose, trialPurchased, isTeacher }:
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planKey }),
+        // Carries the visit so the Stripe webhook can attribute the sale.
+        body: JSON.stringify({ plan: planKey, tracking: trackingContext() }),
       })
       const data = await res.json()
       if (data.url) window.location.href = data.url
