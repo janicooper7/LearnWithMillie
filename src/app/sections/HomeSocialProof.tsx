@@ -92,8 +92,8 @@ export default function HomeSocialProof() {
   return (
     <div className='container pb-14 md:pb-20'>
       {/* Header */}
-      <div className='text-center max-w-3xl mx-auto'>
-        <div className='flex items-center justify-center gap-3 mb-3'>
+      <div className='max-w-3xl'>
+        <div className='flex items-center gap-3 mb-3'>
           <div className='h-px w-10' style={{ backgroundColor: '#C2AA6A' }} />
           <span
             className='text-xs uppercase tracking-[0.25em] font-medium'
@@ -104,7 +104,6 @@ export default function HomeSocialProof() {
           >
             Real results
           </span>
-          <div className='h-px w-10' style={{ backgroundColor: '#C2AA6A' }} />
         </div>
         <h2
           style={{
@@ -120,7 +119,7 @@ export default function HomeSocialProof() {
       </div>
 
       {/* Audience filter */}
-      <div className='flex justify-center mt-6 mb-8'>
+      <div className='flex mt-6 mb-8'>
         <div
           role='tablist'
           aria-label='Filter testimonials by audience'
