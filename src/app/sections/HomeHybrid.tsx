@@ -15,21 +15,11 @@ import {
 } from 'lucide-react'
 import gsap from 'gsap'
 import ClimateBadge from '../components/ClimateBadge'
+import HomeSocialProof from './HomeSocialProof'
 
 type PathKey = 'students' | 'teachers'
 
 const paths = [
-  {
-    key: 'students' as PathKey,
-    eyebrow: 'Learn English with confidence',
-    icon: GraduationCap,
-    title: 'Students',
-    accent: '',
-    body: 'Personalised one-on-one lessons built around your goals — from Business English and interview prep to everyday conversation.',
-    points: ['Business English', 'Interview prep', 'Conversational fluency'],
-    href: '/students',
-    cta: 'Explore learning',
-  },
   {
     key: 'teachers' as PathKey,
     eyebrow: 'Teach English & grow your career',
@@ -41,10 +31,21 @@ const paths = [
       '1-on-1 mentorship',
       'Teacher courses',
       'Debate Generator',
-      'Free Platform Finder',
+      'Platform Finder',
     ],
     href: '/teachers',
     cta: 'Explore teaching',
+  },
+  {
+    key: 'students' as PathKey,
+    eyebrow: 'Learn English with confidence',
+    icon: GraduationCap,
+    title: 'Students',
+    accent: '',
+    body: 'Personalised one-on-one lessons built around your goals — from Business English and interview prep to everyday conversation.',
+    points: ['Business English', 'Interview prep', 'Conversational fluency'],
+    href: '/students',
+    cta: 'Explore learning',
   },
 ]
 
@@ -86,7 +87,7 @@ export default function HomeHybrid() {
                   fontFamily: 'var(--font-inter), sans-serif',
                 }}
               >
-                English Tutoring &amp; Teacher Mentorship
+                English Tutoring &amp; Teacher Training
               </span>
             </div>
 
@@ -201,6 +202,9 @@ export default function HomeHybrid() {
           </div>
         </div>
       </div>
+
+      {/* ── Social proof ── */}
+      <HomeSocialProof />
 
       {/* ── Split panels ── */}
       <div className='md:flex-1 flex flex-col md:flex-row gap-4 lg:gap-5 container pb-12 md:pb-16'>

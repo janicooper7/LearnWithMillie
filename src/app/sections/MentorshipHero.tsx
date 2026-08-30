@@ -11,7 +11,28 @@ const stats = [
   { value: '4+', label: 'Years teaching' },
 ]
 
-export default function MentorshipHero({ programHref = '#mentorship-program' }: { programHref?: string }) {
+type MentorshipHeroProps = {
+  /** Anchor id for the section — lets a page avoid duplicate ids. */
+  id?: string
+  eyebrow?: string
+  headline?: React.ReactNode
+  subheading?: React.ReactNode
+}
+
+export default function MentorshipHero({
+  id = 'mentorship-hero',
+  eyebrow = 'Teacher Mentorship',
+  headline = (
+    <>Teach with confidence.<br />Grow with purpose.</>
+  ),
+  subheading = (
+    <>
+      Personalised one-on-one mentorship for English teachers at every stage.
+      Whether you&apos;re just starting out or refining your craft, Millie helps
+      you build confidence, structure, and real results — in and out of the classroom.
+    </>
+  ),
+}: MentorshipHeroProps) {
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -24,7 +45,7 @@ export default function MentorshipHero({ programHref = '#mentorship-program' }: 
   }, [])
 
   return (
-    <section id='mentorship-hero' className='section-padding' style={{ backgroundColor: '#F4EDE4' }}>
+    <section id={id} className='section-padding' style={{ backgroundColor: '#F4EDE4' }}>
       <div className='container'>
         <div className='grid lg:grid-cols-2 gap-16 lg:gap-20 items-center'>
           <div ref={contentRef}>
@@ -36,7 +57,7 @@ export default function MentorshipHero({ programHref = '#mentorship-program' }: 
                 className='text-xs uppercase tracking-[0.25em] font-medium'
                 style={{ color: 'rgba(31,58,52,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}
               >
-                Teacher Mentorship
+                {eyebrow}
               </span>
             </div>
 
@@ -45,7 +66,7 @@ export default function MentorshipHero({ programHref = '#mentorship-program' }: 
               className='heading-xl mb-6'
               style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
             >
-              Teach with confidence.<br />Grow with purpose.
+              {headline}
             </h1>
 
             {/* Subheading */}
@@ -53,9 +74,7 @@ export default function MentorshipHero({ programHref = '#mentorship-program' }: 
               className='text-lg leading-relaxed mb-10 max-w-2xl'
               style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
-              Personalised one-on-one mentorship for English teachers at every stage.
-              Whether you&apos;re just starting out or refining your craft, Millie helps
-              you build confidence, structure, and real results — in and out of the classroom.
+              {subheading}
             </p>
 
             {/* Stats */}

@@ -177,7 +177,7 @@ export default function Navigation() {
               onMouseLeave={scheduleClose}
             >
               <button
-                className='flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200'
+                className='flex items-center gap-1.5 px-3.5 py-2 text-[15px] font-medium rounded-lg transition-colors duration-200'
                 style={{
                   color:
                     openDropdown === 'students' || isStudentSection
@@ -225,7 +225,7 @@ export default function Navigation() {
                         className='block text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4] group'
                       >
                         <p
-                          className='text-sm font-semibold'
+                          className='text-[16px] font-semibold'
                           style={{
                             color: '#1F3A34',
                             fontFamily: 'var(--font-inter), sans-serif',
@@ -234,7 +234,7 @@ export default function Navigation() {
                           {item.name}
                         </p>
                         <p
-                          className='text-xs mt-0.5'
+                          className='text-[14px] mt-0.5'
                           style={{
                             color: 'rgba(31,58,52,0.5)',
                             fontFamily: 'var(--font-inter), sans-serif',
@@ -256,7 +256,7 @@ export default function Navigation() {
               onMouseLeave={scheduleClose}
             >
               <button
-                className='flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium rounded-lg transition-colors duration-200'
+                className='flex items-center gap-1.5 px-3.5 py-2 text-[15px] font-medium rounded-lg transition-colors duration-200'
                 style={{
                   color:
                     openDropdown === 'teachers' || isTeacherSection
@@ -304,7 +304,7 @@ export default function Navigation() {
                         className='block text-left px-4 py-3 rounded-xl transition-colors duration-150 hover:bg-[#F4EDE4]'
                       >
                         <p
-                          className='text-sm font-semibold'
+                          className='text-[16px] font-semibold'
                           style={{
                             color: '#1F3A34',
                             fontFamily: 'var(--font-inter), sans-serif',
@@ -313,7 +313,7 @@ export default function Navigation() {
                           {item.name}
                         </p>
                         <p
-                          className='text-xs mt-0.5'
+                          className='text-[14px] mt-0.5'
                           style={{
                             color: 'rgba(31,58,52,0.5)',
                             fontFamily: 'var(--font-inter), sans-serif',
@@ -341,7 +341,7 @@ export default function Navigation() {
                   href={
                     session.user?.role === 'ADMIN' ? '/admin' : '/dashboard'
                   }
-                  className='flex items-center gap-2 text-[13px] font-medium px-3.5 py-2 rounded-lg transition-colors duration-200'
+                  className='flex items-center gap-2 text-[15px] font-medium px-3.5 py-2 rounded-lg transition-colors duration-200'
                   style={{
                     color: '#1F3A34',
                     backgroundColor: 'rgba(31,58,52,0.07)',
@@ -358,7 +358,7 @@ export default function Navigation() {
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className='text-[13px] font-medium transition-colors duration-200'
+                  className='text-[15px] font-medium transition-colors duration-200'
                   style={{ color: 'rgba(31,58,52,0.55)' }}
                   onMouseEnter={(e) => {
                     ;(e.currentTarget as HTMLButtonElement).style.color =
@@ -376,7 +376,7 @@ export default function Navigation() {
               <div className='flex items-center gap-3'>
                 <Link
                   href='/auth/login'
-                  className='text-[13px] font-medium transition-colors duration-200'
+                  className='text-[15px] font-medium transition-colors duration-200'
                   style={{ color: 'rgba(31,58,52,0.55)' }}
                   onMouseEnter={(e) => {
                     ;(e.currentTarget as HTMLAnchorElement).style.color =
@@ -430,7 +430,7 @@ export default function Navigation() {
           <div className='p-2'>
             {/* For Students accordion */}
             <button
-              className='w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors'
+              className='w-full flex items-center justify-between px-4 py-3 rounded-xl text-[16px] font-semibold transition-colors'
               style={{
                 color: '#1F3A34',
                 fontFamily: 'var(--font-inter), sans-serif',
@@ -456,7 +456,7 @@ export default function Navigation() {
                     key={item.name}
                     href={item.href + item.hash}
                     onClick={(e) => handleNav(e, item)}
-                    className='block w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60'
+                    className='block w-full text-left px-4 py-2.5 rounded-xl text-[16px] transition-colors hover:bg-white/60'
                     style={{
                       color: 'rgba(31,58,52,0.75)',
                       fontFamily: 'var(--font-inter), sans-serif',
@@ -470,7 +470,7 @@ export default function Navigation() {
 
             {/* For Teachers accordion */}
             <button
-              className='w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors'
+              className='w-full flex items-center justify-between px-4 py-3 rounded-xl text-[16px] font-semibold transition-colors'
               style={{
                 color: '#1F3A34',
                 fontFamily: 'var(--font-inter), sans-serif',
@@ -496,7 +496,7 @@ export default function Navigation() {
                     key={item.name}
                     href={item.href + item.hash}
                     onClick={(e) => handleNav(e, item)}
-                    className='block w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors hover:bg-white/60'
+                    className='block w-full text-left px-4 py-2.5 rounded-xl text-[16px] transition-colors hover:bg-white/60'
                     style={{
                       color: 'rgba(31,58,52,0.75)',
                       fontFamily: 'var(--font-inter), sans-serif',
@@ -529,7 +529,7 @@ export default function Navigation() {
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className='w-full text-center text-sm font-medium py-2'
+                  className='w-full text-center text-[16px] font-medium py-2'
                   style={{
                     color: 'rgba(31,58,52,0.55)',
                     fontFamily: 'var(--font-inter), sans-serif',
@@ -549,7 +549,7 @@ export default function Navigation() {
                 </Link>
                 <Link
                   href='/auth/login'
-                  className='w-full text-center text-sm font-medium py-2 block'
+                  className='w-full text-center text-[16px] font-medium py-2 block'
                   style={{
                     color: 'rgba(31,58,52,0.55)',
                     fontFamily: 'var(--font-inter), sans-serif',

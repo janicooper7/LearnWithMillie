@@ -23,8 +23,8 @@ export default function StudentsPage() {
     <>
       <MeetTutor />
       <Testimonials />
-      <HowItWorks />
       <LessonOptions />
+      <HowItWorks />
       <Pricing />
       <FAQ />
     </>

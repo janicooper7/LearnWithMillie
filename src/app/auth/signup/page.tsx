@@ -387,14 +387,14 @@ export default function SignupPage() {
               </p>
               <div className='grid grid-cols-2 gap-2.5'>
                 {([
-                  { value: 'STUDENT', label: 'Student', sub: 'I want to learn English' },
-                  { value: 'TEACHER', label: 'Teacher', sub: 'I want mentorship' },
+                  { value: 'STUDENT', label: 'Student' },
+                  { value: 'TEACHER', label: 'Teacher' },
                 ] as const).map((opt) => (
                   <button
                     key={opt.value}
                     type='button'
                     onClick={() => setRole(opt.value)}
-                    className='relative text-left px-4 py-3.5 rounded-xl border-[1.5px] transition-all duration-200'
+                    className='relative text-center px-4 py-3.5 rounded-xl border-[1.5px] transition-all duration-200'
                     style={{
                       borderColor: role === opt.value ? '#1F3A34' : '#EDE4D8',
                       backgroundColor: role === opt.value ? '#1F3A34' : 'white',
@@ -402,9 +402,6 @@ export default function SignupPage() {
                   >
                     <p className='text-sm font-semibold' style={{ color: role === opt.value ? 'white' : '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
                       {opt.label}
-                    </p>
-                    <p className='text-xs mt-0.5' style={{ color: role === opt.value ? 'rgba(255,255,255,0.6)' : 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                      {opt.sub}
                     </p>
                     {role === opt.value && (
                       <span className='absolute top-2.5 right-2.5 w-4 h-4 rounded-full flex items-center justify-center' style={{ backgroundColor: '#C2AA6A' }}>

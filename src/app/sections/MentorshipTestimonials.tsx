@@ -6,7 +6,18 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import { teacherTestimonials as testimonials } from '@/lib/teacherTestimonials'
 
-export default function MentorshipTestimonials() {
+type MentorshipTestimonialsProps = {
+  /** Anchor id for the section — lets a page avoid duplicate ids. */
+  id?: string
+  intro?: React.ReactNode
+}
+
+export default function MentorshipTestimonials({
+  id = 'mentorship-testimonials',
+  intro = (
+    <>Hear from teachers who have developed their craft and confidence through Millie&apos;s mentorship.</>
+  ),
+}: MentorshipTestimonialsProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -38,7 +49,7 @@ export default function MentorshipTestimonials() {
   const maxSlideIndex = Math.max(0, testimonials.length - itemsPerView)
 
   return (
-    <section className='section-padding bg-white' id='mentorship-testimonials'>
+    <section className='section-padding bg-white' id={id}>
       <div className='container'>
 
         {/* Header */}
@@ -64,7 +75,7 @@ export default function MentorshipTestimonials() {
             className='text-sm leading-relaxed max-w-xs md:text-right'
             style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
           >
-            Hear from teachers who have developed their craft and confidence through Millie&apos;s mentorship.
+            {intro}
           </p>
         </div>
 

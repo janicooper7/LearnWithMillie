@@ -199,7 +199,7 @@ export default function TeacherProducts() {
                   fontFamily: 'var(--font-inter), sans-serif',
                 }}
               >
-                For Teachers
+                Mentorship &amp; Courses
               </span>
             </div>
             <h2
@@ -219,8 +219,8 @@ export default function TeacherProducts() {
               fontFamily: 'var(--font-inter), sans-serif',
             }}
           >
-            From hands-on mentorship to free classroom tools — pick what fits
-            where you are in your teaching journey.
+            Mentorship, courses, and free classroom tools — pick what fits where
+            you are in your teaching journey.
           </p>
         </div>
 

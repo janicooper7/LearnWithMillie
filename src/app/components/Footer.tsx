@@ -98,9 +98,9 @@ export default function Footer() {
               className='text-base leading-relaxed max-w-md'
               style={{ color: 'rgba(31,58,52,0.6)' }}
             >
-              Connecting worlds through words. Professional English tutoring
-              tailored to your needs with personalized attention and flexible
-              scheduling.
+              Connecting worlds through words. Personalised English lessons for
+              students, and mentorship, courses and tools for the teachers who
+              guide them.
             </p>
 
             <div className='space-y-3'>
