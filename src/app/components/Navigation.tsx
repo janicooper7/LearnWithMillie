@@ -398,15 +398,17 @@ export default function Navigation() {
 
           {/* Mobile burger */}
           <button
-            className='md:hidden inline-flex items-center justify-center rounded-lg p-2'
+            className='md:hidden -mr-2 inline-flex items-center justify-center rounded-lg p-2.5'
             style={{ color: '#1F3A34' }}
+            aria-label='Toggle menu'
+            aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((o) => !o)}
           >
             <span className='sr-only'>Toggle menu</span>
             {mobileOpen ? (
-              <XMarkIcon className='h-5 w-5' />
+              <XMarkIcon className='h-8 w-8' strokeWidth={1.75} />
             ) : (
-              <Bars3Icon className='h-5 w-5' />
+              <Bars3Icon className='h-8 w-8' strokeWidth={1.75} />
             )}
           </button>
         </div>

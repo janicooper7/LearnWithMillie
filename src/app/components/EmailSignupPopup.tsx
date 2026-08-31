@@ -74,7 +74,8 @@ export default function EmailSignupPopup() {
 
   // Signed-in visitors are already customers with their own journey emails, and
   // the admin and dashboard areas aren't marketing surfaces at all.
-  const eligible = status === 'unauthenticated' && !!pathname && isTrackablePath(pathname)
+  const eligible =
+    status === 'unauthenticated' && !!pathname && isTrackablePath(pathname)
 
   useEffect(() => {
     if (!eligible || !shouldShow()) return
@@ -172,7 +173,7 @@ export default function EmailSignupPopup() {
 
   return (
     <div
-      className='fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4'
+      className='fixed inset-0 z-[100] flex items-center justify-center p-4'
       role='dialog'
       aria-modal='true'
       aria-labelledby='signup-popup-title'
@@ -183,7 +184,10 @@ export default function EmailSignupPopup() {
         aria-hidden='true'
       />
 
-      <div className='relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-[#EDE4D8] overflow-hidden animate-fade-in'>
+      {/* Centred on every size, so it reads as a card rather than a bottom
+          sheet. Capped to the viewport and scrollable for short screens —
+          phones in landscape, and portrait once the keyboard is up. */}
+      <div className='relative w-full sm:max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto bg-white rounded-3xl shadow-2xl border border-[#EDE4D8] animate-fade-in'>
         {/* The close button sits on the dark green header before signup and on
             white after, so its colour has to flip or it vanishes into one. */}
         <button
@@ -204,12 +208,16 @@ export default function EmailSignupPopup() {
             <div className='mx-auto w-12 h-12 rounded-full bg-[#C2AA6A]/20 flex items-center justify-center mb-4'>
               <Check className='w-6 h-6 text-[#1F3A34]' strokeWidth={2.5} />
             </div>
-            <h2 id='signup-popup-title' className='text-2xl font-bold text-[#1F3A34] mb-2'>
+            <h2
+              id='signup-popup-title'
+              className='text-2xl font-bold text-[#1F3A34] mb-2'
+            >
               You&rsquo;re in
             </h2>
             <p className='text-sm text-[#1F3A34]/70 leading-relaxed mb-5'>
-              Your code is on its way to <span className='font-semibold'>{email}</span>. Here it is
-              in the meantime &mdash; use it at checkout.
+              Your code is on its way to{' '}
+              <span className='font-semibold'>{email}</span>. Here it is in the
+              meantime &mdash; use it at checkout.
             </p>
 
             <button
@@ -226,7 +234,8 @@ export default function EmailSignupPopup() {
               )}
             </button>
             <p className='mt-2.5 text-xs text-[#1F3A34]/45'>
-              {copied ? 'Copied to your clipboard' : 'Tap to copy'} &middot; first order
+              {copied ? 'Copied to your clipboard' : 'Tap to copy'} &middot;
+              first order
             </p>
 
             <button
@@ -239,11 +248,13 @@ export default function EmailSignupPopup() {
         ) : (
           <>
             <div className='bg-[#1F3A34] px-7 pt-7 pb-6 text-center'>
-              <div className='inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C2AA6A] mb-2.5'>
-                <Sparkles className='w-3.5 h-3.5' />
+              <div className='inline-flex items-center gap-1.5 text-[15px] font-semibold uppercase tracking-[0.14em] text-[#C2AA6A] mb-2.5'>
                 Join the family
               </div>
-              <h2 id='signup-popup-title' className='text-[26px] leading-tight font-bold text-white'>
+              <h2
+                id='signup-popup-title'
+                className='text-[26px] leading-tight font-bold text-white'
+              >
                 {SIGNUP_OFFER_HEADLINE}
               </h2>
               <p className='mt-2.5 text-sm leading-relaxed text-white/70'>
@@ -257,7 +268,9 @@ export default function EmailSignupPopup() {
               {!audience ? (
                 <div className='space-y-2.5'>
                   <AudienceButton
-                    icon={<GraduationCap className='w-5 h-5' strokeWidth={1.75} />}
+                    icon={
+                      <GraduationCap className='w-5 h-5' strokeWidth={1.75} />
+                    }
                     label="I'm a teacher"
                     detail='Courses, mentorship and teaching tools'
                     onClick={() => setAudience('teacher')}
@@ -269,7 +282,8 @@ export default function EmailSignupPopup() {
                     onClick={() => setAudience('student')}
                   />
                   <p className='pt-1 text-center text-xs text-[#1F3A34]/45'>
-                    One email to get you started, then only what&rsquo;s worth sending.
+                    One email to get you started, then only what&rsquo;s worth
+                    sending.
                   </p>
                 </div>
               ) : (
@@ -280,7 +294,9 @@ export default function EmailSignupPopup() {
                     onChange={(e) => setName(e.target.value)}
                     placeholder='First name (optional)'
                     autoComplete='given-name'
-                    className='w-full rounded-xl border border-[#EDE4D8] bg-[#F4EDE4]/50 px-4 py-3 text-sm text-[#1F3A34] placeholder:text-[#1F3A34]/40 outline-none transition-colors focus:border-[#C2AA6A] focus:bg-white'
+                    /* text-base (16px) deliberately: iOS zooms the viewport in
+                       on focus for anything under 16px. */
+                    className='w-full rounded-xl border border-[#EDE4D8] bg-[#F4EDE4]/50 px-4 py-3 text-base text-[#1F3A34] placeholder:text-[#1F3A34]/40 outline-none transition-colors focus:border-[#C2AA6A] focus:bg-white'
                   />
                   <input
                     ref={emailRef}
@@ -290,7 +306,7 @@ export default function EmailSignupPopup() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder='you@example.com'
                     autoComplete='email'
-                    className='w-full rounded-xl border border-[#EDE4D8] bg-[#F4EDE4]/50 px-4 py-3 text-sm text-[#1F3A34] placeholder:text-[#1F3A34]/40 outline-none transition-colors focus:border-[#C2AA6A] focus:bg-white'
+                    className='w-full rounded-xl border border-[#EDE4D8] bg-[#F4EDE4]/50 px-4 py-3 text-base text-[#1F3A34] placeholder:text-[#1F3A34]/40 outline-none transition-colors focus:border-[#C2AA6A] focus:bg-white'
                   />
 
                   {error && <p className='text-xs text-red-600'>{error}</p>}
@@ -300,7 +316,9 @@ export default function EmailSignupPopup() {
                     disabled={submitting}
                     className='w-full rounded-xl bg-[#C2AA6A] px-6 py-3.5 text-sm font-bold text-[#1F3A34] transition-all hover:brightness-105 disabled:opacity-60'
                   >
-                    {submitting ? 'Sending…' : `Send my ${SIGNUP_OFFER.percentOff}% code`}
+                    {submitting
+                      ? 'Sending…'
+                      : `Send my ${SIGNUP_OFFER.percentOff}% code`}
                   </button>
 
                   <div className='flex items-center justify-between pt-0.5'>
@@ -311,7 +329,9 @@ export default function EmailSignupPopup() {
                     >
                       Back
                     </button>
-                    <span className='text-xs text-[#1F3A34]/45'>Unsubscribe any time</span>
+                    <span className='text-xs text-[#1F3A34]/45'>
+                      Unsubscribe any time
+                    </span>
                   </div>
                 </form>
               )}
@@ -343,7 +363,9 @@ function AudienceButton({
         {icon}
       </span>
       <span className='min-w-0'>
-        <span className='block text-sm font-semibold text-[#1F3A34]'>{label}</span>
+        <span className='block text-sm font-semibold text-[#1F3A34]'>
+          {label}
+        </span>
         <span className='block text-xs text-[#1F3A34]/55'>{detail}</span>
       </span>
     </button>
