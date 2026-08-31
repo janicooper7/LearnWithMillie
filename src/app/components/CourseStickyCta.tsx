@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { useCourseCheckout } from '@/lib/useCourseCheckout'
-import { discountedAmount, discountedPrice, isPromoActive } from '@/lib/promo'
 
-const LIST_PRICE = 149
+const PRICE = 149
 
 // Persistent enrol bar for mobile. The desktop layout already keeps the
 // purchase card in view with `lg:sticky`, so this is hidden from `lg` up.
@@ -15,8 +14,6 @@ const LIST_PRICE = 149
 // it duplicates.
 export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: boolean }) {
   const { enrol, loading } = useCourseCheckout()
-  const onSale = isPromoActive()
-  const salePrice = discountedAmount(LIST_PRICE)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -48,16 +45,8 @@ export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: bool
               className="text-xl font-bold leading-none"
               style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
             >
-              {discountedPrice(LIST_PRICE)}
+              ${PRICE}
             </span>
-            {onSale && (
-              <span
-                className="text-sm line-through"
-                style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
-              >
-                ${LIST_PRICE}
-              </span>
-            )}
           </div>
           <p
             className="mt-0.5 truncate text-[11px]"
@@ -73,7 +62,7 @@ export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: bool
               plan: 'course-full',
               planName: 'BOOKED Trilogy',
               ctaLocation: 'sticky_bar',
-              price: salePrice,
+              price: PRICE,
             })
           }
           disabled={loading || !visible}

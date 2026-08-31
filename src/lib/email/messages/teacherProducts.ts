@@ -1,5 +1,4 @@
 import { greeting, p, productCard, renderEmail, signOff, siteUrl, softLink } from '@/lib/email/shell'
-import { PROMO, isPromoActive } from '@/lib/promo'
 import type { BuiltEmail, JourneyContext } from '@/lib/email/types'
 
 /**
@@ -12,16 +11,12 @@ import type { BuiltEmail, JourneyContext } from '@/lib/email/types'
  * them at the end leaves the reader with one.
  *
  * Prices mirror MentorshipPricing.tsx, courseSalesContent.ts and the two
- * checkout routes. The course discount is read from src/lib/promo.ts — the same
- * source the site prices from — so it can't drift out of step with the sale.
+ * checkout routes.
  */
 export function buildTeacherProducts(ctx: JourneyContext): BuiltEmail {
   const site = siteUrl()
 
-  const onSale = isPromoActive()
-  const courseBlurb =
-    `Three courses that take you from setting up properly, to a calendar full of trials, to students who stay for months. $49, $79 and $59 on their own, or $149 for all three.` +
-    (onSale ? ` ${PROMO.percentOff}% comes off automatically at checkout at the moment.` : '')
+  const courseBlurb = `Three courses that take you from setting up properly, to a calendar full of trials, to students who stay for months. $49, $79 and $59 on their own, or $149 for all three.`
 
   const body = `
     ${p(greeting(ctx.name))}

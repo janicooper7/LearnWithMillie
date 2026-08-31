@@ -6,7 +6,6 @@ import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
 import { track, trackingContext } from '@/lib/trackClient'
 import { fbTrack } from '@/lib/fbPixel'
-import { PROMO, discountedAmount, discountedPrice, isPromoActive } from '@/lib/promo'
 import {
   ArrowRight,
   PlayCircle,
@@ -35,7 +34,7 @@ const courses = [
     description: '— launch, fill, and keep your tutoring business thriving',
     descriptionBold: 'All 3 courses',
     featured: true,
-    // 149 against 49+79+59 — the same saving whether or not the sale is on.
+    // 149 against 49+79+59.
     badge: 'Best Value · Save 20%',
   },
   {
@@ -79,13 +78,9 @@ export default function CoursePricingCards({
 }) {
   const { data: session } = useSession()
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
-  const onSale = isPromoActive()
 
   async function handleCheckout(planKey: string, planName: string) {
-    const listPrice = courses.find((c) => c.planKey === planKey)?.price
-    // /api/checkout puts the sale code on the Stripe session, so the amount
-    // reported here has to be what the customer is actually charged.
-    const price = listPrice ? discountedAmount(listPrice) : undefined
+    const price = courses.find((c) => c.planKey === planKey)?.price
 
     // Fired for every click, signed in or not — a signed-out click never
     // reaches Stripe, so the two need telling apart in reporting.
@@ -236,19 +231,8 @@ export default function CoursePricingCards({
                           color: '#1F3A34',
                         }}
                       >
-                        {discountedPrice(course.price)}
+                        ${course.price}
                       </span>
-                      {onSale && (
-                        <span
-                          className='text-base line-through pb-1'
-                          style={{
-                            color: '#C0392B',
-                            fontFamily: 'var(--font-inter), sans-serif',
-                          }}
-                        >
-                          ${course.price}
-                        </span>
-                      )}
                     </div>
                     <p
                       className='text-sm'
@@ -258,14 +242,6 @@ export default function CoursePricingCards({
                       }}
                     >
                       one-time payment
-                      {onSale && (
-                        <span
-                          className='ml-2 font-semibold'
-                          style={{ color: '#C0392B' }}
-                        >
-                          · {PROMO.percentOff}% off applied at checkout
-                        </span>
-                      )}
                     </p>
                   </div>
                 )}

@@ -13,6 +13,11 @@ enum Role {
   ADMIN
 }
 
+enum SubscriberAudience {
+  STUDENT
+  TEACHER
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -211,6 +216,39 @@ model EmailJourney {
   updatedAt      DateTime  @updatedAt
 
   @@index([nextSendAt])
+}
+
+// The marketing list. Someone who gave their email to the signup popup in
+// exchange for the welcome discount, without creating an account.
+//
+// Deliberately not a User: these people have no password, no role, nothing to
+// log into, and folding them into User would put rows with no account into
+// every admin count and every role-based query on the site. The cost is that
+// the same person can exist here and as a User — that is fine, and the email
+// unique index means the list itself never holds a duplicate.
+//
+// `audience` is the whole point of the popup. Teachers and students are sold
+// completely different things, so an address with no audience on it is worth a
+// fraction of one with it — which is why the form asks before it asks for the
+// email, not after.
+model Subscriber {
+  id       String             @id @default(cuid())
+  email    String             @unique
+  name     String?
+  audience SubscriberAudience
+  /// Path the popup was answered on, so it's possible to see which pages
+  /// actually earn signups. Null for anything submitted without one.
+  source   String?
+  /// Set once the welcome email with the discount code has gone out. Null
+  /// means the row was written but the send failed — those are the ones worth
+  /// looking at, since the person was promised a code they never received.
+  welcomeSentAt  DateTime?
+  unsubscribedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([audience])
+  @@index([createdAt])
 }
 
 // One row per (person, campaign) that has actually been mailed.

@@ -1,7 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createBulkTransport } from "@/lib/email/send";
-import { buildTeacherSeptember } from "@/lib/email/messages/teacherSeptember";
 import { unsubscribeUrl } from "@/lib/email/unsubscribe";
 import type { BuiltEmail, JourneyContext } from "@/lib/email/types";
 
@@ -31,19 +30,14 @@ export type Campaign = {
   build: (ctx: JourneyContext) => BuiltEmail;
 };
 
-export const CAMPAIGNS = {
-  "teacher-september-2026": {
-    description:
-      "September 30% off — teachers who signed up and own no course. One send, August 2026.",
-    audience: {
-      role: "TEACHER",
-      // No UserCourseAccess row at all: a purchase grants one per course (and
-      // the bundle grants three), so "owns nothing" is exactly "never bought".
-      courseAccess: { none: {} },
-    },
-    build: buildTeacherSeptember,
-  },
-} satisfies Record<string, Campaign>;
+// Empty between broadcasts. A campaign is deleted once it has finished sending
+// — the EmailCampaignSend rows are what record who was mailed, not this map, so
+// removing an entry loses no history. Retiring a key does mean it stops being
+// suppressed, so a future campaign must never reuse a key listed there.
+//
+// Typed by index signature rather than inferred from the literal, so an empty
+// map doesn't collapse CampaignKey to `never` and take the admin route with it.
+export const CAMPAIGNS: Record<string, Campaign> = {};
 
 /** Stop a batch once this many sends fail back to back — a throttling mail
  *  server rejects everything, and hammering it just deepens the throttle. */

@@ -62,6 +62,31 @@ export function button(href: string, text: string): string {
   </div>`
 }
 
+/**
+ * The discount code, set out as something to be copied.
+ *
+ * Rendered as selectable text rather than an image or a pre-filled link: the
+ * code has to survive being read on a phone and typed into Stripe's promo box
+ * on a laptop, and a picture of a code can't be copied at all. Monospaced and
+ * letter-spaced so an O and a 0 can be told apart.
+ *
+ * `code` is escaped because it is a value; `caption` is not, because it is
+ * authored copy and shares the convention of p() and note() — entities and
+ * inline markup in it are meant to render, not to be shown as text.
+ */
+export function discountCode(opts: { code: string; caption: string }): string {
+  return `
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 20px 0;">
+    <tr>
+      <td align="center" style="background:${CREAM};border:2px dashed ${GOLD};border-radius:14px;padding:22px 18px;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;font-weight:700;color:#8a6f2e;margin-bottom:10px;">Your code</div>
+        <div style="font-family:'Courier New',Courier,monospace;font-size:28px;font-weight:700;letter-spacing:0.14em;color:${GREEN};">${esc(opts.code)}</div>
+        <div style="font-size:13px;color:rgba(31,58,52,0.7);margin-top:10px;line-height:1.55;">${opts.caption}</div>
+      </td>
+    </tr>
+  </table>`
+}
+
 /** Soft cream panel — for an aside that shouldn't read as a sales box. */
 export function note(html: string): string {
   return `<div style="font-size:14px;color:rgba(31,58,52,0.7);background:${CREAM};border:1px solid ${BORDER};border-radius:10px;padding:14px 16px;line-height:1.65;margin:0 0 18px 0;">${html}</div>`
@@ -108,8 +133,16 @@ export function renderEmail(opts: {
   preheader: string
   body: string
   unsubscribeUrl?: string
+  /**
+   * Why this person is being emailed, for the footer. Defaults to the account
+   * wording, which is true of everyone in the journeys — but not of the
+   * marketing list, whose members never created an account and would rightly
+   * read that as a lie about where their address came from.
+   */
+  footerReason?: string
 }): string {
   const { eyebrow, headline, preheader, body, unsubscribeUrl } = opts
+  const footerReason = opts.footerReason ?? 'you created an account at'
 
   const unsubscribe = unsubscribeUrl
     ? `<br /><a href="${esc(unsubscribeUrl)}" style="color:rgba(31,58,52,0.5);text-decoration:underline;">Unsubscribe from these emails</a>`
@@ -144,7 +177,7 @@ export function renderEmail(opts: {
             </tr>
             <tr>
               <td style="padding:18px 24px 4px 24px;text-align:center;font-size:12px;line-height:1.7;color:rgba(31,58,52,0.5);">
-                You're receiving this because you created an account at
+                You're receiving this because ${esc(footerReason)}
                 <a href="${esc(siteUrl())}" style="color:rgba(31,58,52,0.6);">learnwithmillie.com</a>.${unsubscribe}
               </td>
             </tr>

@@ -1,32 +1,103 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyUnsubscribeToken } from '@/lib/email/unsubscribe'
+import {
+  verifySubscriberUnsubscribeToken,
+  verifyUnsubscribeToken,
+} from '@/lib/email/unsubscribe'
 import { BORDER, CREAM, GOLD, GREEN, siteUrl } from '@/lib/email/shell'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 /**
- * One-click unsubscribe for the onboarding sequences.
+ * One-click unsubscribe for the onboarding sequences and the marketing list.
  *
  * GET is the link in the footer; POST is what a mail client fires for the
  * List-Unsubscribe-Post header. Neither asks the reader to confirm or log in —
  * an unsubscribe that takes more than one click gets reported as spam instead,
  * and that costs far more than the subscriber does.
+ *
+ * `u` is a registered user's journey; `s` is a popup subscriber with no
+ * account. The two are separate tables with separately namespaced tokens, so a
+ * link can only ever be *presented* by the list it was minted for — but the
+ * person clicking it is one person, and they are opting out of hearing from
+ * Millie, not out of one of two database tables they have never heard of. So
+ * whichever link is used, the address comes off both.
  */
+
+/**
+ * Opts an email address out of every marketing list it appears on.
+ *
+ * Matched case-insensitively because the two tables normalise differently:
+ * /api/subscribe lowercases before writing, while registration stores whatever
+ * the person typed. A exact-match join would let "Sam@x.com" keep receiving
+ * journey emails after "sam@x.com" unsubscribed, which is the whole failure
+ * this function exists to prevent.
+ */
+async function unsubscribeEverywhere(email: string): Promise<void> {
+  const match = { equals: email, mode: 'insensitive' as const }
+  const now = new Date()
+
+  await prisma.subscriber.updateMany({
+    where: { email: match, unsubscribedAt: null },
+    data: { unsubscribedAt: now },
+  })
+
+  // Resolved to ids first rather than filtered through the relation, so the
+  // case-insensitive match is applied by the same query planner path in both
+  // halves of this function.
+  const users = await prisma.user.findMany({ where: { email: match }, select: { id: true } })
+  if (users.length === 0) return
+
+  await prisma.emailJourney.updateMany({
+    where: { userId: { in: users.map((u) => u.id) } },
+    data: { unsubscribedAt: now, nextSendAt: null },
+  })
+}
+
 async function unsubscribe(req: Request): Promise<boolean> {
   const { searchParams } = new URL(req.url)
   const userId = searchParams.get('u')
+  const subscriberId = searchParams.get('s')
   const token = searchParams.get('t')
 
-  if (!userId || !token || !verifyUnsubscribeToken(userId, token)) return false
+  if (!token) return false
+
+  if (subscriberId) {
+    if (!verifySubscriberUnsubscribeToken(subscriberId, token)) return false
+
+    const subscriber = await prisma.subscriber.findUnique({
+      where: { id: subscriberId },
+      select: { email: true },
+    })
+
+    // updateMany rather than update: an id that no longer exists (a row Millie
+    // deleted) should still render the confirmation page, not a 500.
+    await prisma.subscriber.updateMany({
+      where: { id: subscriberId, unsubscribedAt: null },
+      data: { unsubscribedAt: new Date() },
+    })
+
+    if (subscriber) await unsubscribeEverywhere(subscriber.email)
+
+    return true
+  }
+
+  if (!userId || !verifyUnsubscribeToken(userId, token)) return false
+
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
 
   // Marketing only. Password resets, booking confirmations and receipts are
   // transactional and keep sending.
+  //
+  // Done by id as well as by address so the link still works for a user row
+  // that has since lost or changed its email.
   await prisma.emailJourney.updateMany({
     where: { userId },
     data: { unsubscribedAt: new Date(), nextSendAt: null },
   })
+
+  if (user) await unsubscribeEverywhere(user.email)
 
   return true
 }

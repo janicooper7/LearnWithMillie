@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useCourseCheckout } from '@/lib/useCourseCheckout'
-import { PROMO, discountedAmount, discountedPrice, isPromoActive } from '@/lib/promo'
 import CourseGuarantee from '@/app/components/CourseGuarantee'
 import {
   Play,
@@ -19,7 +18,7 @@ import {
 const VIDEO_URL =
   'https://www.youtube.com/embed/KawzKRqQV3A?si=Nu95B2S9ouSqLpDi&autoplay=1'
 
-const LIST_PRICE = 149
+const PRICE = 149
 
 const includes = [
   { icon: Video, label: '~350 minutes of on-demand video' },
@@ -34,12 +33,6 @@ export default function TrilogyPurchaseCard({
   hasFullAccess: boolean
 }) {
   const { enrol, loading } = useCourseCheckout()
-  // What the customer actually pays — /api/checkout puts the sale code on the
-  // Stripe session, so every tracked value has to be the discounted one.
-  // Computed per render rather than at module scope, so it follows the sale
-  // over its deadline instead of freezing at whatever it was on first load.
-  const onSale = isPromoActive()
-  const salePrice = discountedAmount(LIST_PRICE)
   const [playing, setPlaying] = useState(false)
 
   // Close the video modal on Escape, and lock body scroll while it's open
@@ -62,7 +55,7 @@ export default function TrilogyPurchaseCard({
       plan: 'course-full',
       planName: 'BOOKED Trilogy',
       ctaLocation: 'trilogy_card',
-      price: salePrice,
+      price: PRICE,
     })
   }
 
@@ -142,7 +135,7 @@ export default function TrilogyPurchaseCard({
           </>
         ) : (
           <>
-            {/* Price — the sale price is what Stripe charges, so it leads */}
+            {/* Price */}
             <div className="mb-1 flex items-end gap-2.5">
               <span
                 style={{
@@ -153,36 +146,14 @@ export default function TrilogyPurchaseCard({
                   color: '#1F3A34',
                 }}
               >
-                {discountedPrice(LIST_PRICE)}
+                ${PRICE}
               </span>
-              {onSale && (
-                <>
-                  <span
-                    className="pb-1 text-lg line-through"
-                    style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
-                  >
-                    ${LIST_PRICE}
-                  </span>
-                  <span
-                    className="ml-auto pb-1 text-sm font-bold"
-                    style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
-                  >
-                    {PROMO.percentOff}% off
-                  </span>
-                </>
-              )}
             </div>
             <p
               className="mb-5 text-sm"
               style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
               All 3 courses · one-time payment
-              {onSale && (
-                <>
-                  <br />
-                  <span style={{ color: '#C0392B', fontWeight: 600 }}>discount applied at checkout</span>
-                </>
-              )}
             </p>
 
             {/* CTAs */}

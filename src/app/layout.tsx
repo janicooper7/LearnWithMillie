@@ -10,6 +10,7 @@ import FacebookPixel from './components/FacebookPixel'
 import TikTokPixel from './components/TikTokPixel'
 import SiteTracking from './components/SiteTracking'
 import StructuredData from './components/StructuredData'
+import EmailSignupPopup from './components/EmailSignupPopup'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -133,6 +134,9 @@ export default function RootLayout({
             <Suspense fallback={null}>{children}</Suspense>
           </main>
           <Footer />
+          {/* Inside SessionProvider: it only shows to signed-out visitors, so
+              it needs to know whether there's a session. */}
+          <EmailSignupPopup />
         </SessionProvider>
       </body>
     </html>

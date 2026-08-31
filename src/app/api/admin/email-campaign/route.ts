@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
     Object.entries(CAMPAIGNS).map(async ([k, campaign]) => ({
       key: k,
       description: campaign.description,
-      remaining: await countRemaining(k as never),
+      remaining: await countRemaining(k),
     }))
   )
   return NextResponse.json({ campaigns })

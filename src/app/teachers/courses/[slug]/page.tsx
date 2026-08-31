@@ -21,8 +21,6 @@ import {
   trilogyOrder,
   type SalesModule,
 } from '@/lib/courseSalesContent'
-import CoursePromoStrip from '@/app/components/CoursePromoStrip'
-import { PROMO, discountedPrice, isPromoActive } from '@/lib/promo'
 import { track, trackingContext } from '@/lib/trackClient'
 
 type Course = {
@@ -75,7 +73,6 @@ export default function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const router = useRouter()
   const [course, setCourse] = useState<Course | null>(null)
-  const [ownsAnyCourse, setOwnsAnyCourse] = useState(false)
   const [loading, setLoading] = useState(true)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [openCourses, setOpenCourses] = useState<Set<string>>(new Set())
@@ -97,16 +94,6 @@ export default function CourseDetailPage() {
       })
       .catch(() => setLoading(false))
   }, [slug])
-
-  // Hide the weekend-sale strip from anyone who already owns any course
-  useEffect(() => {
-    fetch('/api/courses')
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) setOwnsAnyCourse(data.some((c) => c.hasAccess))
-      })
-      .catch(() => {})
-  }, [])
 
   async function handlePurchase() {
     setCheckoutLoading(true)
@@ -163,9 +150,6 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F4EDE4]">
-      {/* Sale strip — hidden from anyone who already owns a course */}
-      {!ownsAnyCourse && <CoursePromoStrip />}
-
       {/* Hero */}
       <div className="bg-[#1F3A34] px-4 py-16 text-white">
         <div className="mx-auto max-w-3xl">
@@ -376,17 +360,12 @@ export default function CourseDetailPage() {
                   : 'Ready to get started?'}
             </h2>
 
-            {/* Bundle price — sale price first, list price struck through */}
+            {/* Bundle price */}
             {!course.hasAccess && isBundle && (
               <div className="mb-3 flex items-baseline justify-center gap-2">
                 <span className="font-serif text-5xl font-bold text-[#C2AA6A]">
-                  {discountedPrice(149)}
+                  {bundleSales.pricing.bundlePrice}
                 </span>
-                {isPromoActive() && (
-                  <span className="text-lg text-white/45 line-through">
-                    {bundleSales.pricing.bundlePrice}
-                  </span>
-                )}
                 <span className="text-lg text-white/55">for all three</span>
               </div>
             )}
@@ -395,19 +374,10 @@ export default function CourseDetailPage() {
             {!course.hasAccess && !isBundle && sales && (
               <div className="mb-3 flex items-baseline justify-center gap-2">
                 <span className="font-serif text-5xl font-bold text-[#C2AA6A]">
-                  {discountedPrice(sales.price)}
+                  ${sales.price}
                 </span>
-                {isPromoActive() && (
-                  <span className="text-lg text-white/45 line-through">${sales.price}</span>
-                )}
                 <span className="text-sm text-white/55">one-time</span>
               </div>
-            )}
-
-            {!course.hasAccess && isPromoActive() && (
-              <p className="mb-3 text-sm font-semibold text-[#C2AA6A]">
-                {PROMO.percentOff}% off applied automatically at checkout
-              </p>
             )}
 
             <p className="mx-auto mb-8 max-w-md leading-relaxed text-white/65">

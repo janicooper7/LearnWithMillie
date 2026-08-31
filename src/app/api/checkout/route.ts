@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth } from '@/auth'
 import { trackingMetadata } from '@/lib/trackingServer'
-import { PROMO, isPromoActive } from '@/lib/promo'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -49,58 +48,38 @@ export async function POST(req: NextRequest) {
     type DiscountEntry = { promotion_code: string } | { coupon: string }
     let discount: DiscountEntry | null = null
 
-    // The course pages advertise the sale price rather than handing out a code,
-    // so course checkouts carry the promo themselves unless the caller sent one.
+    // Only a code the customer typed into the promo box — the site advertises
+    // list price everywhere and attaches nothing of its own.
     const typedCode = promoCode?.trim()
-    // Once the sale's deadline passes the site shows list price, so the code
-    // must stop being attached too — otherwise Stripe would quietly charge
-    // less than the page advertised.
-    const wantedCode = typedCode || (isCourse && isPromoActive() ? PROMO.code : '')
 
-    if (wantedCode) {
-      const codes = await stripe.promotionCodes.list({ code: wantedCode, active: true, limit: 1 })
+    if (typedCode) {
+      const codes = await stripe.promotionCodes.list({ code: typedCode, active: true, limit: 1 })
       if (codes.data.length > 0) {
         discount = { promotion_code: codes.data[0].id }
-      } else if (typedCode) {
-        // A code the customer typed is worth an error. The automatic course sale
-        // code isn't — fall back to full price with the promo box open.
+      } else {
         return NextResponse.json({ error: 'Invalid or expired promo code.' }, { status: 400 })
       }
     }
 
-    const buildSession = (withDiscount: DiscountEntry | null) =>
-      stripe.checkout.sessions.create({
-        mode: isOneTime ? 'payment' : 'subscription',
-        line_items: [{ price: priceId, quantity: qty }],
-        // The session id lets /thank-you report the real charged amount to the Meta
-        // pixel, and doubles as the key that stops a refresh counting a second sale.
-        success_url: `${process.env.NEXTAUTH_URL}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
-        ...(withDiscount
-          ? { discounts: [withDiscount] }
-          : { allow_promotion_codes: true }),
-        ...(session?.user?.email && { customer_email: session.user.email }),
-        metadata: {
-          userId: session?.user?.id ?? '',
-          priceId,
-          quantity: String(qty),
-          ...(isCourse && { courseSlug: plan }),
-          // Carried through so the webhook can attribute the purchase back to the
-          // visit that started it — Stripe is the only thread between the two.
-          ...trackingMetadata(tracking, isCourse ? 'courses' : 'lessons'),
-        },
-      })
-
-    let checkoutSession
-    try {
-      checkoutSession = await buildSession(discount)
-    } catch (err) {
-      // A restriction on the auto-applied sale code (minimum amount, product
-      // limits) must never dead-end checkout — retry at full price instead.
-      if (!discount || typedCode) throw err
-      console.error('Auto promo rejected by Stripe, retrying without it:', (err as Error).message)
-      checkoutSession = await buildSession(null)
-    }
+    const checkoutSession = await stripe.checkout.sessions.create({
+      mode: isOneTime ? 'payment' : 'subscription',
+      line_items: [{ price: priceId, quantity: qty }],
+      // The session id lets /thank-you report the real charged amount to the Meta
+      // pixel, and doubles as the key that stops a refresh counting a second sale.
+      success_url: `${process.env.NEXTAUTH_URL}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
+      ...(discount ? { discounts: [discount] } : { allow_promotion_codes: true }),
+      ...(session?.user?.email && { customer_email: session.user.email }),
+      metadata: {
+        userId: session?.user?.id ?? '',
+        priceId,
+        quantity: String(qty),
+        ...(isCourse && { courseSlug: plan }),
+        // Carried through so the webhook can attribute the purchase back to the
+        // visit that started it — Stripe is the only thread between the two.
+        ...trackingMetadata(tracking, isCourse ? 'courses' : 'lessons'),
+      },
+    })
 
     return NextResponse.json({ url: checkoutSession.url })
   } catch (err: any) {

@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 // What a completed checkout was actually charged, read by /thank-you so the Meta
 // Purchase pixel reports a real amount. It has to come from Stripe rather than the
-// plan's list price because promo codes (SEPTEMBER and friends) make list price wrong,
+// plan's list price because a promo code typed at checkout makes list price wrong,
 // and a pixel that overstates revenue teaches Meta to bid for the wrong customers.
 //
 // The sale itself is still recorded by the Stripe webhook — this is read-only.

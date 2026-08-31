@@ -123,6 +123,14 @@ export async function deliverNextStep(journeyId: string): Promise<DeliveryResult
  * Safe to call more than once — the unique constraint on userId means a repeat
  * call finds the existing enrolment and does nothing, which is what stops a
  * returning Google user being welcomed twice.
+ *
+ * Honours an earlier opt-out from the marketing list. Someone who unsubscribed
+ * from the popup email before they had an account would otherwise be enrolled
+ * from scratch the moment they register, because the unsubscribe had no User
+ * row to act on at the time — an opt-out silently undone by signing up, which
+ * is precisely what people mean when they say they unsubscribed and it didn't
+ * work. They are still enrolled, so the row exists and a later re-subscribe has
+ * somewhere to land; it is just created already opted out and never sends.
  */
 export async function enrolInJourney(userId: string, role: string): Promise<void> {
   const journey = journeyForRole(role)
@@ -134,15 +142,38 @@ export async function enrolInJourney(userId: string, role: string): Promise<void
   })
   if (existing) return
 
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
+  // Case-insensitive: /api/subscribe lowercases, registration stores what was
+  // typed, so an exact match would miss "Sam@x.com" against "sam@x.com".
+  const optedOut = user
+    ? await prisma.subscriber.findFirst({
+        where: {
+          email: { equals: user.email, mode: 'insensitive' },
+          unsubscribedAt: { not: null },
+        },
+        select: { id: true },
+      })
+    : null
+
   let created
   try {
     created = await prisma.emailJourney.create({
-      data: { userId, journey, nextSendAt: new Date() },
+      data: {
+        userId,
+        journey,
+        nextSendAt: optedOut ? null : new Date(),
+        unsubscribedAt: optedOut ? new Date() : null,
+      },
       select: { id: true },
     })
   } catch (err) {
     // Lost a race with a concurrent signup — the other one owns the welcome.
     console.warn('[email-journey] could not enrol', userId, err)
+    return
+  }
+
+  if (optedOut) {
+    console.log('[email-journey] enrolled', userId, 'already unsubscribed — no welcome sent')
     return
   }
 
