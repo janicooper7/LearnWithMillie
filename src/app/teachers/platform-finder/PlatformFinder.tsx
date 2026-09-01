@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useSession } from 'next-auth/react'
 import { track, trackingContext } from '@/lib/trackClient'
 import { fbTrack, fbTrackOnce } from '@/lib/fbPixel'
 import {
@@ -159,12 +160,23 @@ export default function PlatformFinder() {
   const [finished, setFinished] = useState(false)
   const [showAllExcluded, setShowAllExcluded] = useState(false)
   const [unlocked, setUnlocked] = useState(false)
+  // Set when the API served an unpaid report because the caller is an admin.
+  // Kept apart from the session check so loading a customer's link never
+  // flashes the paywall while the session is still resolving.
+  const [adminUnlocked, setAdminUnlocked] = useState(false)
   const [verifying, setVerifying] = useState(false)
   const [idError, setIdError] = useState<string | null>(null)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const quizStarted = useRef(false)
   const quizCompleted = useRef(false)
+
+  // Admins read the report without buying it. The paywall is only ever a gate
+  // over matches already computed in the browser, so bypassing it here is the
+  // whole feature — there is no server-side report to unlock. `unlocked` stays
+  // reserved for real purchases so a restart doesn't strip an admin's access.
+  const { data: session } = useSession()
+  const bypassPaywall = session?.user?.role === 'ADMIN' || adminUnlocked
 
   // Reaching the results screen is the 'finished the questions' step.
   useEffect(() => {
@@ -234,19 +246,23 @@ export default function PlatformFinder() {
         const d = await res.json()
         if (cancelled) return
 
-        if (d.paid && d.answers) {
+        if ((d.paid || d.adminUnlocked) && d.answers) {
           setAnswers(d.answers)
-          setUnlocked(true)
+          if (d.paid) setUnlocked(true)
+          else setAdminUnlocked(true)
           setFinished(true)
           setVerifying(false)
           // The result id is issued once per checkout, so it doubles as the
-          // dedupe key — this link is permanent and gets revisited.
-          fbTrackOnce(
-            `platform-finder:${id}`,
-            'Purchase',
-            { value: 5, currency: 'USD', content_name: 'Platform Finder report' },
-            id,
-          )
+          // dedupe key — this link is permanent and gets revisited. An admin
+          // reading an unpaid report is not a sale, so it reports nothing.
+          if (d.paid) {
+            fbTrackOnce(
+              `platform-finder:${id}`,
+              'Purchase',
+              { value: 5, currency: 'USD', content_name: 'Platform Finder report' },
+              id,
+            )
+          }
           return
         }
         if (d.found === false) {
@@ -364,6 +380,7 @@ export default function PlatformFinder() {
     setStepIdx(0)
     setFinished(false)
     setUnlocked(false)
+    setAdminUnlocked(false)
     setShowAllExcluded(false)
     if (typeof window !== 'undefined' && window.location.search) {
       window.history.replaceState(null, '', '/teachers/platform-finder')
@@ -381,7 +398,7 @@ export default function PlatformFinder() {
   if (finished && profile) {
     // Nothing to sell when there are no matches — show the free "adjust your
     // answers" screen instead of charging for an empty report.
-    if (!unlocked && matched.length > 0) {
+    if (!unlocked && !bypassPaywall && matched.length > 0) {
       return (
         <Paywall
           matched={matched}
@@ -402,6 +419,7 @@ export default function PlatformFinder() {
         onToggleExcluded={() => setShowAllExcluded((s) => !s)}
         onRestart={handleRestart}
         profile={profile}
+        adminPreview={bypassPaywall && !unlocked}
       />
     )
   }
@@ -755,9 +773,10 @@ type ResultsProps = {
   onToggleExcluded: () => void
   onRestart: () => void
   profile: Profile
+  adminPreview?: boolean
 }
 
-function ResultsView({ matched, excluded, showAllExcluded, onToggleExcluded, onRestart, profile }: ResultsProps) {
+function ResultsView({ matched, excluded, showAllExcluded, onToggleExcluded, onRestart, profile, adminPreview }: ResultsProps) {
   const excludedToShow = showAllExcluded ? excluded : excluded.slice(0, 3)
 
   return (
@@ -772,6 +791,17 @@ function ResultsView({ matched, excluded, showAllExcluded, onToggleExcluded, onR
             <CheckCircleIcon className="w-3.5 h-3.5" style={{ color: '#C2AA6A' }} />
             Your matches
           </div>
+          {adminPreview && matched.length > 0 && (
+            <div className="mb-5 -mt-2">
+              <span
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: 'rgba(194,170,106,0.18)', color: '#1F3A34', border: '1px solid #C2AA6A' }}
+              >
+                <BoltIcon className="w-3.5 h-3.5" />
+                Admin preview — paywall bypassed, nothing was charged
+              </span>
+            </div>
+          )}
           <h1 className="heading-lg mb-4" style={{ color: '#1F3A34' }}>
             You match <span style={{ color: '#C2AA6A' }}>{matched.length}</span> platform{matched.length === 1 ? '' : 's'}
           </h1>

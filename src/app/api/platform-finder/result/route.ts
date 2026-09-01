@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { finalizePlatformFinderResult } from '@/lib/platformFinderResult'
 
@@ -39,6 +40,14 @@ export async function GET(req: NextRequest) {
     } catch (err: any) {
       console.error('Platform Finder result reconcile error:', err.message)
     }
+  }
+
+  // Still unpaid — an admin gets to read it anyway, so a "my report never
+  // arrived" email can be answered by opening the customer's own link. Flagged
+  // separately from `paid` so the client never books this as a purchase.
+  const session = await auth()
+  if (session?.user?.role === 'ADMIN') {
+    return NextResponse.json({ found: true, paid: false, adminUnlocked: true, answers: row.answers })
   }
 
   return NextResponse.json({ found: true, paid: false })
