@@ -57,10 +57,6 @@ export default async function DashboardPage() {
   const useMockBookings = mockBookingsEnabled()
   const useMockSubscription = mockSubscriptionEnabled()
 
-  // A mocked subscription stands in for the whole thing, so the subscribed
-  // dashboard can be previewed without a real recurring charge.
-  const hasSubscription = !!user.stripeSubscriptionId || useMockSubscription
-
   // Fetch Stripe + Cal.com in parallel
   const [stripeResult, calResult] = await Promise.allSettled([
     user.stripeSubscriptionId && !useMockSubscription
@@ -90,8 +86,13 @@ export default async function DashboardPage() {
     : stripeResult.status === 'fulfilled'
       ? stripeResult.value
       : null
+  // Stripe is the source of truth for whether the plan is still live. Our row can
+  // go stale — a cancellation done in the Stripe dashboard, or a missed
+  // customer.subscription.deleted webhook, leaves stripeSubscriptionId set.
+  let subscriptionEnded = false
   if (subscription) {
     const sub = subscription
+    subscriptionEnded = ['canceled', 'incomplete_expired', 'unpaid'].includes(sub.status)
     cancelAtPeriodEnd = sub.cancel_at_period_end
     // current_period_end moved to items in newer Stripe API versions
     const periodEndTs = sub.current_period_end ?? sub.items?.data?.[0]?.current_period_end
@@ -152,8 +153,10 @@ export default async function DashboardPage() {
   }
 
 
-  // While the getting-started checklist is up it owns the buy/book calls to
-  // action, so the Book-a-lesson card would just repeat them.
+  // Only Stripe explicitly saying "canceled" retires the card — an API blip
+  // leaves subscription null, and we keep trusting our own row.
+  const hasSubscription = (!!user.stripeSubscriptionId || useMockSubscription) && !subscriptionEnded
+
   const trialDone = user.trialPurchased || user.trialUsed || hasSubscription
   const bookingDone = user.trialUsed || user.upcomingLessons > 0 || upcomingBookings.length > 0
   const planDone = hasSubscription
@@ -302,7 +305,7 @@ export default async function DashboardPage() {
                     fontFamily: 'var(--font-inter), sans-serif',
                   }}
                 >
-                  {!hasSubscription ? 'Inactive' : cancelAtPeriodEnd ? 'Cancelling' : 'Active'}
+                  {!hasSubscription ? 'Inactive' : cancelAtPeriodEnd ? 'Cancelled' : 'Active'}
                 </span>
               </div>
 
@@ -312,7 +315,7 @@ export default async function DashboardPage() {
                 </p>
               )}
 
-              {subscriptionFacts.length > 0 && (
+              {hasSubscription && subscriptionFacts.length > 0 && (
                 <dl className='flex flex-wrap gap-x-8 gap-y-3 mt-5'>
                   {subscriptionFacts.map((fact) => (
                     <div key={fact.label}>

@@ -1,4 +1,5 @@
 export type MockSubscription = {
+  status: string
   cancel_at_period_end: boolean
   current_period_end: number
   start_date: number
@@ -32,6 +33,8 @@ export function getMockSubscription(now: Date = new Date()): MockSubscription {
   const plan = PLANS[process.env.MOCK_SUBSCRIPTION ?? ''] ?? PLANS.eight
 
   return {
+    // A subscription set to cancel at period end is still 'active' to Stripe.
+    status: 'active',
     cancel_at_period_end: process.env.MOCK_SUBSCRIPTION_CANCELLING === '1',
     // Mid-cycle: signed up seven weeks ago, renews in a fortnight.
     start_date: Math.floor((now.getTime() - 47 * DAY) / 1000),

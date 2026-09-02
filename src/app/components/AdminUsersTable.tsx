@@ -41,7 +41,7 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
   const [users, setUsers] = useState(initialUsers)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
-  const [reconciling, setReconciling] = useState(false)
+  const [reconciling, setReconciling] = useState<'sessions' | 'subscriptions' | null>(null)
   const [reconcileMsg, setReconcileMsg] = useState<string | null>(null)
 
   const copyEmail = (userId: string, email: string) => {
@@ -94,12 +94,12 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
     if (res.ok) setConversations(await res.json())
   }, [])
 
-  const reconcileSessions = async () => {
+  const runReconcile = async (endpoint: string, key: 'sessions' | 'subscriptions') => {
     if (reconciling) return
-    setReconciling(true)
+    setReconciling(key)
     setReconcileMsg(null)
     try {
-      const res = await fetch('/api/admin/reconcile-sessions', { method: 'POST' })
+      const res = await fetch(endpoint, { method: 'POST' })
       if (res.ok) {
         const data = await res.json()
         await fetchUsers()
@@ -110,10 +110,13 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
     } catch {
       setReconcileMsg('Failed')
     } finally {
-      setReconciling(false)
+      setReconciling(null)
       setTimeout(() => setReconcileMsg(null), 4000)
     }
   }
+
+  const reconcileSessions = () => runReconcile('/api/admin/reconcile-sessions', 'sessions')
+  const reconcileSubscriptions = () => runReconcile('/api/admin/reconcile-subscriptions', 'subscriptions')
 
   useEffect(() => {
     fetchUsers()
@@ -176,16 +179,26 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
             {filter === 'MESSAGES' ? 'Messages' : filter === 'ACTIVE' ? 'Active Users' : 'Users'}
           </h1>
           {(filter === 'ACTIVE' || filter === 'TEACHER') && (
-            <div className='flex items-center gap-2 mt-3'>
+            <div className='flex flex-wrap items-center gap-2 mt-3'>
               <button
                 onClick={reconcileSessions}
-                disabled={reconciling}
+                disabled={reconciling !== null}
                 className='flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors duration-150 disabled:opacity-60'
                 style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
                 title='Re-check upcoming sessions against Cal.com and clear used-up ones'
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${reconciling ? 'animate-spin' : ''}`} />
-                {reconciling ? 'Syncing…' : 'Sync sessions'}
+                <RefreshCw className={`w-3.5 h-3.5 ${reconciling === 'sessions' ? 'animate-spin' : ''}`} />
+                {reconciling === 'sessions' ? 'Syncing…' : 'Sync sessions'}
+              </button>
+              <button
+                onClick={reconcileSubscriptions}
+                disabled={reconciling !== null}
+                className='flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors duration-150 disabled:opacity-60'
+                style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+                title='Re-check stored subscriptions against Stripe and clear cancelled ones'
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${reconciling === 'subscriptions' ? 'animate-spin' : ''}`} />
+                {reconciling === 'subscriptions' ? 'Syncing…' : 'Sync subscriptions'}
               </button>
               {reconcileMsg && (
                 <span className='text-xs' style={{ color: '#4A9068', fontFamily: 'var(--font-inter), sans-serif' }}>{reconcileMsg}</span>
