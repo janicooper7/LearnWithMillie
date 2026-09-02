@@ -46,19 +46,19 @@ export default function AddonLessonsBanner() {
       className='rounded-2xl overflow-hidden'
       style={{ backgroundColor: '#1F3A34' }}
     >
-      <div className='px-6 py-5 flex flex-col gap-5'>
+      <div className='px-5 py-5 sm:px-7 sm:py-7 flex flex-col gap-6'>
         {/* Copy */}
         <div className='flex items-center gap-4'>
-          <div className='w-0.5 h-10 rounded-full flex-shrink-0' style={{ backgroundColor: '#C2AA6A' }} />
+          <div className='w-0.5 h-12 rounded-full flex-shrink-0' style={{ backgroundColor: '#C2AA6A' }} />
           <div>
             <p
-              className='text-white font-semibold text-sm'
+              className='text-white font-semibold text-xl'
               style={{ fontFamily: 'var(--font-inter), sans-serif' }}
             >
               Need additional lessons?
             </p>
             <p
-              className='text-xs mt-0.5'
+              className='text-[14px] mt-1'
               style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
               Top up at <span style={{ color: '#C2AA6A', fontWeight: 600 }}>$40</span> per lesson — no subscription needed.
@@ -75,32 +75,32 @@ export default function AddonLessonsBanner() {
             <button
               onClick={decrement}
               disabled={qty <= 1}
-              className='w-9 h-9 flex items-center justify-center transition-colors duration-150 disabled:opacity-30'
+              className='w-10 h-10 flex items-center justify-center transition-colors duration-150 disabled:opacity-30'
               style={{ color: 'white' }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.1)' }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent' }}
             >
-              <Minus className='w-3.5 h-3.5' />
+              <Minus className='w-4 h-4' />
             </button>
-            <div className='w-10 text-center'>
-              <span className='text-sm font-semibold text-white' style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
+            <div className='w-11 text-center'>
+              <span className='text-base font-semibold text-white' style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
                 {qty}
               </span>
             </div>
             <button
               onClick={increment}
               disabled={qty >= 20}
-              className='w-9 h-9 flex items-center justify-center transition-colors duration-150 disabled:opacity-30'
+              className='w-10 h-10 flex items-center justify-center transition-colors duration-150 disabled:opacity-30'
               style={{ color: 'white' }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.1)' }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent' }}
             >
-              <Plus className='w-3.5 h-3.5' />
+              <Plus className='w-4 h-4' />
             </button>
           </div>
 
           <span
-            className='text-sm font-semibold w-14'
+            className='text-lg font-semibold w-16'
             style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
           >
             ${qty * 40}
@@ -123,13 +123,13 @@ export default function AddonLessonsBanner() {
           style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
         >
           <div className='flex items-center gap-2'>
-            <Tag className='w-3.5 h-3.5 flex-shrink-0' style={{ color: 'rgba(194,170,106,0.7)' }} />
+            <Tag className='w-4 h-4 flex-shrink-0' style={{ color: 'rgba(194,170,106,0.7)' }} />
             <input
               type='text'
               value={promoCode}
               onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoError('') }}
               placeholder='Promo code'
-              className='flex-1 text-sm bg-transparent outline-none placeholder:uppercase placeholder:tracking-widest'
+              className='flex-1 text-[15px] bg-transparent outline-none placeholder:uppercase placeholder:tracking-widest'
               style={{
                 color: 'white',
                 fontFamily: 'var(--font-inter), sans-serif',
@@ -139,13 +139,13 @@ export default function AddonLessonsBanner() {
           </div>
 
           {promoError && (
-            <p className='text-xs' style={{ color: '#fca5a5', fontFamily: 'var(--font-inter), sans-serif' }}>
+            <p className='text-[13px]' style={{ color: '#fca5a5', fontFamily: 'var(--font-inter), sans-serif' }}>
               {promoError}
             </p>
           )}
 
           {!promoError && promoCode && (
-            <p className='text-xs' style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
+            <p className='text-[13px]' style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
               Applied at checkout
             </p>
           )}

@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { ArrowRight, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, CheckCircle2, Info } from 'lucide-react'
 import Stripe from 'stripe'
 import CalEmbed from '@/app/components/CalEmbed'
 import BookLessonCard from '@/app/components/BookLessonCard'
@@ -11,7 +11,11 @@ import AddonLessonsBanner from '@/app/components/AddonLessonsBanner'
 import CancelBookingButton from '@/app/components/CancelBookingButton'
 import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
 import BookingTime from '@/app/components/BookingTime'
+import OnboardingChecklist from '@/app/components/OnboardingChecklist'
+import ChoosePlanButton from '@/app/components/ChoosePlanButton'
 import { getMockBookings, mockBookingsEnabled, type CalBooking } from '@/lib/mockBookings'
+import { subscriptionPlan } from '@/lib/plans'
+import { getMockSubscription, mockSubscriptionEnabled } from '@/lib/mockSubscription'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -21,7 +25,7 @@ export default async function DashboardPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { id: true, name: true, email: true, createdAt: true, image: true, role: true, allowance: true, trialPurchased: true, trialUsed: true, stripeSubscriptionId: true, addonLessonsEnabled: true },
+    select: { id: true, name: true, email: true, createdAt: true, image: true, role: true, allowance: true, trialPurchased: true, trialUsed: true, stripeSubscriptionId: true, addonLessonsEnabled: true, upcomingLessons: true },
   })
 
   if (!user) redirect('/auth/login')
@@ -51,10 +55,15 @@ export default async function DashboardPage() {
   const showCoursesCard = isTeacher
 
   const useMockBookings = mockBookingsEnabled()
+  const useMockSubscription = mockSubscriptionEnabled()
+
+  // A mocked subscription stands in for the whole thing, so the subscribed
+  // dashboard can be previewed without a real recurring charge.
+  const hasSubscription = !!user.stripeSubscriptionId || useMockSubscription
 
   // Fetch Stripe + Cal.com in parallel
   const [stripeResult, calResult] = await Promise.allSettled([
-    user.stripeSubscriptionId
+    user.stripeSubscriptionId && !useMockSubscription
       ? stripe.subscriptions.retrieve(user.stripeSubscriptionId)
       : Promise.resolve(null),
     useMockBookings
@@ -73,13 +82,48 @@ export default async function DashboardPage() {
 
   let cancelAtPeriodEnd = false
   let periodEnd: Date | null = null
-  if (stripeResult.status === 'fulfilled' && stripeResult.value) {
-    const sub = stripeResult.value as any
+  let planName: string | null = null
+  let planLessons: number | null = null
+  let priceLabel: string | null = null
+  const subscription: any = useMockSubscription
+    ? getMockSubscription(now)
+    : stripeResult.status === 'fulfilled'
+      ? stripeResult.value
+      : null
+  if (subscription) {
+    const sub = subscription
     cancelAtPeriodEnd = sub.cancel_at_period_end
     // current_period_end moved to items in newer Stripe API versions
     const periodEndTs = sub.current_period_end ?? sub.items?.data?.[0]?.current_period_end
     if (periodEndTs) periodEnd = new Date(periodEndTs * 1000)
+
+    // Plan name comes from our own price map; the amount charged comes straight
+    // from Stripe, so a price change in the dashboard shows up here immediately.
+    const item = sub.items?.data?.[0]
+    const plan = subscriptionPlan(item?.price?.id)
+    planName = plan?.name ?? null
+    planLessons = plan?.lessons ?? null
+
+    const amount = item?.price?.unit_amount
+    if (typeof amount === 'number') {
+      const fractionDigits = amount % 100 === 0 ? 0 : 2
+      const currency = (item.price.currency ?? 'usd').toUpperCase()
+      priceLabel = new Intl.NumberFormat(currency === 'GBP' ? 'en-GB' : 'en-US', {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
+      }).format(amount / 100)
+    }
   }
+
+  const formatDay = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  const subscriptionFacts = [
+    priceLabel && { label: 'Price', value: `${priceLabel} / month` },
+    planLessons && { label: 'Lessons', value: `${planLessons} per month` },
+    periodEnd && { label: cancelAtPeriodEnd ? 'Access until' : 'Renews', value: formatDay(periodEnd) },
+  ].filter(Boolean) as { label: string; value: string }[]
 
   // Reset date comes from Stripe billing period; fall back to signup day if no subscription
   const nextReset = periodEnd ?? (() => {
@@ -88,6 +132,7 @@ export default async function DashboardPage() {
       ? new Date(now.getFullYear(), now.getMonth(), signupDay)
       : new Date(now.getFullYear(), now.getMonth() + 1, signupDay)
   })()
+  const nextResetLabel = nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
 
   let upcomingBookings: CalBooking[] = []
   if (useMockBookings) {
@@ -107,6 +152,22 @@ export default async function DashboardPage() {
   }
 
 
+  // While the getting-started checklist is up it owns the buy/book calls to
+  // action, so the Book-a-lesson card would just repeat them.
+  const trialDone = user.trialPurchased || user.trialUsed || hasSubscription
+  const bookingDone = user.trialUsed || user.upcomingLessons > 0 || upcomingBookings.length > 0
+  const planDone = hasSubscription
+  // Getting started ends once they've bought and booked — the plan step lives on
+  // permanently in the subscription card, so nobody gets a "first steps" banner
+  // months into their time here just because they're between plans.
+  const showChecklist = user.role === 'STUDENT' && !(trialDone && bookingDone)
+  // Anyone past getting started can top up, whether or not an admin flipped the
+  // per-user switch — the toggle now only matters for students still onboarding.
+  const isActiveStudent = !isTeacher && trialDone && bookingDone
+  const showAddons = !isTeacher && (isActiveStudent || user.addonLessonsEnabled)
+  const showSubscriptionCard = hasSubscription || !isTeacher
+  const showResetWarning = !isTeacher && hasSubscription && user.allowance > 0
+
   return (
     <div className='min-h-screen' style={{ backgroundColor: '#F4EDE4' }}>
       <ChatButton userName={user.name?.split(' ')[0] ?? 'there'} />
@@ -123,12 +184,13 @@ export default async function DashboardPage() {
           </h1>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
+        {/* Getting started checklist — students who haven't finished setting up */}
+        {showChecklist && (
+          <OnboardingChecklist trialDone={trialDone} bookingDone={bookingDone} planDone={planDone} />
+        )}
 
-          {/* Add-on lessons — students only, when enabled */}
-          {!isTeacher && user.addonLessonsEnabled && (
-            <AddonLessonsBanner />
-          )}
+        {isTeacher && (
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
 
           {/* My Courses card — teachers only */}
           {showCoursesCard && (
@@ -212,27 +274,75 @@ export default async function DashboardPage() {
           </div>
           )}
 
-          {/* Book a lesson / session */}
+          {/* Book a session — teachers only. Students get their buy/book calls to
+              action from the checklist, the subscription card and the top-up. */}
           <BookLessonCard trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />
 
         </div>
+        )}
 
-        {/* Subscription management — only if active */}
-        {user.stripeSubscriptionId && (
-          <div className='mt-5 bg-white rounded-2xl p-5 flex items-center justify-between' style={{ border: '1px solid #EDE4D8' }}>
-            <div>
-              <p className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>Subscription</p>
-              <div className='flex items-center gap-1.5 mt-1'>
-                <div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: cancelAtPeriodEnd ? '#c0392b' : '#2ecc71' }} />
-                <p className='text-sm font-medium' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                  {cancelAtPeriodEnd && periodEnd
-                    ? `Cancels ${periodEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}`
-                    : 'Active'}
-                </p>
+        {/* Subscription alongside the add-on top-up — full width if only one shows */}
+        {(showSubscriptionCard || showAddons) && (
+        <div className={`grid grid-cols-1 gap-5 mt-5 ${showSubscriptionCard && showAddons ? 'md:grid-cols-2' : ''}`}>
+
+        {showSubscriptionCard && (
+          <div className='bg-white rounded-2xl p-5 sm:p-7 flex flex-col' style={{ border: '1px solid #EDE4D8' }}>
+            <div className='min-w-0'>
+              <p className='text-[13px] uppercase tracking-[0.12em] font-semibold' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>Subscription</p>
+
+              <div className='flex flex-wrap items-center gap-3 mt-1.5'>
+                <h3 className='text-xl font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+                  {!hasSubscription ? 'No active plan' : planName ? `${planName} plan` : 'Monthly plan'}
+                </h3>
+                <span
+                  className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap'
+                  style={{
+                    backgroundColor: !hasSubscription ? 'rgba(31,58,52,0.07)' : cancelAtPeriodEnd ? 'rgba(192,57,43,0.1)' : 'rgba(46,204,113,0.14)',
+                    color: !hasSubscription ? 'rgba(31,58,52,0.5)' : cancelAtPeriodEnd ? '#c0392b' : '#1E8449',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                  }}
+                >
+                  {!hasSubscription ? 'Inactive' : cancelAtPeriodEnd ? 'Cancelling' : 'Active'}
+                </span>
               </div>
+
+              {!hasSubscription && (
+                <p className='text-sm leading-relaxed mt-3' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  Pick a monthly plan to get lessons every month at a lower price per lesson. Cancel whenever you like — you keep the lessons you&apos;ve already paid for.
+                </p>
+              )}
+
+              {subscriptionFacts.length > 0 && (
+                <dl className='flex flex-wrap gap-x-8 gap-y-3 mt-5'>
+                  {subscriptionFacts.map((fact) => (
+                    <div key={fact.label}>
+                      <dt className='text-[11px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        {fact.label}
+                      </dt>
+                      <dd className='text-sm font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                        {fact.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
             </div>
-            {!cancelAtPeriodEnd && <CancelSubscriptionButton />}
+            <div className='mt-auto pt-5' style={{ borderTop: '1px solid #EDE4D8' }}>
+              {!hasSubscription ? (
+                <ChoosePlanButton trialPurchased={trialDone} />
+              ) : cancelAtPeriodEnd ? (
+                <ChoosePlanButton trialPurchased={trialDone} label='Change your plan' />
+              ) : (
+                <CancelSubscriptionButton />
+              )}
+            </div>
           </div>
+        )}
+
+        {/* Add-on lessons — students only, when enabled */}
+        {showAddons && <AddonLessonsBanner />}
+
+        </div>
         )}
 
 
@@ -240,11 +350,11 @@ export default async function DashboardPage() {
         {/* Upcoming bookings — only shown if there are any */}
         {upcomingBookings.length > 0 && (
           <div className='mt-5 bg-white rounded-2xl p-5 sm:p-7' style={{ border: '1px solid #EDE4D8' }}>
-            <p className='text-[11px] uppercase tracking-[0.12em] mb-4' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
+            <p className='text-[13px] uppercase tracking-[0.12em] font-semibold mb-4' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
             <div className='space-y-3'>
               {upcomingBookings.map((booking) => {
                 return (
-                  <div key={booking.uid} className='flex flex-col gap-3 p-4 rounded-xl sm:flex-row sm:items-center sm:justify-between sm:gap-4' style={{ backgroundColor: '#F4EDE4' }}>
+                  <div key={booking.uid} className='flex flex-col gap-3 p-4 rounded-xl sm:flex-row sm:items-center sm:justify-between sm:gap-4' style={{ backgroundColor: '#1F3A34' }}>
                     <div className='flex items-center gap-4 min-w-0'>
                       <BookingTime start={booking.start} end={booking.end} />
                     </div>
@@ -255,12 +365,12 @@ export default async function DashboardPage() {
                           target='_blank'
                           rel='noopener noreferrer'
                           className='text-xs font-semibold px-4 py-2 rounded-full transition-colors duration-150 sm:text-[11px] sm:px-3 sm:py-1.5'
-                          style={{ backgroundColor: '#1F3A34', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
+                          style={{ backgroundColor: '#C2AA6A', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
                         >
                           Join
                         </a>
                       )}
-                      <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap' style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+                      <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap' style={{ backgroundColor: 'rgba(127,212,154,0.15)', color: '#7FD49A', fontFamily: 'var(--font-inter), sans-serif' }}>
                         Confirmed
                       </span>
                       {!booking.eventType?.slug?.includes('trial') && (new Date(booking.start).getTime() - now.getTime() > 24 * 60 * 60 * 1000) && (
@@ -275,22 +385,40 @@ export default async function DashboardPage() {
         )}
 
         {/* Booking calendar */}
-        <div className='mt-5 bg-white rounded-2xl overflow-hidden' style={{ border: '1px solid #EDE4D8' }}>
-          <div className='px-7 pt-7 pb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between' style={{ borderBottom: '1px solid #EDE4D8' }}>
-            <div>
-              <p className='text-[13px] uppercase tracking-[0.12em]' style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Book a Session' : 'Book a Lesson'}</p>
-              <p className='text-[16px] font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
-                {user.allowance > 0 ? 'Use the calendar below to pick a time that works for you.' : isTeacher ? 'No sessions remaining' : 'No lessons remaining'}
-              </p>
-              <p className='text-[14px] mt-1.5' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                Not seeing a time that works for you? Drop me a message and I'll make sure we find a time that works best for both of us.
-              </p>
+        <div id='book-lesson' className='mt-5 bg-white rounded-2xl overflow-hidden scroll-mt-6' style={{ border: '1px solid #EDE4D8' }}>
+          <div className='px-7 pt-7 pb-5' style={{ borderBottom: '1px solid #EDE4D8' }}>
+            <p className='text-[13px] uppercase tracking-[0.12em] font-semibold' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Book a Session' : 'Book a Lesson'}</p>
+            <p className='text-xl font-medium mt-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}>
+              {user.allowance > 0 ? 'Use the calendar below to pick a time that works for you.' : isTeacher ? 'No sessions remaining' : 'No lessons remaining'}
+            </p>
+
+            <div className='mt-5 flex flex-col gap-3 rounded-xl px-5 py-4 sm:flex-row sm:items-center sm:gap-5' style={{ backgroundColor: 'rgba(31,58,52,0.06)' }}>
+              {/* Stacked only when it sits beside the reset note; on its own it
+                  reads better as a single line. */}
+              <div className={showResetWarning ? 'flex flex-col items-center text-center flex-shrink-0 sm:min-w-[7rem]' : 'flex items-baseline gap-2.5 flex-shrink-0'}>
+                <span className='text-3xl font-bold leading-none' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{user.allowance}</span>
+                <span className={`text-[16px] whitespace-nowrap ${showResetWarning ? 'mt-1' : ''}`} style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  {isTeacher ? (user.allowance === 1 ? 'session left' : 'sessions left') : (user.allowance === 1 ? 'lesson left' : 'lessons left')}
+                </span>
+              </div>
+
+              {/* Only subscribers get a reset — one-off trial and mentorship
+                  credits sit there until they're used. */}
+              {showResetWarning && (
+                <>
+                  <div className='hidden sm:block w-px self-stretch flex-shrink-0' style={{ backgroundColor: 'rgba(31,58,52,0.12)' }} />
+                  <p className='text-[13px] leading-relaxed' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                    Lessons can only be booked for dates inside your current billing cycle, which ends on <span style={{ color: '#1F3A34', fontWeight: 600 }}>{nextResetLabel}</span>. Your allowance resets that day and any lessons you haven&apos;t booked are lost.
+                  </p>
+                </>
+              )}
             </div>
-            <div className='self-start sm:self-auto flex items-center gap-2 px-6 py-2 rounded-xl' style={{ backgroundColor: 'rgba(31,58,52,0.06)' }}>
-              <span className='text-lg font-bold' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>{user.allowance}</span>
-              <span className='text-[14px] whitespace-nowrap' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                {isTeacher ? (user.allowance === 1 ? 'session left' : 'sessions left') : (user.allowance === 1 ? 'lesson left' : 'lessons left')}
-              </span>
+
+            <div className='mt-4 flex items-start gap-2.5'>
+              <Info className='w-4 h-4 flex-shrink-0 mt-0.5' style={{ color: '#C2AA6A' }} />
+              <p className='text-[14px] leading-relaxed' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                Not seeing a time that works for you? Drop me a message and I&apos;ll make sure we find a time that works best for both of us.
+              </p>
             </div>
           </div>
 
@@ -298,12 +426,12 @@ export default async function DashboardPage() {
             src={`${
               isTeacher
                 ? 'https://cal.com/millie-cooper-rqg072/mentorship-session-with-millie-cooper'
-                : user.stripeSubscriptionId || user.trialUsed
+                : hasSubscription || user.trialUsed
                   ? process.env.CAL_EVENT_URL
                   : 'https://cal.com/millie-cooper-rqg072/trial-lesson-with-millie-cooper'
             }?embed=true&name=${encodeURIComponent(user.name ?? '')}&email=${encodeURIComponent(user.email ?? '')}`}
             allowance={user.allowance}
-            nextReset={nextReset.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}
+            nextReset={nextResetLabel}
             trialPurchased={user.trialPurchased}
             isTeacher={isTeacher}
           />

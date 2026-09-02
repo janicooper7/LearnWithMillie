@@ -27,21 +27,21 @@ export default function CancelBookingButton({ uid }: { uid: string }) {
   if (confirming) {
     return (
       <div className='flex flex-wrap items-center gap-1.5'>
-        <span className='text-[11px]' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+        <span className='text-[11px]' style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}>
           Sure?
         </span>
         <button
           onClick={handleCancel}
           disabled={loading}
           className='text-[11px] font-semibold px-2.5 py-1 rounded-full transition-colors duration-150 disabled:opacity-50'
-          style={{ backgroundColor: 'rgba(192,57,43,0.1)', color: '#c0392b', fontFamily: 'var(--font-inter), sans-serif' }}
+          style={{ backgroundColor: 'rgba(232,131,111,0.18)', color: '#E8836F', fontFamily: 'var(--font-inter), sans-serif' }}
         >
           {loading ? '…' : 'Yes, cancel'}
         </button>
         <button
           onClick={() => setConfirming(false)}
           className='text-[11px] font-semibold px-2.5 py-1 rounded-full'
-          style={{ backgroundColor: 'rgba(31,58,52,0.07)', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+          style={{ backgroundColor: 'rgba(255,255,255,0.12)', color: 'white', fontFamily: 'var(--font-inter), sans-serif' }}
         >
           Keep
         </button>
@@ -53,9 +53,9 @@ export default function CancelBookingButton({ uid }: { uid: string }) {
     <button
       onClick={() => setConfirming(true)}
       className='text-[11px] font-semibold px-2.5 py-1 rounded-full transition-colors duration-150'
-      style={{ backgroundColor: 'rgba(192,57,43,0.07)', color: 'rgba(192,57,43,0.7)', fontFamily: 'var(--font-inter), sans-serif' }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#c0392b' }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(192,57,43,0.7)' }}
+      style={{ backgroundColor: 'rgba(232,131,111,0.12)', color: 'rgba(232,131,111,0.85)', fontFamily: 'var(--font-inter), sans-serif' }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = '#E8836F' }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(232,131,111,0.85)' }}
     >
       Cancel
     </button>
