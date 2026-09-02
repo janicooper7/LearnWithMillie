@@ -50,11 +50,11 @@ export const courseSales: Record<string, CourseSales> = {
       {
         title: 'Tech setup that doesn’t cost a fortune',
         teaser:
-          'Five things that decide whether students stay on your video. Most are free. None cost more than £30.',
+          'Five things that decide whether students stay on your video. Most are free. None cost more than $40.',
       },
       {
         title: 'Your essential software stack',
-        teaser: 'Six tools every online tutor uses. Five are free. One costs £15 a month.',
+        teaser: 'Six tools every online tutor uses. Five are free. One costs $20 a month.',
       },
       {
         title: 'Setting your rates with confidence',

@@ -54,6 +54,12 @@ const teacherItems = [
     description: 'Get to know your mentor',
   },
   {
+    name: 'The Roadmap',
+    href: '/teachers/journey',
+    hash: '',
+    description: 'Your journey, stage by stage',
+  },
+  {
     name: 'All Products',
     href: '/teachers/products',
     hash: '',
@@ -204,7 +210,7 @@ export default function Navigation() {
                   pointerEvents: openDropdown === 'students' ? 'auto' : 'none',
                   opacity: openDropdown === 'students' ? 1 : 0,
                   transition: 'opacity 0.15s ease',
-                  width: '420px',
+                  width: 'min(660px, calc(100vw - 24px))',
                 }}
                 onMouseEnter={() => openMenu('students')}
                 onMouseLeave={scheduleClose}
@@ -216,7 +222,7 @@ export default function Navigation() {
                     border: '1px solid #EDE4D8',
                   }}
                 >
-                  <div className='p-2 grid grid-cols-2 gap-1'>
+                  <div className='p-2 grid grid-cols-3 gap-1'>
                     {studentItems.map((item) => (
                       <Link
                         key={item.name}
@@ -283,7 +289,7 @@ export default function Navigation() {
                   pointerEvents: openDropdown === 'teachers' ? 'auto' : 'none',
                   opacity: openDropdown === 'teachers' ? 1 : 0,
                   transition: 'opacity 0.15s ease',
-                  width: '340px',
+                  width: 'min(660px, calc(100vw - 24px))',
                 }}
                 onMouseEnter={() => openMenu('teachers')}
                 onMouseLeave={scheduleClose}
@@ -295,7 +301,7 @@ export default function Navigation() {
                     border: '1px solid #EDE4D8',
                   }}
                 >
-                  <div className='p-2 grid grid-cols-2 gap-1'>
+                  <div className='p-2 grid grid-cols-3 gap-1'>
                     {teacherItems.map((item) => (
                       <Link
                         key={item.name}

@@ -181,3 +181,19 @@
     animation: none;
   }
 }
+
+/* Course page — teacher testimonial carousel */
+.lwm-quote-progress {
+  transform-origin: left center;
+  animation-name: lwm-quote-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes lwm-quote-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

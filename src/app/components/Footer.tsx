@@ -25,6 +25,7 @@ const studentLinks = [
 
 const teacherLinks = [
   { name: 'Meet Millie', href: '/teachers' },
+  { name: 'The Roadmap', href: '/teachers/journey' },
   { name: 'Mentorship', href: '/teachers/mentorship' },
   { name: 'Courses', href: '/teachers/courses' },
   { name: 'Testimonials', href: '/teachers#mentorship-testimonials' },

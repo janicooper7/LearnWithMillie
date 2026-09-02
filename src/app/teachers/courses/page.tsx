@@ -6,6 +6,9 @@ import { PlayCircle, Check, ChevronRight } from 'lucide-react'
 import CoursePricingCards from '@/app/components/CoursePricingCards'
 import TrilogyPurchaseCard from '@/app/components/TrilogyPurchaseCard'
 import CourseContentAccordion from '@/app/components/CourseContentAccordion'
+import CourseTrustBar from '@/app/components/CourseTrustBar'
+import CourseOutcomes from '@/app/components/CourseOutcomes'
+import CourseDisclosure from '@/app/components/CourseDisclosure'
 import CourseTestimonials from '@/app/components/CourseTestimonials'
 import CourseGuarantee from '@/app/components/CourseGuarantee'
 import CourseFaq from '@/app/components/CourseFaq'
@@ -25,15 +28,6 @@ export const metadata: Metadata = {
 }
 
 export const dynamic = 'force-dynamic'
-
-const whatYouLearn = [
-  'Set up an online English tutoring business — from TEFL choice and platform application to a profile that converts and an intro video that books.',
-  'Run a marketing system across five channels used by working online tutors — the LMNOP method and the 10 Holograms framework.',
-  'Use a 5-phase trial lesson framework that took conversion from 50% to over 80%.',
-  'Teach a structured 50-minute lesson — refined across 4,000+ real lessons, at every level from A1 to C2.',
-  'Build AI workflows for lesson planning, materials, and vocab lists that give you back 5–8 hours a week.',
-  'Set your rates, keep students for years, and build a sustainable practice with the SCALE diagnostic framework.',
-]
 
 const requirements = [
   'No prior teaching or tutoring experience required — the trilogy is built for total beginners as well as existing tutors.',
@@ -144,67 +138,19 @@ export default async function CoursesPage() {
             className="mb-4 text-3xl font-bold leading-tight md:text-[2.7rem]"
             style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
           >
-            BOOKED — Teach English Online: The Complete Tutor Trilogy
+            BOOKED — Teach English Online:
+            <br />
+            The Complete Tutor Trilogy
           </h1>
           <p
-            className="mb-5 max-w-2xl text-base leading-relaxed md:text-lg"
+            className="max-w-2xl text-base leading-relaxed md:text-lg"
             style={{ color: 'rgba(255,255,255,0.75)', fontFamily: 'var(--font-inter), sans-serif' }}
           >
-            Setup, marketing, trial lessons, lesson craft &amp; retention — the complete system for
-            English tutors learning to teach online, built across four years and 4,000+ lessons.
+            Most tutors don&rsquo;t struggle because they teach badly — they struggle because nobody
+            shows them how to get found, get booked, and get paid what they&rsquo;re worth. BOOKED is
+            the exact system that took me from $8 an hour to $40+ and a calendar that fills itself.
           </p>
 
-          {/* Credibility row — a cold visitor should meet a person before a
-              syllabus, so Millie's face and markers sit in the hero rather than
-              waiting for the instructor section at the foot of the page. */}
-          <div className="mb-5 flex items-center gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/aboutme.png"
-              alt="Millie Cooper"
-              className="h-14 w-14 flex-shrink-0 rounded-full object-cover sm:h-16 sm:w-16"
-              style={{ objectPosition: 'center top', border: '2px solid #C2AA6A' }}
-            />
-            <div style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
-              <p className="text-sm md:text-base" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                Created by{' '}
-                <a
-                  href="#instructor"
-                  className="font-semibold underline decoration-[#C2AA6A] underline-offset-2"
-                >
-                  Millie Cooper
-                </a>
-              </p>
-              <p className="mt-1 text-xs leading-relaxed md:text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                TEFL-certified · UCL Master&rsquo;s · teaching English online since 2022
-              </p>
-            </div>
-          </div>
-
-          <div className="mb-5 flex flex-wrap gap-2">
-            {instructorStats.map((s) => (
-              <span
-                key={s.label}
-                className="rounded-full px-3.5 py-1.5 text-xs md:text-sm"
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(194,170,106,0.35)',
-                  fontFamily: 'var(--font-inter), sans-serif',
-                }}
-              >
-                <span className="font-bold" style={{ color: '#C2AA6A' }}>{s.value}</span>{' '}
-                <span style={{ color: 'rgba(255,255,255,0.7)' }}>{s.label.toLowerCase()}</span>
-              </span>
-            ))}
-          </div>
-          <div
-            className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs md:text-sm"
-            style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
-          >
-            <span>Last updated 7/2026</span>
-            <span>English</span>
-            <span>35 modules · 3 courses</span>
-          </div>
         </div>
       </div>
 
@@ -224,195 +170,109 @@ export default async function CoursesPage() {
             </div>
           </aside>
 
-          {/* Main content */}
-          <div className="py-10 lg:col-start-1 lg:row-start-1 lg:py-12">
-            {/* What you'll learn */}
-            <section
-              className="rounded-lg bg-white p-6 md:p-8"
-              style={{ border: '1px solid #E2D6C4' }}
-            >
-              <h2
-                className="mb-6 text-2xl font-bold"
-                style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
-              >
-                What you’ll learn
-              </h2>
-              <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-                {whatYouLearn.map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <Check className="mt-0.5 h-4 w-4 flex-shrink-0" style={{ color: '#1F3A34' }} />
-                    <span
-                      className="text-base leading-relaxed"
-                      style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
-                    >
-                      {item}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Proof sits above the curriculum — a reader needs a reason to
-                believe before a module list means anything. */}
+          {/* Main content — one idea per band, generously spaced. The page used
+              to run six prose sections back to back; everything that isn't a
+              reason to buy now lives behind a disclosure at the foot. */}
+          <div className="space-y-14 py-10 lg:col-start-1 lg:row-start-1 lg:space-y-16 lg:py-12">
+            {/* Proof leads. A cold visitor needs a reason to believe before
+                any claim of ours means anything, so another teacher's result
+                is the first thing under the hero — badges back it up next. */}
             <CourseTestimonials />
 
-            {/* Course content */}
-            <section className="mt-12">
+            <CourseTrustBar />
+
+            <CourseOutcomes />
+
+            {/* Course content — closed by default, opened by the curious */}
+            <section>
               <h2
-                className="mb-4 text-2xl font-bold"
+                className="mb-2 text-3xl font-bold md:text-4xl"
                 style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
               >
-                Course content
+                What&rsquo;s inside
               </h2>
+              <p
+                className="mb-6 text-lg leading-relaxed"
+                style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
+              >
+                Three courses that run in order. Tap one to see every module.
+              </p>
               <CourseContentAccordion />
             </section>
 
-            {/* Requirements */}
-            <section className="mt-12">
-              <h2
-                className="mb-4 text-2xl font-bold"
-                style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
-              >
-                Requirements
-              </h2>
-              <ul className="space-y-3">
-                {requirements.map((r) => (
-                  <li key={r} className="flex items-start gap-3">
-                    <span
-                      className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full"
-                      style={{ backgroundColor: '#1F3A34' }}
-                    />
-                    <span
-                      className="text-base leading-relaxed"
-                      style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
-                    >
-                      {r}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            {/* Description */}
-            <section className="mt-12">
-              <h2
-                className="mb-4 text-2xl font-bold"
-                style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
-              >
-                Description
-              </h2>
-              <div
-                className="space-y-4 text-base leading-relaxed"
-                style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
-              >
-                <p>
-                  Four years ago I started teaching English online for{' '}
-                  <strong style={{ color: '#1F3A34' }}>$8 an hour</strong>. Today I charge{' '}
-                  <strong style={{ color: '#1F3A34' }}>$40+</strong>, I’m fully booked a month out,
-                  and I’ve taught over 4,000 lessons across 300+ students from 30+ countries. BOOKED
-                  is everything I figured out along the way — packaged into a three-part trilogy.
-                </p>
-                <p>
-                  Most online tutoring courses solve one problem. BOOKED is built around the truth
-                  that there isn’t one problem — there are three, in a specific order. Each course
-                  finishes exactly where the next one begins.
-                </p>
-                <div className="space-y-3 pt-1">
-                  <p>
-                    <strong style={{ color: '#1F3A34' }}>Course 1 — GET READY:</strong> Setting up
-                    your online tutoring business. TEFL decisions, platform applications, tech, rates,
-                    profile creation, intro video, and where your first five students come from.
-                  </p>
-                  <p>
-                    <strong style={{ color: '#1F3A34' }}>Course 2 — GET BOOKED:</strong> Marketing &amp;
-                    trial-lesson mastery. The 10 Holograms framework, the LMNOP method, and my 5-phase
-                    trial framework refined across four years of teaching.
-                  </p>
-                  <p>
-                    <strong style={{ color: '#1F3A34' }}>Course 3 — STAY BOOKED:</strong> Lesson craft
-                    &amp; career-building. The 50-minute lesson structure, retention systems, AI
-                    workflows, and the SCALE diagnostic you’ll use for the rest of your career.
-                  </p>
-                </div>
-                <p className="italic" style={{ color: 'rgba(31,58,52,0.6)' }}>
-                  The trilogy I wish someone had handed me on day one.
-                </p>
-              </div>
-            </section>
-
-            {/* Who this course is for */}
-            <section className="mt-12">
-              <h2
-                className="mb-4 text-2xl font-bold"
-                style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
-              >
-                Who this course is for
-              </h2>
-              <ul className="space-y-3">
-                {whoFor.map((w) => (
-                  <li key={w} className="flex items-start gap-3">
-                    <span
-                      className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full"
-                      style={{ backgroundColor: '#1F3A34' }}
-                    />
-                    <span
-                      className="text-base leading-relaxed"
-                      style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
-                    >
-                      {w}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
             {/* Instructor */}
-            <section id="instructor" className="mt-12">
+            <section id="instructor" className="scroll-mt-24">
               <h2
-                className="mb-5 text-2xl font-bold"
+                className="mb-6 text-3xl font-bold md:text-4xl"
                 style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
               >
-                Instructor
+                Who&rsquo;s teaching you
               </h2>
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-6 sm:gap-8">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/aboutme.png"
                   alt="Millie Cooper"
-                  className="h-28 w-28 flex-shrink-0 rounded-full object-cover sm:h-32 sm:w-32"
-                  style={{ objectPosition: 'center top', boxShadow: '0 8px 24px -8px rgba(31,58,52,0.4)', border: '3px solid #C2AA6A' }}
+                  className="h-44 w-36 flex-shrink-0 rounded-2xl object-cover sm:h-56 sm:w-48"
+                  style={{ objectPosition: 'center top', boxShadow: '0 12px 32px -12px rgba(31,58,52,0.45)', border: '2px solid #C2AA6A' }}
                 />
                 <div>
                   <p
-                    className="text-lg font-bold underline decoration-[#C2AA6A] underline-offset-2"
+                    className="text-xl font-bold"
                     style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
                   >
                     Millie Cooper
                   </p>
                   <p
-                    className="text-sm"
+                    className="mt-1 text-base leading-relaxed"
                     style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
                   >
-                    Founder of Learn with Millie · TEFL-certified · UCL Master’s
+                    Founder of Learn with Millie · TEFL-certified · UCL Master&rsquo;s
                   </p>
                 </div>
+              </div>
+
+              <div className="mt-6">
+                <CourseDisclosure
+                  icon="heart"
+                  title="Millie’s story"
+                  summary="From $8 an hour to $40+ and fully booked"
+                >
+                  <div
+                    className="space-y-4 text-lg leading-relaxed"
+                    style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    <p>
+                      Today I&rsquo;m the founder of Learn with Millie — where I tutor English online
+                      1:1 and mentor other English tutors building their own careers. The mentor
+                      side wasn&rsquo;t planned. After four years and over 4,000 lessons, the questions
+                      started coming in faster than I could answer them in DMs.
+                    </p>
+                    <p>
+                      So I spent six months turning everything I&rsquo;d figured out into the playbook I
+                      wish someone had handed me on day one. That playbook is BOOKED — a
+                      three-course trilogy for online English tutors who want to build careers that
+                      last.
+                    </p>
+                  </div>
+                </CourseDisclosure>
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {instructorStats.map((s) => (
                   <div
                     key={s.label}
-                    className="rounded-lg bg-white p-4 text-center"
+                    className="rounded-2xl bg-white p-5 text-center"
                     style={{ border: '1px solid #E2D6C4' }}
                   >
                     <div
-                      className="text-2xl font-bold"
+                      className="text-3xl font-bold"
                       style={{ color: '#C2AA6A', fontFamily: 'var(--font-playfair), Georgia, serif' }}
                     >
                       {s.value}
                     </div>
                     <div
-                      className="mt-1 text-[11px] uppercase tracking-[0.12em]"
+                      className="mt-1.5 text-xs uppercase tracking-[0.12em]"
                       style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}
                     >
                       {s.label}
@@ -420,22 +280,97 @@ export default async function CoursesPage() {
                   </div>
                 ))}
               </div>
+            </section>
 
-              <div
-                className="mt-6 space-y-4 text-base leading-relaxed"
-                style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
+            {/* The long-form copy, folded away. It answers the questions a
+                serious buyer has left, without taxing the ones who don't. */}
+            <section>
+              <h2
+                className="mb-6 text-3xl font-bold md:text-4xl"
+                style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
               >
-                <p>
-                  Today I’m the founder of Learn with Millie — where I tutor English online 1:1 and
-                  mentor other English tutors building their own careers. The mentor side wasn’t
-                  planned. After four years and over 4,000 lessons, the questions started coming in
-                  faster than I could answer them in DMs.
-                </p>
-                <p>
-                  So I spent six months turning everything I’d figured out into the playbook I wish
-                  someone had handed me on day one. That playbook is BOOKED — a three-course trilogy
-                  for online English tutors who want to build careers that last.
-                </p>
+                Still deciding?
+              </h2>
+              <div className="space-y-3">
+                <CourseDisclosure
+                  icon="layers"
+                  title="Why three courses, not one?"
+                  summary="How the trilogy fits together"
+                >
+                  <div
+                    className="space-y-4 text-lg leading-relaxed"
+                    style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    <p>
+                      Four years ago I started teaching English online for{' '}
+                      <strong style={{ color: '#1F3A34' }}>$8 an hour</strong>. Today I charge{' '}
+                      <strong style={{ color: '#1F3A34' }}>$40+</strong>, I&rsquo;m fully booked a month
+                      out, and I&rsquo;ve taught over 4,000 lessons across 300+ students from 30+
+                      countries. BOOKED is everything I figured out along the way.
+                    </p>
+                    <p>
+                      Most online tutoring courses solve one problem. BOOKED is built around the
+                      truth that there isn&rsquo;t one problem — there are three, in a specific order.
+                      Each course finishes exactly where the next one begins.
+                    </p>
+                    <p>
+                      <strong style={{ color: '#1F3A34' }}>1 — GET READY:</strong> TEFL decisions,
+                      platform applications, tech, rates, profile, intro video, and where your first
+                      five students come from.
+                    </p>
+                    <p>
+                      <strong style={{ color: '#1F3A34' }}>2 — GET BOOKED:</strong> The 10 Holograms
+                      framework, the LMNOP method, and my 5-phase trial framework.
+                    </p>
+                    <p>
+                      <strong style={{ color: '#1F3A34' }}>3 — STAY BOOKED:</strong> The 50-minute
+                      lesson structure, retention systems, AI workflows, and the SCALE diagnostic.
+                    </p>
+                    <p className="italic" style={{ color: 'rgba(31,58,52,0.6)' }}>
+                      The trilogy I wish someone had handed me on day one.
+                    </p>
+                  </div>
+                </CourseDisclosure>
+
+                <CourseDisclosure
+                  icon="who"
+                  title="Who this is for"
+                  summary="Complete beginners and working tutors alike"
+                >
+                  <ul className="space-y-4">
+                    {whoFor.map((w) => (
+                      <li key={w} className="flex items-start gap-3.5">
+                        <Check className="mt-1 h-5 w-5 flex-shrink-0" style={{ color: '#C2AA6A' }} />
+                        <span
+                          className="text-lg leading-relaxed"
+                          style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
+                        >
+                          {w}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </CourseDisclosure>
+
+                <CourseDisclosure
+                  icon="checklist"
+                  title="What you need to start"
+                  summary="No teaching experience required"
+                >
+                  <ul className="space-y-4">
+                    {requirements.map((r) => (
+                      <li key={r} className="flex items-start gap-3.5">
+                        <Check className="mt-1 h-5 w-5 flex-shrink-0" style={{ color: '#C2AA6A' }} />
+                        <span
+                          className="text-lg leading-relaxed"
+                          style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
+                        >
+                          {r}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </CourseDisclosure>
               </div>
             </section>
           </div>
