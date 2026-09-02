@@ -455,7 +455,10 @@ export default function SignupPage() {
             <form onSubmit={handleSubmit} className='space-y-4'>
               {[
                 { label: 'Full Name', type: 'text', value: name, setter: setName, placeholder: 'Your full name' },
-                { label: 'Email', type: 'email', value: email, setter: setEmail, placeholder: 'your@email.com' },
+                // Lowercased as it is typed — the server normalises too, but this
+                // stops a phone's auto-capitalised first letter ever being shown
+                // back to them as the address they signed up with.
+                { label: 'Email', type: 'email', value: email, setter: (v: string) => setEmail(v.toLowerCase()), placeholder: 'your@email.com' },
                 { label: 'Password', type: 'password', value: password, setter: setPassword, placeholder: 'At least 8 characters' },
               ].map(({ label, type, value, setter, placeholder }) => (
                 <div key={label}>
@@ -469,6 +472,9 @@ export default function SignupPage() {
                     placeholder={placeholder}
                     required
                     minLength={type === 'password' ? 8 : undefined}
+                    autoCapitalize={type === 'email' ? 'none' : undefined}
+                    autoCorrect={type === 'email' ? 'off' : undefined}
+                    spellCheck={type === 'email' ? false : undefined}
                     style={{
                       width: '100%', padding: '11px 14px', borderRadius: '10px',
                       border: '1.5px solid #EDE4D8', fontSize: '14px', color: '#1F3A34',

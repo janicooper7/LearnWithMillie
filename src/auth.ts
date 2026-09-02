@@ -22,8 +22,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
+        // Case-insensitive: new accounts are stored lowercase, but people type
+        // their address however they like, and accounts created before emails
+        // were normalised may still hold capitals.
+        const user = await prisma.user.findFirst({
+          where: {
+            email: {
+              equals: (credentials.email as string).trim().toLowerCase(),
+              mode: 'insensitive',
+            },
+          },
         })
 
         if (!user || !user.password) return null
@@ -62,20 +70,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             // cookies() unavailable in this context — default to STUDENT
           }
 
+          const normalisedEmail = user.email.trim().toLowerCase()
+
           // Whether this is a first sign-in is what decides if they get the
           // welcome email, and an upsert can't tell us which branch it took —
           // hence the read first. enrolInJourney is idempotent, so losing the
           // race against a concurrent sign-in still can't send two welcomes.
-          const existing = await prisma.user.findUnique({
-            where: { email: user.email },
-            select: { id: true },
+          // The match is case-insensitive so an account stored with capitals
+          // is reused rather than duplicated alongside the lowercase one.
+          const existing = await prisma.user.findFirst({
+            where: { email: { equals: normalisedEmail, mode: 'insensitive' } },
+            select: { id: true, role: true },
           })
 
-          const dbUser = await prisma.user.upsert({
-            where: { email: user.email },
+          const dbUser = existing ?? await prisma.user.upsert({
+            where: { email: normalisedEmail },
             update: {},
             create: {
-              email: user.email,
+              email: normalisedEmail,
               name: user.name ?? null,
               image: user.image ?? null,
               role: assignedRole,
