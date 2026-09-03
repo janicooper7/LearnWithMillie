@@ -88,6 +88,9 @@ const aboutSections = [
 
 export default function About() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  // The YouTube embed is only mounted once someone presses play — see the
+  // video block below for why.
+  const [videoPlaying, setVideoPlaying] = useState(false)
   const answerRefs = useRef<Array<HTMLElement | null>>([])
   const sectionRef = useRef(null)
 
@@ -262,14 +265,65 @@ export default function About() {
               className='relative w-full rounded-2xl overflow-hidden shadow-2xl'
               style={{ paddingBottom: '56.25%', border: '1px solid rgba(255,255,255,0.08)' }}
             >
-              <iframe
-                className='absolute top-0 left-0 w-full h-full'
-                src='https://www.youtube.com/embed/GevjT36pwJI?si=CasLXflYe670jtEJ'
-                title='Millie teaching English'
-                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-                referrerPolicy='strict-origin-when-cross-origin'
-                allowFullScreen
-              />
+              {/* The YouTube player is ~576KB over the wire and nearly 2MB of
+                  JavaScript once parsed — more than the rest of the page put
+                  together. `loading="lazy"` does not help: the embed sits only
+                  ~90px below the fold, well inside Chrome's lazy-load distance
+                  threshold, so it loaded anyway. So it does not exist until
+                  someone asks for it. The poster is served from our own domain,
+                  which means a visitor who never presses play makes no request
+                  to Google at all. */}
+              {videoPlaying ? (
+                <iframe
+                  className='absolute top-0 left-0 w-full h-full'
+                  src='https://www.youtube.com/embed/GevjT36pwJI?si=CasLXflYe670jtEJ&autoplay=1'
+                  title='Millie teaching English'
+                  allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                  referrerPolicy='strict-origin-when-cross-origin'
+                  allowFullScreen
+                />
+              ) : (
+                <button
+                  type='button'
+                  onClick={() => setVideoPlaying(true)}
+                  aria-label='Play video: Millie teaching English'
+                  className='group absolute top-0 left-0 w-full h-full cursor-pointer'
+                >
+                  <Image
+                    src='/images/about-video-poster.jpg'
+                    alt=''
+                    fill
+                    sizes='(max-width: 768px) 100vw, 768px'
+                    quality={75}
+                    className='object-cover'
+                  />
+                  <span
+                    className='absolute inset-0 transition-colors duration-200 group-hover:bg-black/10'
+                    style={{ backgroundColor: 'rgba(0,0,0,0.18)' }}
+                  />
+                  <span className='absolute inset-0 flex items-center justify-center'>
+                    <span
+                      className='flex items-center justify-center rounded-full transition-transform duration-200 group-hover:scale-110'
+                      style={{
+                        width: '72px',
+                        height: '72px',
+                        backgroundColor: 'rgba(255,255,255,0.95)',
+                        boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
+                      }}
+                    >
+                      <svg
+                        width='26'
+                        height='30'
+                        viewBox='0 0 26 30'
+                        aria-hidden='true'
+                        style={{ marginLeft: '4px' }}
+                      >
+                        <path d='M0 0 L26 15 L0 30 Z' fill='#1F3A34' />
+                      </svg>
+                    </span>
+                  </span>
+                </button>
+              )}
             </div>
           </div>
         </div>
