@@ -2,7 +2,8 @@
 
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
-import { useEffect, Suspense } from 'react'
+import { useEffect, useRef, Suspense } from 'react'
+import { useDeferredThirdParty } from './useDeferredThirdParty'
 
 const TIKTOK_PIXEL_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID
 
@@ -14,9 +15,21 @@ declare global {
 
 function TikTokPixelTracker() {
   const pathname = usePathname()
+  const lastPathname = useRef<string | null>(null)
 
   useEffect(() => {
-    if (!TIKTOK_PIXEL_ID || !window.ttq) return
+    if (!TIKTOK_PIXEL_ID) return
+
+    // The init snippet calls ttq.page() for the page it loads on, so only the
+    // client-side route changes after it belong here.
+    if (lastPathname.current === null) {
+      lastPathname.current = pathname
+      return
+    }
+    if (lastPathname.current === pathname) return
+    lastPathname.current = pathname
+
+    if (!window.ttq) return
     window.ttq.page()
   }, [pathname])
 
@@ -24,7 +37,11 @@ function TikTokPixelTracker() {
 }
 
 export default function TikTokPixel() {
-  if (!TIKTOK_PIXEL_ID) return null
+  // The TikTok loader is small, but the SDK it pulls in is not.
+  // See useDeferredThirdParty.
+  const released = useDeferredThirdParty()
+
+  if (!TIKTOK_PIXEL_ID || !released) return null
 
   return (
     <>

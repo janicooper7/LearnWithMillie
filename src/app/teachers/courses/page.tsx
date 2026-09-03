@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import Link from 'next/link'
+import Image from 'next/image'
 import { PlayCircle, Check, ChevronRight } from 'lucide-react'
 import CoursePricingCards from '@/app/components/CoursePricingCards'
 import TrilogyPurchaseCard from '@/app/components/TrilogyPurchaseCard'
@@ -209,10 +210,13 @@ export default async function CoursesPage() {
                 Who&rsquo;s teaching you
               </h2>
               <div className="flex items-center gap-6 sm:gap-8">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="/images/aboutme.png"
                   alt="Millie Cooper"
+                  width={192}
+                  height={224}
+                  quality={75}
+                  sizes="192px"
                   className="h-44 w-36 flex-shrink-0 rounded-2xl object-cover sm:h-56 sm:w-48"
                   style={{ objectPosition: 'center top', boxShadow: '0 12px 32px -12px rgba(31,58,52,0.45)', border: '2px solid #C2AA6A' }}
                 />
@@ -466,8 +470,17 @@ export default async function CoursesPage() {
                     style={{ border: '1px solid #EDE4D8' }}
                   >
                     {course.thumbnail ? (
+                      // Stays a plain <img>: thumbnails are arbitrary URLs
+                      // entered in the admin, and next/image throws on any
+                      // host that isn't in next.config's remotePatterns.
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={course.thumbnail} alt={course.title} className="h-36 w-full object-cover" />
+                      <img
+                        src={course.thumbnail}
+                        alt={course.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-36 w-full object-cover"
+                      />
                     ) : (
                       <div className="flex h-36 w-full items-center justify-center" style={{ backgroundColor: '#1F3A34' }}>
                         <PlayCircle className="h-10 w-10" style={{ color: '#C2AA6A' }} />

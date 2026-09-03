@@ -2,7 +2,8 @@
 
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
-import { useEffect, Suspense } from 'react'
+import { useEffect, useRef, Suspense } from 'react'
+import { useDeferredThirdParty } from './useDeferredThirdParty'
 
 const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID
 
@@ -14,9 +15,22 @@ declare global {
 
 function FacebookPixelTracker() {
   const pathname = usePathname()
+  const lastPathname = useRef<string | null>(null)
 
   useEffect(() => {
-    if (!FB_PIXEL_ID || !window.fbq) return
+    if (!FB_PIXEL_ID) return
+
+    // The init snippet sends the PageView for the page it loads on, so only
+    // the client-side route changes after it belong here. Without this the
+    // first page is counted twice.
+    if (lastPathname.current === null) {
+      lastPathname.current = pathname
+      return
+    }
+    if (lastPathname.current === pathname) return
+    lastPathname.current = pathname
+
+    if (typeof window.fbq !== 'function') return
     window.fbq('track', 'PageView')
   }, [pathname])
 
@@ -24,15 +38,20 @@ function FacebookPixelTracker() {
 }
 
 export default function FacebookPixel() {
+  // fbevents.js is ~402KB of parsed JavaScript. See useDeferredThirdParty.
+  const released = useDeferredThirdParty()
+
   if (!FB_PIXEL_ID) return null
 
   return (
     <>
-      <Script
-        id='facebook-pixel'
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `
+      {released && (
+        <>
+          <Script
+            id='facebook-pixel'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -44,8 +63,15 @@ export default function FacebookPixel() {
             fbq('init', '${FB_PIXEL_ID}');
             fbq('track', 'PageView');
           `,
-        }}
-      />
+            }}
+          />
+          <Suspense fallback={null}>
+            <FacebookPixelTracker />
+          </Suspense>
+        </>
+      )}
+      {/* Outside the gate: a visitor without JavaScript never releases it,
+          and this tracking pixel is the only thing that reaches them. */}
       <noscript>
         <img
           height='1'
@@ -55,9 +81,6 @@ export default function FacebookPixel() {
           alt=''
         />
       </noscript>
-      <Suspense fallback={null}>
-        <FacebookPixelTracker />
-      </Suspense>
     </>
   )
 }

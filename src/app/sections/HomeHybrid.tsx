@@ -188,7 +188,7 @@ export default function HomeHybrid() {
                   priority
                   className='object-cover object-top'
                   sizes='(max-width: 1024px) 90vw, 420px'
-                  quality={92}
+                  quality={75}
                 />
                 <div
                   className='absolute inset-0 pointer-events-none'

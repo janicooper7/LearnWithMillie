@@ -122,7 +122,7 @@ export default function MentorshipHero({
                 fill
                 className='object-cover object-top'
                 sizes='520px'
-                quality={92}
+                quality={75}
               />
               <div
                 className='absolute inset-0 pointer-events-none'

@@ -10,7 +10,7 @@ import FacebookPixel from './components/FacebookPixel'
 import TikTokPixel from './components/TikTokPixel'
 import SiteTracking from './components/SiteTracking'
 import StructuredData from './components/StructuredData'
-import EmailSignupPopup from './components/EmailSignupPopup'
+import EmailSignupPopupLazy from './components/EmailSignupPopupLazy'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -68,9 +68,9 @@ export const metadata: Metadata = {
     description: defaultDescription,
     images: [
       {
-        url: '/images/webphoto.png',
-        width: 1886,
-        height: 834,
+        url: '/images/webphoto.jpg',
+        width: 1200,
+        height: 630,
         alt: 'Professional English tutoring with LearnWithMillie',
       },
     ],
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: defaultTitle,
     description: defaultDescription,
-    images: ['/images/webphoto.png'],
+    images: ['/images/webphoto.jpg'],
   },
   robots: {
     index: true,
@@ -115,6 +115,13 @@ export default function RootLayout({
   return (
     <html lang='en' className={`scroll-smooth overflow-x-clip ${inter.variable} ${playfair.variable}`}>
       <head>
+        {/* The tracking tags are held back until the visitor interacts or the
+            deferral window closes, so a full preconnect here would open three
+            sockets during load and let them go idle before anything used them.
+            Resolving DNS early is the part that still pays off. */}
+        <link rel='dns-prefetch' href='https://www.googletagmanager.com' />
+        <link rel='dns-prefetch' href='https://connect.facebook.net' />
+        <link rel='dns-prefetch' href='https://analytics.tiktok.com' />
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>
@@ -136,7 +143,7 @@ export default function RootLayout({
           <Footer />
           {/* Inside SessionProvider: it only shows to signed-out visitors, so
               it needs to know whether there's a session. */}
-          <EmailSignupPopup />
+          <EmailSignupPopupLazy />
         </SessionProvider>
       </body>
     </html>

@@ -176,7 +176,7 @@ export default function About() {
                   fill
                   className='object-cover object-top'
                   sizes='420px'
-                  quality={92}
+                  quality={75}
                 />
                 <div
                   className='absolute inset-0 pointer-events-none'

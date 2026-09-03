@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { Briefcase, MessageCircle, Users, ArrowRight } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
@@ -88,10 +89,12 @@ export default function LessonOptions() {
               className='relative rounded-2xl overflow-hidden'
             >
               {/* Image */}
-              <img
+              <Image
                 src={option.imageUrl}
                 alt={option.title}
-                className='absolute inset-0 w-full h-full object-cover'
+                fill
+                sizes='(max-width: 768px) 100vw, 33vw'
+                className='object-cover'
               />
 
               {/* Gradient overlay */}

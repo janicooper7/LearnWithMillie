@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { createPortal } from 'react-dom'
 import { useCourseCheckout } from '@/lib/useCourseCheckout'
 import {
@@ -76,11 +77,13 @@ export default function TrilogyPurchaseCard({
           className="group absolute inset-0 h-full w-full"
           aria-label="Preview this course"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/images/webphoto.png"
             alt="Preview this course"
-            className="absolute inset-0 h-full w-full object-cover"
+            fill
+            quality={75}
+            sizes="(max-width: 768px) 100vw, 600px"
+            className="object-cover"
           />
           <span className="absolute inset-0" style={{ background: 'rgba(31,58,52,0.35)' }} />
           <span className="absolute inset-0 flex items-center justify-center">
