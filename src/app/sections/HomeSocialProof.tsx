@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import {
   ChevronLeft,
   ChevronRight,
@@ -161,10 +160,15 @@ export default function HomeSocialProof() {
       {/* Carousel */}
       <div className='relative'>
         <div className='overflow-hidden'>
-          <motion.div
+          {/* A CSS transform transition, not an animation library: this slide
+              was the only thing Framer Motion was doing on the home page, and
+              it cost 35KB gzipped to do it. */}
+          <div
             className='flex items-stretch'
-            animate={{ x: `-${currentIndex * (100 / itemsPerView)}%` }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            style={{
+              transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
+              transition: 'transform 0.5s ease-in-out',
+            }}
           >
             {list.map((t) => (
               <div
@@ -250,7 +254,7 @@ export default function HomeSocialProof() {
                 </figure>
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {/* Arrows */}

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { StarIcon } from '@heroicons/react/24/solid'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
-import { motion } from 'framer-motion'
 import { studentTestimonials as testimonials } from '@/lib/studentTestimonials'
 
 export default function Testimonials() {
@@ -74,14 +73,16 @@ export default function Testimonials() {
         <div className='relative'>
           {/* Carousel */}
           <div className='relative overflow-hidden'>
-            <motion.div
+            {/* A CSS transform transition, not an animation library — this
+                slide was the only thing Framer Motion was doing here. */}
+            <div
               className='flex'
-              animate={{
-                x: isMobile
-                  ? `-${currentIndex * 100}%`
-                  : `-${currentIndex * (100 / itemsPerView)}%`,
+              style={{
+                transform: `translateX(-${
+                  isMobile ? currentIndex * 100 : currentIndex * (100 / itemsPerView)
+                }%)`,
+                transition: 'transform 0.5s ease-in-out',
               }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
             >
               {testimonials.map((testimonial, index) => (
                 <div
@@ -136,7 +137,7 @@ export default function Testimonials() {
                   </div>
                 </div>
               ))}
-            </motion.div>
+            </div>
           </div>
 
           {/* Navigation arrows */}
