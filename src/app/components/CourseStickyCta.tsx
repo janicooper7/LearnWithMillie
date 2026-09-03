@@ -70,7 +70,7 @@ export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: bool
           className="ml-auto flex flex-shrink-0 items-center justify-center gap-2 rounded-lg px-6 py-3.5 text-base font-bold transition-opacity hover:opacity-90 disabled:opacity-60"
           style={{ backgroundColor: '#C2AA6A', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
         >
-          {loading ? 'Redirecting…' : <>Enrol now <ArrowRight className="h-4 w-4" /></>}
+          {loading ? 'Redirecting…' : <>Buy now <ArrowRight className="h-4 w-4" /></>}
         </button>
       </div>
     </div>

@@ -3,37 +3,10 @@ import { ShieldCheck } from 'lucide-react'
 
 // The 7-day guarantee, stated loudly rather than as a line item.
 //
-// The reassuring headline and the small print have to stay in step with
-// /terms#courses — the terms ask that the buyer has watched the first module
-// before requesting, so this never promises a no-questions refund it can't keep.
-export default function CourseGuarantee({
-  variant = 'block',
-}: {
-  variant?: 'block' | 'inline'
-}) {
-  if (variant === 'inline') {
-    return (
-      <div
-        className="mt-4 rounded-lg p-3.5"
-        style={{ backgroundColor: 'rgba(194,170,106,0.12)', border: '1px solid rgba(194,170,106,0.45)' }}
-      >
-        <p
-          className="flex items-start gap-2 text-sm font-bold"
-          style={{ color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" style={{ color: '#C2AA6A' }} />
-          7 days to change your mind
-        </p>
-        <p
-          className="mt-1.5 text-xs leading-relaxed"
-          style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
-        >
-          Not for you? One email gets you a full refund.
-        </p>
-      </div>
-    )
-  }
-
+// The headline and the small print have to stay in step with /terms#courses —
+// the terms ask that the buyer has watched the first module before requesting,
+// so this never promises a no-questions refund it can't keep.
+export default function CourseGuarantee() {
   // Full-bleed band. It sits between two cream sections, so the dark ground
   // does double duty: it makes the guarantee impossible to scroll past, and it
   // breaks up the page before the FAQ.

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useCourseCheckout } from '@/lib/useCourseCheckout'
-import CourseGuarantee from '@/app/components/CourseGuarantee'
 import {
   Play,
   Video,
@@ -12,6 +11,7 @@ import {
   Infinity as InfinityIcon,
   ArrowRight,
   PlayCircle,
+  Star,
   X,
 } from 'lucide-react'
 
@@ -136,7 +136,7 @@ export default function TrilogyPurchaseCard({
         ) : (
           <>
             {/* Price */}
-            <div className="mb-1 flex items-end gap-2.5">
+            <div className="mb-5 flex items-center justify-between gap-3">
               <span
                 style={{
                   fontFamily: 'var(--font-playfair), Georgia, serif',
@@ -147,6 +147,21 @@ export default function TrilogyPurchaseCard({
                 }}
               >
                 ${PRICE}
+              </span>
+              {/* Pushed to the card's right edge, so the number and the reason
+                  to trust it bookend the same line and are read in one glance. */}
+              <span className="relative top-[5px] flex flex-col items-end gap-1.5">
+                <span className="flex gap-1" aria-label="Rated 5 out of 5 stars">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="h-[1.05rem] w-[1.05rem]" style={{ color: '#C2AA6A', fill: '#C2AA6A' }} />
+                  ))}
+                </span>
+                <span
+                  className="text-sm font-semibold leading-none text-right"
+                  style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  5 star rated by tutors
+                </span>
               </span>
             </div>
             <p
@@ -163,17 +178,22 @@ export default function TrilogyPurchaseCard({
               className="mb-2.5 flex w-full items-center justify-center gap-2 rounded-lg py-3.5 text-base font-bold transition-opacity hover:opacity-90 disabled:opacity-60"
               style={{ backgroundColor: '#C2AA6A', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
             >
-              {loading ? 'Redirecting…' : <>Enrol now <ArrowRight className="h-4 w-4" /></>}
+              {loading ? 'Redirecting…' : <>Buy now <ArrowRight className="h-4 w-4" /></>}
             </button>
+
+            {/* Not a third button: the trilogy is the offer, and a single
+                course is the smaller thing you fall back to. */}
             <button
               onClick={scrollToPricing}
-              className="flex w-full items-center justify-center rounded-lg py-3 text-base font-bold transition-colors"
-              style={{ border: '1.5px solid #1F3A34', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
+              className="mt-3 w-full text-center text-sm font-semibold underline underline-offset-4 transition-opacity hover:opacity-70"
+              style={{
+                color: 'rgba(31,58,52,0.65)',
+                textDecorationColor: '#C2AA6A',
+                fontFamily: 'var(--font-inter), sans-serif',
+              }}
             >
               Buy a single course
             </button>
-
-            <CourseGuarantee variant="inline" />
           </>
         )}
 
