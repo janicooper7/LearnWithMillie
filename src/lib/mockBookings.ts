@@ -1,3 +1,9 @@
+export type CalAttendee = {
+  name?: string
+  email?: string
+  timeZone?: string
+}
+
 export type CalBooking = {
   uid: string
   title: string
@@ -6,6 +12,8 @@ export type CalBooking = {
   status: string
   meetingUrl?: string
   eventType?: { slug?: string }
+  // Only the admin view reads these — a student's own bookings are all their own.
+  attendees?: CalAttendee[]
 }
 
 const HOUR = 60 * 60 * 1000
@@ -38,6 +46,7 @@ export function getMockBookings(now: Date = new Date()): CalBooking[] {
       status: 'accepted',
       meetingUrl: 'https://meet.example.com/mock-within-24h',
       eventType: { slug: 'lesson-with-millie-cooper' },
+      attendees: [{ name: 'Ana Ruiz', email: 'ana.ruiz@example.com', timeZone: 'Europe/Madrid' }],
     },
     {
       uid: 'mock-trial',
@@ -46,6 +55,7 @@ export function getMockBookings(now: Date = new Date()): CalBooking[] {
       status: 'accepted',
       meetingUrl: 'https://meet.example.com/mock-trial',
       eventType: { slug: 'trial-lesson-with-millie-cooper' },
+      attendees: [{ name: 'Kenji Watanabe', email: 'kenji@example.com', timeZone: 'Asia/Tokyo' }],
     },
     {
       uid: 'mock-cancellable',
@@ -54,6 +64,7 @@ export function getMockBookings(now: Date = new Date()): CalBooking[] {
       status: 'accepted',
       meetingUrl: 'https://meet.example.com/mock-cancellable',
       eventType: { slug: 'lesson-with-millie-cooper' },
+      attendees: [{ name: 'Ana Ruiz', email: 'ana.ruiz@example.com', timeZone: 'Europe/Madrid' }],
     },
     {
       uid: 'mock-mentorship',
@@ -61,6 +72,7 @@ export function getMockBookings(now: Date = new Date()): CalBooking[] {
       ...at(9 * DAY, 0, 60),
       status: 'accepted',
       eventType: { slug: 'mentorship-session-with-millie-cooper' },
+      attendees: [{ name: 'Priya Shah', email: 'priya.shah@example.com', timeZone: 'Europe/London' }],
     },
   ]
 }

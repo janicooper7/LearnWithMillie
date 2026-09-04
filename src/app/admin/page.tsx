@@ -17,7 +17,10 @@ export default async function AdminPage() {
   return (
     <div className='min-h-screen' style={{ backgroundColor: '#F4EDE4' }}>
       <main className='max-w-6xl mx-auto px-6 py-12'>
-        <div className='flex items-center justify-end gap-3 mb-6'>
+        <div className='flex flex-wrap items-center justify-end gap-3 mb-6'>
+          <Link href='/admin/sessions' className='flex items-center gap-2 bg-white text-[#1F3A34] border border-[#1F3A34] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#1F3A34]/5 transition-colors'>
+            Upcoming Sessions
+          </Link>
           <Link href='/admin/subscribers' className='flex items-center gap-2 bg-white text-[#1F3A34] border border-[#1F3A34] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#1F3A34]/5 transition-colors'>
             Email List
           </Link>
