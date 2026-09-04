@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendBrandedMail } from '@/lib/email/send'
 import { buildSubscriberWelcome } from '@/lib/email/messages/subscriberWelcome'
+import { enrolSubscriberFollowUp } from '@/lib/email/subscriberRunner'
 import { subscriberUnsubscribeUrl } from '@/lib/email/unsubscribe'
 import { SIGNUP_OFFER } from '@/lib/signupOffer'
 import type { Audience } from '@/lib/email/types'
@@ -147,6 +148,14 @@ export async function POST(req: NextRequest) {
         data: { welcomeSentAt: new Date() },
       })
     }
+
+    // Product pages get a follow-up sequence on top of the welcome — see
+    // src/lib/email/subscriberJourneys.ts. Passed this submission's source
+    // rather than the stored one, so somebody who first joined from the
+    // homepage and comes back to sign up from a product page still lands on
+    // that product's track. Enrols at most once and never throws, so it cannot
+    // turn a successful signup into a 500.
+    await enrolSubscriberFollowUp(subscriber.id, source)
 
     return NextResponse.json({
       ok: true,

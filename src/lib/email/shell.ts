@@ -104,6 +104,11 @@ export function note(html: string): string {
  * still reads as a signature.
  *
  * Displayed at 300px against a 400px source so it stays sharp on retina.
+ *
+ * The graphic already carries a small portrait of its own, which is why the
+ * standalone photo goes at the *top* of the email (see `byline`) rather than
+ * here — two pictures of the same person, six centimetres apart, reads as a
+ * mistake.
  */
 export function signOff(): string {
   return `<p style="margin:22px 0 0 0;font-size:15px;line-height:1.65;color:${MUTED};">
@@ -118,6 +123,41 @@ export function signOff(): string {
       Master&rsquo;s in Public Policy, UCL<br />
       Bachelor&rsquo;s in International Politics, King&rsquo;s College London
     </p>`
+}
+
+/**
+ * The "from" row at the top of every email: Millie's photo, her name, and what
+ * she is to the reader.
+ *
+ * Placed above the copy rather than beside the sign-off because everything here
+ * is written in the first person, and the reader — who in the marketing list's
+ * case has never met her — should know whose voice it is before they read it,
+ * not after. It is also the one thing on the page that says "a person sent
+ * this" at a glance, which is most of the difference between a newsletter and
+ * a mailshot.
+ *
+ * Rendered by renderEmail() so it cannot be forgotten by a new message, and
+ * degrades to the name and title as plain text when the client blocks remote
+ * images. Shown at 64px against a 280px source; the circle is border-radius,
+ * which Outlook desktop ignores in favour of a square — acceptable, and the
+ * reason there is no second circular asset to keep in sync.
+ */
+function byline(): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 22px 0;">
+      <tr>
+        <td width="64" valign="middle" style="width:64px;padding-right:14px;">
+          <img src="${siteUrl()}/images/email-millie.jpg"
+            alt="Millie Cooper"
+            width="64" height="64"
+            style="display:block;width:64px;height:64px;border-radius:32px;border:0;outline:none;text-decoration:none;" />
+        </td>
+        <td valign="middle">
+          <div style="font-family:Georgia,'Times New Roman',serif;font-size:17px;font-weight:700;color:${GREEN};line-height:1.3;">Millie Cooper</div>
+          <div style="font-size:13px;color:rgba(31,58,52,0.6);margin-top:3px;line-height:1.5;">Certified TEFL teacher &middot; Founder of LearnWithMillie</div>
+        </td>
+      </tr>
+    </table>
+    <div style="height:1px;background:${BORDER};margin:0 0 22px 0;line-height:1px;font-size:0;">&nbsp;</div>`
 }
 
 /**
@@ -172,6 +212,7 @@ export function renderEmail(opts: {
             </tr>
             <tr>
               <td style="background:#ffffff;border-radius:0 0 18px 18px;padding:28px 28px 30px 28px;">
+                ${byline()}
                 ${body}
               </td>
             </tr>

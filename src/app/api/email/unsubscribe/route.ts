@@ -38,9 +38,13 @@ async function unsubscribeEverywhere(email: string): Promise<void> {
   const match = { equals: email, mode: 'insensitive' as const }
   const now = new Date()
 
+  // followUpNextAt cleared alongside the opt-out so the drip's "what is due"
+  // query stops returning them at all, rather than picking them up every hour
+  // and dropping them again on the unsubscribedAt check. The track and step
+  // itself is kept, so a re-subscribe still knows where they got to.
   await prisma.subscriber.updateMany({
     where: { email: match, unsubscribedAt: null },
-    data: { unsubscribedAt: now },
+    data: { unsubscribedAt: now, followUpNextAt: null },
   })
 
   // Resolved to ids first rather than filtered through the relation, so the
@@ -75,7 +79,7 @@ async function unsubscribe(req: Request): Promise<boolean> {
     // deleted) should still render the confirmation page, not a 500.
     await prisma.subscriber.updateMany({
       where: { id: subscriberId, unsubscribedAt: null },
-      data: { unsubscribedAt: new Date() },
+      data: { unsubscribedAt: new Date(), followUpNextAt: null },
     })
 
     if (subscriber) await unsubscribeEverywhere(subscriber.email)

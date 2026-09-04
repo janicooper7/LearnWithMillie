@@ -27,3 +27,19 @@ export type JourneyStep = {
   delayDays: number
   build: (ctx: JourneyContext) => BuiltEmail
 }
+
+/**
+ * A step in a product follow-up track (subscriberJourneys.ts).
+ *
+ * Separate from JourneyStep because it builds from a SubscriberContext: these
+ * go to people with no account, and the audience they picked in the popup is
+ * the only thing known about them.
+ */
+export type SubscriberJourneyStep = {
+  /** Stable identifier for logs. Never reuse one for different content. */
+  key: string
+  /** Days after enrolment, not after the previous email. Offsets are absolute
+   *  so a delayed send can't push the rest of the track back. */
+  delayDays: number
+  build: (ctx: SubscriberContext) => BuiltEmail
+}

@@ -244,11 +244,31 @@ model Subscriber {
   /// looking at, since the person was promised a code they never received.
   welcomeSentAt  DateTime?
   unsubscribedAt DateTime?
+  /// Which product-specific follow-up track this person is on, decided by the
+  /// page they signed up on (see src/lib/email/subscriberJourneys.ts). Null for
+  /// the great majority of signups, whose page sells nothing in particular —
+  /// they get the welcome and then only whatever Millie broadcasts.
+  ///
+  /// The four fields under it are the same enrolment-on-one-row shape as
+  /// EmailJourney: `followUpStep` counts the emails already sent and
+  /// `followUpNextAt` is when the next is due, so the cron can claim a send
+  /// with a single compare-and-swap.
+  followUp          String?
+  followUpStep      Int       @default(0)
+  /// The offset that every step is measured from. Deliberately not `createdAt`:
+  /// someone who signed up months ago and subscribes again from a product page
+  /// is starting the track now, and anchoring on the original row would make
+  /// every step overdue and fire the whole sequence at once.
+  followUpStartedAt DateTime?
+  followUpNextAt    DateTime?
+  followUpSentAt    DateTime?
+  followUpAttempts  Int       @default(0)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
   @@index([audience])
   @@index([createdAt])
+  @@index([followUpNextAt])
 }
 
 // One row per (person, campaign) that has actually been mailed.

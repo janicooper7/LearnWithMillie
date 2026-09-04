@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { sendDueJourneyEmails } from '@/lib/email/runner'
+import { sendDueSubscriberEmails } from '@/lib/email/subscriberRunner'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -30,7 +31,16 @@ export async function GET(req: Request) {
   try {
     // Capped per run so one invocation can't sit on the SMTP connection past
     // the function timeout. Anything left over goes out on the next run.
-    const result = await sendDueJourneyEmails(50)
+    const journeys = await sendDueJourneyEmails(50)
+
+    // The marketing list's product follow-ups, run after the account journeys
+    // and sequentially with them: both go out over the same Gmail SMTP
+    // credentials, and interleaving them would just double the concurrency the
+    // provider sees. Its own cap, so a busy hour on one side can't starve the
+    // other of the run's budget.
+    const followUps = await sendDueSubscriberEmails(50)
+
+    const result = { journeys, followUps }
     console.log('[cron/email-journey]', result)
     return NextResponse.json({ ok: true, ...result })
   } catch (err) {
