@@ -1,8 +1,14 @@
 import { buildCoursesFollowUp } from '@/lib/email/messages/coursesFollowUp'
 import { buildCoursesLastCall } from '@/lib/email/messages/coursesLastCall'
+import { buildMentorshipFollowUp } from '@/lib/email/messages/mentorshipFollowUp'
+import { buildMentorshipLastCall } from '@/lib/email/messages/mentorshipLastCall'
 import { buildPlatformFinderFollowUp } from '@/lib/email/messages/platformFinderFollowUp'
 import { buildPlatformFinderLastCall } from '@/lib/email/messages/platformFinderLastCall'
-import { hasBoughtAnyCourse, hasBoughtPlatformFinder } from '@/lib/email/purchases'
+import {
+  hasBoughtAnyCourse,
+  hasBoughtMentorship,
+  hasBoughtPlatformFinder,
+} from '@/lib/email/purchases'
 import type { SubscriberJourneyStep } from '@/lib/email/types'
 
 /**
@@ -81,6 +87,24 @@ export const SUBSCRIBER_JOURNEYS: Record<string, SubscriberJourney> = {
         key: 'courses-last-call',
         delayDays: 6,
         build: buildCoursesLastCall,
+      },
+    ],
+  },
+
+  mentorship: {
+    description: 'Signed up on the mentorship page',
+    sources: ['/teachers/mentorship'],
+    hasBought: hasBoughtMentorship,
+    steps: [
+      {
+        key: 'mentorship-followup',
+        delayDays: 2,
+        build: buildMentorshipFollowUp,
+      },
+      {
+        key: 'mentorship-last-call',
+        delayDays: 6,
+        build: buildMentorshipLastCall,
       },
     ],
   },

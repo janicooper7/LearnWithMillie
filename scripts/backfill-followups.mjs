@@ -50,6 +50,7 @@ const DAY_MS = 24 * 60 * 60 * 1000
 const TRACKS = [
   { key: 'platform-finder', prefix: '/teachers/platform-finder', firstDelayDays: 2 },
   { key: 'courses', prefix: '/teachers/courses', firstDelayDays: 2 },
+  { key: 'mentorship', prefix: '/teachers/mentorship', firstDelayDays: 2 },
 ]
 
 const cutoff = new Date(Date.now() - MAX_AGE_DAYS * DAY_MS)

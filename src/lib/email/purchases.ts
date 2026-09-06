@@ -44,3 +44,33 @@ export async function hasBoughtAnyCourse(email: string): Promise<boolean> {
   })
   return user !== null
 }
+
+/**
+ * Holds mentorship sessions — bought and not yet sat.
+ *
+ * Nothing in the database says "this person bought mentorship": the Stripe
+ * webhook turns the purchase into credits on `User.allowance` and the Cal
+ * webhook spends them, so the balance is the only trace. On a *teacher*
+ * account that balance can't have come from anywhere else — the subscriptions
+ * and the trial lesson that feed the same field are student products, sold on
+ * the other half of the site. `upcomingLessons` counts too, because a teacher
+ * who has already booked everything they bought is back to zero credits with a
+ * diary full of calls.
+ *
+ * The known gap: a teacher who has bought, sat and finished every session reads
+ * here as never having bought. That is deliberate rather than a bug. Mentorship
+ * is bought again — unlike a course, which they own for life — so someone back
+ * at zero is a fair audience for it, not a customer being sold what they
+ * already have.
+ */
+export async function hasBoughtMentorship(email: string): Promise<boolean> {
+  const user = await prisma.user.findFirst({
+    where: {
+      email: match(email),
+      role: 'TEACHER',
+      OR: [{ allowance: { gt: 0 } }, { upcomingLessons: { gt: 0 } }],
+    },
+    select: { id: true },
+  })
+  return user !== null
+}
