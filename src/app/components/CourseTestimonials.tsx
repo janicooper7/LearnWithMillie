@@ -13,14 +13,20 @@ import { featuredTeacherTestimonials } from '@/lib/teacherTestimonials'
 // Each slide leads with the specific outcome the teacher reported, because a
 // named result converts where generic praise doesn't.
 //
-// Framing note: these teachers followed Millie's free content and mentorship,
-// not the paid trilogy — the copy below says so rather than implying they are
-// course graduates.
+// Framing note: the set mixes paying course students with teachers who followed
+// the free content and mentorship, so the copy claims only that they applied the
+// systems the trilogy teaches — not that every one of them enrolled.
 
 const AUTOPLAY_MS = 7000
 
 const GOLD = '#C2AA6A'
 const GREEN = '#1F3A34'
+
+// The stat bar is read off the messages themselves, so it can never claim more
+// reach than the set on screen actually backs up.
+const countries = featuredTeacherTestimonials
+  .flatMap((t) => (t.country && t.flag ? [{ country: t.country, flag: t.flag }] : []))
+  .filter((c, i, all) => all.findIndex((o) => o.country === c.country) === i)
 
 export default function CourseTestimonials() {
   const slides = featuredTeacherTestimonials
@@ -78,15 +84,20 @@ export default function CourseTestimonials() {
           className="text-3xl font-bold md:text-4xl"
           style={{ color: GREEN, fontFamily: 'var(--font-playfair), Georgia, serif' }}
         >
-          Teachers who enrolled
+          Tutors who enrolled &mdash;{' '}
+          <em className="italic" style={{ color: '#8A7434' }}>
+            and got booked.
+          </em>
         </h2>
         <p
           className="mt-3 text-lg leading-relaxed"
           style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
         >
-          Messages from teachers who applied Millie&rsquo;s methods — the same systems
-          taught inside the trilogy.
+          Unedited messages from teachers who applied the systems taught inside the
+          trilogy.
         </p>
+
+        <StatBar countries={countries} />
       </div>
 
       <div
@@ -195,7 +206,9 @@ export default function CourseTestimonials() {
                     <span style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
                       <span className="block text-base font-semibold text-white">{t.name}</span>
                       <span className="block text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                        {t.role}
+                        {/* Name only — the flags live in the stat bar above,
+                            and a second copy here reads as clutter. */}
+                        {t.country ? `${t.role} · ${t.country}` : t.role}
                       </span>
                     </span>
                     <span
@@ -239,6 +252,72 @@ export default function CourseTestimonials() {
         )}
       </div>
     </section>
+  )
+}
+
+/**
+ * Dark summary strip under the heading: the shape of the proof at a glance,
+ * before the reader commits to reading a single quote.
+ */
+function StatBar({ countries }: { countries: { country: string; flag: string }[] }) {
+  return (
+    <div
+      className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-4 rounded-2xl px-5 py-4 sm:px-7"
+      style={{
+        backgroundColor: GREEN,
+        backgroundImage:
+          'radial-gradient(120% 140% at 100% 0%, rgba(194,170,106,0.18) 0%, rgba(194,170,106,0) 60%)',
+        fontFamily: 'var(--font-inter), sans-serif',
+      }}
+    >
+      <div className="flex items-center gap-2.5">
+        <span className="flex gap-0.5" aria-label="5 out of 5 stars">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star key={i} className="h-5 w-5" style={{ color: GOLD, fill: GOLD }} />
+          ))}
+        </span>
+        <span className="text-sm font-bold text-white">Rated by tutors</span>
+      </div>
+
+      <Stat value={String(countries.length)} label="Countries" />
+      <Stat value="100%" label="Would recommend" />
+
+      {/* Windows has no colour glyphs for regional-indicator pairs, so a flag
+          there falls back to its two-letter code. The pill is sized and
+          coloured to hold either one without looking like a broken image. */}
+      <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
+        {countries.map((c) => (
+          <span
+            key={c.country}
+            title={c.country}
+            aria-label={c.country}
+            role="img"
+            className="flex h-7 items-center rounded-md px-1.5 text-base font-semibold leading-none"
+            style={{
+              backgroundColor: 'rgba(194,170,106,0.16)',
+              border: '1px solid rgba(194,170,106,0.35)',
+              color: 'rgba(255,255,255,0.85)',
+            }}
+          >
+            {c.flag}
+          </span>
+        ))}
+      </span>
+    </div>
+  )
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex items-baseline gap-2">
+      <span
+        className="text-2xl font-bold"
+        style={{ color: GOLD, fontFamily: 'var(--font-playfair), Georgia, serif' }}
+      >
+        {value}
+      </span>
+      <span className="text-sm font-bold text-white">{label}</span>
+    </div>
   )
 }
 
