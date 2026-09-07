@@ -12,9 +12,12 @@ import CancelBookingButton from '@/app/components/CancelBookingButton'
 import CancelSubscriptionButton from '@/app/components/CancelSubscriptionButton'
 import BookingTime from '@/app/components/BookingTime'
 import OnboardingChecklist from '@/app/components/OnboardingChecklist'
+import SessionProposalCard from '@/app/components/SessionProposalCard'
 import ChoosePlanButton from '@/app/components/ChoosePlanButton'
 import { getMockBookings, mockBookingsEnabled, type CalBooking } from '@/lib/mockBookings'
 import { subscriptionPlan } from '@/lib/plans'
+import { pendingProposalsFor, sessionNoun } from '@/lib/sessionProposals'
+import { formatProposal } from '@/lib/proposalNotify'
 import { getMockSubscription, mockSubscriptionEnabled } from '@/lib/mockSubscription'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
@@ -51,6 +54,15 @@ export default async function DashboardPage() {
   })
 
   const displayCourses = myCourses.filter(({ course }) => !course.isBundle)
+
+  // Times Millie has held for this person and is waiting on an answer for.
+  // Each one is already a real booking, so it also shows in the upcoming list
+  // below — the card is what turns it from a fait accompli into a question.
+  const proposals = await pendingProposalsFor(user.id, now)
+  // A held slot is a genuine Cal booking, so it turns up in the upcoming list
+  // too. Badging it "Confirmed" there would contradict the card above it that
+  // is still asking the question, so the list is told which uids are pending.
+  const proposedUids = new Set(proposals.map((p) => p.bookingUid))
 
   const showCoursesCard = isTeacher
 
@@ -350,12 +362,45 @@ export default async function DashboardPage() {
 
 
 
+        {/* A time Millie picked, waiting on an answer. Above everything else on
+            the page: it is the only thing here that expires. */}
+        {proposals.length > 0 && (
+          <div className='mt-5 space-y-4'>
+            {proposals.map((proposal) => {
+              const parts = formatProposal(proposal)
+              return (
+                <SessionProposalCard
+                  key={proposal.id}
+                  proposal={{
+                    id: proposal.id,
+                    dateLabel: parts.dateLabel,
+                    timeLabel: parts.timeLabel,
+                    timeZoneLabel: parts.timeZoneLabel,
+                    durationLabel: parts.durationLabel,
+                    message: proposal.message,
+                    noun: sessionNoun(user.role),
+                    expiresLabel: new Intl.DateTimeFormat('en-GB', {
+                      timeZone: proposal.timeZone,
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }).format(proposal.expiresAt),
+                  }}
+                />
+              )
+            })}
+          </div>
+        )}
+
         {/* Upcoming bookings — only shown if there are any */}
         {upcomingBookings.length > 0 && (
           <div className='mt-5 bg-white rounded-2xl p-5 sm:p-7' style={{ border: '1px solid #EDE4D8' }}>
             <p className='text-[13px] uppercase tracking-[0.12em] font-semibold mb-4' style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}>{isTeacher ? 'Upcoming Sessions' : 'Upcoming Lessons'}</p>
             <div className='space-y-3'>
               {upcomingBookings.map((booking) => {
+                const awaitingReply = proposedUids.has(booking.uid)
                 return (
                   <div key={booking.uid} className='flex flex-col gap-3 p-4 rounded-xl sm:flex-row sm:items-center sm:justify-between sm:gap-4' style={{ backgroundColor: '#1F3A34' }}>
                     <div className='flex items-center gap-4 min-w-0'>
@@ -373,10 +418,20 @@ export default async function DashboardPage() {
                           Join
                         </a>
                       )}
-                      <span className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap' style={{ backgroundColor: 'rgba(127,212,154,0.15)', color: '#7FD49A', fontFamily: 'var(--font-inter), sans-serif' }}>
-                        Confirmed
+                      <span
+                        className='text-[10px] uppercase tracking-[0.12em] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap'
+                        style={{
+                          backgroundColor: awaitingReply ? 'rgba(194,170,106,0.2)' : 'rgba(127,212,154,0.15)',
+                          color: awaitingReply ? '#C2AA6A' : '#7FD49A',
+                          fontFamily: 'var(--font-inter), sans-serif',
+                        }}
+                      >
+                        {awaitingReply ? 'Awaiting your reply' : 'Confirmed'}
                       </span>
-                      {!booking.eventType?.slug?.includes('trial') && (new Date(booking.start).getTime() - now.getTime() > 24 * 60 * 60 * 1000) && (
+                      {/* Nothing to cancel while it is still a question — the
+                          card above is where a held time is turned down, and
+                          that route is what returns the credit. */}
+                      {!awaitingReply && !booking.eventType?.slug?.includes('trial') && (new Date(booking.start).getTime() - now.getTime() > 24 * 60 * 60 * 1000) && (
                         <CancelBookingButton uid={booking.uid} />
                       )}
                     </div>

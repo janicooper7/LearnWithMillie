@@ -94,12 +94,20 @@ export default async function AdminSessionsPage() {
               Everything booked with you from now on, straight from Cal.com. Times are UK time.
             </p>
           </div>
-          <Link
-            href='/admin'
-            className='bg-white text-[#1F3A34] border border-[#1F3A34] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#1F3A34]/5 transition-colors'
-          >
-            Back to admin
-          </Link>
+          <div className='flex gap-2'>
+            <Link
+              href='/admin/propose'
+              className='bg-[#1F3A34] text-white text-sm font-medium px-4 py-2 rounded-lg hover:brightness-110 transition-all'
+            >
+              Propose a time
+            </Link>
+            <Link
+              href='/admin'
+              className='bg-white text-[#1F3A34] border border-[#1F3A34] text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#1F3A34]/5 transition-colors'
+            >
+              Back to admin
+            </Link>
+          </div>
         </div>
 
         {error && (

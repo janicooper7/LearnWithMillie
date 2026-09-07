@@ -18,6 +18,14 @@ enum SubscriberAudience {
   TEACHER
 }
 
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  WITHDRAWN
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -43,6 +51,7 @@ model User {
   lessonProgress UserLessonProgress[]
   emailJourney   EmailJourney?
   campaignSends  EmailCampaignSend[]
+  proposals      SessionProposal[]
 }
 
 
@@ -289,4 +298,61 @@ model EmailCampaignSend {
 
   @@unique([userId, campaign])
   @@index([campaign])
+}
+
+// A session Millie booked *for* someone, waiting on them to confirm it.
+//
+// The normal direction is a student picking a slot in the Cal embed. This is
+// the reverse: Millie holds a time for a particular person and they accept or
+// decline it. It exists because holding a slot informally — telling someone
+// "Tuesday 3pm is yours" and leaving it open on the calendar — loses the slot
+// to whoever books it first.
+//
+// So proposing creates the real Cal booking immediately. `bookingUid` is that
+// booking, and from the moment it exists the slot is off the public calendar
+// and the student's credit is spent (BOOKING_CREATED, like any other booking).
+// The row here is only the agreement layer on top: it records that the person
+// has not said yes yet, and it is what a decline, a withdrawal or an expiry
+// reads to know which Cal booking to cancel and hand the credit back.
+//
+// The consequence worth knowing: a PENDING proposal is a genuine booking. If
+// nothing ever answers it the slot stays held, which is why `expiresAt` is not
+// optional and the cron sweeps on it.
+model SessionProposal {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// The Cal booking holding the slot. Unique because one booking is one
+  /// proposal — a second row against the same uid would let two responses
+  /// each try to cancel it.
+  bookingUid String @unique
+
+  /// Denormalised from Cal so the dashboard card, the email and the admin list
+  /// can render without a round trip per proposal, and so a cancelled booking
+  /// still shows what was proposed.
+  eventTypeId   Int
+  eventTypeSlug String
+  title         String
+  start         DateTime
+  end           DateTime
+  /// The attendee timezone the booking was made in, so every rendering of the
+  /// time agrees with the calendar invite Cal sent.
+  timeZone      String
+
+  /// Millie's note to the person — why this time, what to prepare. Optional.
+  message String? @db.Text
+
+  status      ProposalStatus @default(PENDING)
+  /// When an unanswered proposal gives the slot back. Always set: see above.
+  expiresAt   DateTime
+  respondedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// "What is this person sitting on" — the dashboard card's query.
+  @@index([userId, status])
+  /// "What has run out of time" — the cron sweep's query.
+  @@index([status, expiresAt])
 }

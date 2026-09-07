@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { isProposalCancellation } from '@/lib/cal'
+import { PROPOSAL_EVENT_SLUGS } from '@/lib/sessionProposals'
 import crypto from 'crypto'
 
 function verifySignature(body: string, signature: string, secret: string): boolean {
@@ -94,9 +96,64 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true, action: 'no refund — auto-cancelled for 0 credits' })
       }
 
+      // Was this slot only ever being *held* for someone (see SessionProposal)?
+      // The row is looked up rather than trusting the reason string alone,
+      // because a proposal can also be cancelled straight from the Cal.com
+      // dashboard, which sends whatever reason was typed there.
+      const bookingUid: string | undefined = payload?.uid
+      const proposal = bookingUid
+        ? await prisma.sessionProposal.findUnique({
+            where: { bookingUid },
+            select: { id: true, status: true, eventTypeSlug: true },
+          })
+        : null
+
+      // An accepted proposal is an ordinary booking from then on, and drops
+      // through to the usual 24-hour rule below.
+      const wasUnconfirmed =
+        (!!proposal && proposal.status !== 'ACCEPTED') || isProposalCancellation(reason)
+
+      // Cancelled outside our own flow — the student is no longer being asked
+      // to confirm anything, so stop the dashboard offering it.
+      if (proposal?.status === 'PENDING') {
+        await prisma.sessionProposal.update({
+          where: { id: proposal.id },
+          data: { status: 'WITHDRAWN', respondedAt: new Date() },
+        })
+      }
+
       const lessonStart = new Date(payload.startTime)
       const now = new Date()
       const hoursUntilLesson = (lessonStart.getTime() - now.getTime()) / (1000 * 60 * 60)
+
+      // A time the student never agreed to always costs them nothing, however
+      // little notice there was. The 24-hour rule is there to discourage
+      // last-minute cancellations of lessons people booked themselves, and
+      // applying it to a proposal would charge someone for saying no.
+      if (wasUnconfirmed) {
+        // BOOKING_CREATED burns the one-per-account trial. Saying no to a trial
+        // nobody asked for must hand that back too, or the student is left
+        // having "used" a trial they never took.
+        const returnsTrial =
+          proposal?.eventTypeSlug === PROPOSAL_EVENT_SLUGS.trial &&
+          user.trialPurchased &&
+          !user.stripeSubscriptionId
+
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            allowance: { increment: 1 },
+            upcomingLessons: { decrement: 1 },
+            ...(returnsTrial ? { trialUsed: false } : {}),
+          },
+        })
+        return NextResponse.json({
+          received: true,
+          action: returnsTrial
+            ? 'credit and trial refunded — unconfirmed proposal'
+            : 'credit refunded — unconfirmed proposal',
+        })
+      }
 
       if (hoursUntilLesson >= 24) {
         await prisma.user.update({
