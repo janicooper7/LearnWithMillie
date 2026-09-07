@@ -3,6 +3,9 @@ import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 import { finalizePlatformFinderResult } from '@/lib/platformFinderResult'
 import { recordPurchase } from '@/lib/trackingServer'
+// Shared with the dashboard so both resolve retired price ids the same way — a
+// repriced tier keeps crediting the subscribers still billed on the old price.
+import { subscriptionLessons } from '@/lib/plans'
 
 async function grantCourseAccess(userId: string, courseSlug: string) {
   const course = await prisma.course.findUnique({
@@ -33,14 +36,24 @@ export const runtime = 'nodejs'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-const PRICE_TO_LESSONS: Record<string, number> = {
-  [process.env.STRIPE_FOURLESSONS_PRICE_ID!]: 4,
-  [process.env.STRIPE_EIGHTLESSONS_PRICE_ID!]: 8,
-  [process.env.STRIPE_TWELVELESSONS_PRICE_ID!]: 12,
-}
+// A Stripe price is immutable, so repricing means a brand new id. A checkout
+// started minutes before the switch can land here minutes after it, so retired
+// ids stay honoured — otherwise that customer pays and is granted nothing.
+const priceIds = (current?: string, retired?: string) =>
+  new Set(
+    [current, ...(retired?.split(',') ?? [])]
+      .map((id) => id?.trim())
+      .filter((id): id is string => !!id)
+  )
 
-const TRIAL_PRICE_ID = process.env.STRIPE_TRIAL_PRICE_ID!
-const ADDITIONAL_LESSON_PRICE_ID = process.env.STRIPE_ADDITIONAL_LESSON_PRICE_ID!
+const TRIAL_PRICE_IDS = priceIds(
+  process.env.STRIPE_TRIAL_PRICE_ID,
+  process.env.STRIPE_TRIAL_LEGACY_PRICE_IDS
+)
+const ADDITIONAL_LESSON_PRICE_IDS = priceIds(
+  process.env.STRIPE_ADDITIONAL_LESSON_PRICE_ID,
+  process.env.STRIPE_ADDITIONAL_LESSON_LEGACY_PRICE_IDS
+)
 
 const MENTORSHIP_PRICE_TO_SESSIONS: Record<string, number> = {
   [process.env.STRIPE_MENTORSHIP_SINGLE_PRICE_ID!]: 1,
@@ -123,7 +136,7 @@ export async function POST(req: NextRequest) {
 
           console.log('Webhook payment:', { sessionId: session.id, userId, priceId, qty })
 
-          if (priceId === ADDITIONAL_LESSON_PRICE_ID) {
+          if (priceId && ADDITIONAL_LESSON_PRICE_IDS.has(priceId)) {
             await prisma.user.update({
               where: { id: userId },
               data: {
@@ -132,7 +145,7 @@ export async function POST(req: NextRequest) {
               },
             })
             console.log('Webhook: additional lessons credited', { userId, qty })
-          } else if (priceId === TRIAL_PRICE_ID) {
+          } else if (priceId && TRIAL_PRICE_IDS.has(priceId)) {
             await prisma.user.update({
               where: { id: userId },
               data: {
@@ -162,7 +175,7 @@ export async function POST(req: NextRequest) {
 
         // Subscription payment — increment so existing unused lessons are preserved
         const priceId = session.metadata?.priceId
-        const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0
+        const lessons = subscriptionLessons(priceId)
 
         await prisma.user.update({
           where: { id: userId },
@@ -199,7 +212,7 @@ export async function POST(req: NextRequest) {
       // Newer Stripe API moved price off InvoiceLineItem into pricing.price_details
       const line0 = inv.lines?.data?.[0]
       const priceId = line0?.pricing?.price_details?.price ?? line0?.price?.id
-      const lessons = PRICE_TO_LESSONS[priceId ?? ''] ?? 0
+      const lessons = subscriptionLessons(priceId)
       if (!lessons) {
         console.warn('Webhook invoice.paid: unrecognised priceId, skipping to avoid wiping allowance', { priceId, subId })
         break

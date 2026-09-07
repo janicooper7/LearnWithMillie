@@ -8,57 +8,19 @@ import { CheckIcon } from '@heroicons/react/24/solid'
 import { ArrowRight } from 'lucide-react'
 import { track, trackingContext } from '@/lib/trackClient'
 import { fbTrack } from '@/lib/fbPixel'
+import {
+  STUDENT_PLANS,
+  STUDENT_PLAN_FEATURES,
+  TRIAL_PRICE,
+  monthlyTotal,
+} from '@/lib/studentPricing'
 
-const plans = [
-  {
-    name: 'Standard',
-    price: 40,
-    lessons: 4,
-    description: 'Ideal for flexible learning',
-    featured: false,
-    planKey: 'four',
-    features: [
-      '4 lessons per month',
-      'Personalised lesson plans',
-      'Progress tracking',
-      'Learning materials included',
-      'Priority scheduling',
-      'Email support between lessons',
-    ],
-  },
-  {
-    name: 'Advanced',
-    price: 38,
-    lessons: 8,
-    description: 'Perfect for steady progress',
-    featured: true,
-    planKey: 'eight',
-    features: [
-      '8 lessons per month',
-      'Personalised lesson plans',
-      'Progress tracking',
-      'Learning materials included',
-      'Priority scheduling',
-      'Email support between lessons',
-    ],
-  },
-  {
-    name: 'Pro',
-    price: 35,
-    lessons: 12,
-    description: 'Best for intensive learning',
-    featured: false,
-    planKey: 'twelve',
-    features: [
-      '12 lessons per month',
-      'Personalised lesson plans',
-      'Progress tracking',
-      'Learning materials included',
-      'Priority scheduling',
-      'Email support between lessons',
-    ],
-  },
-]
+// Prices, lesson counts and the shared feature list live in src/lib/studentPricing.ts
+// so the upgrade modal and the journey emails can't quote a different number.
+const plans = STUDENT_PLANS.map((plan) => ({
+  ...plan,
+  features: [`${plan.lessons} lessons per month`, ...STUDENT_PLAN_FEATURES],
+}))
 
 export default function Pricing() {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([])
@@ -163,7 +125,7 @@ export default function Pricing() {
                   New Students
                 </p>
                 <p className='text-base font-semibold mb-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                  Start with a 20-minute trial lesson — $20
+                  Start with a 20-minute trial lesson — ${TRIAL_PRICE}
                 </p>
                 <p className='text-sm' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
                   No commitment. Discuss your goals and see if we&apos;re a good fit.
@@ -286,7 +248,7 @@ export default function Pricing() {
                       fontFamily: 'var(--font-inter), sans-serif',
                     }}
                   >
-                    ${plan.price * plan.lessons} / month &nbsp;·&nbsp; 50 min per lesson
+                    ${monthlyTotal(plan)} / month &nbsp;·&nbsp; 50 min per lesson
                   </p>
                 </div>
 

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ArrowRight, Check } from 'lucide-react'
 import UpgradePlanModal from './UpgradePlanModal'
 import { track, trackingContext } from '@/lib/trackClient'
+import { TRIAL_PRICE } from '@/lib/studentPricing'
 
 interface OnboardingChecklistProps {
   trialDone: boolean
@@ -51,7 +52,7 @@ export default function OnboardingChecklist({ trialDone, bookingDone, planDone }
       title: 'Buy a trial lesson',
       hint: '20 minutes with Millie.',
       done: trialDone,
-      cta: { label: loadingTrial ? 'Redirecting…' : 'Buy trial — $20', onClick: handleTrialCheckout, loading: loadingTrial },
+      cta: { label: loadingTrial ? 'Redirecting…' : `Buy trial — $${TRIAL_PRICE}`, onClick: handleTrialCheckout, loading: loadingTrial },
     },
     {
       title: 'Book your lesson',

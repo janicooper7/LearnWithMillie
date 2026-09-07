@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Minus, Plus, ArrowRight, Tag } from 'lucide-react'
 import { trackingContext } from '@/lib/trackClient'
+import { ADDON_LESSON_PRICE } from '@/lib/studentPricing'
 
 export default function AddonLessonsBanner() {
   const [qty, setQty] = useState(1)
@@ -61,7 +62,7 @@ export default function AddonLessonsBanner() {
               className='text-[14px] mt-1'
               style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
-              Top up at <span style={{ color: '#C2AA6A', fontWeight: 600 }}>$40</span> per lesson — no subscription needed.
+              Top up at <span style={{ color: '#C2AA6A', fontWeight: 600 }}>${ADDON_LESSON_PRICE}</span> per lesson — no subscription needed.
             </p>
           </div>
         </div>
@@ -103,7 +104,7 @@ export default function AddonLessonsBanner() {
             className='text-lg font-semibold w-16'
             style={{ color: '#C2AA6A', fontFamily: 'var(--font-inter), sans-serif' }}
           >
-            ${qty * 40}
+            ${qty * ADDON_LESSON_PRICE}
           </span>
 
           <button

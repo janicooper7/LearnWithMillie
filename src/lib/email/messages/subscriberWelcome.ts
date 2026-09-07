@@ -11,6 +11,7 @@ import {
 import { INSTAGRAM_URL, SOCIAL_HANDLE, TIKTOK_URL } from '@/lib/email/copy'
 import { SIGNUP_OFFER, SIGNUP_OFFER_HEADLINE, SIGNUP_OFFER_LABEL } from '@/lib/signupOffer'
 import type { BuiltEmail, SubscriberContext } from '@/lib/email/types'
+import { STUDENT_PLANS, TRIAL_PRICE, cheapestMonthlyTotal } from '@/lib/studentPricing'
 
 /**
  * The one email the signup popup promises: here is your code, here is what you
@@ -66,12 +67,17 @@ function teacherBody(site: string): string {
 }
 
 function studentBody(site: string): string {
+  // "$50, $48 or $45" — read off the plans so the email can't quote a rate the
+  // pricing section has since moved past.
+  const rates = STUDENT_PLANS.map((plan) => `$${plan.price}`)
+  const rateList = `${rates.slice(0, -1).join(', ')} or ${rates[rates.length - 1]}`
+
   return `
     ${p(`You said you're learning English, so here's how that works &mdash; the code comes off whichever one you start with.`)}
     ${p(`Every lesson is 50 minutes, one to one, online. I write the plan around you rather than working through a course book, materials are included, and you can email me between lessons if something comes up.`)}
     ${productCard({
       title: 'A trial lesson',
-      price: '$20',
+      price: `$${TRIAL_PRICE}`,
       blurb:
         'Twenty minutes to talk through what you are aiming for and find out whether you like learning with me. One per account, no commitment either way.',
       href: `${site}/#pricing`,
@@ -79,9 +85,9 @@ function studentBody(site: string): string {
     })}
     ${productCard({
       title: 'Monthly lesson plans',
-      price: 'From $140/month',
+      price: `From $${cheapestMonthlyTotal}/month`,
       blurb:
-        'Four, eight or twelve lessons a month at $40, $38 or $35 each — the more you take, the less each one costs. Cancel any time from your dashboard.',
+        `Four, eight or twelve lessons a month at ${rateList} each — the more you take, the less each one costs. Cancel any time from your dashboard.`,
       href: `${site}/#pricing`,
       cta: 'See the plans',
     })}`

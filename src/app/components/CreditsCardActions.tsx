@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import UpgradePlanModal from './UpgradePlanModal'
 import { track, trackingContext } from '@/lib/trackClient'
+import { TRIAL_PRICE } from '@/lib/studentPricing'
 
 interface CreditsCardActionsProps {
   trialPurchased: boolean
@@ -54,7 +55,7 @@ export default function CreditsCardActions({ trialPurchased, isTeacher }: Credit
             onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(31,58,52,0.1)' }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(31,58,52,0.06)' }}
           >
-            {loadingTrial ? 'Redirecting…' : 'Book Trial Lesson — $20'}
+            {loadingTrial ? 'Redirecting…' : `Book Trial Lesson — $${TRIAL_PRICE}`}
             {!loadingTrial && <ArrowRight className='w-3.5 h-3.5' />}
           </button>
         )}

@@ -1,3 +1,5 @@
+import { STUDENT_PLANS, monthlyTotal } from '@/lib/studentPricing'
+
 export type MockSubscription = {
   status: string
   cancel_at_period_end: boolean
@@ -8,12 +10,20 @@ export type MockSubscription = {
 
 const DAY = 24 * 60 * 60 * 1000
 
-// Amounts mirror the cards in UpgradePlanModal: price-per-lesson × lessons.
-const PLANS: Record<string, { priceEnv: string; amount: number }> = {
-  four: { priceEnv: 'STRIPE_FOURLESSONS_PRICE_ID', amount: 40 * 4 * 100 },
-  eight: { priceEnv: 'STRIPE_EIGHTLESSONS_PRICE_ID', amount: 38 * 8 * 100 },
-  twelve: { priceEnv: 'STRIPE_TWELVELESSONS_PRICE_ID', amount: 35 * 12 * 100 },
+// Amounts come from the real plans, in cents, so the mocked card can't show a
+// figure the pricing page has moved past.
+const PRICE_ENV: Record<string, string> = {
+  four: 'STRIPE_FOURLESSONS_PRICE_ID',
+  eight: 'STRIPE_EIGHTLESSONS_PRICE_ID',
+  twelve: 'STRIPE_TWELVELESSONS_PRICE_ID',
 }
+
+const PLANS: Record<string, { priceEnv: string; amount: number }> = Object.fromEntries(
+  STUDENT_PLANS.map((plan) => [
+    plan.planKey,
+    { priceEnv: PRICE_ENV[plan.planKey], amount: monthlyTotal(plan) * 100 },
+  ])
+)
 
 /**
  * Local-only stand-in for a Stripe subscription, so the dashboard's

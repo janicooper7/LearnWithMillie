@@ -4,33 +4,18 @@ import { useState } from 'react'
 import { X, ArrowRight } from 'lucide-react'
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { trackingContext } from '@/lib/trackClient'
+import { STUDENT_PLANS, TRIAL_PRICE } from '@/lib/studentPricing'
 
-const studentPlans = [
-  {
-    name: 'Standard',
-    price: 40,
-    sessions: 4,
-    description: 'Ideal for flexible learning',
-    featured: false,
-    planKey: 'four',
-  },
-  {
-    name: 'Advanced',
-    price: 38,
-    sessions: 8,
-    description: 'Perfect for steady progress',
-    featured: true,
-    planKey: 'eight',
-  },
-  {
-    name: 'Pro',
-    price: 35,
-    sessions: 12,
-    description: 'Best for intensive learning',
-    featured: false,
-    planKey: 'twelve',
-  },
-]
+// Student prices live in src/lib/studentPricing.ts. `sessions` is the local
+// name for the same count the teacher packages use, so one card renders both.
+const studentPlans = STUDENT_PLANS.map((plan) => ({
+  name: plan.name,
+  price: plan.price,
+  sessions: plan.lessons,
+  description: plan.description,
+  featured: plan.featured,
+  planKey: plan.planKey,
+}))
 
 const teacherPlans = [
   {
@@ -128,7 +113,7 @@ export default function UpgradePlanModal({ onClose, trialPurchased, isTeacher }:
                   New Students
                 </p>
                 <p className='text-sm font-semibold mb-0.5' style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-                  Book a 20-minute trial lesson — $20
+                  Book a 20-minute trial lesson — ${TRIAL_PRICE}
                 </p>
                 <p className='text-xs' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
                   No commitment. Discuss your goals and see if we&apos;re a good fit.
