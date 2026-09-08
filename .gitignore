@@ -44,3 +44,6 @@ next-env.d.ts
 
 # local claude code settings
 .claude/settings.local.json
+
+# Local render from scripts/preview-trial-followup.mjs
+trial-followup-preview.html

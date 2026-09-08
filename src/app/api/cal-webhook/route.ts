@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isProposalCancellation } from '@/lib/cal'
 import { PROPOSAL_EVENT_SLUGS } from '@/lib/sessionProposals'
+import { cancelTrialFollowUp, scheduleTrialFollowUp } from '@/lib/email/trialFollowUpRunner'
 import crypto from 'crypto'
 
 function verifySignature(body: string, signature: string, secret: string): boolean {
@@ -86,6 +87,22 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true, action: 'cancelled — no credits' })
       }
 
+      // Queue the "lovely to meet you" email for a few hours after the lesson.
+      // Only on the trial: it is the one booking where the student has not yet
+      // chosen a plan, and the email exists to ask them to. Awaited but never
+      // able to throw, so a mail problem cannot make Cal retry the booking and
+      // double-spend the credit above.
+      if (isTrialUser && payload?.uid) {
+        await scheduleTrialFollowUp({
+          userId: user.id,
+          bookingUid: payload.uid,
+          lessonEnd: new Date(payload.endTime),
+          // The zone the student booked in, so "not in the middle of the night"
+          // means their night rather than the server's.
+          timeZone: payload?.attendees?.[0]?.timeZone ?? null,
+        })
+      }
+
       return NextResponse.json({ received: true, action: isTrialUser ? 'trial credit deducted, trialUsed set' : 'credit deducted' })
     }
 
@@ -101,6 +118,12 @@ export async function POST(req: NextRequest) {
       // because a proposal can also be cancelled straight from the Cal.com
       // dashboard, which sends whatever reason was typed there.
       const bookingUid: string | undefined = payload?.uid
+
+      // A lesson that isn't happening gets no "lovely to meet you". Done for
+      // every cancellation, whatever the reason and whoever cancelled, and
+      // before the refund rules below so an early return can't skip it.
+      if (bookingUid) await cancelTrialFollowUp(bookingUid)
+
       const proposal = bookingUid
         ? await prisma.sessionProposal.findUnique({
             where: { bookingUid },

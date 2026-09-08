@@ -52,6 +52,7 @@ model User {
   emailJourney   EmailJourney?
   campaignSends  EmailCampaignSend[]
   proposals      SessionProposal[]
+  trialFollowUps TrialFollowUp[]
 }
 
 
@@ -355,4 +356,39 @@ model SessionProposal {
   @@index([userId, status])
   /// "What has run out of time" — the cron sweep's query.
   @@index([status, expiresAt])
+}
+
+/// The "lovely to meet you" email that follows a trial lesson.
+///
+/// A row per trial booking rather than a flag on User, because the thing being
+/// scheduled is tied to a booking that can be cancelled or rebooked: the Cal
+/// webhook creates the row when the trial is booked and clears `sendAt` if it
+/// is cancelled, and neither needs to know whether some earlier trial once
+/// existed. `bookingUid` is unique so a replayed webhook can't queue the same
+/// email twice.
+model TrialFollowUp {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// The Cal booking this follows. Unique — one trial, one email.
+  bookingUid String @unique
+
+  /// When the lesson ended, kept so the admin side can see what the send was
+  /// measured from once `sendAt` has been cleared.
+  lessonEnd DateTime
+
+  /// When to send. Null means "not scheduled": either it has gone already, or
+  /// the booking was cancelled, or the retries were exhausted.
+  sendAt DateTime?
+  sentAt DateTime?
+
+  /// Consecutive send failures, so one dead address isn't retried forever.
+  attempts Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// "What is due" — the cron sweep's only query.
+  @@index([sendAt])
 }

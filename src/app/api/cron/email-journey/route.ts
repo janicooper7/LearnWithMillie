@@ -1,14 +1,18 @@
 import { NextResponse } from 'next/server'
 import { sendDueJourneyEmails } from '@/lib/email/runner'
 import { sendDueSubscriberEmails } from '@/lib/email/subscriberRunner'
+import { sendDueTrialFollowUps } from '@/lib/email/trialFollowUpRunner'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 /**
- * Sends the journey emails that have come due. Runs on a schedule — daily is
- * plenty, since every step's offset is measured in days.
+ * Sends the journey emails that have come due. Must run at least hourly: the
+ * onboarding steps are measured in days and would survive a daily run, but the
+ * trial follow-up is due four hours after a lesson ends, and a once-a-day sweep
+ * would deliver it up to a day late — by which point "it was lovely to meet
+ * you" is no longer true of anything the reader remembers.
  *
  * Authenticate with `Authorization: Bearer $CRON_SECRET`, which is the header
  * Vercel Cron sends by itself once CRON_SECRET is set. Any other scheduler
@@ -40,7 +44,13 @@ export async function GET(req: Request) {
     // other of the run's budget.
     const followUps = await sendDueSubscriberEmails(50)
 
-    const result = { journeys, followUps }
+    // The post-trial "lovely to meet you". Same run rather than its own cron:
+    // it shares the SMTP credentials with the two above, and a second schedule
+    // hitting Gmail at the same minute is exactly the concurrency the
+    // sequential ordering here exists to avoid.
+    const trialFollowUps = await sendDueTrialFollowUps(50)
+
+    const result = { journeys, followUps, trialFollowUps }
     console.log('[cron/email-journey]', result)
     return NextResponse.json({ ok: true, ...result })
   } catch (err) {
