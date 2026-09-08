@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { getBooking } from '@/lib/cal'
 import { sendBrandedMail } from '@/lib/email/send'
 import { buildTrialFollowUp } from '@/lib/email/messages/trialFollowUp'
 import { unsubscribeUrl } from '@/lib/email/unsubscribe'
@@ -130,6 +131,51 @@ export async function cancelTrialFollowUp(bookingUid: string): Promise<void> {
   }
 }
 
+/**
+ * Whether the lesson behind a queued follow-up actually took place.
+ *
+ * Three answers, not two. 'no' is a definite "don't send"; 'unknown' means Cal
+ * could not be asked, and the caller defers rather than guessing — an email
+ * sent late costs nothing next to one sent to somebody who never showed up.
+ *
+ * `absent` is only ever set if Millie marks the no-show in Cal, so this stops
+ * the cases she has recorded, not every case. A booking she hasn't marked
+ * either way reads as 'yes', which is the right default: most lessons happen.
+ */
+async function lessonHappened(
+  bookingUid: string,
+  attendeeEmail: string
+): Promise<'yes' | 'no' | 'unknown'> {
+  let booking
+  try {
+    booking = await getBooking(bookingUid)
+  } catch (err) {
+    console.error('[trial-followup] could not read booking', bookingUid, err)
+    return 'unknown'
+  }
+
+  // A 404 is an answer, not a failure: the booking is gone, so there is
+  // nothing to follow up.
+  if (!booking) return 'no'
+
+  // Cancelled, rejected, or rescheduled away from this uid. Cal reports a
+  // moved booking's original row as cancelled, so this catches a reschedule
+  // that the BOOKING_CANCELLED webhook missed as well.
+  if (String(booking.status).toLowerCase() !== 'accepted') return 'no'
+
+  if (booking.absentHost) return 'no'
+
+  // Match the attendee by address rather than taking the first one: a booking
+  // can carry guests, and the person being emailed is the one whose attendance
+  // decides this.
+  const attendee = booking.attendees?.find(
+    (a) => a.email?.toLowerCase() === attendeeEmail.toLowerCase()
+  )
+  if (attendee?.absent) return 'no'
+
+  return 'yes'
+}
+
 export type TrialFollowUpResult = 'sent' | 'skipped' | 'failed'
 
 /** Sends one queued follow-up, if it is still the right thing to send. */
@@ -162,12 +208,72 @@ export async function deliverTrialFollowUp(id: string): Promise<TrialFollowUpRes
     return 'skipped'
   }
 
+  // The opt-out is also checked against the marketing list, not only the
+  // journey row above.
+  //
+  // The other two runners iterate over the very table that carries the
+  // opt-out, so for them the journey check is the whole story. This one
+  // iterates over TrialFollowUp, and most accounts have no EmailJourney row at
+  // all — only people who registered after the sequences shipped do. For
+  // everyone else `emailJourney` is null and the check above is vacuously
+  // "not unsubscribed", so somebody who opted out through the popup and later
+  // created an account would be mailed anyway. Case-insensitive for the same
+  // reason as everywhere else: /api/subscribe lowercases and registration
+  // doesn't.
+  const optedOut = await prisma.subscriber.findFirst({
+    where: {
+      email: { equals: user.email, mode: 'insensitive' },
+      unsubscribedAt: { not: null },
+    },
+    select: { id: true },
+  })
+  if (optedOut) {
+    await stop('unsubscribed from the marketing list')
+    return 'skipped'
+  }
+
   // Somebody who signed up for a plan between the lesson and this email has
   // already answered the only question it asks. Pitching them the plans they
   // have just bought is the one thing worse than not sending it at all.
   if (user.stripeSubscriptionId) {
     await stop('already subscribed')
     return 'skipped'
+  }
+
+  // Did the lesson actually happen?
+  //
+  // The row was queued at BOOKING_CREATED, hours or days before the lesson,
+  // and nothing since then has confirmed it took place. Cal is asked now
+  // rather than trusted then, because "It was lovely to meet you, I really
+  // enjoyed it" landing on somebody who never turned up is the single worst
+  // thing this email can do.
+  //
+  // A booking that has been cancelled or moved reads the same way: the uid the
+  // row was queued against is no longer a lesson that happened.
+  const check = await lessonHappened(row.bookingUid, user.email)
+
+  if (check === 'no') {
+    await stop('lesson did not happen')
+    return 'skipped'
+  }
+
+  // Cal could not be reached. Deliberately not sent: the whole point of the
+  // check is that an unverified send is the expensive mistake, so this defers
+  // and lets the ordinary retry budget run out rather than mailing blind.
+  if (check === 'unknown') {
+    const attempts = row.attempts + 1
+    const exhausted = attempts >= MAX_ATTEMPTS
+    await prisma.trialFollowUp.update({
+      where: { id: row.id },
+      data: {
+        attempts,
+        sendAt: exhausted ? null : new Date(Date.now() + RETRY_DELAY_MS),
+      },
+    })
+    console.warn(
+      `[trial-followup] could not verify the lesson for ${user.email} (attempt ${attempts}${exhausted ? ', giving up' : ''})`
+    )
+    return 'failed'
   }
 
   // Claim before building, so two overlapping cron runs can't both send it:

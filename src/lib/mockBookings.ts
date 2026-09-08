@@ -2,6 +2,12 @@ export type CalAttendee = {
   name?: string
   email?: string
   timeZone?: string
+  /**
+   * Cal's no-show flag, set when the host marks the attendee as absent after
+   * the call. Undefined on a booking nobody has marked either way, which is
+   * the normal case and must not be read as "they turned up".
+   */
+  absent?: boolean
 }
 
 export type CalBooking = {
@@ -14,6 +20,8 @@ export type CalBooking = {
   eventType?: { slug?: string }
   // Only the admin view reads these — a student's own bookings are all their own.
   attendees?: CalAttendee[]
+  /** Set when Millie herself missed the call. */
+  absentHost?: boolean
 }
 
 const HOUR = 60 * 60 * 1000
