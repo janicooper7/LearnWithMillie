@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { trackEvent } from '@/lib/analytics'
 import { track, trackingContext } from '@/lib/trackClient'
 import { fbTrack } from '@/lib/fbPixel'
+import { TRILOGY_OFFER, trilogyPrice, formatUsd } from '@/lib/trilogyOffer'
 import {
   ArrowRight,
   PlayCircle,
@@ -79,8 +80,13 @@ export default function CoursePricingCards({
   const { data: session } = useSession()
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
+  // Only the trilogy is on sale; /api/checkout attaches the code to it alone
+  const salePrice = (planKey: string, listPrice: number) =>
+    TRILOGY_OFFER.enabled && planKey === TRILOGY_OFFER.plan ? trilogyPrice() : listPrice
+
   async function handleCheckout(planKey: string, planName: string) {
-    const price = courses.find((c) => c.planKey === planKey)?.price
+    const listPrice = courses.find((c) => c.planKey === planKey)?.price
+    const price = listPrice === undefined ? undefined : salePrice(planKey, listPrice)
 
     // Fired for every click, signed in or not — a signed-out click never
     // reaches Stripe, so the two need telling apart in reporting.
@@ -146,6 +152,8 @@ export default function CoursePricingCards({
           const hasAccess = userAccess.includes(course.planKey)
           const hasStarted = startedSlugs.includes(course.planKey)
           const hasCompleted = completedSlugs.includes(course.planKey)
+          const onSale = TRILOGY_OFFER.enabled && course.planKey === TRILOGY_OFFER.plan
+          const badge = onSale ? `${TRILOGY_OFFER.percentOff}% off · Ends tonight` : course.badge
 
           return (
             <div
@@ -160,7 +168,7 @@ export default function CoursePricingCards({
                   : '0 2px 12px rgba(31,58,52,0.05)',
               }}
             >
-              {course.badge && (
+              {badge && (
                 <div className='absolute -top-3.5 left-0 right-0 flex justify-center'>
                   <span
                     className='text-[10px] uppercase tracking-[0.18em] font-semibold px-4 py-1.5 rounded-full'
@@ -170,7 +178,7 @@ export default function CoursePricingCards({
                       fontFamily: 'var(--font-inter), sans-serif',
                     }}
                   >
-                    {course.badge}
+                    {badge}
                   </span>
                 </div>
               )}
@@ -231,8 +239,19 @@ export default function CoursePricingCards({
                           color: '#1F3A34',
                         }}
                       >
-                        ${course.price}
+                        {formatUsd(salePrice(course.planKey, course.price))}
                       </span>
+                      {onSale && (
+                        <span
+                          className='text-base line-through pb-1'
+                          style={{
+                            color: 'rgba(31,58,52,0.45)',
+                            fontFamily: 'var(--font-inter), sans-serif',
+                          }}
+                        >
+                          ${course.price}
+                        </span>
+                      )}
                     </div>
                     <p
                       className='text-sm'
@@ -242,6 +261,14 @@ export default function CoursePricingCards({
                       }}
                     >
                       one-time payment
+                      {onSale && (
+                        <span
+                          className='block font-semibold'
+                          style={{ color: '#C0392B' }}
+                        >
+                          {TRILOGY_OFFER.percentOff}% off applied at checkout
+                        </span>
+                      )}
                     </p>
                   </div>
                 )}

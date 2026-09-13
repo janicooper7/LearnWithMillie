@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { useCourseCheckout } from '@/lib/useCourseCheckout'
-
-const PRICE = 149
+import { TRILOGY_OFFER, TRILOGY_LIST_PRICE, trilogyPrice, formatUsd } from '@/lib/trilogyOffer'
 
 // Persistent enrol bar for mobile. The desktop layout already keeps the
 // purchase card in view with `lg:sticky`, so this is hidden from `lg` up.
@@ -14,6 +13,8 @@ const PRICE = 149
 // it duplicates.
 export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: boolean }) {
   const { enrol, loading } = useCourseCheckout()
+  const onSale = TRILOGY_OFFER.enabled
+  const price = trilogyPrice()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -45,14 +46,24 @@ export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: bool
               className="text-xl font-bold leading-none"
               style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
             >
-              ${PRICE}
+              {formatUsd(price)}
             </span>
+            {onSale && (
+              <span
+                className="text-sm line-through"
+                style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}
+              >
+                ${TRILOGY_LIST_PRICE}
+              </span>
+            )}
           </div>
           <p
             className="mt-0.5 truncate text-[11px]"
-            style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
+            style={{ color: onSale ? '#C0392B' : 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
           >
-            All 3 courses · 7-day guarantee
+            {onSale
+              ? `${TRILOGY_OFFER.percentOff}% off · ends tonight`
+              : 'All 3 courses · 7-day guarantee'}
           </p>
         </div>
 
@@ -62,7 +73,7 @@ export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: bool
               plan: 'course-full',
               planName: 'BOOKED Trilogy',
               ctaLocation: 'sticky_bar',
-              price: PRICE,
+              price,
             })
           }
           disabled={loading || !visible}

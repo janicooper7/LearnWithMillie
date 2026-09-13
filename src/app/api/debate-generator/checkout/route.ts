@@ -32,6 +32,8 @@ export async function POST(req: NextRequest) {
   try {
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: 'payment',
+      // Charge in the dollars the site advertises, not the visitor's local currency.
+      adaptive_pricing: { enabled: false },
       line_items: [
         {
           price_data: {

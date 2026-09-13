@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { createPortal } from 'react-dom'
 import { useCourseCheckout } from '@/lib/useCourseCheckout'
+import { TRILOGY_OFFER, TRILOGY_LIST_PRICE, trilogyPrice, formatUsd } from '@/lib/trilogyOffer'
 import {
   Play,
   Video,
@@ -19,8 +20,6 @@ import {
 const VIDEO_URL =
   'https://www.youtube.com/embed/KawzKRqQV3A?si=Nu95B2S9ouSqLpDi&autoplay=1'
 
-const PRICE = 149
-
 const includes = [
   { icon: Video, label: '~350 minutes of on-demand video' },
   { icon: FileDown, label: 'Worksheets, templates & downloads' },
@@ -34,6 +33,10 @@ export default function TrilogyPurchaseCard({
   hasFullAccess: boolean
 }) {
   const { enrol, loading } = useCourseCheckout()
+  // /api/checkout attaches the sale code itself, so the tracked value has to be
+  // what Stripe actually charges.
+  const onSale = TRILOGY_OFFER.enabled
+  const price = trilogyPrice()
   const [playing, setPlaying] = useState(false)
 
   // Close the video modal on Escape, and lock body scroll while it's open
@@ -56,7 +59,7 @@ export default function TrilogyPurchaseCard({
       plan: 'course-full',
       planName: 'BOOKED Trilogy',
       ctaLocation: 'trilogy_card',
-      price: PRICE,
+      price,
     })
   }
 
@@ -138,18 +141,46 @@ export default function TrilogyPurchaseCard({
           </>
         ) : (
           <>
+            {/* Sale flag — the sale price is what Stripe charges, so it leads */}
+            {onSale && (
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <span
+                  className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white"
+                  style={{ backgroundColor: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  {TRILOGY_OFFER.percentOff}% off
+                </span>
+                <span
+                  className="text-sm font-semibold"
+                  style={{ color: '#C0392B', fontFamily: 'var(--font-inter), sans-serif' }}
+                >
+                  Ends tonight
+                </span>
+              </div>
+            )}
+
             {/* Price */}
             <div className="mb-5 flex items-center justify-between gap-3">
-              <span
-                style={{
-                  fontFamily: 'var(--font-playfair), Georgia, serif',
-                  fontSize: '2.5rem',
-                  fontWeight: 700,
-                  lineHeight: 1,
-                  color: '#1F3A34',
-                }}
-              >
-                ${PRICE}
+              <span className="flex items-baseline gap-2">
+                <span
+                  style={{
+                    fontFamily: 'var(--font-playfair), Georgia, serif',
+                    fontSize: '2.5rem',
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    color: '#1F3A34',
+                  }}
+                >
+                  {formatUsd(price)}
+                </span>
+                {onSale && (
+                  <span
+                    className="text-lg line-through"
+                    style={{ color: 'rgba(31,58,52,0.45)', fontFamily: 'var(--font-inter), sans-serif' }}
+                  >
+                    ${TRILOGY_LIST_PRICE}
+                  </span>
+                )}
               </span>
               {/* Pushed to the card's right edge, so the number and the reason
                   to trust it bookend the same line and are read in one glance. */}
@@ -172,6 +203,12 @@ export default function TrilogyPurchaseCard({
               style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
               All 3 courses · one-time payment
+              {onSale && (
+                <>
+                  <br />
+                  <span style={{ color: '#C0392B', fontWeight: 600 }}>discount applied at checkout</span>
+                </>
+              )}
             </p>
 
             {/* CTAs */}

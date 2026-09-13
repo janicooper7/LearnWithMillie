@@ -15,6 +15,8 @@ import CourseGuarantee from '@/app/components/CourseGuarantee'
 import CourseFaq from '@/app/components/CourseFaq'
 import CourseFaqSchema from '@/app/components/CourseFaqSchema'
 import CourseStickyCta from '@/app/components/CourseStickyCta'
+import TrilogyOfferStrip from '@/app/components/TrilogyOfferStrip'
+import { TRILOGY_OFFER } from '@/lib/trilogyOffer'
 
 export const metadata: Metadata = {
   title: 'Courses for English Teachers',
@@ -105,6 +107,8 @@ export default async function CoursesPage() {
 
   const displayCourses = myCourses.filter(({ course }) => !course.isBundle)
   const hasFullAccess = accessedSlugs.includes('course-full')
+  // Anyone who doesn't already own the trilogy can still take the sale
+  const showOffer = TRILOGY_OFFER.enabled && !hasFullAccess
 
   // Owned courses where every lesson is marked complete
   const completedSlugs = myCourses
@@ -119,6 +123,8 @@ export default async function CoursesPage() {
   return (
     <div className={`min-h-screen bg-[#F4EDE4] ${hasFullAccess ? '' : 'pb-24 lg:pb-0'}`}>
       <CourseFaqSchema />
+
+      {showOffer && <TrilogyOfferStrip />}
 
       {/* ===== Udemy-style hero band ===== */}
       <div className="bg-[#1F3A34] text-white">
@@ -164,7 +170,7 @@ export default async function CoursesPage() {
           <aside className="pt-8 lg:col-start-2 lg:row-start-1 lg:pt-0">
             <div
               className={`lg:sticky lg:-mt-[340px] ${
-                accessedSlugs.length === 0 ? 'lg:top-32' : 'lg:top-24'
+                showOffer ? 'lg:top-32' : 'lg:top-24'
               }`}
             >
               <TrilogyPurchaseCard hasFullAccess={hasFullAccess} />

@@ -22,6 +22,8 @@ import {
   type SalesModule,
 } from '@/lib/courseSalesContent'
 import { track, trackingContext } from '@/lib/trackClient'
+import TrilogyOfferStrip from '@/app/components/TrilogyOfferStrip'
+import { TRILOGY_OFFER, TRILOGY_LIST_PRICE, trilogyPrice, formatUsd } from '@/lib/trilogyOffer'
 
 type Course = {
   id: string
@@ -150,6 +152,8 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F4EDE4]">
+      {isBundle && !course.hasAccess && <TrilogyOfferStrip />}
+
       {/* Hero */}
       <div className="bg-[#1F3A34] px-4 py-16 text-white">
         <div className="mx-auto max-w-3xl">
@@ -364,10 +368,19 @@ export default function CourseDetailPage() {
             {!course.hasAccess && isBundle && (
               <div className="mb-3 flex items-baseline justify-center gap-2">
                 <span className="font-serif text-5xl font-bold text-[#C2AA6A]">
-                  {bundleSales.pricing.bundlePrice}
+                  {TRILOGY_OFFER.enabled ? formatUsd(trilogyPrice()) : bundleSales.pricing.bundlePrice}
                 </span>
+                {TRILOGY_OFFER.enabled && (
+                  <span className="text-lg text-white/45 line-through">${TRILOGY_LIST_PRICE}</span>
+                )}
                 <span className="text-lg text-white/55">for all three</span>
               </div>
+            )}
+
+            {!course.hasAccess && isBundle && TRILOGY_OFFER.enabled && (
+              <p className="mb-3 text-sm font-semibold text-[#C2AA6A]">
+                {TRILOGY_OFFER.percentOff}% off ends tonight · applied automatically at checkout
+              </p>
             )}
 
             {/* Single-course price */}

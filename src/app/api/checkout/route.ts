@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth } from '@/auth'
 import { trackingMetadata } from '@/lib/trackingServer'
+import { TRILOGY_OFFER } from '@/lib/trilogyOffer'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -48,38 +49,61 @@ export async function POST(req: NextRequest) {
     type DiscountEntry = { promotion_code: string } | { coupon: string }
     let discount: DiscountEntry | null = null
 
-    // Only a code the customer typed into the promo box — the site advertises
-    // list price everywhere and attaches nothing of its own.
+    // A code the customer typed wins. Otherwise, while the trilogy sale is on,
+    // trilogy checkouts carry the sale code themselves so Stripe opens at the
+    // price the page advertised. Everything else gets list price.
     const typedCode = promoCode?.trim()
+    const wantedCode =
+      typedCode || (TRILOGY_OFFER.enabled && plan === TRILOGY_OFFER.plan ? TRILOGY_OFFER.code : '')
 
-    if (typedCode) {
-      const codes = await stripe.promotionCodes.list({ code: typedCode, active: true, limit: 1 })
+    if (wantedCode) {
+      const codes = await stripe.promotionCodes.list({ code: wantedCode, active: true, limit: 1 })
       if (codes.data.length > 0) {
         discount = { promotion_code: codes.data[0].id }
-      } else {
+      } else if (typedCode) {
+        // A code the customer typed is worth an error. The automatic sale code
+        // isn't — fall back to full price with the promo box open.
         return NextResponse.json({ error: 'Invalid or expired promo code.' }, { status: 400 })
+      } else {
+        console.error(`Trilogy sale code ${wantedCode} is not active in Stripe`)
       }
     }
 
-    const checkoutSession = await stripe.checkout.sessions.create({
-      mode: isOneTime ? 'payment' : 'subscription',
-      line_items: [{ price: priceId, quantity: qty }],
-      // The session id lets /thank-you report the real charged amount to the Meta
-      // pixel, and doubles as the key that stops a refresh counting a second sale.
-      success_url: `${process.env.NEXTAUTH_URL}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
-      ...(discount ? { discounts: [discount] } : { allow_promotion_codes: true }),
-      ...(session?.user?.email && { customer_email: session.user.email }),
-      metadata: {
-        userId: session?.user?.id ?? '',
-        priceId,
-        quantity: String(qty),
-        ...(isCourse && { courseSlug: plan }),
-        // Carried through so the webhook can attribute the purchase back to the
-        // visit that started it — Stripe is the only thread between the two.
-        ...trackingMetadata(tracking, isCourse ? 'courses' : 'lessons'),
-      },
-    })
+    const buildSession = (withDiscount: DiscountEntry | null) =>
+      stripe.checkout.sessions.create({
+        mode: isOneTime ? 'payment' : 'subscription',
+        line_items: [{ price: priceId, quantity: qty }],
+        // Charge in the dollars the site advertises, not the visitor's local currency.
+        // `currency` also pins prices that carry extra currency options (the bundle has GBP).
+        currency: 'usd',
+        adaptive_pricing: { enabled: false },
+        // The session id lets /thank-you report the real charged amount to the Meta
+        // pixel, and doubles as the key that stops a refresh counting a second sale.
+        success_url: `${process.env.NEXTAUTH_URL}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
+        ...(withDiscount ? { discounts: [withDiscount] } : { allow_promotion_codes: true }),
+        ...(session?.user?.email && { customer_email: session.user.email }),
+        metadata: {
+          userId: session?.user?.id ?? '',
+          priceId,
+          quantity: String(qty),
+          ...(isCourse && { courseSlug: plan }),
+          // Carried through so the webhook can attribute the purchase back to the
+          // visit that started it — Stripe is the only thread between the two.
+          ...trackingMetadata(tracking, isCourse ? 'courses' : 'lessons'),
+        },
+      })
+
+    let checkoutSession
+    try {
+      checkoutSession = await buildSession(discount)
+    } catch (err) {
+      // A restriction on the auto-applied sale code must never dead-end
+      // checkout — retry at full price instead.
+      if (!discount || typedCode) throw err
+      console.error('Trilogy sale code rejected by Stripe, retrying without it:', (err as Error).message)
+      checkoutSession = await buildSession(null)
+    }
 
     return NextResponse.json({ url: checkoutSession.url })
   } catch (err: any) {
