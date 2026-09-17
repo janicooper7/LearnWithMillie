@@ -3,7 +3,15 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { useCourseCheckout } from '@/lib/useCourseCheckout'
-import { TRILOGY_OFFER, TRILOGY_LIST_PRICE, trilogyPrice, formatUsd } from '@/lib/trilogyOffer'
+import {
+  TRILOGY_OFFER,
+  TRILOGY_LIST_PRICE,
+  TRILOGY_INSTALLMENT_PLAN,
+  TRILOGY_INSTALLMENTS,
+  trilogyPrice,
+  trilogyInstallmentAmount,
+  formatUsd,
+} from '@/lib/trilogyOffer'
 
 // Persistent enrol bar for mobile. The desktop layout already keeps the
 // purchase card in view with `lg:sticky`, so this is hidden from `lg` up.
@@ -15,6 +23,7 @@ export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: bool
   const { enrol, loading } = useCourseCheckout()
   const onSale = TRILOGY_OFFER.enabled
   const price = trilogyPrice()
+  const installmentAmount = trilogyInstallmentAmount()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -65,6 +74,22 @@ export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: bool
               ? `${TRILOGY_OFFER.percentOff}% off · ends tonight`
               : 'All 3 courses · 7-day guarantee'}
           </p>
+          <button
+            onClick={() =>
+              enrol({
+                plan: TRILOGY_INSTALLMENT_PLAN,
+                planName: 'BOOKED Trilogy (3 payments)',
+                ctaLocation: 'sticky_bar_installments',
+                price: installmentAmount,
+              })
+            }
+            disabled={loading || !visible}
+            tabIndex={visible ? 0 : -1}
+            className="mt-0.5 truncate text-left text-[11px] font-semibold underline underline-offset-2 transition-opacity hover:opacity-70 disabled:opacity-60"
+            style={{ color: '#1F3A34' }}
+          >
+            or {TRILOGY_INSTALLMENTS} payments of {formatUsd(installmentAmount)}/mo
+          </button>
         </div>
 
         <button
@@ -81,7 +106,7 @@ export default function CourseStickyCta({ hasFullAccess }: { hasFullAccess: bool
           className="ml-auto flex flex-shrink-0 items-center justify-center gap-2 rounded-lg px-6 py-3.5 text-base font-bold transition-opacity hover:opacity-90 disabled:opacity-60"
           style={{ backgroundColor: '#C2AA6A', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
         >
-          {loading ? 'Redirecting…' : <>Buy now <ArrowRight className="h-4 w-4" /></>}
+          {loading ? 'Redirecting…' : <>Pay in full <ArrowRight className="h-4 w-4" /></>}
         </button>
       </div>
     </div>

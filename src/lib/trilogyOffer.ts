@@ -26,6 +26,17 @@ export function trilogyPrice(): number {
   return Math.round(TRILOGY_LIST_PRICE * (1 - TRILOGY_OFFER.percentOff / 100) * 100) / 100
 }
 
+// Pay-in-3 plan. The monthly amount is derived from `trilogyPrice()`, so the
+// sale — including the moment it's switched off above — is reflected here too
+// without a separate Stripe coupon to keep in sync.
+export const TRILOGY_INSTALLMENT_PLAN = 'course-full-3mo'
+export const TRILOGY_INSTALLMENTS = 3
+
+/** What each of the 3 monthly charges is, right now (111.75 -> 37.25). */
+export function trilogyInstallmentAmount(): number {
+  return Math.round((trilogyPrice() / TRILOGY_INSTALLMENTS) * 100) / 100
+}
+
 /** Formats a dollar amount, keeping whole dollars clean ($149, $111.75). */
 export function formatUsd(amount: number): string {
   return `$${Number.isInteger(amount) ? amount : amount.toFixed(2)}`

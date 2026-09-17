@@ -4,7 +4,15 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { createPortal } from 'react-dom'
 import { useCourseCheckout } from '@/lib/useCourseCheckout'
-import { TRILOGY_OFFER, TRILOGY_LIST_PRICE, trilogyPrice, formatUsd } from '@/lib/trilogyOffer'
+import {
+  TRILOGY_OFFER,
+  TRILOGY_LIST_PRICE,
+  TRILOGY_INSTALLMENT_PLAN,
+  TRILOGY_INSTALLMENTS,
+  trilogyPrice,
+  trilogyInstallmentAmount,
+  formatUsd,
+} from '@/lib/trilogyOffer'
 import {
   Play,
   Video,
@@ -37,6 +45,7 @@ export default function TrilogyPurchaseCard({
   // what Stripe actually charges.
   const onSale = TRILOGY_OFFER.enabled
   const price = trilogyPrice()
+  const installmentAmount = trilogyInstallmentAmount()
   const [playing, setPlaying] = useState(false)
 
   // Close the video modal on Escape, and lock body scroll while it's open
@@ -60,6 +69,15 @@ export default function TrilogyPurchaseCard({
       planName: 'BOOKED Trilogy',
       ctaLocation: 'trilogy_card',
       price,
+    })
+  }
+
+  function handleEnrolInstallments() {
+    return enrol({
+      plan: TRILOGY_INSTALLMENT_PLAN,
+      planName: 'BOOKED Trilogy (3 payments)',
+      ctaLocation: 'trilogy_card_installments',
+      price: installmentAmount,
     })
   }
 
@@ -218,10 +236,24 @@ export default function TrilogyPurchaseCard({
               className="mb-2.5 flex w-full items-center justify-center gap-2 rounded-lg py-3.5 text-base font-bold transition-opacity hover:opacity-90 disabled:opacity-60"
               style={{ backgroundColor: '#C2AA6A', color: '#1F3A34', fontFamily: 'var(--font-inter), sans-serif' }}
             >
-              {loading ? 'Redirecting…' : <>Buy now <ArrowRight className="h-4 w-4" /></>}
+              {loading ? 'Redirecting…' : <>Pay in full <ArrowRight className="h-4 w-4" /></>}
             </button>
 
-            {/* Not a third button: the trilogy is the offer, and a single
+            <button
+              onClick={handleEnrolInstallments}
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-2 rounded-lg py-3.5 text-base font-bold transition-opacity hover:opacity-80 disabled:opacity-60"
+              style={{
+                backgroundColor: 'transparent',
+                color: '#1F3A34',
+                border: '1.5px solid #1F3A34',
+                fontFamily: 'var(--font-inter), sans-serif',
+              }}
+            >
+              {TRILOGY_INSTALLMENTS} monthly payments of {formatUsd(installmentAmount)}
+            </button>
+
+            {/* Text link, not a button: the trilogy is the offer, and a single
                 course is the smaller thing you fall back to. */}
             <button
               onClick={scrollToPricing}

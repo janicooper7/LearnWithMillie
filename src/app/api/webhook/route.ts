@@ -6,6 +6,8 @@ import { recordPurchase } from '@/lib/trackingServer'
 // Shared with the dashboard so both resolve retired price ids the same way — a
 // repriced tier keeps crediting the subscribers still billed on the old price.
 import { subscriptionLessons } from '@/lib/plans'
+import { TRILOGY_INSTALLMENTS } from '@/lib/trilogyOffer'
+import { addMonthsClamped } from '@/lib/dateMath'
 
 async function grantCourseAccess(userId: string, courseSlug: string) {
   const course = await prisma.course.findUnique({
@@ -115,6 +117,38 @@ export async function POST(req: NextRequest) {
           break
         }
 
+        // Trilogy pay-in-3 — a subscription under the hood, but it must never
+        // fall into the lesson-subscription branch below: that branch writes
+        // to user.allowance/stripeSubscriptionId, fields this installment plan
+        // has no business touching (they belong to the separate lesson-package
+        // subscriptions and get zeroed out when a subscription ends). Access is
+        // granted once, here, on the first charge — same as a one-time course.
+        if (session.metadata?.kind === 'course-installment') {
+          const courseSlug = session.metadata.courseSlug
+          if (courseSlug) {
+            await grantCourseAccess(userId, courseSlug)
+            console.log('Webhook: course access granted (installment plan)', { userId, courseSlug })
+          } else {
+            console.warn('Webhook: course-installment session missing courseSlug', { sessionId: session.id })
+          }
+
+          // Checkout Sessions can't set cancel_at before the subscription
+          // exists, so it's set here, anchored to the subscription's own
+          // start rather than "now" — the customer may have taken a while to
+          // complete Stripe's hosted page after the session was created.
+          const subscriptionId = session.subscription as string | null
+          if (subscriptionId) {
+            const sub = await stripe.subscriptions.retrieve(subscriptionId)
+            const cancelAt = Math.floor(
+              addMonthsClamped(new Date(sub.start_date * 1000), TRILOGY_INSTALLMENTS).getTime() / 1000
+            )
+            await stripe.subscriptions.update(subscriptionId, { cancel_at: cancelAt })
+          } else {
+            console.warn('Webhook: course-installment session missing subscription id', { sessionId: session.id })
+          }
+          break
+        }
+
         // Debate Generator — one-time $7 lifetime access
         if (session.metadata?.kind === 'debate-generator') {
           await prisma.user.update({
@@ -214,6 +248,11 @@ export async function POST(req: NextRequest) {
       const priceId = line0?.pricing?.price_details?.price ?? line0?.price?.id
       const lessons = subscriptionLessons(priceId)
       if (!lessons) {
+        // A trilogy installment renewal is expected to miss the lesson-price
+        // map — access was already granted on the first charge and there's
+        // nothing to renew. Only warn when it's genuinely an unrecognised id.
+        const sub = await stripe.subscriptions.retrieve(subId).catch(() => null)
+        if (sub?.metadata?.kind === 'course-installment') break
         console.warn('Webhook invoice.paid: unrecognised priceId, skipping to avoid wiping allowance', { priceId, subId })
         break
       }
@@ -231,6 +270,19 @@ export async function POST(req: NextRequest) {
 
     case 'customer.subscription.deleted': {
       const subscription = event.data.object as Stripe.Subscription
+
+      // Never stored on the user (see checkout.session.completed above), so
+      // this is just a log — there's no allowance/stripeSubscriptionId to
+      // clean up. Distinguishes a normal 3-payment payoff from an early
+      // cancellation/payment failure for support's sake.
+      if (subscription.metadata?.kind === 'course-installment') {
+        console.log('Webhook: installment plan ended', {
+          userId: subscription.metadata?.userId,
+          status: subscription.status,
+        })
+        break
+      }
+
       await prisma.user.updateMany({
         where: { stripeSubscriptionId: subscription.id },
         data: { allowance: 0, stripeSubscriptionId: null },

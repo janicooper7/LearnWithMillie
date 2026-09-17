@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth } from '@/auth'
 import { trackingMetadata } from '@/lib/trackingServer'
-import { TRILOGY_OFFER } from '@/lib/trilogyOffer'
+import { TRILOGY_OFFER, TRILOGY_INSTALLMENT_PLAN, trilogyInstallmentAmount } from '@/lib/trilogyOffer'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -15,6 +15,50 @@ export async function POST(req: NextRequest) {
   }
 
   const { plan, quantity = 1, promoCode, tracking } = await req.json()
+
+  // Trilogy pay-in-3: a bespoke Checkout Session rather than a fixed Stripe
+  // price, so it can't go through the price-id lookups below. Access is
+  // granted on the first charge like any other course purchase — this app has
+  // no "revoke access" path, so a later missed installment doesn't touch it.
+  // The webhook sets subscription_data.cancel_at once the subscription exists
+  // (Checkout Sessions can't set cancel_at up front) so it stops at 3 charges.
+  if (plan === TRILOGY_INSTALLMENT_PLAN) {
+    try {
+      const bundlePrice = await stripe.prices.retrieve(process.env.STRIPE_COURSE_BUNDLE!)
+
+      const checkoutSession = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product: bundlePrice.product as string,
+              unit_amount: Math.round(trilogyInstallmentAmount() * 100),
+              recurring: { interval: 'month' },
+            },
+            quantity: 1,
+          },
+        ],
+        subscription_data: {
+          metadata: { userId: session.user.id, kind: 'course-installment', courseSlug: 'course-full' },
+        },
+        success_url: `${process.env.NEXTAUTH_URL}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXTAUTH_URL}/#pricing`,
+        ...(session.user.email && { customer_email: session.user.email }),
+        metadata: {
+          userId: session.user.id,
+          kind: 'course-installment',
+          courseSlug: 'course-full',
+          ...trackingMetadata(tracking, 'courses'),
+        },
+      })
+
+      return NextResponse.json({ url: checkoutSession.url })
+    } catch (err: any) {
+      console.error('Checkout error (installment):', err.message)
+      return NextResponse.json({ error: err.message }, { status: 500 })
+    }
+  }
 
   // Read at request time so env vars added after server start are always picked up
   const SUBSCRIPTION_PRICE_IDS: Record<string, string> = {
