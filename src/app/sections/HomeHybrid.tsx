@@ -122,7 +122,7 @@ export default function HomeHybrid() {
             {/* Trust signals */}
             <div className='flex flex-wrap items-center justify-center lg:justify-start gap-2.5 mt-8'>
               {[
-                { icon: CalendarCheck, label: '4+ years teaching' },
+                { icon: CalendarCheck, label: '5+ years teaching' },
                 { icon: BookOpen, label: '4,000+ lessons' },
                 { icon: Users, label: '300+ students' },
                 { icon: Star, label: '5★ rated' },

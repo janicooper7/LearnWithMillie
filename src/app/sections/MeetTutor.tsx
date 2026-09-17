@@ -5,7 +5,7 @@ const credentials = [
   { label: 'TEFL Certified', sub: 'Qualified Teacher' },
   { label: "UCL Master's", sub: 'Public Policy' },
   { label: "King's College", sub: 'International Politics' },
-  { label: '4+ Years', sub: 'Online Teaching' },
+  { label: '5+ Years', sub: 'Online Teaching' },
 ]
 
 export default function MeetTutor() {
@@ -71,7 +71,7 @@ export default function MeetTutor() {
               className='text-base leading-relaxed mb-8'
               style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
-              With four years of experience teaching online, I tailor every lesson to your individual goals in a calm,
+              With five years of experience teaching online, I tailor every lesson to your individual goals in a calm,
               supportive, and engaging environment. My background in management, local government, and accounting makes
               me especially effective for Business English learners.
             </p>

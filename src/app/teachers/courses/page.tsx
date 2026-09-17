@@ -51,7 +51,7 @@ const instructorStats = [
   { value: '4,000+', label: 'Lessons taught' },
   { value: '300+', label: 'Students' },
   { value: '30+', label: 'Countries' },
-  { value: '4 yrs', label: 'Teaching online' },
+  { value: '5 yrs', label: 'Teaching online' },
 ]
 
 export default async function CoursesPage() {
@@ -255,7 +255,7 @@ export default async function CoursesPage() {
                     <p>
                       Today I&rsquo;m the founder of Learn with Millie — where I tutor English online
                       1:1 and mentor other English tutors building their own careers. The mentor
-                      side wasn&rsquo;t planned. After four years and over 4,000 lessons, the questions
+                      side wasn&rsquo;t planned. After five years and over 4,000 lessons, the questions
                       started coming in faster than I could answer them in DMs.
                     </p>
                     <p>
@@ -312,7 +312,7 @@ export default async function CoursesPage() {
                     style={{ color: 'rgba(31,58,52,0.8)', fontFamily: 'var(--font-inter), sans-serif' }}
                   >
                     <p>
-                      Four years ago I started teaching English online for{' '}
+                      Five years ago I started teaching English online for{' '}
                       <strong style={{ color: '#1F3A34' }}>$8 an hour</strong>. Today I charge{' '}
                       <strong style={{ color: '#1F3A34' }}>$40+</strong>, I&rsquo;m fully booked a month
                       out, and I&rsquo;ve taught over 4,000 lessons across 300+ students from 30+

@@ -34,7 +34,7 @@ const credentials = [
   { label: 'TEFL Certified', sub: 'Qualified Teacher' },
   { label: 'UCL Master\'s', sub: 'Public Policy' },
   { label: "King's College", sub: 'International Politics' },
-  { label: '4+ Years', sub: 'Online Teaching' },
+  { label: '5+ Years', sub: 'Online Teaching' },
 ]
 
 const aboutSections = [
@@ -49,7 +49,7 @@ const aboutSections = [
           perspective on business communication and professional development.
         </p>
         <p className='leading-relaxed'>
-          I am a TEFL certified teacher with four years of experience teaching English online. I
+          I am a TEFL certified teacher with five years of experience teaching English online. I
           specialise in Business English, interview preparation, and helping learners improve fluency,
           pronunciation, and confidence in both professional and everyday conversations.
         </p>
@@ -212,7 +212,7 @@ export default function About() {
               A certified TEFL teacher from London, passionate about helping students speak English with real confidence.
             </p>
             <p className='text-base leading-relaxed mb-8' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
-              With four years of experience teaching online, I tailor every lesson to your individual goals in a calm,
+              With five years of experience teaching online, I tailor every lesson to your individual goals in a calm,
               supportive, and engaging environment. My background in management, local government, and accounting makes
               me especially effective for Business English learners.
             </p>

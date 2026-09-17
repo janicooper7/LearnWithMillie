@@ -289,5 +289,5 @@ export const bundleSales = {
   ],
   closing: '🤍 BOOKED is live. Early-bird pricing all week.',
   byline:
-    'By Millie Cooper — TEFL-certified, UCL Master’s, four years, 4,000+ lessons, 300+ students from 30+ countries. The trilogy I wish I’d had on day one.',
+    'By Millie Cooper — TEFL-certified, UCL Master’s, five years, 4,000+ lessons, 300+ students from 30+ countries. The trilogy I wish I’d had on day one.',
 }

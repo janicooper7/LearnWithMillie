@@ -34,7 +34,7 @@ const courses: Product[] = [
     eyebrow: 'Course · Trilogy',
     title: 'BOOKED Trilogy',
     description:
-      'All 3 courses — launch, fill, and keep your tutoring business thriving. The complete system, built across four years and 4,000+ lessons.',
+      'All 3 courses — launch, fill, and keep your tutoring business thriving. The complete system, built across five years and 4,000+ lessons.',
     points: ['3 courses', '35 modules', 'Lifetime access'],
     href: '/teachers/courses',
     cta: 'See what’s inside',

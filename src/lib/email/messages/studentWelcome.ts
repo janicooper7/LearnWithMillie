@@ -30,7 +30,7 @@ export function buildStudentWelcome(ctx: JourneyContext): BuiltEmail {
     ${p(first ? `Hi ${first}! &#129293;` : `Hi! &#129293;`)}
     ${p(`It's Millie &mdash; I'm the founder of Learn with Millie. A HUGE thank you for joining &mdash; it means so much that you're here!`)}
     ${p(`Since this is the first email I'm ever writing to you... I thought I'd tell you how any of this actually started.`)}
-    ${p(`Four years ago I was a stay-at-home mum in London. I'd left a career in politics after having my two daughters &mdash; the work I used to do just didn't fit the life I now had.`)}
+    ${p(`Five years ago I was a stay-at-home mum in London. I'd left a career in politics after having my two daughters &mdash; the work I used to do just didn't fit the life I now had.`)}
     ${p(`I'd been at home for two years and I loved parts of it, but I was completely lost in others. I'd started to feel like a version of myself I didn't quite recognise anymore.`)}
     ${p(`Then one evening after my daughters were in bed, I sat down at our dining room table, opened my laptop, and signed up for an online tutoring platform I'd barely heard of.`)}
     ${emailImage({
@@ -38,7 +38,7 @@ export function buildStudentWelcome(ctx: JourneyContext): BuiltEmail {
       alt: 'Millie teaching from her dining room table',
       width: 436,
     })}
-    ${p(`Four years later... I've taught over 4,000 lessons to 300+ students from 30+ countries. I run a full-time teaching career from home.`)}
+    ${p(`Five years later... I've taught over 4,000 lessons to 300+ students from 30+ countries. I run a full-time teaching career from home.`)}
     ${p(`And in all those lessons, the same thing has come up again and again. The students who improve fastest are almost never the ones with the best grammar. They're the ones willing to speak badly for a little while.`)}
     ${p(`Because what usually stands between someone and speaking freely isn't vocabulary, and it isn't tenses. It's the fear of getting it wrong in front of another person &mdash; of sounding less clever, less funny, less like yourself than you know you are.`)}
     ${p(`That feeling of not quite recognising yourself? I understand it more than you'd think. And getting you back to sounding like <em>you</em>, in English, is genuinely the whole job as far as I'm concerned.`)}
@@ -68,7 +68,7 @@ export function buildStudentWelcome(ctx: JourneyContext): BuiltEmail {
     html: renderEmail({
       eyebrow: 'Welcome',
       headline: `So glad you're here`,
-      preheader: `Four years ago I started teaching from my dining room table. Here's what happened next.`,
+      preheader: `Five years ago I started teaching from my dining room table. Here's what happened next.`,
       body,
       unsubscribeUrl: ctx.unsubscribeUrl ?? undefined,
     }),
