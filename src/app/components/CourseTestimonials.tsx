@@ -22,12 +22,6 @@ const AUTOPLAY_MS = 7000
 const GOLD = '#C2AA6A'
 const GREEN = '#1F3A34'
 
-// The stat bar is read off the messages themselves, so it can never claim more
-// reach than the set on screen actually backs up.
-const countries = featuredTeacherTestimonials
-  .flatMap((t) => (t.country && t.flag ? [{ country: t.country, flag: t.flag }] : []))
-  .filter((c, i, all) => all.findIndex((o) => o.country === c.country) === i)
-
 export default function CourseTestimonials() {
   const slides = featuredTeacherTestimonials
   const [index, setIndex] = useState(0)
@@ -97,7 +91,7 @@ export default function CourseTestimonials() {
           trilogy.
         </p>
 
-        <StatBar countries={countries} />
+        <StatBar />
       </div>
 
       <div
@@ -206,8 +200,6 @@ export default function CourseTestimonials() {
                     <span style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
                       <span className="block text-base font-semibold text-white">{t.name}</span>
                       <span className="block text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                        {/* Name only — the flags live in the stat bar above,
-                            and a second copy here reads as clutter. */}
                         {t.country ? `${t.role} · ${t.country}` : t.role}
                       </span>
                     </span>
@@ -259,7 +251,7 @@ export default function CourseTestimonials() {
  * Dark summary strip under the heading: the shape of the proof at a glance,
  * before the reader commits to reading a single quote.
  */
-function StatBar({ countries }: { countries: { country: string; flag: string }[] }) {
+function StatBar() {
   return (
     <div
       className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-4 rounded-2xl px-5 py-4 sm:px-7"
@@ -279,30 +271,7 @@ function StatBar({ countries }: { countries: { country: string; flag: string }[]
         <span className="text-sm font-bold text-white">Rated by tutors</span>
       </div>
 
-      <Stat value={String(countries.length)} label="Countries" />
       <Stat value="100%" label="Would recommend" />
-
-      {/* Windows has no colour glyphs for regional-indicator pairs, so a flag
-          there falls back to its two-letter code. The pill is sized and
-          coloured to hold either one without looking like a broken image. */}
-      <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
-        {countries.map((c) => (
-          <span
-            key={c.country}
-            title={c.country}
-            aria-label={c.country}
-            role="img"
-            className="flex h-7 items-center rounded-md px-1.5 text-base font-semibold leading-none"
-            style={{
-              backgroundColor: 'rgba(194,170,106,0.16)',
-              border: '1px solid rgba(194,170,106,0.35)',
-              color: 'rgba(255,255,255,0.85)',
-            }}
-          >
-            {c.flag}
-          </span>
-        ))}
-      </span>
     </div>
   )
 }
