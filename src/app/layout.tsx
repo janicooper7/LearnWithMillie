@@ -93,9 +93,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {
-    canonical: siteUrl,
-  },
   other: {
     // Trustpilot domain ownership check - safe to remove once verified
     'trustpilot-one-time-domain-verification-id':

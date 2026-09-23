@@ -5,6 +5,7 @@ import FAQ from '../sections/FAQ'
 import LessonOptions from '../sections/LessonOptions'
 import MeetTutor from '../sections/MeetTutor'
 import HowItWorks from '../sections/HowItWorks'
+import StudentFaqSchema from '../components/StudentFaqSchema'
 
 export const metadata: Metadata = {
   title: 'English Lessons for Students',
@@ -15,6 +16,9 @@ export const metadata: Metadata = {
     description:
       'Transform your English skills with personalized tutoring. Learn Business English, improve conversational fluency, and prepare for job interviews.',
     url: '/students',
+  },
+  alternates: {
+    canonical: '/students',
   },
 }
 
@@ -27,6 +31,7 @@ export default function StudentsPage() {
       <HowItWorks />
       <Pricing />
       <FAQ />
+      <StudentFaqSchema />
     </>
   )
 }

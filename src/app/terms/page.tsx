@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: 'Terms & Conditions | LearnWithMillie',
   description:
     'Terms and conditions for LearnWithMillie, including our cancellation policy, lateness and attendance policy, refund policy, trial lesson terms, and online course terms.',
+  alternates: {
+    canonical: '/terms',
+  },
 }
 
 const sections = [

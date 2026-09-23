@@ -11,6 +11,9 @@ export const metadata: Metadata = {
       'Learn English with confidence or grow as a teacher — lessons for students and mentorship for teachers, with certified TEFL teacher Millie Cooper.',
     url: '/',
   },
+  alternates: {
+    canonical: '/',
+  },
 }
 
 export default function Home() {

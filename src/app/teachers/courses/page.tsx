@@ -28,6 +28,9 @@ export const metadata: Metadata = {
       'Online courses for English teachers — build your tutoring business, find students, and convert more trial lessons.',
     url: '/teachers/courses',
   },
+  alternates: {
+    canonical: '/teachers/courses',
+  },
 }
 
 export const dynamic = 'force-dynamic'

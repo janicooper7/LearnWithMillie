@@ -25,6 +25,9 @@ export const metadata: Metadata = {
       'Get inspired with thought-provoking ESL debate topics and key vocabulary. Perfect for classroom discussions and speaking practice.',
     url: '/teachers/debategenerator',
   },
+  alternates: {
+    canonical: '/teachers/debategenerator',
+  },
 }
 
 export const dynamic = 'force-dynamic'

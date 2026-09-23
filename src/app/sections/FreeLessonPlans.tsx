@@ -40,12 +40,12 @@ export default function FreeLessonPlans() {
               </div>
 
               {/* Heading */}
-              <h2
+              <h1
                 className='text-3xl md:text-4xl font-bold text-center mb-4'
                 style={{ color: '#1F3A34', fontFamily: 'var(--font-playfair), Georgia, serif' }}
               >
                 FREE ESL Lesson Plans
-              </h2>
+              </h1>
 
               {/* Description */}
               <p

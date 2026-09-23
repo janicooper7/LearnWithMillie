@@ -19,6 +19,9 @@ export const metadata: Metadata = {
       'Download free ESL lesson plans for English teachers. Ready-to-use classroom materials to save you prep time.',
     url: '/teacher-materials',
   },
+  alternates: {
+    canonical: '/teacher-materials',
+  },
 }
 
 export default function TeacherMaterialsPage() {

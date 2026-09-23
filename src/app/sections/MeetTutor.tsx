@@ -57,9 +57,9 @@ export default function MeetTutor() {
               </span>
             </div>
 
-            <h2 className='heading-lg mb-5' style={{ color: '#1F3A34' }}>
+            <h1 className='heading-lg mb-5' style={{ color: '#1F3A34' }}>
               Hi, I&apos;m Millie
-            </h2>
+            </h1>
 
             <p
               className='text-lg leading-relaxed mb-4'

@@ -14,6 +14,9 @@ export const metadata: Metadata = {
       'Personalised mentorship for English teachers at every stage — from lesson design to building your brand.',
     url: '/teachers/mentorship',
   },
+  alternates: {
+    canonical: '/teachers/mentorship',
+  },
 }
 
 export default function MentorshipPage() {

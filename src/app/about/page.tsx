@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     url: '/about',
     images: ['/images/aboutme.png'],
   },
+  alternates: {
+    canonical: '/about',
+  },
 }
 
 export default function AboutPage() {

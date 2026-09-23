@@ -36,7 +36,7 @@ const courses: Product[] = [
     description:
       'All 3 courses — launch, fill, and keep your tutoring business thriving. The complete system, built across five years and 4,000+ lessons.',
     points: ['3 courses', '35 modules', 'Lifetime access'],
-    href: '/teachers/courses',
+    href: '/teachers/courses/course-full',
     cta: 'See what’s inside',
     price: '$149',
     badge: 'Best value',

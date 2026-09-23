@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'Privacy & Cookie Policy | LearnWithMillie',
   description:
     'How LearnWithMillie collects, uses and protects your personal data, which cookies the site uses, and your rights under UK data protection law.',
+  alternates: {
+    canonical: '/privacy',
+  },
 }
 
 // Facts about the business shown on this page. Update the effective date

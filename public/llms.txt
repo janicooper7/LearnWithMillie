@@ -1,0 +1,31 @@
+# LearnWithMillie
+
+> Professional online English tutoring from Millie Cooper, a certified TEFL teacher based in London — Business English, conversation and job interview preparation for learners, plus mentorship, courses and free tools for English teachers.
+
+Millie has five years of experience teaching English online. She holds a Master's in Public Policy from UCL and a Bachelor's in International Politics from King's College London. Lessons are 50 minutes, one-to-one, held online via Google Meet, and a free 15-minute trial is available.
+
+## For students
+
+- [English lessons for students](https://learnwithmillie.com/students): Personalised tutoring in Business English, conversational fluency and interview preparation, with flexible scheduling.
+- [About Millie](https://learnwithmillie.com/about): Background, qualifications and teaching approach.
+- [Contact](https://learnwithmillie.com/contact): Book a first lesson or a free 15-minute trial.
+
+## For English teachers
+
+- [Teacher hub](https://learnwithmillie.com/teachers): Mentorship, self-paced courses and free classroom tools for English teachers.
+- [Teaching journey](https://learnwithmillie.com/teachers/journey): The five stages of an online English teaching career, with the right course or tool for each.
+- [Courses](https://learnwithmillie.com/teachers/courses): Set up a tutoring business, market it across five channels and convert trial lessons with a 5-phase framework.
+- [The BOOKED Trilogy](https://learnwithmillie.com/teachers/courses/course-full): All three courses together — 35 modules, lifetime access.
+- [GET READY](https://learnwithmillie.com/teachers/courses/get-ready): Setting up an online English tutoring business — TEFL, platforms, tech, rates, profile and intro video.
+- [GET BOOKED](https://learnwithmillie.com/teachers/courses/get-booked): Getting students — marketing and a 5-phase trial-lesson framework.
+- [STAY BOOKED](https://learnwithmillie.com/teachers/courses/stay-booked): Keeping a full calendar — lesson structure, retention systems and AI workflows.
+- [Mentorship](https://learnwithmillie.com/teachers/mentorship): One-to-one mentorship on teaching skills, lesson design and online presence.
+- [Platform Finder](https://learnwithmillie.com/teachers/platform-finder): Answer 7 questions to find which of 33 online teaching platforms fit you, ranked by pay and fit.
+- [Debate Generator](https://learnwithmillie.com/teachers/debategenerator): ESL debate topics with key vocabulary for speaking practice.
+- [Free ESL lesson plans](https://learnwithmillie.com/teacher-materials): Downloadable, ready-to-use classroom materials.
+
+## Optional
+
+- [Terms and Conditions](https://learnwithmillie.com/terms)
+- [Privacy Policy](https://learnwithmillie.com/privacy)
+- [Sitemap](https://learnwithmillie.com/sitemap.xml)

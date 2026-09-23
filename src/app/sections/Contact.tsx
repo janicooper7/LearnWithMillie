@@ -116,9 +116,9 @@ export default function Contact() {
 
         {/* Header */}
         <div className='text-center mb-12'>
-          <h2 className='heading-lg mb-3' style={{ color: '#1F3A34' }}>
+          <h1 className='heading-lg mb-3' style={{ color: '#1F3A34' }}>
             Get in touch
-          </h2>
+          </h1>
           <p className='text-base' style={{ color: 'rgba(31,58,52,0.65)', fontFamily: 'var(--font-inter), sans-serif' }}>
             Have a question or ready to start? I&apos;d love to hear from you.
           </p>

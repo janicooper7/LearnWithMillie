@@ -1,3 +1,5 @@
+import { INSTAGRAM_URL, TIKTOK_URL } from '@/lib/social'
+
 export default function StructuredData() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://learnwithmillie.com'
 
@@ -8,26 +10,25 @@ export default function StructuredData() {
     description:
       'Professional English tutoring service offering Business English, Conversational English, and Interview Preparation.',
     url: siteUrl,
-    logo: `${siteUrl}/images/HeaderImage.png`,
+    logo: `${siteUrl}/logo.png`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'London',
       addressCountry: 'GB',
     },
-    sameAs: [
-      // Add your social media profiles here
-      // 'https://www.linkedin.com/in/yourprofile',
-      // 'https://twitter.com/yourhandle',
-    ],
+    sameAs: [INSTAGRAM_URL, TIKTOK_URL],
   }
 
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Millie Cooper',
+    url: `${siteUrl}/about`,
+    image: `${siteUrl}/images/webphoto.jpg`,
+    sameAs: [INSTAGRAM_URL, TIKTOK_URL],
     jobTitle: 'TEFL Certified English Teacher',
     description:
-      'Certified TEFL teacher from London with three years of experience teaching English online.',
+      'Certified TEFL teacher from London with five years of experience teaching English online.',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'London',
