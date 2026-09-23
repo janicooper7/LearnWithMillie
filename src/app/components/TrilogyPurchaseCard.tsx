@@ -26,7 +26,7 @@ import {
 } from 'lucide-react'
 
 const VIDEO_URL =
-  'https://www.youtube.com/embed/KawzKRqQV3A?si=Nu95B2S9ouSqLpDi&autoplay=1'
+  'https://www.youtube-nocookie.com/embed/KawzKRqQV3A?si=Nu95B2S9ouSqLpDi&autoplay=1'
 
 const includes = [
   { icon: Video, label: '~350 minutes of on-demand video' },

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { X, Check, Copy, GraduationCap, Sparkles } from 'lucide-react'
 import { track } from '@/lib/trackClient'
+import { useConsent } from './useConsent'
 import { isTrackablePath } from '@/lib/tracking'
 import { SIGNUP_OFFER, SIGNUP_OFFER_HEADLINE } from '@/lib/signupOffer'
 import type { Audience } from '@/lib/email/types'
@@ -74,8 +75,12 @@ export default function EmailSignupPopup() {
 
   // Signed-in visitors are already customers with their own journey emails, and
   // the admin and dashboard areas aren't marketing surfaces at all.
+  //
+  // It also waits for the cookie banner to be answered: two dialogs competing
+  // for the same first few seconds means one of them gets dismissed unread.
+  const consent = useConsent()
   const eligible =
-    status === 'unauthenticated' && !!pathname && isTrackablePath(pathname)
+    status === 'unauthenticated' && !!pathname && isTrackablePath(pathname) && consent !== null
 
   useEffect(() => {
     if (!eligible || !shouldShow()) return
@@ -333,6 +338,22 @@ export default function EmailSignupPopup() {
                       Unsubscribe any time
                     </span>
                   </div>
+
+                  <p className='text-[11px] leading-relaxed text-[#1F3A34]/50'>
+                    By signing up you agree to receive emails from
+                    LearnWithMillie with tips and offers
+                    {audience === 'teacher' ? ' for teachers' : ' for learners'},
+                    including a short series about the page you signed up
+                    on. See the{' '}
+                    <a
+                      href='/privacy'
+                      target='_blank'
+                      className='underline underline-offset-2 hover:text-[#1F3A34]'
+                    >
+                      Privacy Policy
+                    </a>
+                    .
+                  </p>
                 </form>
               )}
             </div>

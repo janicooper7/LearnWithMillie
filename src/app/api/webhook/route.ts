@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
             const found = await prisma.user.findUnique({ where: { email }, select: { id: true } })
             if (found) {
               userId = found.id
-              console.log('Webhook: resolved userId from email', { email, userId })
+              console.log('Webhook: resolved userId from email', { userId })
             }
           }
         }

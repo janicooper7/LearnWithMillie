@@ -88,7 +88,7 @@ export async function deliverNextSubscriberStep(
   try {
     bought = await journey.hasBought(row.email)
   } catch (err) {
-    console.error('[subscriber-followup] purchase check failed for', row.email, err)
+    console.error('[subscriber-followup] purchase check failed for subscriber', row.id, err)
     await prisma.subscriber
       .update({
         where: { id: row.id },
@@ -99,7 +99,7 @@ export async function deliverNextSubscriberStep(
   }
 
   if (bought) {
-    console.log('[subscriber-followup] already bought', row.followUp, '—', row.email)
+    console.log('[subscriber-followup] already bought', row.followUp, '— subscriber', row.id)
     await stop(row.id)
     return 'bought'
   }
@@ -111,7 +111,7 @@ export async function deliverNextSubscriberStep(
   // journey is only two steps long so this defers at most once. See
   // frequency.ts for why the deference only runs in this direction.
   if (await accountJourneyMailedRecently(row.email)) {
-    console.log('[subscriber-followup] deferring', step.key, 'for', row.email, '— account journey mailed recently')
+    console.log('[subscriber-followup] deferring', step.key, 'for subscriber', row.id, '— account journey mailed recently')
     await prisma.subscriber.update({
       where: { id: row.id },
       data: { followUpNextAt: new Date(Date.now() + DAY_MS) },
@@ -155,7 +155,7 @@ export async function deliverNextSubscriberStep(
     if (row.followUpAttempts > 0) {
       await prisma.subscriber.update({ where: { id: row.id }, data: { followUpAttempts: 0 } })
     }
-    console.log('[subscriber-followup] sent', step.key, 'to', row.email)
+    console.log('[subscriber-followup] sent', step.key, 'to subscriber', row.id)
     return 'sent'
   } catch (err) {
     const attempts = row.followUpAttempts + 1
@@ -173,7 +173,7 @@ export async function deliverNextSubscriberStep(
     })
 
     console.error(
-      `[subscriber-followup] ${step.key} failed for ${row.email} (attempt ${attempts}${exhausted ? ', giving up' : ''})`,
+      `[subscriber-followup] ${step.key} failed for subscriber ${row.id} (attempt ${attempts}${exhausted ? ', giving up' : ''})`,
       err
     )
     return 'failed'

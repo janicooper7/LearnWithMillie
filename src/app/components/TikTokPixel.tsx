@@ -4,6 +4,7 @@ import Script from 'next/script'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, Suspense } from 'react'
 import { useDeferredThirdParty } from './useDeferredThirdParty'
+import { useConsent } from './useConsent'
 
 const TIKTOK_PIXEL_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID
 
@@ -40,8 +41,10 @@ export default function TikTokPixel() {
   // The TikTok loader is small, but the SDK it pulls in is not.
   // See useDeferredThirdParty.
   const released = useDeferredThirdParty()
+  // Never loads without an advertising opt-in from the cookie banner.
+  const consent = useConsent()
 
-  if (!TIKTOK_PIXEL_ID || !released) return null
+  if (!TIKTOK_PIXEL_ID || !released || !consent?.marketing) return null
 
   return (
     <>

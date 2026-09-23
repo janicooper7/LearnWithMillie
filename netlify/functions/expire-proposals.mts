@@ -4,10 +4,8 @@
  * Same shape as email-journey.mts: the work lives in the Next.js route
  * (src/app/api/cron/expire-proposals), and this only calls it on a schedule.
  *
- * Note for anyone moving the site: `vercel.json` carries the same schedule for
- * Vercel, which ignores this file, and Netlify ignores that one. Whichever host
- * the site is on, exactly one of the two is live — change both or held slots
- * are never given back.
+ * This is the only scheduler for it. Moving the site off Netlify means
+ * recreating this schedule on the new host, or held slots are never given back.
  */
 
 /** Netlify injects URL as the site's primary address at runtime. */

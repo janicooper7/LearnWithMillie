@@ -40,7 +40,7 @@ export async function finalizePlatformFinderResult(id: string, email: string | n
 
   try {
     await sendPlatformFinderResults(email, profile, resultUrl(id))
-    console.log('Platform Finder results emailed', { id, email })
+    console.log('Platform Finder results emailed', { id })
   } catch (err: any) {
     console.error('Platform Finder results email failed:', err.message)
   }

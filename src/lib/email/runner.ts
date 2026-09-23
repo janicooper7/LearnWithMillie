@@ -91,7 +91,7 @@ export async function deliverNextStep(journeyId: string): Promise<DeliveryResult
     if (row.attempts > 0) {
       await prisma.emailJourney.update({ where: { id: row.id }, data: { attempts: 0 } })
     }
-    console.log('[email-journey] sent', step.key, 'to', row.user.email)
+    console.log('[email-journey] sent', step.key, 'to user', row.userId)
     return 'sent'
   } catch (err) {
     const attempts = row.attempts + 1
@@ -109,7 +109,7 @@ export async function deliverNextStep(journeyId: string): Promise<DeliveryResult
     })
 
     console.error(
-      `[email-journey] ${step.key} failed for ${row.user.email} (attempt ${attempts}${exhausted ? ', giving up' : ''})`,
+      `[email-journey] ${step.key} failed for user ${row.userId} (attempt ${attempts}${exhausted ? ', giving up' : ''})`,
       err
     )
     return 'failed'
@@ -131,8 +131,16 @@ export async function deliverNextStep(journeyId: string): Promise<DeliveryResult
  * is precisely what people mean when they say they unsubscribed and it didn't
  * work. They are still enrolled, so the row exists and a later re-subscribe has
  * somewhere to land; it is just created already opted out and never sends.
+ *
+ * `marketingOptOut` is the box on the signup form. The journey sells lessons
+ * and courses, so it is marketing under PECR, and someone who ticked the box
+ * is enrolled opted out in exactly the same way.
  */
-export async function enrolInJourney(userId: string, role: string): Promise<void> {
+export async function enrolInJourney(
+  userId: string,
+  role: string,
+  opts: { marketingOptOut?: boolean } = {}
+): Promise<void> {
   const journey = journeyForRole(role)
   if (!journey) return
 
@@ -145,7 +153,7 @@ export async function enrolInJourney(userId: string, role: string): Promise<void
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
   // Case-insensitive: /api/subscribe lowercases, registration stores what was
   // typed, so an exact match would miss "Sam@x.com" against "sam@x.com".
-  const optedOut = user
+  const unsubscribedFromList = user
     ? await prisma.subscriber.findFirst({
         where: {
           email: { equals: user.email, mode: 'insensitive' },
@@ -154,6 +162,7 @@ export async function enrolInJourney(userId: string, role: string): Promise<void
         select: { id: true },
       })
     : null
+  const optedOut = opts.marketingOptOut || !!unsubscribedFromList
 
   let created
   try {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { escapeHtml } from '@/lib/escapeHtml'
 
 // Create a transporter using SMTP
 const transporter = nodemailer.createTransport({
@@ -57,7 +58,6 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    console.log('Received form submission:', { ...body, email: '[REDACTED]' })
 
     const { fullName, email, message } = body
 
@@ -65,15 +65,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Header injection guard: a newline in the subject is how a form becomes a
+    // relay for extra headers.
+    const subjectName = String(fullName).replace(/[\r\n]+/g, ' ').slice(0, 100)
+
     const mailOptions = {
       from: process.env.SMTP_USER,
       to: process.env.RECIPIENT_EMAIL,
-      subject: `LearnWithMillie enquiry from ${fullName}`,
+      subject: `LearnWithMillie enquiry from ${subjectName}`,
+      replyTo: String(email).replace(/[\r\n]+/g, ''),
       html: `
         <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${fullName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        ${message ? `<p><strong>Message:</strong> ${message}</p>` : ''}
+        <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        ${message ? `<p><strong>Message:</strong> ${escapeHtml(message).replace(/\n/g, '<br>')}</p>` : ''}
       `,
     }
 
@@ -88,10 +93,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error processing form submission:', error)
     return NextResponse.json(
-      {
-        error: 'Failed to send message',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
+      { error: 'Failed to send message' },
       { status: 500 }
     )
   }

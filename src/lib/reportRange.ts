@@ -1,7 +1,7 @@
 // Date ranges for the admin customer report.
 //
 // Calendar ranges ("today", "this month") are resolved in London time, not the
-// server's UTC. On a Netlify/Vercel box those differ for most of the year, and
+// server's UTC. On a Netlify box those differ for most of the year, and
 // a report that called 1am BST "yesterday" would be quietly wrong every night.
 
 const TZ = 'Europe/London'

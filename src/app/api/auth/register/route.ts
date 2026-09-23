@@ -5,7 +5,7 @@ import { enrolInJourney } from '@/lib/email/runner'
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password, role } = await req.json()
+    const { name, email, password, role, marketingOptOut } = await req.json()
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 })
@@ -43,9 +43,9 @@ export async function POST(req: Request) {
     // killed the moment we respond, but never allowed to fail the signup — an
     // SMTP hiccup must not cost us the account.
     try {
-      await enrolInJourney(user.id, assignedRole)
+      await enrolInJourney(user.id, assignedRole, { marketingOptOut: marketingOptOut === true })
     } catch (err) {
-      console.error('[register] welcome email failed for', user.email, err)
+      console.error('[register] welcome email failed for', user.id, err)
     }
 
     return NextResponse.json({ id: user.id, email: user.email }, { status: 201 })

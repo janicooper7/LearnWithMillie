@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     })
 
     if (!user) {
-      console.log('[cal-webhook] No user found for email:', attendeeEmail)
+      console.log('[cal-webhook] No user found for attendee email')
       return NextResponse.json({ received: true })
     }
 

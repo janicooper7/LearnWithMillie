@@ -209,6 +209,10 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  // PECR soft opt-in: marketing to customers without consent is only allowed if
+  // they were offered a simple way to refuse at the point their email was
+  // collected. Unticked by default; ticking it means no marketing emails.
+  const [marketingOptOut, setMarketingOptOut] = useState(false)
   const [showTerms, setShowTerms] = useState(false)
 
   const isTeacher = role === 'TEACHER'
@@ -221,7 +225,7 @@ export default function SignupPage() {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, role }),
+      body: JSON.stringify({ name, email, password, role, marketingOptOut }),
     })
 
     const data = await res.json()
@@ -255,6 +259,8 @@ export default function SignupPage() {
     } else {
       document.cookie = '_pending_role=STUDENT; path=/; max-age=300; SameSite=Lax'
     }
+    // Read by the Google sign-in callback in src/auth.ts, the same way as the role.
+    document.cookie = `_marketing_opt_out=${marketingOptOut ? '1' : '0'}; path=/; max-age=300; SameSite=Lax`
     signIn('google', { callbackUrl: nextPath ?? '/dashboard' })
   }
 
@@ -413,6 +419,28 @@ export default function SignupPage() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Marketing opt-out — above Google so it applies to both routes in */}
+            <div className='flex items-start gap-3 mb-5'>
+              <input
+                type='checkbox'
+                id='marketing-opt-out'
+                checked={marketingOptOut}
+                onChange={(e) => setMarketingOptOut(e.target.checked)}
+                className='mt-0.5 flex-shrink-0 w-4 h-4 rounded cursor-pointer'
+                style={{ accentColor: '#1F3A34' }}
+              />
+              <label htmlFor='marketing-opt-out' className='text-xs leading-relaxed cursor-pointer' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                I don&rsquo;t want to receive tips, offers or news from
+                LearnWithMillie by email. (You&rsquo;ll still get account emails
+                like receipts and booking confirmations. You can also unsubscribe
+                from any email later.) See the{' '}
+                <a href='/privacy' target='_blank' className='font-semibold underline underline-offset-2' style={{ color: '#1F3A34' }}>
+                  Privacy Policy
+                </a>
+                .
+              </label>
             </div>
 
             {/* Google */}

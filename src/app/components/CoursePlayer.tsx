@@ -171,7 +171,7 @@ export default function CoursePlayer({ courseSlug, courseTitle, lessons: initial
   // on mobile, where the accordion header already shows them.
   const renderLessonPanel = (lesson: Lesson, compact = false) => {
     const idx = lessons.findIndex((l) => l.id === lesson.id)
-    const vimeoSrc = `https://player.vimeo.com/video/${lesson.vimeoId}${lesson.vimeoHash ? `?h=${lesson.vimeoHash}&` : '?'}api=1&playsinline=1&color=C2AA6A&title=0&byline=0&portrait=0`
+    const vimeoSrc = `https://player.vimeo.com/video/${lesson.vimeoId}${lesson.vimeoHash ? `?h=${lesson.vimeoHash}&` : '?'}api=1&dnt=1&playsinline=1&color=C2AA6A&title=0&byline=0&portrait=0`
     const isLast = idx >= lessons.length - 1
     return (
       <>

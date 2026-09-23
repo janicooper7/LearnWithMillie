@@ -7,10 +7,9 @@
  * independently testable with a curl, and this file never needs Prisma bundled
  * into it.
  *
- * Note for anyone moving the site: `vercel.json` carries the same schedule for
- * Vercel, which ignores this file, and Netlify ignores that one. Whichever host
- * the site is on, exactly one of the two is live — change both or the drip
- * silently stops.
+ * This is the only scheduler for the drip (and the retention sweep that runs
+ * alongside it). Moving the site off Netlify means recreating this schedule on
+ * the new host, or the drip silently stops.
  */
 
 /** Netlify injects URL as the site's primary address at runtime. */

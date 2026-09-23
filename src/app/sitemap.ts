@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/teacher-materials`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/contact`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${baseUrl}/terms`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${baseUrl}/privacy`, changeFrequency: 'yearly', priority: 0.3 },
   ] satisfies MetadataRoute.Sitemap).map((route) => ({ ...route, lastModified: new Date() }))
 
   // Public course sales pages — one entry per published course.

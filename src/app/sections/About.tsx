@@ -276,7 +276,7 @@ export default function About() {
               {videoPlaying ? (
                 <iframe
                   className='absolute top-0 left-0 w-full h-full'
-                  src='https://www.youtube.com/embed/GevjT36pwJI?si=CasLXflYe670jtEJ&autoplay=1'
+                  src='https://www.youtube-nocookie.com/embed/GevjT36pwJI?si=CasLXflYe670jtEJ&autoplay=1'
                   title='Millie teaching English'
                   allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                   referrerPolicy='strict-origin-when-cross-origin'

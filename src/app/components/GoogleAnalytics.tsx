@@ -4,6 +4,7 @@ import Script from 'next/script'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, Suspense } from 'react'
 import { useDeferredThirdParty } from './useDeferredThirdParty'
+import { useConsent } from './useConsent'
 
 // Replace with your Google Analytics Measurement ID
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
@@ -57,8 +58,10 @@ export default function GoogleAnalytics() {
   // gtag.js is ~418KB of parsed JavaScript. It waits until the visitor has
   // done something, or until the deferral window closes.
   const released = useDeferredThirdParty()
+  // Never loads without an analytics opt-in from the cookie banner.
+  const consent = useConsent()
 
-  if (!GA_MEASUREMENT_ID || !released) return null
+  if (!GA_MEASUREMENT_ID || !released || !consent?.analytics) return null
 
   return (
     <>

@@ -270,6 +270,14 @@ export default function Contact() {
                   {!isSubmitting && <ArrowRight className='w-4 h-4' />}
                 </button>
 
+                <p className='mt-3 text-xs text-center leading-relaxed' style={{ color: 'rgba(31,58,52,0.5)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  I&rsquo;ll only use your details to reply to your message. See the{' '}
+                  <a href='/privacy' className='underline underline-offset-2 hover:text-[#1F3A34]'>
+                    Privacy Policy
+                  </a>
+                  .
+                </p>
+
                 {submitStatus === 'error' && (
                   <div
                     className='mt-3 text-sm text-center p-3 rounded-lg border'

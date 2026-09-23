@@ -11,6 +11,7 @@ import TikTokPixel from './components/TikTokPixel'
 import SiteTracking from './components/SiteTracking'
 import StructuredData from './components/StructuredData'
 import EmailSignupPopupLazy from './components/EmailSignupPopupLazy'
+import CookieBanner from './components/CookieBanner'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -145,6 +146,7 @@ export default function RootLayout({
               it needs to know whether there's a session. */}
           <EmailSignupPopupLazy />
         </SessionProvider>
+        <CookieBanner />
       </body>
     </html>
   )

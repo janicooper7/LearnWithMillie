@@ -199,7 +199,7 @@ export async function deliverTrialFollowUp(id: string): Promise<TrialFollowUpRes
   const user = row.user
 
   const stop = async (why: string) => {
-    console.log('[trial-followup]', why, '-', user.email)
+    console.log('[trial-followup]', why, '- follow-up', row.id)
     await prisma.trialFollowUp.update({ where: { id: row.id }, data: { sendAt: null } })
   }
 
@@ -303,7 +303,7 @@ export async function deliverTrialFollowUp(id: string): Promise<TrialFollowUpRes
     if (row.attempts > 0) {
       await prisma.trialFollowUp.update({ where: { id: row.id }, data: { attempts: 0 } })
     }
-    console.log('[trial-followup] sent to', user.email)
+    console.log('[trial-followup] sent', row.id)
     return 'sent'
   } catch (err) {
     const attempts = row.attempts + 1
@@ -321,7 +321,7 @@ export async function deliverTrialFollowUp(id: string): Promise<TrialFollowUpRes
     })
 
     console.error(
-      `[trial-followup] failed for ${user.email} (attempt ${attempts}${exhausted ? ', giving up' : ''})`,
+      `[trial-followup] failed for ${row.id} (attempt ${attempts}${exhausted ? ', giving up' : ''})`,
       err
     )
     return 'failed'

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { sendDueJourneyEmails } from '@/lib/email/runner'
 import { sendDueSubscriberEmails } from '@/lib/email/subscriberRunner'
 import { sendDueTrialFollowUps } from '@/lib/email/trialFollowUpRunner'
+import { runRetention } from '@/lib/retention'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -14,10 +15,9 @@ export const maxDuration = 60
  * would deliver it up to a day late — by which point "it was lovely to meet
  * you" is no longer true of anything the reader remembers.
  *
- * Authenticate with `Authorization: Bearer $CRON_SECRET`, which is the header
- * Vercel Cron sends by itself once CRON_SECRET is set. Any other scheduler
- * (cron-job.org, GitHub Actions, a Netlify scheduled function) works the same
- * way as long as it sends that header.
+ * Authenticate with `Authorization: Bearer $CRON_SECRET`. The Netlify
+ * scheduled function (netlify/functions/email-journey.mts) sends it; any other
+ * scheduler works the same way as long as it sends that header.
  */
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET
@@ -50,7 +50,17 @@ export async function GET(req: Request) {
     // sequential ordering here exists to avoid.
     const trialFollowUps = await sendDueTrialFollowUps(50)
 
-    const result = { journeys, followUps, trialFollowUps }
+    // Retention sweep piggybacks on this schedule — see src/lib/retention.ts.
+    // Its own try so a cleanup failure never reports the sends as failed.
+    let retention: Record<string, number> | { error: string }
+    try {
+      retention = await runRetention()
+    } catch (err) {
+      console.error('[cron/email-journey] retention sweep failed', err)
+      retention = { error: 'failed' }
+    }
+
+    const result = { journeys, followUps, trialFollowUps, retention }
     console.log('[cron/email-journey]', result)
     return NextResponse.json({ ok: true, ...result })
   } catch (err) {

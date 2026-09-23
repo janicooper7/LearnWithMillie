@@ -3,11 +3,17 @@
 // Browser side of the first-party analytics.
 //
 // Identity is deliberately minimal: a random visitor id kept in localStorage
-// and a session id that expires after 30 idle minutes. No personal data, no
-// cross-site identifiers — everything here is first-party and scoped to this
-// domain, which is also why it needs no cookie banner.
+// and a session id that expires after 30 idle minutes. No cross-site
+// identifiers — everything here is first-party and scoped to this domain.
+//
+// localStorage still counts as "storing information on the visitor's device"
+// under PECR, so this is not exempt from the cookie rules by being first-party.
+// It relies instead on the statistical-analytics exemption (Data (Use and
+// Access) Act 2025): it is described in the cookie policy and stops the moment
+// analytics is refused in the cookie banner. See src/lib/consent.ts.
 
 import { deriveChannel, isSelfReferralHost, type FunnelKey } from '@/lib/tracking'
+import { firstPartyAnalyticsAllowed } from '@/lib/consent'
 
 const VISITOR_KEY = 'lwm:vid'
 const SESSION_KEY = 'lwm:sid'
@@ -135,7 +141,7 @@ function safeHost(url: string): string | null {
  * the thing the visitor actually came to do, so every failure is swallowed.
  */
 export function track(funnel: FunnelKey | null, step: string, extra?: { value?: number }) {
-  if (typeof window === 'undefined') return
+  if (typeof window === 'undefined' || !firstPartyAnalyticsAllowed()) return
 
   try {
     const visitorId = getVisitorId()
@@ -169,7 +175,7 @@ export function track(funnel: FunnelKey | null, step: string, extra?: { value?: 
  * Stripe webhook can attribute the eventual purchase back to this visit.
  */
 export function trackingContext(): { visitorId: string; sessionId: string } | null {
-  if (typeof window === 'undefined') return null
+  if (typeof window === 'undefined' || !firstPartyAnalyticsAllowed()) return null
   try {
     return { visitorId: getVisitorId(), sessionId: getSessionId().id }
   } catch {

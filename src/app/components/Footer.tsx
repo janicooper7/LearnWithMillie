@@ -1,6 +1,7 @@
 import { Instagram } from 'lucide-react'
 import { INSTAGRAM_URL, TIKTOK_URL } from '@/lib/social'
 import ClimateBadge from './ClimateBadge'
+import CookieSettingsLink from './CookieSettingsLink'
 
 const TikTokIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -37,6 +38,8 @@ const teacherLinks = [
 const generalLinks = [
   { name: 'Contact', href: '/contact' },
   { name: 'Terms & Conditions', href: '/terms' },
+  { name: 'Privacy Policy', href: '/privacy' },
+  { name: 'Cookie Policy', href: '/privacy#cookies' },
 ]
 
 function FooterColumn({
@@ -163,13 +166,26 @@ export default function Footer() {
             <p className='text-sm' style={{ color: 'rgba(31,58,52,0.65)' }}>
               © {new Date().getFullYear()} LearnWithMillie. All rights reserved.
             </p>
-            <a
-              href='/terms'
-              className='text-xs transition-colors duration-200 hover:text-[#1F3A34]'
-              style={{ color: 'rgba(31,58,52,0.5)' }}
-            >
-              Terms & Conditions
-            </a>
+            <div className='flex items-center justify-center gap-4'>
+              <a
+                href='/terms'
+                className='text-xs transition-colors duration-200 hover:text-[#1F3A34]'
+                style={{ color: 'rgba(31,58,52,0.5)' }}
+              >
+                Terms & Conditions
+              </a>
+              <a
+                href='/privacy'
+                className='text-xs transition-colors duration-200 hover:text-[#1F3A34]'
+                style={{ color: 'rgba(31,58,52,0.5)' }}
+              >
+                Privacy Policy
+              </a>
+              <CookieSettingsLink
+                className='text-xs transition-colors duration-200 hover:text-[#1F3A34]'
+                style={{ color: 'rgba(31,58,52,0.5)' }}
+              />
+            </div>
             <p className='text-xs' style={{ color: 'rgba(31,58,52,0.7)' }}>
               Website maintained by:{' '}
               <a

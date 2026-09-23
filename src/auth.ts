@@ -61,11 +61,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!user.email) return false
         try {
           let assignedRole: 'STUDENT' | 'TEACHER' = 'STUDENT'
+          let marketingOptOut = false
           try {
             const cookieStore = await cookies()
             if (cookieStore.get('_pending_role')?.value === 'TEACHER') {
               assignedRole = 'TEACHER'
             }
+            marketingOptOut = cookieStore.get('_marketing_opt_out')?.value === '1'
           } catch {
             // cookies() unavailable in this context — default to STUDENT
           }
@@ -99,10 +101,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           if (!existing) {
             try {
-              await enrolInJourney(dbUser.id, dbUser.role)
+              await enrolInJourney(dbUser.id, dbUser.role, { marketingOptOut })
             } catch (err) {
               // Signing in must never fail because an email didn't go out.
-              console.error('[auth] welcome email failed for', user.email, err)
+              console.error('[auth] welcome email failed for', dbUser.id, err)
             }
           }
         } catch {
