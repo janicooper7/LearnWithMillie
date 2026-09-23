@@ -364,13 +364,13 @@ export default function SignupForm({ next, type }: { next: string | null; type: 
       <div className='flex-1 flex flex-col justify-center items-center px-6 py-16' style={{ backgroundColor: '#F4EDE4' }}>
 
         {/* Mobile: back link */}
-        <div className='lg:hidden w-full max-w-[420px] mb-8'>
+        <div className='lg:hidden w-full max-w-[520px] mb-8'>
           <Link href='/' className='text-[11px] uppercase tracking-[0.18em] font-medium' style={{ color: 'rgba(31,58,52,0.4)', fontFamily: 'var(--font-inter), sans-serif' }}>
             ← Back to site
           </Link>
         </div>
 
-        <div className='w-full max-w-[420px]'>
+        <div className='w-full max-w-[520px]'>
 
           {/* Form card */}
           <div className='bg-white rounded-2xl p-8 md:p-10' style={{ border: '1px solid #EDE4D8', boxShadow: '0 1px 3px rgba(31,58,52,0.04), 0 8px 32px rgba(31,58,52,0.05)' }}>
@@ -418,28 +418,6 @@ export default function SignupForm({ next, type }: { next: string | null; type: 
                   </button>
                 ))}
               </div>
-            </div>
-
-            {/* Marketing opt-out — above Google so it applies to both routes in */}
-            <div className='flex items-start gap-3 mb-5'>
-              <input
-                type='checkbox'
-                id='marketing-opt-out'
-                checked={marketingOptOut}
-                onChange={(e) => setMarketingOptOut(e.target.checked)}
-                className='mt-0.5 flex-shrink-0 w-4 h-4 rounded cursor-pointer'
-                style={{ accentColor: '#1F3A34' }}
-              />
-              <label htmlFor='marketing-opt-out' className='text-xs leading-relaxed cursor-pointer' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
-                I don&rsquo;t want to receive tips, offers or news from
-                LearnWithMillie by email. (You&rsquo;ll still get account emails
-                like receipts and booking confirmations. You can also unsubscribe
-                from any email later.) See the{' '}
-                <a href='/privacy' target='_blank' className='font-semibold underline underline-offset-2' style={{ color: '#1F3A34' }}>
-                  Privacy Policy
-                </a>
-                .
-              </label>
             </div>
 
             {/* Google */}
@@ -534,6 +512,28 @@ export default function SignupForm({ next, type }: { next: string | null; type: 
                   >
                     Terms & Conditions
                   </button>
+                </label>
+              </div>
+
+              {/* Marketing opt-out */}
+              <div className='flex items-start gap-3'>
+                <input
+                  type='checkbox'
+                  id='marketing-opt-out'
+                  checked={marketingOptOut}
+                  onChange={(e) => setMarketingOptOut(e.target.checked)}
+                  className='mt-0.5 flex-shrink-0 w-4 h-4 rounded cursor-pointer'
+                  style={{ accentColor: '#1F3A34' }}
+                />
+                <label htmlFor='marketing-opt-out' className='text-xs leading-relaxed cursor-pointer' style={{ color: 'rgba(31,58,52,0.6)', fontFamily: 'var(--font-inter), sans-serif' }}>
+                  I don&rsquo;t want to receive tips, offers or news from
+                  LearnWithMillie by email. (You&rsquo;ll still get account emails
+                  like receipts and booking confirmations. You can also unsubscribe
+                  from any email later.) See the{' '}
+                  <a href='/privacy' target='_blank' className='font-semibold underline underline-offset-2' style={{ color: '#1F3A34' }}>
+                    Privacy Policy
+                  </a>
+                  .
                 </label>
               </div>
 
