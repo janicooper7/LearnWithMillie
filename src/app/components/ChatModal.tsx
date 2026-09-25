@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { X, Send, Trash2 } from 'lucide-react'
+import { useVisibleInterval } from './useVisibleInterval'
 
 interface Message {
   id: string
@@ -36,11 +37,7 @@ export default function ChatModal({ userId, userName, isAdmin, onClose, onDelete
     }
   }, [isAdmin, userId])
 
-  useEffect(() => {
-    fetchMessages()
-    const interval = setInterval(fetchMessages, 4000)
-    return () => clearInterval(interval)
-  }, [fetchMessages])
+  useVisibleInterval(fetchMessages, 4000)
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {

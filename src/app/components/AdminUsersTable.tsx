@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { Users, GraduationCap, MessageCircle, Trash2, Copy, Check, RefreshCw } from 'lucide-react'
 import CreditAdjuster from './CreditAdjuster'
 import ChatModal from './ChatModal'
+import { useVisibleInterval } from './useVisibleInterval'
 
 type FilterType = 'ALL' | 'STUDENT' | 'ACTIVE' | 'TEACHER' | 'MESSAGES'
 
@@ -118,16 +119,8 @@ export default function AdminUsersTable({ users: initialUsers }: AdminUsersTable
   const reconcileSessions = () => runReconcile('/api/admin/reconcile-sessions', 'sessions')
   const reconcileSubscriptions = () => runReconcile('/api/admin/reconcile-subscriptions', 'subscriptions')
 
-  useEffect(() => {
-    fetchUsers()
-    fetchConversations()
-    const usersInterval = setInterval(fetchUsers, 30000)
-    const convsInterval = setInterval(fetchConversations, 10000)
-    return () => {
-      clearInterval(usersInterval)
-      clearInterval(convsInterval)
-    }
-  }, [fetchUsers, fetchConversations])
+  useVisibleInterval(fetchUsers, 60000)
+  useVisibleInterval(fetchConversations, 30000)
 
   const filtered = filter === 'ALL'
     ? users

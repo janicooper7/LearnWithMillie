@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { MessageCircle } from 'lucide-react'
 import ChatModal from './ChatModal'
+import { useVisibleInterval } from './useVisibleInterval'
 
 interface Conversation {
   id: string
@@ -26,11 +27,7 @@ export default function AdminMessagesPanel() {
     setLoading(false)
   }, [])
 
-  useEffect(() => {
-    fetchConversations()
-    const interval = setInterval(fetchConversations, 10000)
-    return () => clearInterval(interval)
-  }, [fetchConversations])
+  useVisibleInterval(fetchConversations, 30000)
 
   const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
 

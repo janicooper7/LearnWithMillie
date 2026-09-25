@@ -36,12 +36,15 @@ export default async () => {
 }
 
 /**
- * Hourly, half past — offset from the drip cron on the hour so the two runs
- * don't overlap on a cold start.
+ * Hourly, on the hour — the same minute as the drip cron, deliberately. Neon
+ * suspends the database after 5 idle minutes and bills at least those 5
+ * minutes for every wake-up, so two crons half an hour apart cost two wake-ups
+ * an hour where one would do. Both runs are a single indexed query, so sharing
+ * a cold start is cheap.
  *
  * Hourly rather than daily because the thing being released is calendar time:
  * a proposal that lapsed at 10:00 should be bookable by someone else that
  * morning, not the following day. The run is a single indexed query that
  * returns nothing in most hours.
  */
-export const config = { schedule: '30 * * * *' }
+export const config = { schedule: '0 * * * *' }

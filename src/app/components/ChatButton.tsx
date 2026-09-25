@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { MessageCircle, X } from 'lucide-react'
 import ChatModal from './ChatModal'
+import { useVisibleInterval } from './useVisibleInterval'
 
 interface ChatButtonProps {
   userName: string
@@ -15,18 +16,15 @@ export default function ChatButton({ userName }: ChatButtonProps) {
   const [bubbleVisible, setBubbleVisible] = useState(false)
   const [bubbleDismissed, setBubbleDismissed] = useState(false)
 
-  useEffect(() => {
-    const check = async () => {
-      const res = await fetch('/api/messages?unread=1')
-      if (res.ok) {
-        const data = await res.json()
-        setUnread(data.count ?? 0)
-      }
+  const checkUnread = useCallback(async () => {
+    const res = await fetch('/api/messages?unread=1')
+    if (res.ok) {
+      const data = await res.json()
+      setUnread(data.count ?? 0)
     }
-    check()
-    const interval = setInterval(check, 30000)
-    return () => clearInterval(interval)
   }, [])
+
+  useVisibleInterval(checkUnread, 60000)
 
   useEffect(() => {
     const timer = setTimeout(() => setBubbleVisible(true), 2500)
