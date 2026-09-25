@@ -7,11 +7,12 @@ import { claimWebhook, releaseWebhook } from '@/lib/webhookIdempotency'
 import crypto from 'crypto'
 
 /**
- * Whether an unverified request is refused. Off only until a real Cal.com
- * delivery has been seen logging "signature verified" in production; then
- * flip to true. Until then a mismatch is logged, as it has been since April.
+ * Whether an unverified request is refused. Switched on after real Cal.com
+ * deliveries logged "Signature verified" in production (25 Sep 2026). If a
+ * rotated secret ever breaks bookings, set false to log-only while Netlify's
+ * CAL_WEBHOOK_SECRET is brought back in line with Cal.com's.
  */
-const ENFORCE_SIGNATURE = false
+const ENFORCE_SIGNATURE = true
 
 // Cal.com sends x-cal-signature-256 as a bare hex HMAC-SHA256 of the body. The
 // original check expected a "sha256=" prefix (GitHub's format), so every real
