@@ -8,6 +8,7 @@ import { recordPurchase } from '@/lib/trackingServer'
 import { subscriptionLessons } from '@/lib/plans'
 import { TRILOGY_INSTALLMENTS } from '@/lib/trilogyOffer'
 import { addMonthsClamped } from '@/lib/dateMath'
+import { claimWebhook, releaseWebhook } from '@/lib/webhookIdempotency'
 
 async function grantCourseAccess(userId: string, courseSlug: string) {
   const course = await prisma.course.findUnique({
@@ -75,6 +76,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
+  // Stripe resends an event whenever a delivery is slow or fails, and every
+  // branch below increments credits, so each event id is fulfilled once.
+  const claimKey = `stripe:${event.id}`
+  try {
+    if (!(await claimWebhook(claimKey))) {
+      console.log('Webhook: duplicate delivery ignored', { eventId: event.id, type: event.type })
+      return NextResponse.json({ received: true, duplicate: true })
+    }
+  } catch (err: any) {
+    console.error('Webhook claim error:', err.message)
+    return NextResponse.json({ error: 'Processing error' }, { status: 500 })
+  }
+
+  let res: NextResponse
+  try {
+    res = await handleEvent(event)
+  } catch (err: any) {
+    console.error(`Webhook ${event.type} error:`, err.message)
+    res = NextResponse.json({ error: 'Processing error' }, { status: 500 })
+  }
+
+  // Failed, so Stripe will retry: give the event back so the retry can run.
+  if (res.status >= 500) await releaseWebhook(claimKey)
+  return res
+}
+
+async function handleEvent(event: Stripe.Event): Promise<NextResponse> {
   switch (event.type) {
     case 'checkout.session.completed': {
       try {

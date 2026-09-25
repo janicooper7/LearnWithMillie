@@ -3,13 +3,25 @@ import { prisma } from '@/lib/prisma'
 import { isProposalCancellation } from '@/lib/cal'
 import { PROPOSAL_EVENT_SLUGS } from '@/lib/sessionProposals'
 import { cancelTrialFollowUp, scheduleTrialFollowUp } from '@/lib/email/trialFollowUpRunner'
+import { claimWebhook, releaseWebhook } from '@/lib/webhookIdempotency'
 import crypto from 'crypto'
 
+/**
+ * Whether an unverified request is refused. Off only until a real Cal.com
+ * delivery has been seen logging "signature verified" in production; then
+ * flip to true. Until then a mismatch is logged, as it has been since April.
+ */
+const ENFORCE_SIGNATURE = false
+
+// Cal.com sends x-cal-signature-256 as a bare hex HMAC-SHA256 of the body. The
+// original check expected a "sha256=" prefix (GitHub's format), so every real
+// delivery failed it, which is why enforcement was switched off. Both forms
+// are accepted.
 function verifySignature(body: string, signature: string, secret: string): boolean {
-  const hmac = crypto.createHmac('sha256', secret)
-  hmac.update(body)
-  const digest = hmac.digest('hex')
-  return `sha256=${digest}` === signature
+  const digest = crypto.createHmac('sha256', secret).update(body).digest('hex')
+  const received = signature.trim().replace(/^sha256=/i, '').toLowerCase()
+  if (received.length !== digest.length) return false
+  return crypto.timingSafeEqual(Buffer.from(received), Buffer.from(digest))
 }
 
 async function cancelCalBooking(bookingUid: string) {
@@ -29,16 +41,25 @@ async function cancelCalBooking(bookingUid: string) {
 }
 
 export async function POST(req: NextRequest) {
+  // Set once this delivery has claimed its booking event; released on failure.
+  let claimKey: string | null = null
+
   try {
     const body = await req.text()
     const signature = req.headers.get('x-cal-signature-256') ?? ''
+    const secret = process.env.CAL_WEBHOOK_SECRET
 
-    if (process.env.CAL_WEBHOOK_SECRET && signature) {
-      const valid = verifySignature(body, signature, process.env.CAL_WEBHOOK_SECRET)
-      if (!valid) {
-        console.error('[cal-webhook] Invalid signature. Received:', signature, '— continuing anyway for debugging')
-        // Not returning 401 temporarily to debug refund issue
+    // Unsigned counts as unverified: anyone can omit a header.
+    const verified = !!secret && !!signature && verifySignature(body, signature, secret)
+    if (verified) {
+      console.log('[cal-webhook] Signature verified')
+    } else {
+      const why = !secret ? 'CAL_WEBHOOK_SECRET not set' : !signature ? 'no signature header' : 'signature mismatch'
+      if (ENFORCE_SIGNATURE) {
+        console.error('[cal-webhook] Rejected:', why)
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
       }
+      console.error('[cal-webhook] Unverified request, processing anyway (ENFORCE_SIGNATURE off):', why)
     }
 
     const event = JSON.parse(body)
@@ -65,6 +86,18 @@ export async function POST(req: NextRequest) {
     if (!user) {
       console.log('[cal-webhook] No user found for attendee email')
       return NextResponse.json({ received: true })
+    }
+
+    // Each handler below moves a credit, so a redelivered event must not run
+    // twice. Cal.com has no delivery id; a booking uid sees each of these
+    // triggers at most once, so the pair identifies the event.
+    if (payload?.uid && ['BOOKING_CREATED', 'BOOKING_CANCELLED', 'BOOKING_COMPLETED'].includes(triggerEvent)) {
+      const key = `cal:${triggerEvent}:${payload.uid}`
+      if (!(await claimWebhook(key))) {
+        console.log('[cal-webhook] Duplicate delivery ignored:', key)
+        return NextResponse.json({ received: true, action: 'duplicate ignored' })
+      }
+      claimKey = key
     }
 
     if (triggerEvent === 'BOOKING_CREATED') {
@@ -205,6 +238,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true })
   } catch (err) {
     console.error('[cal-webhook] Error:', err)
+    // Failed part-way, so let a retry run it rather than be taken for a copy.
+    if (claimKey) await releaseWebhook(claimKey)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
