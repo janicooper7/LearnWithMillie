@@ -207,7 +207,7 @@ export async function createProposal(opts: {
         ok: false,
         error:
           err.status === 400 || err.status === 409
-            ? 'Cal.com would not take that slot — it may have just been booked. Refresh and pick another.'
+            ? `Cal.com would not take that slot${err.detail ? ` (${err.detail})` : ''}. It may have just been booked, or be outside working hours — refresh and pick another.`
             : err.message,
       }
     }

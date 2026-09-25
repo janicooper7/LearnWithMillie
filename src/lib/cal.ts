@@ -42,7 +42,12 @@ export function isProposalCancellation(reason: string): boolean {
 }
 
 export class CalError extends Error {
-  constructor(message: string, readonly status?: number) {
+  constructor(
+    message: string,
+    readonly status?: number,
+    /** Cal's own explanation, when the error body carried one. */
+    readonly detail?: string
+  ) {
     super(message)
     this.name = 'CalError'
   }
@@ -75,7 +80,13 @@ async function call<T>(
   const text = await res.text()
   if (!res.ok) {
     console.error('[cal]', opts.method ?? 'GET', path, res.status, text)
-    throw new CalError(`Cal.com returned ${res.status}.`, res.status)
+    let detail: string | undefined
+    try {
+      const body = JSON.parse(text)
+      const m = body?.error?.message ?? body?.message
+      detail = Array.isArray(m) ? m.join('; ') : typeof m === 'string' ? m : undefined
+    } catch {}
+    throw new CalError(`Cal.com returned ${res.status}.`, res.status, detail)
   }
 
   try {
@@ -200,7 +211,9 @@ export async function createBooking(opts: {
   allowBookingOutOfBounds?: boolean
 }): Promise<CreatedBooking> {
   const data = await call<{ data?: CreatedBooking }>('/bookings', {
-    version: '2024-08-13',
+    // allowBookingOutOfBounds only exists from this version; the request and
+    // response fields used here are unchanged from 2024-08-13.
+    version: '2026-02-25',
     method: 'POST',
     body: {
       eventTypeId: opts.eventTypeId,
