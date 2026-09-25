@@ -191,6 +191,13 @@ export async function createBooking(opts: {
   /** Goes into the booking's notes, so it shows on the calendar invite. */
   notes?: string
   metadata?: Record<string, string>
+  /**
+   * Skips the event type's minimum booking notice. Cal only honours it for the
+   * event's owner, which the API key is — it exists so Millie can offer a
+   * same-day time the public embed would (rightly) hide from students.
+   * Availability and conflicts are still checked.
+   */
+  allowBookingOutOfBounds?: boolean
 }): Promise<CreatedBooking> {
   const data = await call<{ data?: CreatedBooking }>('/bookings', {
     version: '2024-08-13',
@@ -206,6 +213,7 @@ export async function createBooking(opts: {
       },
       ...(opts.notes ? { bookingFieldsResponses: { notes: opts.notes } } : {}),
       ...(opts.metadata ? { metadata: opts.metadata } : {}),
+      ...(opts.allowBookingOutOfBounds ? { allowBookingOutOfBounds: true } : {}),
     },
   })
 

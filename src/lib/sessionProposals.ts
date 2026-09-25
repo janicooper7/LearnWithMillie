@@ -45,8 +45,12 @@ const DEFAULT_TTL_MS = 48 * 60 * 60 * 1000
  * A proposal stops being answerable a little before the session itself. Past
  * this point "accept" is meaningless — the lesson is about to start — and the
  * slot is more useful back on the calendar.
+ *
+ * Kept short on purpose: Millie proposes same-day sessions, and the event
+ * types' own minimum notice (up to 12 hours) is bypassed for her in
+ * createBooking. This is only the floor that leaves a student time to answer.
  */
-const MIN_LEAD_MS = 2 * 60 * 60 * 1000
+const MIN_LEAD_MS = 30 * 60 * 1000
 
 export const PROPOSAL_EVENT_SLUGS = {
   lesson: 'english-lessons-with-millie-cooper',
@@ -172,7 +176,7 @@ export async function createProposal(opts: {
   }
 
   if (opts.start.getTime() <= now.getTime() + MIN_LEAD_MS) {
-    return { ok: false, error: 'Pick a time at least a couple of hours from now.' }
+    return { ok: false, error: 'Pick a time at least half an hour from now.' }
   }
 
   const eventType = await findEventType(opts.eventTypeSlug)
@@ -194,6 +198,7 @@ export async function createProposal(opts: {
         ? `Time proposed by Millie. ${opts.message}`
         : 'Time proposed by Millie — waiting on confirmation.',
       metadata: { proposedByAdmin: 'true' },
+      allowBookingOutOfBounds: true,
     })
   } catch (err) {
     console.error('[proposals] Cal booking failed', err)
