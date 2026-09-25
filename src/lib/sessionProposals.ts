@@ -50,7 +50,7 @@ const DEFAULT_TTL_MS = 48 * 60 * 60 * 1000
  * types' own minimum notice (up to 12 hours) is bypassed for her in
  * createBooking. This is only the floor that leaves a student time to answer.
  */
-const MIN_LEAD_MS = 30 * 60 * 1000
+export const MIN_LEAD_MS = 30 * 60 * 1000
 
 export const PROPOSAL_EVENT_SLUGS = {
   lesson: 'english-lessons-with-millie-cooper',

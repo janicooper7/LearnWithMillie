@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
-import { CalError, findEventType, getSlots } from '@/lib/cal'
-import { TEACHING_TZ } from '@/lib/sessionProposals'
+import { CalError, type CalEventType, findEventType, getSlots, listEventTypes } from '@/lib/cal'
+import { MIN_LEAD_MS, TEACHING_TZ } from '@/lib/sessionProposals'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,6 +19,33 @@ export const dynamic = 'force-dynamic'
 // sits a little above the window the form asks for so a timezone straddling a
 // day boundary can't push a legitimate request over it.
 const MAX_RANGE_DAYS = 70
+
+/**
+ * An event type whose free slots are also free slots for `target`, but which
+ * Cal will list at shorter notice.
+ *
+ * Cal hides every slot inside an event type's minimum booking notice (12 hours
+ * for lessons), and its slots API has no way to ask it not to. Millie can book
+ * inside that window — createBooking bypasses it for her — so the form needs
+ * those times too. Another type on the same schedule, with the same buffers
+ * and at least as long a session, has the same free time; where it is free for
+ * 50 minutes, a 50- or 20-minute session fits.
+ */
+function shorterNoticeDonor(target: CalEventType, all: CalEventType[]): CalEventType | null {
+  return (
+    all
+      .filter(
+        (t) =>
+          t.id !== target.id &&
+          t.minimumBookingNotice < target.minimumBookingNotice &&
+          t.scheduleId === target.scheduleId &&
+          t.beforeEventBuffer === target.beforeEventBuffer &&
+          t.afterEventBuffer === target.afterEventBuffer &&
+          t.lengthInMinutes >= target.lengthInMinutes
+      )
+      .sort((a, b) => a.minimumBookingNotice - b.minimumBookingNotice)[0] ?? null
+  )
+}
 
 export async function GET(req: NextRequest) {
   const session = await auth()
@@ -48,7 +75,8 @@ export async function GET(req: NextRequest) {
 
   // Cal will happily return slots in the past for a range that starts before
   // now; nothing bookable lives there, so the window never opens earlier.
-  const from = start.getTime() < Date.now() ? new Date() : start
+  const now = Date.now()
+  const from = start.getTime() < now ? new Date(now) : start
 
   try {
     const eventType = await findEventType(slug)
@@ -62,6 +90,31 @@ export async function GET(req: NextRequest) {
       end,
       timeZone: TEACHING_TZ,
     })
+
+    // The stretch Cal left out for notice: from createProposal's own floor up
+    // to where this type's notice ends, filled from a shorter-notice donor.
+    const noticeEnd = now + eventType.minimumBookingNotice * 60_000
+    const gapStart = new Date(Math.max(from.getTime(), now + MIN_LEAD_MS))
+    const gapEnd = new Date(Math.min(end.getTime(), noticeEnd))
+    const donor = gapStart < gapEnd ? shorterNoticeDonor(eventType, await listEventTypes()) : null
+    if (donor) {
+      const extra = await getSlots({
+        eventTypeId: donor.id,
+        start: gapStart,
+        end: gapEnd,
+        timeZone: TEACHING_TZ,
+      })
+      for (const [date, entries] of Object.entries(extra)) {
+        const have = new Set((slots[date] ?? []).map((s) => new Date(s.start).getTime()))
+        const add = entries.filter((s) => {
+          const t = new Date(s.start).getTime()
+          return t >= gapStart.getTime() && t < gapEnd.getTime() && !have.has(t)
+        })
+        slots[date] = [...(slots[date] ?? []), ...add].sort(
+          (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+        )
+      }
+    }
 
     return NextResponse.json({
       eventType: {

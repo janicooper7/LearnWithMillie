@@ -116,6 +116,10 @@ export type CalEventType = {
   lengthInMinutes: number
   /** Shortest notice Cal will accept a booking on, in minutes. */
   minimumBookingNotice: number
+  /** Null means the account's default schedule. */
+  scheduleId: number | null
+  beforeEventBuffer: number
+  afterEventBuffer: number
 }
 
 // Event types change about once a year, and a stale entry only means a booking
@@ -140,6 +144,9 @@ export async function listEventTypes(): Promise<CalEventType[]> {
     title: t.title,
     lengthInMinutes: t.lengthInMinutes,
     minimumBookingNotice: t.minimumBookingNotice ?? 0,
+    scheduleId: t.scheduleId ?? null,
+    beforeEventBuffer: t.beforeEventBuffer ?? 0,
+    afterEventBuffer: t.afterEventBuffer ?? 0,
   }))
 
   eventTypeCache = { at: Date.now(), types }

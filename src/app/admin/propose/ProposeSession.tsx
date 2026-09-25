@@ -68,37 +68,6 @@ function monthWindow(offset: number): { start: Date; end: Date; key: string; lab
   return { start, end, key, label }
 }
 
-/**
- * The instant a UK wall-clock time names. Found by asking what London's offset
- * is at the naive guess, then again at the corrected instant so a time either
- * side of a clocks-change lands on the right hour.
- */
-function ukWallTimeToIso(date: string, time: string): string | null {
-  const [y, mo, d] = date.split('-').map(Number)
-  const [h, mi] = time.split(':').map(Number)
-  if ([y, mo, d, h, mi].some((n) => Number.isNaN(n))) return null
-
-  const naive = Date.UTC(y, mo - 1, d, h, mi)
-  const offsetAt = (t: number) => {
-    const p = Object.fromEntries(
-      new Intl.DateTimeFormat('en-GB', {
-        timeZone: ADMIN_TZ,
-        hourCycle: 'h23',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-        .formatToParts(new Date(t))
-        .map((x) => [x.type, x.value])
-    )
-    return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute) - t
-  }
-  const first = naive - offsetAt(naive)
-  return new Date(naive - offsetAt(first)).toISOString()
-}
-
 export default function ProposeSession({ people }: { people: ProposablePerson[] }) {
   const router = useRouter()
 
@@ -113,11 +82,6 @@ export default function ProposeSession({ people }: { people: ProposablePerson[] 
   const [slotError, setSlotError] = useState<string | null>(null)
 
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
-  // A time typed in rather than picked from Cal's list. Cal hides anything
-  // inside an event type's minimum notice (12 hours for lessons), which rules
-  // out same-day sessions; the booking itself is allowed past that for Millie.
-  const [customDate, setCustomDate] = useState('')
-  const [customTime, setCustomTime] = useState('')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sent, setSent] = useState<{ name: string; when: string; emailed: boolean } | null>(null)
@@ -145,8 +109,6 @@ export default function ProposeSession({ people }: { people: ProposablePerson[] 
     setPersonId(next.id)
     setEventTypeSlug(next.defaultEventSlug)
     setSelectedSlot(null)
-    setCustomDate('')
-    setCustomTime('')
     setMonthOffset(0)
     setError(null)
     setSent(null)
@@ -190,17 +152,7 @@ export default function ProposeSession({ people }: { people: ProposablePerson[] 
   // selection alone.
   useEffect(() => {
     setSelectedSlot(null)
-    setCustomDate('')
-    setCustomTime('')
   }, [eventTypeSlug])
-
-  function chooseCustom(date: string, time: string) {
-    setCustomDate(date)
-    setCustomTime(time)
-    setSelectedSlot(date && time ? ukWallTimeToIso(date, time) : null)
-  }
-
-  const todayUk = new Intl.DateTimeFormat('en-CA', { timeZone: ADMIN_TZ }).format(new Date())
 
   async function send() {
     if (!person || !selectedSlot) return
@@ -227,8 +179,6 @@ export default function ProposeSession({ people }: { people: ProposablePerson[] 
         emailed: json.emailed !== false,
       })
       setSelectedSlot(null)
-      setCustomDate('')
-      setCustomTime('')
       setMessage('')
       await loadSlots()
       router.refresh()
@@ -409,11 +359,7 @@ export default function ProposeSession({ people }: { people: ProposablePerson[] 
                         return (
                           <button
                             key={slot}
-                            onClick={() => {
-                              setCustomDate('')
-                              setCustomTime('')
-                              setSelectedSlot(active ? null : slot)
-                            }}
+                            onClick={() => setSelectedSlot(active ? null : slot)}
                             className={`px-3 py-1.5 text-sm rounded-lg border tabular-nums transition-colors ${
                               active
                                 ? 'bg-[#1F3A34] border-[#1F3A34] text-white font-semibold'
@@ -429,31 +375,6 @@ export default function ProposeSession({ people }: { people: ProposablePerson[] 
                 ))}
               </div>
             )}
-
-            <div className='mt-5 pt-5 border-t border-[#EDE4D8]'>
-              <span className='text-xs uppercase tracking-wider font-semibold text-[#1F3A34]/50'>
-                Or any other time (UK)
-              </span>
-              <p className='mt-1 text-xs text-[#1F3A34]/45'>
-                For today or anything not listed above. Cal.com still checks you&apos;re free.
-              </p>
-              <div className='mt-1.5 flex flex-wrap gap-2'>
-                <input
-                  type='date'
-                  value={customDate}
-                  min={todayUk}
-                  onChange={(e) => chooseCustom(e.target.value, customTime)}
-                  className='px-3 py-2 text-sm rounded-lg border border-[#EDE4D8] bg-white text-[#1F3A34] focus:outline-none focus:border-[#C2AA6A]'
-                />
-                <input
-                  type='time'
-                  step={300}
-                  value={customTime}
-                  onChange={(e) => chooseCustom(customDate, e.target.value)}
-                  className='px-3 py-2 text-sm rounded-lg border border-[#EDE4D8] bg-white text-[#1F3A34] focus:outline-none focus:border-[#C2AA6A]'
-                />
-              </div>
-            </div>
 
             <div className='mt-5 pt-5 border-t border-[#EDE4D8]'>
               <label className='block'>
