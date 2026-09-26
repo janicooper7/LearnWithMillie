@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { CHANNELS, FUNNEL_KEYS } from '@/lib/tracking'
+import { CHANNELS, FUNNEL_KEYS, UNTRACKED_CHANNEL } from '@/lib/tracking'
 
 export const runtime = 'nodejs'
 
@@ -40,8 +40,11 @@ export async function POST(req: NextRequest) {
   const funnel = rawFunnel && (FUNNEL_KEYS as string[]).includes(rawFunnel) ? rawFunnel : null
 
   const rawChannel = clean(body.channel, 20)
+  // 'untracked' is reserved for server-recorded sales with no visit behind them.
   const channel =
-    rawChannel && (CHANNELS as readonly string[]).includes(rawChannel) ? rawChannel : 'direct'
+    rawChannel && rawChannel !== UNTRACKED_CHANNEL && (CHANNELS as readonly string[]).includes(rawChannel)
+      ? rawChannel
+      : 'direct'
 
   const rawValue = Number(body.value)
   const value = Number.isFinite(rawValue) && rawValue >= 0 ? Math.min(rawValue, 100000) : null

@@ -111,7 +111,7 @@ async function handleEvent(event: Stripe.Event): Promise<NextResponse> {
         // Attribute the sale to the visit that started it. Runs before the
         // fulfilment branches below so every kind of purchase is counted, and
         // it swallows its own errors so it can never block fulfilment.
-        await recordPurchase(session.metadata, (session.amount_total ?? 0) / 100)
+        await recordPurchase(session.id, session.metadata, (session.amount_total ?? 0) / 100)
 
         // Guest Platform Finder purchases have no user account. Mark the result
         // paid and email the customer their matches + shareable access link.

@@ -20,6 +20,7 @@ const CHANNEL_COLOR: Record<Channel, string> = {
   referral: '#C2AA6A',
   email: '#8A7B4F',
   other: '#A9A29B',
+  untracked: '#D6CFC6',
 }
 
 function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {

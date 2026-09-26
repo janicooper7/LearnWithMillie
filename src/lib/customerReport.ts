@@ -10,6 +10,7 @@ import {
   FUNNELS,
   FUNNEL_KEYS,
   type Channel,
+  UNTRACKED_CHANNEL,
   type FunnelKey,
 } from '@/lib/tracking'
 import type { ResolvedRange } from '@/lib/reportRange'
@@ -112,7 +113,11 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
   let purchases = 0
 
   for (const e of events) {
-    visitors.add(e.visitorId)
+    // A sale from a buyer who refused analytics has no visit behind it: it
+    // counts towards revenue and the sources table, never towards traffic or
+    // funnel steps, or it would inflate both with a session that didn't happen.
+    const untracked = e.channel === UNTRACKED_CHANNEL
+    if (!untracked) visitors.add(e.visitorId)
     if (!sessionAttr.has(e.sessionId)) {
       sessionAttr.set(e.sessionId, {
         channel: (CHANNELS as readonly string[]).includes(e.channel) ? (e.channel as Channel) : 'other',
@@ -121,7 +126,7 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
       })
     }
 
-    if (e.funnel && e.step) {
+    if (e.funnel && e.step && !untracked) {
       const key = `${e.funnel}|${e.step}`
       if (!stepSessions.has(key)) stepSessions.set(key, new Set())
       stepSessions.get(key)!.add(e.sessionId)
@@ -138,11 +143,12 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
   }
 
   const channelCounts = new Map<string, number>()
+  let totalSessions = 0
   for (const attr of sessionAttr.values()) {
+    if (attr.channel === UNTRACKED_CHANNEL) continue
+    totalSessions += 1
     channelCounts.set(attr.channel, (channelCounts.get(attr.channel) ?? 0) + 1)
   }
-
-  const totalSessions = sessionAttr.size
 
   const channels: ChannelRow[] = CHANNELS.map((channel) => ({
     channel,
@@ -210,7 +216,7 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
       groups.set(key, row)
     }
 
-    row.sessions += 1
+    if (attr.channel !== UNTRACKED_CHANNEL) row.sessions += 1
     const sale = sessionSales.get(sessionId)
     if (sale) {
       row.purchases += sale.purchases

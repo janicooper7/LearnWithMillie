@@ -10,6 +10,7 @@ export const CHANNELS = [
   'referral',
   'email',
   'other',
+  'untracked',
 ] as const
 
 export type Channel = (typeof CHANNELS)[number]
@@ -22,7 +23,15 @@ export const CHANNEL_LABELS: Record<Channel, string> = {
   referral: 'Referral',
   email: 'Email',
   other: 'Other',
+  untracked: 'Untracked (no consent)',
 }
+
+/**
+ * Sales whose buyer refused analytics. Stripe still reports them, so they're
+ * recorded to keep revenue honest, but there's no visit behind them — only the
+ * server may write this channel, and it never counts as traffic.
+ */
+export const UNTRACKED_CHANNEL: Channel = 'untracked'
 
 /**
  * Funnels tracked across the site. `steps` are in order — the report reads
