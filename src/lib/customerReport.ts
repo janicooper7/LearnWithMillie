@@ -57,6 +57,8 @@ export type SourceRow = {
   sessions: number
   purchases: number
   revenue: number
+  /** Sales later fully refunded — already left out of purchases and revenue. */
+  refunds: number
 }
 
 export type CustomerReport = {
@@ -68,6 +70,8 @@ export type CustomerReport = {
   sources: SourceRow[]
   revenue: number
   purchases: number
+  refunds: number
+  refundedValue: number
   hasData: boolean
 }
 
@@ -93,6 +97,7 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
       source: true,
       campaign: true,
       value: true,
+      refundedAt: true,
     },
   })
 
@@ -107,10 +112,12 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
   const stepSessions = new Map<string, Set<string>>()
   // Sales are folded per session so they can be attributed with the session,
   // whichever group it ends up in.
-  const sessionSales = new Map<string, { purchases: number; revenue: number }>()
+  const sessionSales = new Map<string, { purchases: number; revenue: number; refunds: number }>()
 
   let revenue = 0
   let purchases = 0
+  let refunds = 0
+  let refundedValue = 0
 
   for (const e of events) {
     // A sale from a buyer who refused analytics has no visit behind it: it
@@ -132,12 +139,20 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
       stepSessions.get(key)!.add(e.sessionId)
     }
 
+    // A refunded sale stays in the funnel (the visit did reach checkout) but
+    // not in purchases or revenue — the money went back.
     if (e.step === 'purchased') {
-      purchases += 1
-      revenue += e.value ?? 0
-      const sale = sessionSales.get(e.sessionId) ?? { purchases: 0, revenue: 0 }
-      sale.purchases += 1
-      sale.revenue += e.value ?? 0
+      const sale = sessionSales.get(e.sessionId) ?? { purchases: 0, revenue: 0, refunds: 0 }
+      if (e.refundedAt) {
+        refunds += 1
+        refundedValue += e.value ?? 0
+        sale.refunds += 1
+      } else {
+        purchases += 1
+        revenue += e.value ?? 0
+        sale.purchases += 1
+        sale.revenue += e.value ?? 0
+      }
       sessionSales.set(e.sessionId, sale)
     }
   }
@@ -185,7 +200,7 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
     })
 
     for (const e of events) {
-      if (e.funnel === key && e.step === 'purchased') funnelRevenue += e.value ?? 0
+      if (e.funnel === key && e.step === 'purchased' && !e.refundedAt) funnelRevenue += e.value ?? 0
     }
 
     return { key, label: def.label, steps, revenue: funnelRevenue }
@@ -212,6 +227,7 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
         sessions: 0,
         purchases: 0,
         revenue: 0,
+        refunds: 0,
       }
       groups.set(key, row)
     }
@@ -221,6 +237,7 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
     if (sale) {
       row.purchases += sale.purchases
       row.revenue += sale.revenue
+      row.refunds += sale.refunds
     }
   }
 
@@ -240,6 +257,8 @@ export async function buildCustomerReport(range: ResolvedRange): Promise<Custome
     sources: sourceRows,
     revenue: Math.round(revenue * 100) / 100,
     purchases,
+    refunds,
+    refundedValue: Math.round(refundedValue * 100) / 100,
     hasData: events.length > 0,
   }
 }

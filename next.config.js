@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Pin the workspace root to this project; a stray lockfile in a parent
+  // directory otherwise makes Next infer the wrong root.
+  outputFileTracingRoot: __dirname,
   serverExternalPackages: ['@prisma/client'],
   images: {
     remotePatterns: [

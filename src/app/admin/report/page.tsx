@@ -157,11 +157,19 @@ export default async function AdminReportPage({
         <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Stat label="Visitors" value={report.totalVisitors.toLocaleString()} hint={range.label} />
           <Stat label="Sessions" value={report.totalSessions.toLocaleString()} hint="30-min visit window" />
-          <Stat label="Purchases" value={report.purchases.toLocaleString()} hint="Confirmed by Stripe" />
+          <Stat
+            label="Purchases"
+            value={report.purchases.toLocaleString()}
+            hint={report.refunds ? `Confirmed by Stripe · ${report.refunds} refunded` : 'Confirmed by Stripe'}
+          />
           <Stat
             label="Revenue"
             value={`$${report.revenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            hint="Before Stripe fees"
+            hint={
+              report.refunds
+                ? `Net of $${report.refundedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} refunded · before Stripe fees`
+                : 'Before Stripe fees'
+            }
           />
         </div>
 
@@ -277,13 +285,14 @@ export default async function AdminReportPage({
             ) : (
               <>
                 <div className="-mx-2 overflow-x-auto">
-                  <table className="w-full min-w-[560px] text-sm" style={font}>
+                  <table className="w-full min-w-[640px] text-sm" style={font}>
                     <thead>
                       <tr style={{ color: 'rgba(31,58,52,0.45)' }}>
                         <th className="px-2 pb-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em]">Source</th>
                         <th className="px-2 pb-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em]">Campaign</th>
                         <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Sessions</th>
                         <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Sales</th>
+                        <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Refunded</th>
                         <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Conv.</th>
                         <th className="px-2 pb-3 text-right text-[11px] font-semibold uppercase tracking-[0.14em]">Revenue</th>
                       </tr>
@@ -312,6 +321,9 @@ export default async function AdminReportPage({
                             </td>
                             <td className="px-2 py-3 text-right tabular-nums" style={{ color: 'rgba(31,58,52,0.8)' }}>{s.sessions}</td>
                             <td className="px-2 py-3 text-right tabular-nums" style={{ color: 'rgba(31,58,52,0.8)' }}>{s.purchases}</td>
+                            <td className="px-2 py-3 text-right tabular-nums" style={{ color: s.refunds > 0 ? '#1F3A34' : 'rgba(31,58,52,0.35)' }}>
+                              {s.refunds > 0 ? s.refunds : '—'}
+                            </td>
                             <td className="px-2 py-3 text-right tabular-nums" style={{ color: conv > 0 ? '#1F3A34' : 'rgba(31,58,52,0.35)' }}>
                               {conv > 0 ? `${conv.toFixed(1)}%` : '—'}
                             </td>

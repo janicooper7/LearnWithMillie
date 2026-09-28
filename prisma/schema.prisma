@@ -183,6 +183,8 @@ model TrackedEvent {
   campaign  String?
   // Purchase amount in USD, set only on 'purchased' steps.
   value     Float?
+  // Set when the Stripe charge behind a 'purchased' row is fully refunded.
+  refundedAt DateTime?
   createdAt DateTime @default(now())
 
   @@index([createdAt])

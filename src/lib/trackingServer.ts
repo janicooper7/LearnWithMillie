@@ -67,6 +67,36 @@ export async function recordPurchase(
   }
 }
 
+/**
+ * Flag the report's sale row for a fully refunded checkout. The row is kept —
+ * the report shows it as refunded and leaves it out of revenue — and found the
+ * same way recordPurchase wrote it: by the visit's session id, or the
+ * checkout-derived id for a buyer who refused analytics. The value is matched
+ * too, so another sale made in the same visit isn't flagged along with it.
+ */
+export async function recordRefund(checkout: {
+  id: string
+  metadata: Record<string, string> | null
+  amount_total: number | null
+}) {
+  const sessionId = checkout.metadata?.trackSessionId ?? `stripe:${checkout.id}`
+  try {
+    const { count } = await prisma.trackedEvent.updateMany({
+      where: {
+        sessionId,
+        step: 'purchased',
+        value: (checkout.amount_total ?? 0) / 100,
+        refundedAt: null,
+      },
+      data: { refundedAt: new Date() },
+    })
+    if (count === 0) console.warn('recordRefund: no sale row matched', { checkoutId: checkout.id })
+  } catch (err: any) {
+    // Same rule as purchases: analytics must never fail the webhook.
+    console.error('recordRefund error:', err.message)
+  }
+}
+
 /** Which funnel a sale belongs to, read off the checkout's own metadata. */
 function funnelFromCheckout(metadata: Record<string, string> | null | undefined): FunnelKey {
   if (metadata?.kind === 'platform-finder') return 'platform-finder'

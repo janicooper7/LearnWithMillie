@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
 import { finalizePlatformFinderResult } from '@/lib/platformFinderResult'
-import { recordPurchase } from '@/lib/trackingServer'
+import { recordPurchase, recordRefund } from '@/lib/trackingServer'
 // Shared with the dashboard so both resolve retired price ids the same way — a
 // repriced tier keeps crediting the subscribers still billed on the old price.
 import { subscriptionLessons } from '@/lib/plans'
@@ -32,6 +32,21 @@ async function grantCourseAccess(userId: string, courseSlug: string) {
       })
     )
   )
+}
+
+// Mirror of grantCourseAccess: a bundle takes its included courses with it.
+async function revokeCourseAccess(userId: string, courseSlug: string) {
+  const course = await prisma.course.findUnique({
+    where: { slug: courseSlug },
+    select: { isBundle: true, bundleIncludes: true },
+  })
+  if (!course) return 0
+
+  const slugsToRevoke = [courseSlug, ...(course.isBundle ? course.bundleIncludes : [])]
+  const { count } = await prisma.userCourseAccess.deleteMany({
+    where: { userId, course: { slug: { in: slugsToRevoke } } },
+  })
+  return count
 }
 
 export const dynamic = 'force-dynamic'
@@ -315,6 +330,53 @@ async function handleEvent(event: Stripe.Event): Promise<NextResponse> {
         where: { stripeSubscriptionId: subscription.id },
         data: { allowance: 0, stripeSubscriptionId: null },
       })
+      break
+    }
+
+    // The 7-day course guarantee is honoured from the Stripe dashboard, so a
+    // full refund flags the sale as refunded in the customer report and, for a
+    // one-time course purchase, takes the access back with it. Partial refunds
+    // are goodwill gestures and change nothing; installment plans are charged
+    // by invoice, have no checkout session here, and are handled by hand.
+    case 'charge.refunded': {
+      const charge = event.data.object as Stripe.Charge
+      if (!charge.refunded) break
+
+      const paymentIntent = charge.payment_intent as string | null
+      if (!paymentIntent) break
+
+      const { data: sessions } = await stripe.checkout.sessions.list({
+        payment_intent: paymentIntent,
+        limit: 1,
+      })
+      const session = sessions[0]
+      if (!session) break
+
+      await recordRefund(session)
+
+      const courseSlug = session.metadata?.courseSlug
+      if (!courseSlug || session.metadata?.kind === 'course-installment') {
+        console.log('Webhook charge.refunded: not a one-time course purchase, no access change', {
+          chargeId: charge.id,
+        })
+        break
+      }
+
+      let userId = session.metadata?.userId
+      if (!userId) {
+        const email = session.customer_details?.email ?? session.customer_email
+        if (email) {
+          const found = await prisma.user.findUnique({ where: { email }, select: { id: true } })
+          userId = found?.id
+        }
+      }
+      if (!userId) {
+        console.error('Webhook charge.refunded: could not resolve userId', { sessionId: session.id })
+        break
+      }
+
+      const revoked = await revokeCourseAccess(userId, courseSlug)
+      console.log('Webhook: course access revoked after refund', { userId, courseSlug, revoked })
       break
     }
   }
