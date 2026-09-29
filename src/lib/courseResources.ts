@@ -76,6 +76,16 @@ const COURSE_RESOURCES: Record<string, ResourceGroup[]> = {
     },
   ],
 
+  // Module 8 — The intro video that makes them book
+  'get-ready:8': [
+    {
+      heading: 'Example',
+      links: [
+        { label: "Millie's Preply intro video", url: 'https://youtu.be/R81UJmnyRos' },
+      ],
+    },
+  ],
+
   // Module 10 — Invoicing, taxes & freelance admin
   'get-ready:10': [
     {
