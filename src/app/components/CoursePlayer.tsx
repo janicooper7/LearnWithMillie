@@ -7,8 +7,8 @@ import confetti from 'canvas-confetti'
 import CourseEssentials from './CourseEssentials'
 import { getCourseEssentials } from '@/lib/courseEssentials'
 import CourseResources from './CourseResources'
-import CourseModuleResources from './CourseModuleResources'
-import { getModuleResources, getCourseResourcesByModule } from '@/lib/courseResources'
+import CourseModuleResources, { type CourseResourcesList } from './CourseModuleResources'
+import { getModuleResources } from '@/lib/courseResources'
 
 type Lesson = {
   id: string
@@ -25,9 +25,10 @@ type Props = {
   courseSlug: string
   courseTitle: string
   lessons: Lesson[]
+  resources: CourseResourcesList
 }
 
-export default function CoursePlayer({ courseSlug, courseTitle, lessons: initialLessons }: Props) {
+export default function CoursePlayer({ courseSlug, courseTitle, lessons: initialLessons, resources }: Props) {
   const [lessons, setLessons] = useState(initialLessons)
   const [activeId, setActiveId] = useState<string | null>(initialLessons[0]?.id ?? null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -424,12 +425,7 @@ export default function CoursePlayer({ courseSlug, courseTitle, lessons: initial
 
     {/* Amazon "must-haves" + every module's links — always visible below the player */}
     <CourseEssentials items={getCourseEssentials(courseSlug)} />
-    <CourseModuleResources
-      modules={getCourseResourcesByModule(courseSlug).map((m) => {
-        const title = lessons.find((l) => l.order === m.order)?.title ?? `Module ${m.order}`
-        return { ...m, title: title.replace(/^Module\s+\d+\s*[—–-]\s*/, '') }
-      })}
-    />
+    <CourseModuleResources courses={resources} currentSlug={courseSlug} />
     </div>
 
     {/* Course-complete celebration modal */}

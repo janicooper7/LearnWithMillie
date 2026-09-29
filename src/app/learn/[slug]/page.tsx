@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { redirect, notFound } from 'next/navigation'
 import CoursePlayer from '@/app/components/CoursePlayer'
 import Link from 'next/link'
+import { getCourseResourcesByModule } from '@/lib/courseResources'
 
 export default async function LearnPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -62,6 +63,24 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
     )
   }
 
+  // Every course's module links (all three BOOKED courses), shown in the
+  // always-visible "Course resources" section whichever course is open.
+  const allCourses = await prisma.course.findMany({
+    where: { isBundle: false, OR: [{ published: true }, { slug }] },
+    orderBy: { order: 'asc' },
+    select: { slug: true, title: true, lessons: { select: { order: true, title: true } } },
+  })
+  const resources = allCourses
+    .map((c) => ({
+      slug: c.slug,
+      title: c.title,
+      modules: getCourseResourcesByModule(c.slug).map((m) => {
+        const title = c.lessons.find((l) => l.order === m.order)?.title ?? `Module ${m.order}`
+        return { ...m, title: title.replace(/^Module\s+\d+\s*[—–-]\s*/, '') }
+      }),
+    }))
+    .filter((c) => c.modules.length > 0)
+
   const lessons = course.lessons.map((l) => ({
     ...l,
     completedAt: (l.progress[0]?.completedAt ?? null)?.toISOString() ?? null,
@@ -77,7 +96,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
         <span className="text-[#C2AA6A] text-sm font-medium">{course.title}</span>
         <div />
       </div>
-      <CoursePlayer courseSlug={slug} courseTitle={course.title} lessons={lessons} />
+      <CoursePlayer courseSlug={slug} courseTitle={course.title} lessons={lessons} resources={resources} />
     </div>
   )
 }
