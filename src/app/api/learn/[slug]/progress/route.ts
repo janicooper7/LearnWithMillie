@@ -24,7 +24,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   })
 
   if (!lesson) return NextResponse.json({ error: 'Lesson not found' }, { status: 404 })
-  if (lesson.course.userAccess.length === 0) return NextResponse.json({ error: 'No access' }, { status: 403 })
+  if (lesson.course.userAccess.length === 0 && session.user.role !== 'ADMIN') return NextResponse.json({ error: 'No access' }, { status: 403 })
 
   const progress = await prisma.userLessonProgress.upsert({
     where: { userId_lessonId: { userId: session.user.id, lessonId } },
@@ -46,7 +46,10 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const course = await prisma.course.findFirst({
-    where: { slug, userAccess: { some: { userId: session.user.id } } },
+    where:
+      session.user.role === 'ADMIN'
+        ? { slug }
+        : { slug, userAccess: { some: { userId: session.user.id } } },
     select: { id: true },
   })
   if (!course) return NextResponse.json({ error: 'No access' }, { status: 403 })

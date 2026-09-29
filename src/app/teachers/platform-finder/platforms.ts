@@ -192,7 +192,7 @@ export const PLATFORMS: Platform[] = [
     nativeOnly: false,
     degreeRequired: false,
     notes: 'Community Tutor (no credentials) or Professional Teacher (credentials required).',
-    signupUrl: 'https://www.italki.com/teach',
+    signupUrl: 'https://teach.italki.com/',
   },
   {
     name: 'Learnlight',

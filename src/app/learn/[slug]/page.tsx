@@ -8,9 +8,11 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
   const { slug } = await params
   const session = await auth()
   if (!session?.user?.id) redirect('/auth/login')
+  // Admins can open every course (including unpublished ones) without buying it.
+  const isAdmin = session.user.role === 'ADMIN'
 
   const course = await prisma.course.findUnique({
-    where: { slug, published: true },
+    where: isAdmin ? { slug } : { slug, published: true },
     select: {
       id: true,
       title: true,
@@ -41,7 +43,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
   // Bundles have no lessons — send users to /teachers/courses to pick an individual course
   if (course.isBundle) redirect('/teachers/courses')
 
-  if (course.userAccess.length === 0) {
+  if (course.userAccess.length === 0 && !isAdmin) {
     return (
       <div className="min-h-screen bg-[#F4EDE4] flex items-center justify-center p-8">
         <div className="text-center max-w-md">

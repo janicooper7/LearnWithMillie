@@ -7,8 +7,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   const session = await auth()
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const isAdmin = session.user.role === 'ADMIN'
+
   const course = await prisma.course.findUnique({
-    where: { slug, published: true },
+    where: isAdmin ? { slug } : { slug, published: true },
     select: {
       id: true,
       title: true,
@@ -35,7 +37,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   })
 
   if (!course) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  if (course.userAccess.length === 0) return NextResponse.json({ error: 'No access' }, { status: 403 })
+  if (course.userAccess.length === 0 && !isAdmin) return NextResponse.json({ error: 'No access' }, { status: 403 })
 
   const lessons = course.lessons.map((l) => ({
     ...l,

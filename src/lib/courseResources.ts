@@ -43,6 +43,51 @@ const COURSE_RESOURCES: Record<string, ResourceGroup[]> = {
     },
   ],
 
+  // Module 3 — Choosing your route (platform sign-up pages match platform-finder/platforms.ts)
+  'get-ready:3': [
+    {
+      heading: 'Find your platforms',
+      links: [
+        {
+          label: 'Platform-Match tool — which platforms you can apply to today',
+          url: 'https://learnwithmillie.com/teachers/platform-finder',
+        },
+      ],
+    },
+    {
+      heading: 'Tutoring platforms',
+      links: [
+        { label: 'Preply — Become a tutor', url: 'https://preply.com/en/teach' },
+        { label: 'italki — Become a teacher', url: 'https://teach.italki.com/' },
+        { label: 'Cambly — Become a tutor', url: 'https://www.cambly.com/en/tutors' },
+        { label: 'Lingoda — Teach with Lingoda', url: 'https://www.lingoda.com/en/jobs/teacher/' },
+      ],
+    },
+  ],
+
+  // Module 5 — Your essential software stack
+  'get-ready:5': [
+    {
+      heading: 'Video editing',
+      links: [
+        { label: 'CapCut', url: 'https://www.capcut.com/' },
+        { label: 'InShot', url: 'https://inshot.com/' },
+      ],
+    },
+  ],
+
+  // Module 10 — Invoicing, taxes & freelance admin
+  'get-ready:10': [
+    {
+      heading: 'Payment processors',
+      links: [
+        { label: 'Wise', url: 'https://wise.com/' },
+        { label: 'Stripe', url: 'https://stripe.com/' },
+        { label: 'PayPal', url: 'https://www.paypal.com/' },
+      ],
+    },
+  ],
+
   // ─────────────────────────────────────────────────────────────────────────
   // STAY BOOKED (Course 3)
   // ─────────────────────────────────────────────────────────────────────────
@@ -169,33 +214,19 @@ const COURSE_RESOURCES: Record<string, ResourceGroup[]> = {
   ],
 }
 
+// The links for one module — rendered directly under that module's video.
 export function getModuleResources(courseSlug: string, order: number): ResourceGroup[] {
   return COURSE_RESOURCES[`${courseSlug}:${order}`] ?? []
 }
 
-// All of a course's module links, merged into one set of groups (deduped by
-// group heading, then by link URL) — used to show every resource once below the
-// course player, available throughout the course rather than per module.
-export function getAllCourseResources(courseSlug: string): ResourceGroup[] {
+// Every module of a course that has links, in module order — rendered as one
+// card per module in the always-visible "Course resources" section.
+export function getCourseResourcesByModule(
+  courseSlug: string
+): { order: number; groups: ResourceGroup[] }[] {
   const prefix = `${courseSlug}:`
-  const byHeading = new Map<string, ResourceGroup>()
-  const order: string[] = []
-
-  for (const [key, groups] of Object.entries(COURSE_RESOURCES)) {
-    if (!key.startsWith(prefix)) continue
-    for (const group of groups) {
-      const headingKey = group.heading ?? ''
-      let merged = byHeading.get(headingKey)
-      if (!merged) {
-        merged = { heading: group.heading, links: [] }
-        byHeading.set(headingKey, merged)
-        order.push(headingKey)
-      }
-      for (const link of group.links) {
-        if (!merged.links.some((l) => l.url === link.url)) merged.links.push(link)
-      }
-    }
-  }
-
-  return order.map((k) => byHeading.get(k)!)
+  return Object.entries(COURSE_RESOURCES)
+    .filter(([key]) => key.startsWith(prefix))
+    .map(([key, groups]) => ({ order: Number(key.slice(prefix.length)), groups }))
+    .sort((a, b) => a.order - b.order)
 }

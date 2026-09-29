@@ -265,7 +265,7 @@ export const bundleSales = {
     'Every worksheet, template, and downloadable across the trilogy — including the Platform-Match Excel, the rate calculator, every message template I’ve ever written, the SCALE self-audit, the Holograms reference cards, and the niche-finder workbook',
     'The full SCALE diagnostic — the framework you’ll come back to for the rest of your career',
     'Lifetime access — every module, every update, every addition',
-    'Linked resources page — every tool, book, and platform mentioned, all in one place',
+    'Every tool and platform mentioned, linked right under each module — plus the full book and tech-setup lists',
     'Founding-member price — early-bird pricing applies this week only',
   ],
   whyTitle: 'Most courses give you frameworks. BOOKED gives you a career.',

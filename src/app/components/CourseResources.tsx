@@ -2,7 +2,7 @@ import { ExternalLink, Link2 } from 'lucide-react'
 import type { ResourceGroup } from '@/lib/courseResources'
 
 // Compact, low-footprint list of the external links referenced in a module.
-// Sits between the lesson description and the Amazon "Course must-haves" cards.
+// Sits directly under the module's description in the lesson panel.
 export default function CourseResources({ groups }: { groups: ResourceGroup[] }) {
   if (groups.length === 0) return null
 
@@ -12,7 +12,7 @@ export default function CourseResources({ groups }: { groups: ResourceGroup[] })
     <section className="mt-8 border-t border-[#1F3A34]/10 pt-6">
       <div className="mb-2 flex items-center gap-2">
         <Link2 className="h-5 w-5 text-[#C2AA6A]" />
-        <h2 className="font-serif text-xl font-bold text-[#1F3A34]">Links &amp; resources</h2>
+        <h2 className="font-serif text-xl font-bold text-[#1F3A34]">Links from this module</h2>
       </div>
 
       <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
