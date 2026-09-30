@@ -77,7 +77,7 @@ export default async function DashboardPage() {
     useMockBookings
       ? Promise.resolve(null)
       : fetch(
-        `https://api.cal.com/v2/bookings?attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming`,
+        `https://api.cal.com/v2/bookings?attendeeEmail=${encodeURIComponent(user.email ?? '')}&status=upcoming&take=100`,
         {
           headers: {
             'Authorization': `Bearer ${process.env.CAL_API_KEY}`,
@@ -159,7 +159,6 @@ export default async function DashboardPage() {
         upcomingBookings = all
           .filter((b) => new Date(b.start) > now)
           .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
-          .slice(0, 5)
       }
     } catch {}
   }
