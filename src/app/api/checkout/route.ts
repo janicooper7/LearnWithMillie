@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { auth } from '@/auth'
+import { prisma } from '@/lib/prisma'
 import { trackingMetadata } from '@/lib/trackingServer'
 import { TRILOGY_OFFER, TRILOGY_INSTALLMENT_PLAN, trilogyInstallmentAmount } from '@/lib/trilogyOffer'
 
@@ -84,6 +85,18 @@ export async function POST(req: NextRequest) {
 
   if (!priceId) {
     return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
+  }
+
+  // Top-ups are for subscribers (or students an admin enabled by hand) — the
+  // dashboard hides the banner otherwise, and this stops a direct POST.
+  if (plan === 'additional-lessons') {
+    const buyer = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { stripeSubscriptionId: true, addonLessonsEnabled: true },
+    })
+    if (!buyer?.stripeSubscriptionId && !buyer?.addonLessonsEnabled) {
+      return NextResponse.json({ error: 'Additional lessons are available to active subscribers.' }, { status: 403 })
+    }
   }
 
   const qty = plan === 'additional-lessons' ? Math.max(1, Math.min(20, Number(quantity))) : 1

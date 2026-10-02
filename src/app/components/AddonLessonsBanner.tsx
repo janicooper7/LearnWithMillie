@@ -62,7 +62,7 @@ export default function AddonLessonsBanner() {
               className='text-[14px] mt-1'
               style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-inter), sans-serif' }}
             >
-              Top up at <span style={{ color: '#C2AA6A', fontWeight: 600 }}>${ADDON_LESSON_PRICE}</span> per lesson — no subscription needed.
+              Top up at <span style={{ color: '#C2AA6A', fontWeight: 600 }}>${ADDON_LESSON_PRICE}</span> per lesson, on top of your monthly plan.
             </p>
           </div>
         </div>

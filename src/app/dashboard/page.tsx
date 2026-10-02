@@ -64,7 +64,10 @@ export default async function DashboardPage() {
   // is still asking the question, so the list is told which uids are pending.
   const proposedUids = new Set(proposals.map((p) => p.bookingUid))
 
-  const showCoursesCard = isTeacher
+  // Teachers always get the card (with a browse prompt when empty). Anyone else
+  // who owns a course — e.g. a teacher who registered as a student — must still
+  // see it, or the course they paid for has no way in from the dashboard.
+  const showCoursesCard = isTeacher || displayCourses.length > 0
 
   const useMockBookings = mockBookingsEnabled()
   const useMockSubscription = mockSubscriptionEnabled()
@@ -175,10 +178,9 @@ export default async function DashboardPage() {
   // permanently in the subscription card, so nobody gets a "first steps" banner
   // months into their time here just because they're between plans.
   const showChecklist = user.role === 'STUDENT' && !(trialDone && bookingDone)
-  // Anyone past getting started can top up, whether or not an admin flipped the
-  // per-user switch — the toggle now only matters for students still onboarding.
-  const isActiveStudent = !isTeacher && trialDone && bookingDone
-  const showAddons = !isTeacher && (isActiveStudent || user.addonLessonsEnabled)
+  // Top-ups are extra lessons on top of a live plan — a trial alone isn't enough.
+  // The admin per-user switch still lets Millie open it up for someone by hand.
+  const showAddons = !isTeacher && (hasSubscription || user.addonLessonsEnabled)
   const showSubscriptionCard = hasSubscription || !isTeacher
   const showResetWarning = !isTeacher && hasSubscription && user.allowance > 0
 
@@ -203,10 +205,10 @@ export default async function DashboardPage() {
           <OnboardingChecklist trialDone={trialDone} bookingDone={bookingDone} planDone={planDone} />
         )}
 
-        {isTeacher && (
+        {(isTeacher || showCoursesCard) && (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
 
-          {/* My Courses card — teachers only */}
+          {/* My Courses card — teachers, plus anyone who owns a course */}
           {showCoursesCard && (
           <div className='rounded-2xl p-5 sm:p-7 flex flex-col' style={{ backgroundColor: '#1F3A34' }}>
             <div className='w-0.5 h-8 rounded-full mb-5' style={{ backgroundColor: '#C2AA6A' }} />
@@ -290,7 +292,9 @@ export default async function DashboardPage() {
 
           {/* Book a session — teachers only. Students get their buy/book calls to
               action from the checklist, the subscription card and the top-up. */}
-          <BookLessonCard trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />
+          {isTeacher && (
+            <BookLessonCard trialPurchased={user.trialPurchased || user.trialUsed} isTeacher={isTeacher} />
+          )}
 
         </div>
         )}
